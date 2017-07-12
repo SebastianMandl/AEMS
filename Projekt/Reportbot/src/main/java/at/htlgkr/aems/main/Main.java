@@ -9,7 +9,7 @@ public class Main {
 	 * @param args Additional startup arguments
 	 */
 	public static void main(String[] args) {
-		//TODO: Apply logic here
+		System.out.println("If this shows in the command line, the MAINFEST.MF has been correctly generated!");
 	}
 
 }
