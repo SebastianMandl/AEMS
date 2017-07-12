@@ -4,4 +4,13 @@
   <artifactId>aemsbot</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>AEMS Report Bot</name>
+  
+ 	<dependencies>
+ 		<!-- HTMLUnit dependency -->
+  		<dependency>
+	    	<groupId>net.sourceforge.htmlunit</groupId>
+	    	<artifactId>htmlunit</artifactId>
+	    	<version>2.27</version>
+		</dependency>
+	</dependencies>
 </project>
