@@ -1,0 +1,22 @@
+@charset "utf-8";
+.nav.navbar-nav.navbar-right li .notificationIcon {
+	width: 3em;
+	margin-top: 0.25em;
+	margin-right: 20px;
+	margin-left: 10px;
+}
+.container-fluid .navbar-header .navbar-brand.titleFormat {
+	color: #FFFFFF;
+	font-size: x-large;
+	font-style: normal;
+}
+.nav.navbar-nav.navbar-right .dropdown .dropdown-toggle.navBarItems {
+	font-size: large;
+}
+.nav.navbar-nav.navbar-right li .navBarItems {
+	font-size: large;
+}
+.navbar.navbar-default.navbar-inverse.navbar-fixed-top.navbarSize {
+
+
+}
