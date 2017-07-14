@@ -8,6 +8,7 @@
     <!-- Bootstrap -->
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -80,7 +81,41 @@
               </ul>
             </li>
             
-             <li><a class="navBarItems" href="login.html">Login</a></li>
+             <li><a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a>
+             
+             
+           <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  <div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Login to Your Account</h1><br>
+				  <form>
+					<input type="text" name="user" placeholder="Username">
+					<input type="password" name="pass" placeholder="Password">
+					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
+				  </form>
+					
+				</div>
+			</div>
+		  </div>
+             
+             
+             
+             <!--
+				 <form action="/action_page.php">
+				  <div class="container">
+					<label><b>Username</b></label>
+					<input type="text" placeholder="Enter Username" name="uname" required>
+					<label><b>Password</b></label>
+					<input type="password" placeholder="Enter Password" name="psw" required>
+					<button type="submit">Login</button>	
+				  </div>
+				  <div class="container" style="background-color:#f1f1f1">
+					<button type="button" class="cancelbtn">Cancel</button>
+				  </div>
+				</form>
+             -->
+             
+             </li>
               <li><img class="notificationIcon" src="pictures/notification.png"></li>
             
             
@@ -91,10 +126,35 @@
       <!-- /.container-fluid -->
     </nav>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-	<script src="js/jquery-1.11.3.min.js"></script>
 
-	<!-- Include all compiled plugins (below), or include individual files as needed --> 
+  <script src="js/jquery-1.11.3.min.js"></script>
   <script src="js/bootstrap.js"></script>
+  
+  
+  <!-- Benachrichtigungen -->
+  <script>
+	  function functionNotifications(){
+		  var measuredElectricity;
+		  var maxElectricity;
+		  var measuredGas;
+		  var maxGas;
+		  var measuredWater;
+		  var maxWater;
+		  var report;
+		  
+		  if(measuredElectricity>maxElectricity){
+			  alert("Ihr Stromverbrauch ist höher als normal!");
+		  }
+		  if(measuredGas>maxGas){
+			  alert("Ihr Gasverbrauch ist höher als normal!");
+		  }
+		  if(measuredWater>maxWater){
+			 alert("Ihr Wasserverbrauch ist höher als normal!");
+			 }
+		  if(report>0){
+			  alert("Ein neuer Bericht steht zum Download bereit!")
+		  }
+	  }  
+	  </script>
 </body>
 </html>

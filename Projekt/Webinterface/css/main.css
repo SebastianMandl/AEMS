@@ -7,14 +7,14 @@
 }
 .container-fluid .navbar-header .navbar-brand.titleFormat {
 	color: #FFFFFF;
-	font-size: x-large;
+	font-size: 1.25em;
 	font-style: normal;
 }
 .nav.navbar-nav.navbar-right .dropdown .dropdown-toggle.navBarItems {
-	font-size: large;
+	font-size: 1em;
 }
 .nav.navbar-nav.navbar-right li .navBarItems {
-	font-size: large;
+	font-size: 1em;
 }
 .navbar.navbar-default.navbar-inverse.navbar-fixed-top.navbarSize {
 
