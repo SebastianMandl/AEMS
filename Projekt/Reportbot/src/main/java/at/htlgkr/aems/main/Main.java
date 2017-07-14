@@ -1,5 +1,7 @@
 package at.htlgkr.aems.main;
 
+import at.htlgkr.aems.filedownload.FileDownloader;
+
 public class Main {
 
 	/**
@@ -9,7 +11,8 @@ public class Main {
 	 * @param args Additional startup arguments
 	 */
 	public static void main(String[] args) {
-		System.out.println("If this shows in the command line, the MAINFEST.MF has been correctly generated!");
+	  Thread t = new Thread(new FileDownloader("SomeUsername", "SomePassword"));
+	  t.start();
 	}
 
 }
