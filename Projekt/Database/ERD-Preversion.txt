@@ -1,13 +1,13 @@
-﻿	Zähler (Meter): 
+﻿	Zähler (Meters): 
 10:		ID (ID des SMART-Meters von NetzÖ oder EnergieAG)
 		METER_TYPE (ref 20)
 		USER_ID (ref 30)
 
-	Zählertyp (Meter Type): 
+	Zählertyp (Meter Types): 
 20:		ID
 		DisplayName
 
-	Zählerdaten (Meter Data):
+	Zählerdaten (Meter Datas):
 		ID (ref 10)
 		Timestamp (Tag + hh:mm:ss) (Tageszeitenabhängigkeit)
 		Temperature (bei welcher Temperatur ist das Messergebnis gemessen worden?) (Temperaturabhängigkeit)

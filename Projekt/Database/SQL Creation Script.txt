@@ -1,0 +1,50 @@
+DROP OWNED BY aems CASCADE;
+DROP USER IF EXISTS aems;
+CREATE USER aems WITH ENCRYPTED PASSWORD 'aems';
+
+DROP SCHEMA IF EXISTS aems;
+CREATE SCHEMA aems AUTHORIZATION aems;
+
+DROP TABLE IF EXISTS aems.MeterTypes CASCADE;
+CREATE TABLE aems.MeterTypes
+(
+	ID DECIMAL(10),
+	DisplayName VARCHAR(100),
+
+	CONSTRAINT pk_metertypes PRIMARY KEY (ID)
+);
+
+DROP TABLE IF EXISTS aems.Users CASCADE;
+CREATE TABLE aems.Users
+(
+	ID DECIMAL(10),
+	Username VARCHAR(32),
+	"Password" VARCHAR(4096),
+
+	CONSTRAINT pk_users PRIMARY KEY (ID)
+);
+
+DROP TABLE IF EXISTS aems.Meters CASCADE;
+CREATE TABLE aems.Meters
+(
+	ID VARCHAR(150),
+	MeterType DECIMAL(10),
+	"User" DECIMAL(10),
+
+	CONSTRAINT pk_meters PRIMARY KEY (ID),
+	CONSTRAINT fk_meters_metertypes FOREIGN KEY (MeterType) REFERENCES MeterTypes(ID),
+	CONSTRAINT fk_meters_users FOREIGN KEY ("User") REFERENCES Users(ID)
+);
+
+DROP TABLE IF EXISTS aems.MeterDatas CASCADE;
+CREATE TABLE aems.MeterDatas
+(
+	ID DECIMAL(10),
+	Meter VARCHAR(150),
+	"Timestamp" TIMESTAMP WITHOUT TIME ZONE,
+	Temperature DECIMAL(2,2),
+	MeasuredValue DECIMAL(7,5),
+
+	CONSTRAINT pk_meterdatas PRIMARY KEY (ID),
+	CONSTRAINT fk_meterdatas_meters FOREIGN KEY (Meter) REFERENCES Meters(ID)
+);
