@@ -1,34 +1,27 @@
 package at.htlgkr.aems.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.w3c.css.sac.CSSException;
-import org.w3c.css.sac.CSSParseException;
-import org.w3c.css.sac.ErrorHandler;
-
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.IncorrectnessListener;
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ScriptException;
-import com.gargoylesoftware.htmlunit.UnexpectedPage;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.html.HTMLParserListener;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.javascript.JavaScriptErrorListener;
 
 import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.exception.LoginFailedException;
+import at.htlgkr.aems.main.Main;
+import at.htlgkr.aems.util.BotConfiguration;
 import at.htlgkr.aems.util.Utils;
 
 public class FileDownloader implements Runnable {
@@ -39,6 +32,8 @@ public class FileDownloader implements Runnable {
   
   /* Represents the user whichs data will be collected */
   public AemsUser user;
+  
+  private boolean running = true;
   
   public FileDownloader(AemsUser user) {
     this.user = user;
@@ -56,7 +51,6 @@ public class FileDownloader implements Runnable {
       HtmlPage loginPage = client.getPage(BASE_URL + LOGIN_URL);
       HtmlPage meterPage = login(loginPage);
       
-      int detailsCount = openAllDetails(meterPage);
       
       /**
        * HUGE TODO: 
@@ -65,22 +59,44 @@ public class FileDownloader implements Runnable {
        * occurances of such events.
        */
       
-      int buttonCount = 0;
+      int buttonCount; // How many files can be downloaded on this page?
+      int detailsCount;
+      
+      boolean firstTime = true;
+      
       do {
+        if(!firstTime) {
+          HtmlElement next = meterPage.getAnchorByText("Weiter »");
+          meterPage = next.click();
+        }
+        buttonCount = 0;
+        detailsCount = openAllDetails(meterPage);
+        
+        
         while(buttonCount < detailsCount) {
           List<HtmlElement> buttons = waitForDetailsToLoad(meterPage, detailsCount);
           HtmlElement currentBtn = buttons.get(buttonCount);
           HtmlPage detailPage = currentBtn.click();
           InputStream excelInputStream = downloadDetailExcelFile(detailPage);
-          // TODO: Save inputStream into local file
+          
+          if(excelInputStream != null) {
+            saveExcelFile(excelInputStream);
+          }
+          
           clickBackButton(detailPage);
           buttonCount++;
         }
-        // click next and repeat process
+        firstTime = false;
       } 
       while(moreMetersExist(meterPage));
       
+      Main.setComplete(this);
+      
     } catch (FailingHttpStatusCodeException e) {
+      // When FileDownloader fails, this is most likely the cause
+      // It is very unpredictable when it happens though
+      // TODO: Implement mechanism to retry if this exception occurs
+      // Main.retry(this)
       e.printStackTrace();
     } catch (MalformedURLException e) {
       e.printStackTrace();
@@ -94,7 +110,7 @@ public class FileDownloader implements Runnable {
   }
   
   private WebClient getWebClient() {
-    WebClient wc = new WebClient(BrowserVersion.FIREFOX_52);
+    WebClient wc = new WebClient(BrowserVersion.BEST_SUPPORTED);
     wc.getOptions().setCssEnabled(false);
     // For access to critical elements on the netz-online website, javascript must be enabled
     wc.getOptions().setJavaScriptEnabled(true);
@@ -131,7 +147,11 @@ public class FileDownloader implements Runnable {
    * @return The number of details on this page
    */
   private int openAllDetails(HtmlPage page) {
-    List<HtmlElement> arrows = page.getByXPath("//header[@data-eservice-fn='account-toggle']");
+    List<HtmlElement> arrows = page.getByXPath(
+        "//article[contains(@class, 'contract-account') "
+        + "and not(contains(@class, 'inactive'))]"
+        + "/header[@data-eservice-fn='account-toggle']");
+    
     for(HtmlElement element : arrows) {
       try {
         element.click();
@@ -147,7 +167,13 @@ public class FileDownloader implements Runnable {
    * @return true if and only if the page contains an Anchor tag with the text 'Weiter »'
    */
   private boolean moreMetersExist(HtmlPage page) {
-    return page.getAnchorByText("Weiter »") != null;
+    try {
+      page.getAnchorByText("Weiter »");
+      return true;
+    } catch(ElementNotFoundException e) {
+      return false;
+    }
+    
   }
   
   /**
@@ -174,6 +200,29 @@ public class FileDownloader implements Runnable {
     }
     return null;
   }
+  
+  private void saveExcelFile(InputStream input) {
+    
+    boolean splitIntoFolders = Boolean.valueOf(Main.config.get(BotConfiguration.ONE_FOLDER_PER_USER));
+    File saveDir;
+    
+    if(splitIntoFolders) {
+      /* All excel files of user will go to PATH/TO/STORAGE/<USERNAME> */
+      saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE) + "/" + user.getUsername());
+      if(!saveDir.exists()) {
+        saveDir.mkdirs();
+      }
+      Utils.saveStreamAsFile(input, new File(saveDir, System.currentTimeMillis() + ".xls"));
+    } else {
+      /* All excel files of user will go to PATH/TO/STORAGE and filename will be <USERNAME>_<TIMESTAMP>.xls */
+      saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE));
+      if(!saveDir.exists()) {
+        saveDir.mkdirs();
+      }
+      Utils.saveStreamAsFile(input, new File(saveDir, user.getUsername() + "_" + System.currentTimeMillis() + ".xls"));
+    }
+    
+  }
 
   /**
    * Periodically checks if all 'Verbräuche' buttons have been loaded.
@@ -199,5 +248,13 @@ public class FileDownloader implements Runnable {
   private void clickBackButton(HtmlPage page) throws IOException {
     HtmlAnchor back = page.getFirstByXPath("//div[@class='breadcrumbs']/ul/li/a");
     back.click();
+  }
+  
+  public AemsUser getUser() {
+    return this.user;
+  }
+  
+  public void terminate() {
+    this.running = false;
   }
 }

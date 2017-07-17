@@ -14,7 +14,7 @@ public class Utils {
     return s.replaceAll(":" + port, "");
   }
   
-  public void saveStreamAsFile(InputStream input, File outputFile) {
+  public static void saveStreamAsFile(InputStream input, File outputFile) {
     
     OutputStream output = null;
     

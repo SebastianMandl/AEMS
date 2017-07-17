@@ -1,18 +1,31 @@
 package at.htlgkr.aems.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import at.htlgkr.aems.file.FileDownloader;
+import at.htlgkr.aems.util.BotConfiguration;
 
 public class Main {
 
-	/**
-	 * Main method. It will be used to call this java program once a day. The program will proceed
-	 * to gather required data from all registered users using the web interface.
-	 * Data will be read from CSS files and stored into the database.
-	 * @param args Additional startup arguments
-	 */
-	public static void main(String[] args) {
-	  Thread t = new Thread(new FileDownloader("SomeUsername", "SomePassword"));
-	  t.start();
-	}
+  public static BotConfiguration config = new BotConfiguration();
+  public static List<FileDownloader> downloaders = new ArrayList<FileDownloader>();
+
+  public static void main(String[] args) {
+    downloaders.add(new FileDownloader("SomeUsername", "SomePassword"));
+    for (FileDownloader worker : downloaders) {
+      new Thread(worker).start();
+    }
+  }
+
+  public static void setComplete(FileDownloader downloader) {
+    downloader.terminate();
+    downloaders.remove(downloader);
+    System.out.println(downloader.getUser().getUsername() + " has finished!");
+
+    if (downloaders.isEmpty()) {
+      // Proceed to read excel files (using ExcelFileReader) and put values into db
+    }
+  }
 
 }
