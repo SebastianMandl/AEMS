@@ -1,0 +1,4 @@
+MAVEN SHADING: https://www.mkyong.com/maven/create-a-fat-jar-file-maven-shade-plugin/
+XPATH DOCUMENTATION: https://de.wikipedia.org/wiki/XPath
+INPUT STREAM TO FILE: https://www.mkyong.com/java/how-to-convert-inputstream-to-file-in-java/
+APACHE POI (EXCEL FILE API): https://www.tutorialspoint.com/apache_poi/apache_poi_core_classes.htm
