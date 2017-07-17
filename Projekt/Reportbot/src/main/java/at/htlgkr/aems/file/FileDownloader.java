@@ -1,10 +1,12 @@
-package at.htlgkr.aems.filedownload;
+package at.htlgkr.aems.file;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CSSParseException;
@@ -94,9 +96,11 @@ public class FileDownloader implements Runnable {
   private WebClient getWebClient() {
     WebClient wc = new WebClient(BrowserVersion.FIREFOX_52);
     wc.getOptions().setCssEnabled(false);
-    // For access to critical elements on the netzonline website, javascript must be enabled
+    // For access to critical elements on the netz-online website, javascript must be enabled
     wc.getOptions().setJavaScriptEnabled(true);
     wc.getOptions().setThrowExceptionOnScriptError(false);
+    // Disable verbose Logging
+    Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
     return wc;
   }
   

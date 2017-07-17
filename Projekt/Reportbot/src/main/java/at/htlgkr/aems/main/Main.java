@@ -1,6 +1,6 @@
 package at.htlgkr.aems.main;
 
-import at.htlgkr.aems.filedownload.FileDownloader;
+import at.htlgkr.aems.file.FileDownloader;
 
 public class Main {
 
