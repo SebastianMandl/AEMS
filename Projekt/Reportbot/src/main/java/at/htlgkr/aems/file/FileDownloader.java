@@ -76,13 +76,12 @@ public class FileDownloader implements Runnable {
         while(buttonCount < detailsCount) {
           List<HtmlElement> buttons = waitForDetailsToLoad(meterPage, detailsCount);
           HtmlElement currentBtn = buttons.get(buttonCount);
-          HtmlPage detailPage = currentBtn.click();
-          InputStream excelInputStream = downloadDetailExcelFile(detailPage);
-          
+          HtmlPage detailPage = currentBtn.click(); // View the details for this meter
+          InputStream excelInputStream = downloadDetailExcelFile(detailPage); // Download file
+          String meterId = readMeterId(detailPage);
           if(excelInputStream != null) {
-            saveExcelFile(excelInputStream);
+            saveExcelFile(excelInputStream, meterId);
           }
-          
           clickBackButton(detailPage);
           buttonCount++;
         }
@@ -201,7 +200,12 @@ public class FileDownloader implements Runnable {
     return null;
   }
   
-  private void saveExcelFile(InputStream input) {
+  private String readMeterId(HtmlPage page) {
+    HtmlElement idElement = page.getFirstByXPath("//section/dl/dd");
+    return idElement.getTextContent();
+  }
+  
+  private void saveExcelFile(InputStream input, String meterId) {
     
     boolean splitIntoFolders = Boolean.valueOf(Main.config.get(BotConfiguration.ONE_FOLDER_PER_USER));
     File saveDir;
@@ -212,14 +216,14 @@ public class FileDownloader implements Runnable {
       if(!saveDir.exists()) {
         saveDir.mkdirs();
       }
-      Utils.saveStreamAsFile(input, new File(saveDir, System.currentTimeMillis() + ".xls"));
+      Utils.saveStreamAsFile(input, new File(saveDir, meterId + ".xls"));
     } else {
-      /* All excel files of user will go to PATH/TO/STORAGE and filename will be <USERNAME>_<TIMESTAMP>.xls */
+      /* All excel files of user will go to PATH/TO/STORAGE and filename will be <USERNAME>_<METER_ID>.xls */
       saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE));
       if(!saveDir.exists()) {
         saveDir.mkdirs();
       }
-      Utils.saveStreamAsFile(input, new File(saveDir, user.getUsername() + "_" + System.currentTimeMillis() + ".xls"));
+      Utils.saveStreamAsFile(input, new File(saveDir, user.getUsername() + "_" + meterId + ".xls"));
     }
     
   }
