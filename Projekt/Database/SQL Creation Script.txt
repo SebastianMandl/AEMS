@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS aems.MeterTypes CASCADE;
 CREATE TABLE aems.MeterTypes
 (
 	ID DECIMAL(10),
-	DisplayName VARCHAR(100),
+	DisplayName VARCHAR(100) NOT NULL,
 
 	CONSTRAINT pk_metertypes PRIMARY KEY (ID)
 );
@@ -18,8 +18,8 @@ DROP TABLE IF EXISTS aems.Users CASCADE;
 CREATE TABLE aems.Users
 (
 	ID DECIMAL(10),
-	Username VARCHAR(32),
-	"Password" VARCHAR(4096),
+	Username VARCHAR(32) NOT NULL UNIQUE,
+	"Password" VARCHAR(4096) NOT NULL,
 
 	CONSTRAINT pk_users PRIMARY KEY (ID)
 );
@@ -41,9 +41,9 @@ CREATE TABLE aems.MeterDatas
 (
 	ID DECIMAL(10),
 	Meter VARCHAR(150),
-	"Timestamp" TIMESTAMP WITHOUT TIME ZONE,
-	Temperature DECIMAL(2,2),
-	MeasuredValue DECIMAL(7,5),
+	"Timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	Temperature DECIMAL(2,2) NOT NULL,
+	MeasuredValue DECIMAL(7,5) NOT NULL,
 
 	CONSTRAINT pk_meterdatas PRIMARY KEY (ID),
 	CONSTRAINT fk_meterdatas_meters FOREIGN KEY (Meter) REFERENCES Meters(ID)
