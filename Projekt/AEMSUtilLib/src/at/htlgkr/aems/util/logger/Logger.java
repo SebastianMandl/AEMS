@@ -1,7 +1,13 @@
-package main.webapp.at.htlgkr.aems.logger;
+package at.htlgkr.aems.util.logger;
 
 import java.util.Calendar;
 
+/**
+ * This class simplifies the logging process.
+ * @author Sebastian
+ * @since 17.07.2017
+ * @version 1.0
+ */
 public class Logger {
 
 	private static String getTimestamp() {
