@@ -1,4 +1,4 @@
-package main.webapp.at.htlgkr.aems.database;
+package at.htlgkr.aems.database;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

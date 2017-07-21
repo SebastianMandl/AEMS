@@ -1,4 +1,4 @@
-package main.webapp.at.htlgkr.aems.database;
+package at.htlgkr.aems.database;
 
 /**
  * This class represents the structure of the AEMS Database.

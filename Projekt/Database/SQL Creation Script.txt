@@ -1,10 +1,16 @@
-DROP OWNED BY aems CASCADE;
+-- run this setup script as the database administrator
+-- this script is required to be run within an existing database
+
+DROP OWNED BY aems CASCADE; -- everything which has been owned by the user "aems" will be dropped by issuing this command
 DROP USER IF EXISTS aems;
-CREATE USER aems WITH ENCRYPTED PASSWORD 'aems';
+CREATE USER aems WITH ENCRYPTED PASSWORD 'aems' VALID UNTIL '2018-01-01' ; -- creates the user with a predifined password. This password is required to be changed for security reasons!
 
-DROP SCHEMA IF EXISTS aems;
-CREATE SCHEMA aems AUTHORIZATION aems;
+GRANT CONNECT ON DATABASE "AEMSData" TO aems; -- grants the user to connect to the database
 
+DROP SCHEMA IF EXISTS aems; -- in case if the schema already existed (e.g. this script has run before) drop it
+CREATE SCHEMA aems AUTHORIZATION aems; -- create the schema "aems" and authorizes it to the user "aems". (clear text: the schema "aems" belongs to the user "aems")
+
+-- setting up the table with their belonging constraints
 DROP TABLE IF EXISTS aems.MeterTypes CASCADE;
 CREATE TABLE aems.MeterTypes
 (
@@ -19,7 +25,7 @@ CREATE TABLE aems.Users
 (
 	ID DECIMAL(10),
 	Username VARCHAR(32) NOT NULL UNIQUE,
-	"Password" VARCHAR(4096) NOT NULL,
+	"password" VARCHAR(4096) NOT NULL,
 
 	CONSTRAINT pk_users PRIMARY KEY (ID)
 );
@@ -29,11 +35,11 @@ CREATE TABLE aems.Meters
 (
 	ID VARCHAR(150),
 	MeterType DECIMAL(10),
-	"User" DECIMAL(10),
+	"user" DECIMAL(10),
 
 	CONSTRAINT pk_meters PRIMARY KEY (ID),
-	CONSTRAINT fk_meters_metertypes FOREIGN KEY (MeterType) REFERENCES MeterTypes(ID),
-	CONSTRAINT fk_meters_users FOREIGN KEY ("User") REFERENCES Users(ID)
+	CONSTRAINT fk_meters_metertypes FOREIGN KEY (MeterType) REFERENCES aems.MeterTypes(ID),
+	CONSTRAINT fk_meters_users FOREIGN KEY ("user") REFERENCES aems.Users(ID)
 );
 
 DROP TABLE IF EXISTS aems.MeterDatas CASCADE;
@@ -41,10 +47,171 @@ CREATE TABLE aems.MeterDatas
 (
 	ID DECIMAL(10),
 	Meter VARCHAR(150),
-	"Timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	"timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 	Temperature DECIMAL(2,2) NOT NULL,
 	MeasuredValue DECIMAL(7,5) NOT NULL,
+  	humidity numeric(3,2),
 
 	CONSTRAINT pk_meterdatas PRIMARY KEY (ID),
-	CONSTRAINT fk_meterdatas_meters FOREIGN KEY (Meter) REFERENCES Meters(ID)
+	CONSTRAINT fk_meterdatas_meters FOREIGN KEY (Meter) REFERENCES aems.Meters(ID)
 );
+
+-- setting up all the functions
+
+DROP FUNCTION aems.delete_user(varchar);
+CREATE OR REPLACE FUNCTION aems.delete_user(p_username character varying) RETURNS boolean AS $$
+declare
+
+	row_count_before integer;
+	row_count_after integer;
+
+begin
+	
+	select count(*) into row_count_before
+	from aems.users;
+
+	delete from aems.users
+	where username = p_username;
+
+	select count(*) into row_count_after
+	from aems.users;
+
+	if row_count_before > row_count_after then
+		return true;
+	else
+		return false;
+	end if;
+end;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION aems.get_user_password(varchar);
+CREATE OR REPLACE FUNCTION aems.get_user_password(p_username character varying) RETURNS character varying AS $$
+declare
+	pass_bytes bytea;
+	decrypted_password_bytes bytea;
+	aes_key varchar(48);
+	aes_key_bytes bytea;
+	user_password_bytes bytea;
+
+	datafile text default 'key.txt';
+
+	row_count_before integer;
+	row_count_after integer;
+begin
+	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
+	-- key file must be relocated in the future!!!
+	aes_key := pg_read_file(datafile, 0, 48);
+
+	select "password" into user_password_bytes
+	from aems.users
+	where username = p_username;
+
+	aes_key_bytes := convert_to(aes_key, 'UTF-8');
+	decrypted_password_bytes := decrypt(user_password_bytes, aes_key_bytes, 'aes');
+
+	return convert_from(decrypted_password_bytes, 'UTF-8');
+
+exception
+	when others then
+		return null;	-- will occur if the username is not valid
+end;
+$$ LANGUAGE plpgsql;
+
+DROP FUNCTION aems.register_user(varchar, varchar);
+CREATE OR REPLACE FUNCTION aems.register_user(username character varying, clear_text_password character varying) RETURNS boolean AS $$
+declare
+	pass_bytes bytea;
+	decrypted_text varchar(4096);
+	encrypted_pass_bytes bytea;
+	aes_key varchar(48);
+	aes_key_bytes bytea;
+
+	datafile text default 'key.txt';
+
+	row_count_before integer;
+	row_count_after integer;
+begin
+	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
+	-- key file must be relocated in the future!!!
+	aes_key := pg_read_file(datafile, 0, 48);
+
+	pass_bytes := convert_to(clear_text_password, 'UTF-8');
+	aes_key_bytes := convert_to(aes_key, 'UTF-8');
+	encrypted_pass_bytes := encrypt(pass_bytes, aes_key_bytes, 'aes');
+
+	select count(*) into row_count_before
+	from aems.users;
+
+	insert into aems.users (id, username, "password")
+	values (nextval('aems.user_seq'), username, encrypted_pass_bytes);
+
+	select count(*) into row_count_after
+	from aems.users;
+
+	if row_count_before < row_count_after then
+		return true;
+	else
+		return false;
+	end if;
+
+exception
+	when others then
+		return false;	
+end;
+$$ LANGUAGE plpgsql;
+
+-- setting up sequences
+
+CREATE SEQUENCE aems.user_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 15
+  CACHE 5;
+
+-- finishing permission setup
+
+
+-- the following sets up the select permission on all the various tables within the schema "aems"
+GRANT SELECT ON TABLE aems.users TO aems;
+GRANT SELECT ON TABLE aems.meters TO aems;
+GRANT SELECT ON TABLE aems.meterdatas TO aems;
+GRANT SELECT ON TABLE aems.metertypes TO aems;
+
+GRANT INSERT ON TABLE aems.users TO aems;
+GRANT INSERT ON TABLE aems.meters TO aems;
+GRANT INSERT ON TABLE aems.meterdatas TO aems;
+GRANT INSERT ON TABLE aems.metertypes TO aems;
+
+GRANT UPDATE ON TABLE aems.users TO aems;
+GRANT UPDATE ON TABLE aems.meters TO aems;
+GRANT UPDATE ON TABLE aems.meterdatas TO aems;
+GRANT UPDATE ON TABLE aems.metertypes TO aems;
+
+GRANT DELETE ON TABLE aems.users TO aems;
+GRANT DELETE ON TABLE aems.meters TO aems;
+GRANT DELETE ON TABLE aems.meterdatas TO aems;
+GRANT DELETE ON TABLE aems.metertypes TO aems;
+
+-- grant the user "aems" to execute the required functions for proper operation
+GRANT EXECUTE ON FUNCTION aems.delete_user(varchar) TO aems;
+GRANT EXECUTE ON FUNCTION aems.get_user_password(varchar) TO aems;
+GRANT EXECUTE ON FUNCTION aems.register_user(varchar, varchar) TO aems;
+
+-- revoking all the privileges from others that do not need accessibility
+REVOKE ALL PRIVILEGES ON DATABASE "AEMSData" FROM public;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA aems FROM postgres;
+REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA aems FROM postgres;
+REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA aems FROM postgres;
+
+
+ALTER TABLE aems.users OWNER TO aems;
+ALTER TABLE aems.meterdatas OWNER TO aems;
+ALTER TABLE aems.meters OWNER TO aems;
+ALTER TABLE aems.metertypes OWNER TO aems;
+
+ALTER FUNCTION aems.get_user_password(varchar) OWNER TO aems;
+ALTER FUNCTION aems.register_user(varchar, varchar) OWNER TO aems;
+ALTER FUNCTION aems.delete_user(varchar) OWNER TO aems;
+
+ALTER SEQUENCE aems.user_seq OWNER TO aems;

@@ -1,4 +1,4 @@
-package main.webapp.at.htlgkr.aems.database;
+package at.htlgkr.aems.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import main.webapp.at.htlgkr.aems.logger.Logger;
-import main.webapp.at.htlgkr.aems.logger.Logger.LogType;
+import at.htlgkr.aems.util.logger.Logger;
+import at.htlgkr.aems.util.logger.Logger.LogType;
 
 /**
  * This class represents the database connection.

@@ -1,4 +1,4 @@
-package main.webapp.at.htlgkr.aems.logger;
+package at.htlgkr.aems.util.logger;
 
 import java.util.Calendar;
 

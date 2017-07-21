@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import main.webapp.at.htlgkr.aems.database.DatabaseConnection;
+import at.htlgkr.aems.database.DatabaseConnection;
 
 /**
  * Servlet implementation class RESTInf
