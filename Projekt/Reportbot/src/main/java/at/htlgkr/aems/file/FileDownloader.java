@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.text.StrBuilder;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -33,7 +35,7 @@ public class FileDownloader implements Runnable {
   /* Represents the user whichs data will be collected */
   public AemsUser user;
   
-  private boolean running = true;
+  private int repeatCount = 0;
   
   public FileDownloader(AemsUser user) {
     this.user = user;
@@ -50,14 +52,6 @@ public class FileDownloader implements Runnable {
     try {
       HtmlPage loginPage = client.getPage(BASE_URL + LOGIN_URL);
       HtmlPage meterPage = login(loginPage);
-      
-      
-      /**
-       * HUGE TODO: 
-       * Sometimes the server has an error, a "Sorry, this shouldn't have happened" page shows up.
-       * This does not seem to be predictable, so there will be checks in order to detect and manage
-       * occurances of such events.
-       */
       
       int buttonCount; // How many files can be downloaded on this page?
       int detailsCount;
@@ -92,19 +86,13 @@ public class FileDownloader implements Runnable {
       Main.setComplete(this);
       
     } catch (FailingHttpStatusCodeException e) {
-      // When FileDownloader fails, this is most likely the cause
-      // It is very unpredictable when it happens though
-      // TODO: Implement mechanism to retry if this exception occurs
-      // Main.retry(this)
-      e.printStackTrace();
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+      Main.retry(this);
+      System.out.println("StatusCodeError: Retry?");
     } catch (LoginFailedException e) {
-      e.printStackTrace();
-    } catch (InterruptedException e) {
-      e.printStackTrace(); 
+      // If the password is wrong then retrying is a waste of time
+      System.out.println("Login Error: Cannot Log Into Account '" + user.getUsername() + "'. (Wrong password?)");
+    } catch(Exception e) {
+      // In case of any other exception, just tell Main that Downloader has failed
     }
   }
   
@@ -207,19 +195,20 @@ public class FileDownloader implements Runnable {
   
   private void saveExcelFile(InputStream input, String meterId) {
     
-    boolean splitIntoFolders = Boolean.valueOf(Main.config.get(BotConfiguration.ONE_FOLDER_PER_USER));
+    boolean splitIntoFolders = Boolean.valueOf(Main.config.get(BotConfiguration.ONE_FOLDER_PER_USER, "true"));
     File saveDir;
     
     if(splitIntoFolders) {
       /* All excel files of user will go to PATH/TO/STORAGE/<USERNAME> */
-      saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE) + "/" + user.getUsername());
+      saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE, "Data") + "/" + user.getUsername());
       if(!saveDir.exists()) {
         saveDir.mkdirs();
       }
       Utils.saveStreamAsFile(input, new File(saveDir, meterId + ".xls"));
+      System.out.println("File " + meterId + ".xls was saved!");
     } else {
       /* All excel files of user will go to PATH/TO/STORAGE and filename will be <USERNAME>_<METER_ID>.xls */
-      saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE));
+      saveDir = new File(Main.config.get(BotConfiguration.FILE_STORAGE, "Data"));
       if(!saveDir.exists()) {
         saveDir.mkdirs();
       }
@@ -258,7 +247,11 @@ public class FileDownloader implements Runnable {
     return this.user;
   }
   
-  public void terminate() {
-    this.running = false;
+  public void repeat() {
+    this.repeatCount++;
+  }
+  
+  public int getRepeatCount() {
+    return this.repeatCount;
   }
 }
