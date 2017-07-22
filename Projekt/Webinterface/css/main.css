@@ -16,12 +16,16 @@
 .nav.navbar-nav.navbar-right li .navBarItems {
 	font-size: 1em;
 }
-.navbar.navbar-default.navbar-inverse.navbar-fixed-top.navbarSize {
 
+.navbar.navbar-default.navbar-inverse.navbar-fixed-top.navbarMainFormat {
+	padding-top: 1.2em;
+	padding-bottom: 1.2em;
 
 }
-.navbar.navbar-default.navbar-inverse.navbar-fixed-top.navbarMainFormat {
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-
+.navbar-header .navbar-brand.titleFormat .titleImage {
+	margin-top: -38px;
+	width: 360px;
+}
+.modal-footer.footerFormat {
+	margin-top: 25px;
 }

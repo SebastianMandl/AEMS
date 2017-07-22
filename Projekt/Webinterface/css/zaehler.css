@@ -1,0 +1,13 @@
+@charset "utf-8";
+.article {
+	margin-top: 5%;
+	margin-left: 3%;
+}
+.article .h4 {
+	margin-top: 1%;
+}
+.article .btn-group .dropdown-menu.format {
+	padding-left: 10px;
+	padding-right: 10px;
+
+}

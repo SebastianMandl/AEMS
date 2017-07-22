@@ -8,6 +8,7 @@
     
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/zaehler.css" rel="stylesheet" type="text/css">
 	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
 	
   </head>
@@ -17,39 +18,10 @@
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-          <a class="navbar-brand titleFormat" href="index.html">AEMS - Advanced Energy Monitoring System</a></div>
+          <a class="navbar-brand titleFormat" href="index.html"><img class="titleImage" src="images/logo_schrift.png" alt="Nix"></a></div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="topFixedNavbar1">
-          
-           <!--
-           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link<span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Link</a></li>
-            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-          
-          -->
-          
-          <!--
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
-          
-          -->
-          
+    
           
           <ul class="nav navbar-nav navbar-right">
             
@@ -94,7 +66,7 @@
 		  </div>       
              </li>
              
-              <li onclick="functionNotifications();"><img class="notificationIcon" src="pictures/notification.png"></li>
+              <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png"></li>
                       
           </ul>
         </div>
@@ -103,6 +75,58 @@
       <!-- /.container-fluid -->
     </nav>
 
+  
+  
+  
+  
+  <!-- Seiteninhalt -->
+  <article class="article">
+  
+  <h4 class="h4">Über welchen Zeitraum wollen Sie Ihre Statistik erhalten:</h4>
+  
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret"></span></button>
+    <ul class="dropdown-menu">
+		<li role="presentation"><a href="#">Tag</a></li>
+        <li role="presentation"><a href="#">Woche</a></li>
+        <li role="presentation"><a href="#">Monat</a></li>     
+        <li role="presentation"><a href="#">Jahr</a></li>
+    </ul>
+  </div>
+  
+  
+  <h4 class="h4">Von welchen Zählern wollen Sie die Statistik:</h4>
+ 		
+  		<button class="btn btn-default" type="button">Alle</button>
+  		<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+    <ul class="dropdown-menu format">
+		<li role="presentation"><div class="checkbox">
+     		 <label><input type="checkbox" value="">AT368746482374</label>
+    		 </div>
+    	</li>
+       <li role="presentation"><div class="checkbox">
+     		 <label><input type="checkbox" value="">AT368746482374</label>
+    		 </div>
+    	</li>
+    	<li role="presentation"><div class="checkbox">
+     		 <label><input type="checkbox" value="">AT368746482374</label>
+    		 </div>
+    	</li>
+    	<li role="presentation"><div class="checkbox">
+     		 <label><input type="checkbox" value="">AT368746482374</label>
+    		 </div>
+    	</li>
+    </ul>
+  </div>
+<br>
+<br>
+<button class="btn btn-default" type="button">Statistik erstellen</button>
+  
+  </article>
+  
+  
+   <footer class="modal-footer footerFormat">&copy; Ein Dienst der Energiegenossenschaft Eferding</footer>
 
   <script src="js/jquery-1.11.3.min.js"></script>
   <script src="js/bootstrap.js"></script>
