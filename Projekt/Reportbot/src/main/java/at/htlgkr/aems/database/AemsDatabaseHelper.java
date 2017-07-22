@@ -1,9 +1,12 @@
 package at.htlgkr.aems.database;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+
+import at.htlgkr.aems.util.Utils;
 
 /**
  * This class provides convenience methods to access data about users of the AEMS system.
@@ -19,15 +22,64 @@ public class AemsDatabaseHelper {
     dbCon = new DatabaseConnection();
   }
   
+  /**
+   * Gets all users from the aems database, the passwords will already be decrypted
+   */
   public List<AemsUser> getUsers() {
-    // Get id, username and password from database
-    // For each user, decrypt the password
-    // Add user to a "result" list
     List<AemsUser> result = new ArrayList<AemsUser>();
     result.add(new AemsUser(0, "Some", "User"));
     return result;
   }
   
+  public void insertMeterData(MeterValue value) {
+    try {
+      
+      if(databaseHasValue(value)) {
+        return;
+      }
+      
+      HashMap<String, String> projection = new HashMap<String, String>();
+      
+      projection.put(AEMSDatabase.MeterDatas.METER.name(), value.getId());
+      projection.put(AEMSDatabase.MeterDatas.TIMESTAMP.name(),
+          "" + Utils.toPostgresTimestamp(value.getDate()));
+      projection.put(AEMSDatabase.MeterDatas.MEASUREDVALUE.name(), "" + value.getValue());
+      projection.put(AEMSDatabase.MeterDatas.TEMPERATURE.name(), null);
+      // TODO: Temperature
+      
+      dbCon.insert("aems", "MeterDatas", projection);
+    } catch(SQLException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Checks if an entry represented by the <code>value</code> argument already exists.
+   * @param value
+   * @return true if a matching value already exists, false otherwise
+   */
+  private boolean databaseHasValue(MeterValue value) {
+    
+    ArrayList<String[]> projection = new ArrayList<String[]>();
+    String idColumn = AEMSDatabase.MeterDatas.ID.name(); // Doesn't matter which column
+    projection.add(new String[] {idColumn});
+    
+    HashMap<String, String> selection = new HashMap<String, String>();
+    selection.put(AEMSDatabase.MeterDatas.TIMESTAMP.name(), 
+        "" + Utils.toPostgresTimestamp(value.getDate()));
+    selection.put(AEMSDatabase.MeterDatas.METER.name(), value.getId());
+    
+    // SELECT ID FROM aems.MeterDatas 
+    // WHERE METER = value.meter AND TIMESTAMP = value.timestamp
+    
+    try {
+      ResultSet result = dbCon.select("aems", "MeterDatas", projection, selection, true);
+      return result.iterator().hasNext();
+    } catch(SQLException e) {
+      return true;
+    }
+  }
+
   /**
    * Closes the database connection
    * @return true if the connection was sucessfully closed, false if an error occured

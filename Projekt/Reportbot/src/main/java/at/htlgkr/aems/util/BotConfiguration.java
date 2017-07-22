@@ -21,7 +21,6 @@ public class BotConfiguration {
   
   public static String FILE_STORAGE = "xls-storage";
   public static String MAX_USERS = "max-users-at-once";
-  public static String ONE_FOLDER_PER_USER = "folder-for-each-user";
   public static String MAX_RETRIES = "max-retries";
   
   public BotConfiguration() {
@@ -40,7 +39,6 @@ public class BotConfiguration {
       
       if(props.isEmpty()) {
         this.props.setProperty(BotConfiguration.FILE_STORAGE, "Exceldateien");
-        this.props.setProperty(BotConfiguration.ONE_FOLDER_PER_USER, "true");
         this.props.setProperty(BotConfiguration.MAX_RETRIES, "1");
         this.props.setProperty(BotConfiguration.MAX_USERS, "50");
         

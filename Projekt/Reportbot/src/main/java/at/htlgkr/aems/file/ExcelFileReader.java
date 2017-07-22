@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import at.htlgkr.aems.database.MeterValue;
 
 public class ExcelFileReader {
   
@@ -37,5 +40,18 @@ public class ExcelFileReader {
   
   public HSSFRow readRow() {
     return rowCount < excelSheet.getPhysicalNumberOfRows() ? excelSheet.getRow(rowCount++) : null;
+  }
+  
+  public MeterValue read() {
+    HSSFRow row = excelSheet.getRow(rowCount++);
+    if(row == null) {
+      return null;
+    }
+    MeterValue mv = new MeterValue(
+        row.getCell(0).getDateCellValue(),
+        row.getCell(1).getNumericCellValue(),
+        row.getCell(2).getStringCellValue()
+     );
+    return mv;
   }
 }

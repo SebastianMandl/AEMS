@@ -6,6 +6,7 @@ import java.util.List;
 
 import at.htlgkr.aems.database.AemsDatabaseHelper;
 import at.htlgkr.aems.database.AemsUser;
+import at.htlgkr.aems.file.ExcelDataExtracter;
 import at.htlgkr.aems.file.FileDownloader;
 import at.htlgkr.aems.util.BotConfiguration;
 
@@ -17,24 +18,19 @@ public class Main {
 
   public static BotConfiguration config = new BotConfiguration();
   public static List<FileDownloader> downloaders = new ArrayList<FileDownloader>();
+  public static List<ExcelDataExtracter> extracters = new ArrayList<ExcelDataExtracter>();
   public static List<AemsUser> usersToHandle = new ArrayList<AemsUser>();
 
   public static void main(String[] args) throws SQLException {
-    
-    AemsDatabaseHelper database = new AemsDatabaseHelper();
-    //database.open("aUser", "aPass");
-    usersToHandle = database.getUsers();
-    //database.close();
-    
+    usersToHandle = getUsers();
     populateDownloaders();
-    
   }
   
   /**
    * Populates the downloaders list with a fixed number of users in order to limit the
    * amount of active FileDownloader threads running at once ("chunking").
    */
-  public static void populateDownloaders() {
+  private static void populateDownloaders() {
     // Max users is used to limit the amount of threads active at once
     int maxUsers = config.getInt(BotConfiguration.MAX_USERS, 50);
     int size = usersToHandle.size();
@@ -50,13 +46,28 @@ public class Main {
     usersToHandle.removeAll(users);
   }
   
+  private static void readExcelFiles() {
+    usersToHandle = getUsers();
+    AemsDatabaseHelper db = new AemsDatabaseHelper();
+    for(AemsUser u : usersToHandle) { 
+      ExcelDataExtracter edr = new ExcelDataExtracter(u, db);
+      extracters.add(edr);
+      new Thread(edr).start();
+    }
+  }
+  
+  private static List<AemsUser> getUsers() {
+    List<AemsUser> result;
+    AemsDatabaseHelper db = new AemsDatabaseHelper();
+    result = db.getUsers();
+    return result;
+  }
   public static void setComplete(FileDownloader downloader) {
     downloaders.remove(downloader);
     System.out.println(downloader.getUser().getUsername() + " has finished!");
     if (downloaders.isEmpty()) {
       if(usersToHandle.isEmpty()) {
-        // All files have been downloaded
-        
+        readExcelFiles();
       } else {
         // Populate the next set of downloaders
         populateDownloaders();
@@ -77,7 +88,7 @@ public class Main {
       // Downloader has failed
       if (downloaders.isEmpty()) {
         if(usersToHandle.isEmpty()) {
-          
+          readExcelFiles();
         } else {
           populateDownloaders();
         }
@@ -89,7 +100,7 @@ public class Main {
     downloaders.remove(downloader);
     if (downloaders.isEmpty()) {
       if(usersToHandle.isEmpty()) {
-        // Implement excel reading and database sending
+        readExcelFiles();
       } else {
         populateDownloaders();
       }
