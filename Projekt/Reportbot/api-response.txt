@@ -1,0 +1,25 @@
+{
+  "id": 0,
+  "name": "Hansi",
+  "password": "hansi123",
+  "meters": [
+    {
+      "id": "AT000001",
+      "type": "electric",
+      "location": {
+        "name": null,
+        "lat": 12,
+        "long": 34
+      }
+    },
+    {
+      "id": "AT000002",
+      "type": "water",
+      "location": {
+        "name": "Grieskirchen",
+        "lat": 0,
+        "long": 0
+      }
+    }
+  ]
+}

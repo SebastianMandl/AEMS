@@ -25,4 +25,8 @@ public class AEMSDatabase {
 		ID, METER, TIMESTAMP, TEMPERATURE, MEASUREDVALUE;
 	}
 	
+	public enum WeatherData {
+	  ID, METER, TEMPERATURE;
+	}
+	
 }

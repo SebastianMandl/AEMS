@@ -1,15 +1,15 @@
 package at.htlgkr.aems.database;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import at.htlgkr.aems.database.AemsMeter.MeterType;
 import at.htlgkr.aems.util.Utils;
 
 /**
- * This class provides convenience methods to access data about users of the AEMS system.
+ * This class provides convenience methods to access data of the AEMS system.
  * It makes use of the {@link at.htlgkr.aems.DatabaseConnection} class.
  * @author Niklas
  *
@@ -35,7 +35,7 @@ public class AemsDatabaseHelper {
     try {
       
       if(databaseHasValue(value)) {
-        return;
+        return; // Do not overwrite values that already exist
       }
       
       HashMap<String, String> projection = new HashMap<String, String>();
@@ -78,6 +78,14 @@ public class AemsDatabaseHelper {
     } catch(SQLException e) {
       return true;
     }
+  }
+  
+  public List<AemsMeter> getMetersOfUser(AemsUser user) {
+    List<AemsMeter> result = new ArrayList<AemsMeter>();
+    // SELECT * FROM Meters WHERE user_id = user.getId()
+    AemsMeter demoMeter = new AemsMeter("AT123", MeterType.ELECTRIC, new AemsLocation(20.2, 20.5));
+    result.add(demoMeter);
+    return result;
   }
 
   /**

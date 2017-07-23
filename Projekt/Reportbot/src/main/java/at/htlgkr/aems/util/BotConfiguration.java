@@ -19,9 +19,12 @@ public class BotConfiguration {
   private File configFile;
   private Properties props;
   
-  public static String FILE_STORAGE = "xls-storage";
-  public static String MAX_USERS = "max-users-at-once";
-  public static String MAX_RETRIES = "max-retries";
+  public static final String FILE_STORAGE = "xls-storage";
+  public static final String LOGFILE_STORAGE = "logs-folder";
+  public static final String LOGGING_ENABLED = "logging-enabled";
+  public static final String MAX_USERS = "max-users-at-once";
+  public static final String MAX_RETRIES = "max-retries";
+  public static final String API_KEY = "openweahermap-apikey";
   
   public BotConfiguration() {
     this.configFile = new File("bot.properties");
@@ -41,6 +44,9 @@ public class BotConfiguration {
         this.props.setProperty(BotConfiguration.FILE_STORAGE, "Exceldateien");
         this.props.setProperty(BotConfiguration.MAX_RETRIES, "1");
         this.props.setProperty(BotConfiguration.MAX_USERS, "50");
+        this.props.setProperty(BotConfiguration.LOGFILE_STORAGE, "Logs");
+        this.props.setProperty(BotConfiguration.LOGGING_ENABLED, "true");
+        this.props.setProperty(BotConfiguration.API_KEY, "API-KEY-HERE");
         
         FileWriter writer = new FileWriter(configFile);
         this.props.store(writer, "AEMS Bot Konfigurationsdatei");
@@ -92,7 +98,6 @@ public class BotConfiguration {
   /**
    * Gets a property from the configuration file. If the key is not present, the defaultValue
    * will be returned.
-   * 
    * The result will be converted into an integer. If the value cannot be parsed to an integer,
    * the defaultValue will be returned.
    * @param key

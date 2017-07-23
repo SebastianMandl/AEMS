@@ -3,12 +3,9 @@ package at.htlgkr.aems.file;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.lang3.text.StrBuilder;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
@@ -25,6 +22,7 @@ import at.htlgkr.aems.exception.LoginFailedException;
 import at.htlgkr.aems.main.Main;
 import at.htlgkr.aems.util.BotConfiguration;
 import at.htlgkr.aems.util.Utils;
+import at.htlgkr.aems.util.Logger.LogType;
 
 public class FileDownloader implements Runnable {
 
@@ -41,16 +39,7 @@ public class FileDownloader implements Runnable {
     this.user = user;
   }
 
-  public FileDownloader(String user, String pass) {
-    this.user = new AemsUser(user, pass);
-  }
-
-
   public void run() {
-    Main.setComplete(this);
-    if (1 == 1) {
-      return;
-    }
     WebClient client = getWebClient();
     try {
       HtmlPage loginPage = client.getPage(BASE_URL + LOGIN_URL);
@@ -78,6 +67,9 @@ public class FileDownloader implements Runnable {
           String meterId = readMeterId(detailPage);
           if (excelInputStream != null) {
             saveExcelFile(excelInputStream, meterId);
+            Main.logger.log(LogType.DEBUG, "(%0%) Excel File for meter '%1%' has been downloaded", user.getUsername(), meterId);
+          } else {
+            Main.logger.log(LogType.DEBUG, "(%0%) Excel File for meter '%1%' has been skipped", user.getUsername(), meterId);
           }
           clickBackButton(detailPage);
           buttonCount++;
@@ -86,16 +78,15 @@ public class FileDownloader implements Runnable {
       } while (moreMetersExist(meterPage));
 
       Main.setComplete(this);
+      Main.logger.log(LogType.INFO, "File download of user %0% has been completed!", user.getUsername());
 
     } catch (FailingHttpStatusCodeException e) {
       Main.retry(this);
-      System.out.println("StatusCodeError: Retry?");
     } catch (LoginFailedException e) {
-      // If the password is wrong then retrying is a waste of time
-      System.out.println(
-          "Login Error: Cannot Log Into Account '" + user.getUsername() + "'. (Wrong password?)");
+      Main.logger.log(LogType.ERROR, "Cannot log into account of user '%0%'. Wrong password?", user.getUsername());
     } catch (Exception e) {
-      // In case of any other exception, just tell Main that Downloader has failed
+      Main.logger.log(LogType.ERROR, "An unexpected error occured while handling user %0%. Shutting down..w", user.getUsername());
+      Main.failed(this);
     }
   }
 
@@ -204,9 +195,7 @@ public class FileDownloader implements Runnable {
     if (!saveDir.exists()) {
       saveDir.mkdirs();
     }
-    Utils.saveStreamAsFile(input, new File(saveDir, meterId + ".xls"));
-    System.out.println("File " + meterId + ".xls was saved!");
-  }
+    Utils.saveStreamAsFile(input, new File(saveDir, meterId + ".xls"));  }
 
   /**
    * Periodically checks if all 'Verbräuche' buttons have been loaded.
