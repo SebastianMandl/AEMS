@@ -1,9 +1,12 @@
 package at.htlgkr.aems.database;
 
+import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -13,8 +16,8 @@ import at.htlgkr.aems.util.logger.Logger.LogType;
 
 /**
  * This class represents the database connection.
- * It works with a prostgre sql database.
- * Every sql statement which is constructed and emitted will be 
+ * It operates on a prostgre sql database hence
+ * every sql statement which is constructed and emitted will be 
  * formatted according to the postgre sql syntax.
  * 
  * @author Sebastian
@@ -26,12 +29,37 @@ public class DatabaseConnection {
 	private Connection connectionHandle;
 	private Statement statementHandle;
 	
+	private String defaultSchema;
+	
+	/**
+	 * Initializes the database connection object plainly.
+	 */
 	public DatabaseConnection() {
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Driver for database could not be loaded! Probably missing!");
 		}
+	}
+	
+	/**
+	 * Initializes the database connection object with the default schema of ones choice.
+	 * @param defaultSchema - the default schema which will be consulted for queries and executions.
+	 */
+	public DatabaseConnection(String defaultSchema) {
+		this();
+		setDefaultSchema(defaultSchema);
+	}
+	
+	/**
+	 * Reinitializes the default schema of this database connection object.
+	 * @param newDefaultSchema - the new default schema of this database connection object.
+	 */
+	public void setDefaultSchema(String newDefaultSchema) {
+		if(newDefaultSchema == null)
+			this.defaultSchema = "public";
+		else
+			this.defaultSchema = newDefaultSchema;
 	}
 	
 	/**
@@ -77,7 +105,83 @@ public class DatabaseConnection {
 	 * @throws SQLException - if an sql error occurs databasewise
 	 */
 	public void executeSQL(String sql) throws SQLException {
+		Logger.log(LogType.INFO, sql);
 		statementHandle.execute(sql);
+	}
+	
+	/**
+	 * Convenience method.
+	 * @see #callFunction(String, String, Class, Object...)
+	 */
+	public <T> T callFunction(String functionName, Class<T> returnClazz, Object... params) throws SQLException {
+		return callFunction(null, functionName, returnClazz, params);
+	}
+	
+	/**
+	 * This function provides the functionality to execute remote database functions and retrieval of their results.
+	 * @param schema - the schema where the function is located in
+	 * @param functionName - the name of the function which will be executed if existent
+	 * @param returnClazz - the type which the return value of this function should equal
+	 * @param params - an infinite parameter list which represents the parameters of the SQL stored function
+	 * @return - the requested result of the function
+	 * @throws SQLException - if an sql error occurs databasewise
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T callFunction(String schema, String functionName, Class<T> returnClazz, Object... params) throws SQLException {
+		schema = (schema == null) ? defaultSchema : schema;
+		
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("{ ? = call \"").append(schema).append("\".\"").append(functionName).append("\" ( ");
+		
+		for(@SuppressWarnings("unused") Object o : params) {
+			buffer.append("?, ");
+		}
+		buffer.setLength(buffer.length() - 2);
+		buffer.append(" ) }");
+		
+		CallableStatement func = connectionHandle.prepareCall(buffer.toString());
+		int type = -1;
+		
+		if(returnClazz.equals(String.class)) 
+			type = Types.VARCHAR;
+		else if(returnClazz.equals(Integer.class))
+			type = Types.INTEGER;
+		else if(returnClazz.equals(Long.class))
+			type = Types.BIGINT;
+		else if(returnClazz.equals(Double.class) || returnClazz.equals(Float.class))
+			type = Types.DECIMAL;
+		
+		
+		func.registerOutParameter(1, type);
+		
+		for(int i = 0; i < params.length; i++) {
+			Object o = params[i];	
+			if(o.getClass().equals(String.class))
+				func.setString(i + 2, o.toString());
+			else if(returnClazz.equals(Integer.class))
+				func.setInt(i + 2, Integer.parseInt(o.toString()));
+			else if(returnClazz.equals(Long.class))
+				func.setLong(i + 2, Long.parseLong(o.toString()));
+			else if(returnClazz.equals(Double.class) || returnClazz.equals(Float.class))
+				func.setBigDecimal(i + 2, new BigDecimal(o.toString()));
+		}
+		
+		func.execute();
+		
+		Object returnValue = null;
+		
+		if(returnClazz.equals(String.class)) 
+			returnValue = func.getString(1);
+		else if(returnClazz.equals(Integer.class))
+			returnValue = func.getInt(1);
+		else if(returnClazz.equals(Long.class))
+			returnValue = func.getLong(1);
+		else if(returnClazz.equals(Double.class) || returnClazz.equals(Float.class))
+			returnValue = func.getBigDecimal(1);
+		
+		func.close();
+		
+		return (T) returnValue;
 	}
 	
 	/**
@@ -164,6 +268,8 @@ public class DatabaseConnection {
 		
 		buffer.append(" FROM ");
 		
+		schema = (schema == null) ? defaultSchema : schema;
+		
 		if(schema != null)
 			buffer.append("\"").append(schema).append("\".");
 		
@@ -208,8 +314,7 @@ public class DatabaseConnection {
 		
 		String sql = buffer.toString();
 		Logger.log(LogType.INFO, sql);
-		java.sql.ResultSet resultSet = statementHandle.executeQuery(sql);
-		return new ResultSet(resultSet);
+		return customSelect(sql);
 	}
 	
 	/**
@@ -231,6 +336,8 @@ public class DatabaseConnection {
 	public void insert(String schema, String tableName, HashMap<String, String> projection) throws SQLException {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("INSERT INTO ");
+		
+		schema = (schema == null) ? defaultSchema : schema;
 		
 		if(schema != null)
 			buffer.append("\"").append(schema).append("\".");
@@ -254,8 +361,7 @@ public class DatabaseConnection {
 		buffer.append(");");
 		
 		String sql = buffer.toString();
-		Logger.log(LogType.INFO, sql);
-		statementHandle.execute(sql);
+		executeSQL(sql);
 	}
 	
 	/**
@@ -311,6 +417,8 @@ public class DatabaseConnection {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("DELETE FROM ");
 		
+		schema = (schema == null) ? defaultSchema : schema;
+		
 		if(schema != null)
 			buffer.append("\"").append(schema).append("\".");
 		
@@ -340,8 +448,7 @@ public class DatabaseConnection {
 		buffer.append(";");
 		
 		String sql = buffer.toString();
-		Logger.log(LogType.INFO, sql);
-		statementHandle.execute(sql);
+		executeSQL(sql);
 	}
 	
 	/**
@@ -399,6 +506,8 @@ public class DatabaseConnection {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("UPDATE ");
 		
+		schema = (schema == null) ? defaultSchema : schema;
+		
 		if(schema != null)
 			buffer.append("\"").append(schema).append("\".");
 		
@@ -432,8 +541,7 @@ public class DatabaseConnection {
 		buffer.append(";");
 		
 		String sql = buffer.toString();
-		Logger.log(LogType.INFO, sql);
-		statementHandle.execute(sql);
+		executeSQL(sql);
 	}
 	
 	/**

@@ -11,50 +11,68 @@ DROP SCHEMA IF EXISTS aems; -- in case if the schema already existed (e.g. this 
 CREATE SCHEMA aems AUTHORIZATION aems; -- create the schema "aems" and authorizes it to the user "aems". (clear text: the schema "aems" belongs to the user "aems")
 
 -- setting up the table with their belonging constraints
-DROP TABLE IF EXISTS aems.MeterTypes CASCADE;
-CREATE TABLE aems.MeterTypes
+DROP TABLE IF EXISTS aems."MeterTypes" CASCADE;
+CREATE TABLE aems."MeterTypes"
 (
-	ID DECIMAL(10),
-	DisplayName VARCHAR(100) NOT NULL,
+  id numeric(10,0) NOT NULL,
+  displayname character varying(100) NOT NULL,
+  CONSTRAINT pk_metertypes PRIMARY KEY (id)
+)
 
-	CONSTRAINT pk_metertypes PRIMARY KEY (ID)
-);
-
-DROP TABLE IF EXISTS aems.Users CASCADE;
-CREATE TABLE aems.Users
+DROP TABLE IF EXISTS aems."Users" CASCADE;
+CREATE TABLE aems."Users"
 (
-	ID DECIMAL(10),
-	Username VARCHAR(32) NOT NULL UNIQUE,
-	"password" VARCHAR(4096) NOT NULL,
+  id numeric(10,0) NOT NULL,
+  username character varying(32) NOT NULL,
+  password character varying(4096) NOT NULL,
+  CONSTRAINT pk_users PRIMARY KEY (id),
+  CONSTRAINT users_username_key UNIQUE (username)
+)
 
-	CONSTRAINT pk_users PRIMARY KEY (ID)
-);
-
-DROP TABLE IF EXISTS aems.Meters CASCADE;
-CREATE TABLE aems.Meters
+DROP TABLE IF EXISTS aems."Meters" CASCADE;
+CREATE TABLE aems."Meters"
 (
-	ID VARCHAR(150),
-	MeterType DECIMAL(10),
-	"user" DECIMAL(10),
+  id character varying(150) NOT NULL,
+  metertype numeric(10,0),
+  "user" numeric(10,0),
+  city character varying(50),
+  latitude numeric(10,10),
+  longitude numeric(10,10),
+  CONSTRAINT pk_meters PRIMARY KEY (id),
+  CONSTRAINT fk_meters_metertypes FOREIGN KEY (metertype)
+      REFERENCES aems."MeterTypes" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_meters_users FOREIGN KEY ("user")
+      REFERENCES aems."Users" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
 
-	CONSTRAINT pk_meters PRIMARY KEY (ID),
-	CONSTRAINT fk_meters_metertypes FOREIGN KEY (MeterType) REFERENCES aems.MeterTypes(ID),
-	CONSTRAINT fk_meters_users FOREIGN KEY ("user") REFERENCES aems.Users(ID)
-);
-
-DROP TABLE IF EXISTS aems.MeterDatas CASCADE;
-CREATE TABLE aems.MeterDatas
+DROP TABLE IF EXISTS aems."MeterData" CASCADE;
+CREATE TABLE aems."MeterData"
 (
-	ID DECIMAL(10),
-	Meter VARCHAR(150),
-	"timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	Temperature DECIMAL(2,2) NOT NULL,
-	MeasuredValue DECIMAL(7,5) NOT NULL,
-  	humidity numeric(3,2),
+  id numeric(10,0) NOT NULL,
+  meter character varying(150),
+  "timestamp" timestamp without time zone NOT NULL,
+  measuredvalue numeric(7,5) NOT NULL,
+  CONSTRAINT pk_meterdata PRIMARY KEY (id),
+  CONSTRAINT fk_meterdata_meters FOREIGN KEY (meter)
+      REFERENCES aems."Meters" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
 
-	CONSTRAINT pk_meterdatas PRIMARY KEY (ID),
-	CONSTRAINT fk_meterdatas_meters FOREIGN KEY (Meter) REFERENCES aems.Meters(ID)
-);
+DROP TABLE IF EXISTS aems."WeatherData" CASCADE;
+CREATE TABLE aems."WeatherData"
+(
+  id numeric(10,0) NOT NULL,
+  meter character varying(150) NOT NULL,
+  "timestamp" timestamp without time zone,
+  temperature numeric(2,2),
+  humidity numeric(3,2),
+  CONSTRAINT pk_weatherdata PRIMARY KEY (id),
+  CONSTRAINT fk_weatherdata_meters FOREIGN KEY (meter)
+      REFERENCES aems."Meters" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
 
 -- setting up all the functions
 
@@ -68,13 +86,13 @@ declare
 begin
 	
 	select count(*) into row_count_before
-	from aems.users;
+	from aems."Users";
 
-	delete from aems.users
+	delete from aems."Users"
 	where username = p_username;
 
 	select count(*) into row_count_after
-	from aems.users;
+	from aems."Users";
 
 	if row_count_before > row_count_after then
 		return true;
@@ -94,16 +112,13 @@ declare
 	user_password_bytes bytea;
 
 	datafile text default 'key.txt';
-
-	row_count_before integer;
-	row_count_after integer;
 begin
 	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
 	-- key file must be relocated in the future!!!
 	aes_key := pg_read_file(datafile, 0, 48);
 
 	select "password" into user_password_bytes
-	from aems.users
+	from aems."Users"
 	where username = p_username;
 
 	aes_key_bytes := convert_to(aes_key, 'UTF-8');
@@ -140,13 +155,13 @@ begin
 	encrypted_pass_bytes := encrypt(pass_bytes, aes_key_bytes, 'aes');
 
 	select count(*) into row_count_before
-	from aems.users;
+	from aems."Users";
 
-	insert into aems.users (id, username, "password")
+	insert into aems."Users" (id, username, "password")
 	values (nextval('aems.user_seq'), username, encrypted_pass_bytes);
 
 	select count(*) into row_count_after
-	from aems.users;
+	from aems."Users";
 
 	if row_count_before < row_count_after then
 		return true;
@@ -173,25 +188,29 @@ CREATE SEQUENCE aems.user_seq
 
 
 -- the following sets up the select permission on all the various tables within the schema "aems"
-GRANT SELECT ON TABLE aems.users TO aems;
-GRANT SELECT ON TABLE aems.meters TO aems;
-GRANT SELECT ON TABLE aems.meterdatas TO aems;
-GRANT SELECT ON TABLE aems.metertypes TO aems;
+GRANT SELECT ON TABLE aems."Users" TO aems;
+GRANT SELECT ON TABLE aems."Meters" TO aems;
+GRANT SELECT ON TABLE aems."MeterData" TO aems;
+GRANT SELECT ON TABLE aems."MeterTypes" TO aems;
+GRANT SELECT ON TABLE aems."WeatherData" TO aems;
 
-GRANT INSERT ON TABLE aems.users TO aems;
-GRANT INSERT ON TABLE aems.meters TO aems;
-GRANT INSERT ON TABLE aems.meterdatas TO aems;
-GRANT INSERT ON TABLE aems.metertypes TO aems;
+GRANT INSERT ON TABLE aems."Users" TO aems;
+GRANT INSERT ON TABLE aems."Meters" TO aems;
+GRANT INSERT ON TABLE aems."MeterData" TO aems;
+GRANT INSERT ON TABLE aems."MeterTypes" TO aems;
+GRANT INSERT ON TABLE aems."WeatherData" TO aems;
 
-GRANT UPDATE ON TABLE aems.users TO aems;
-GRANT UPDATE ON TABLE aems.meters TO aems;
-GRANT UPDATE ON TABLE aems.meterdatas TO aems;
-GRANT UPDATE ON TABLE aems.metertypes TO aems;
+GRANT UPDATE ON TABLE aems."Users" TO aems;
+GRANT UPDATE ON TABLE aems."Meters" TO aems;
+GRANT UPDATE ON TABLE aems."MeterData" TO aems;
+GRANT UPDATE ON TABLE aems."MeterTypes" TO aems;
+GRANT UPDATE ON TABLE aems."WeatherData" TO aems;
 
-GRANT DELETE ON TABLE aems.users TO aems;
-GRANT DELETE ON TABLE aems.meters TO aems;
-GRANT DELETE ON TABLE aems.meterdatas TO aems;
-GRANT DELETE ON TABLE aems.metertypes TO aems;
+GRANT DELETE ON TABLE aems."Users" TO aems;
+GRANT DELETE ON TABLE aems."Meters" TO aems;
+GRANT DELETE ON TABLE aems."MeterData" TO aems;
+GRANT DELETE ON TABLE aems."MeterTypes" TO aems;
+GRANT DELETE ON TABLE aems."WeatherData" TO aems;
 
 -- grant the user "aems" to execute the required functions for proper operation
 GRANT EXECUTE ON FUNCTION aems.delete_user(varchar) TO aems;
@@ -199,16 +218,17 @@ GRANT EXECUTE ON FUNCTION aems.get_user_password(varchar) TO aems;
 GRANT EXECUTE ON FUNCTION aems.register_user(varchar, varchar) TO aems;
 
 -- revoking all the privileges from others that do not need accessibility
-REVOKE ALL PRIVILEGES ON DATABASE "AEMSData" FROM public;
+-- REVOKE ALL PRIVILEGES ON DATABASE "AEMSData" FROM public;
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA aems FROM postgres;
 REVOKE ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA aems FROM postgres;
 REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA aems FROM postgres;
 
 
-ALTER TABLE aems.users OWNER TO aems;
-ALTER TABLE aems.meterdatas OWNER TO aems;
-ALTER TABLE aems.meters OWNER TO aems;
-ALTER TABLE aems.metertypes OWNER TO aems;
+ALTER TABLE aems."Users" OWNER TO aems;
+ALTER TABLE aems."MeterData" OWNER TO aems;
+ALTER TABLE aems."Meters" OWNER TO aems;
+ALTER TABLE aems."MeterTypes" OWNER TO aems;
+ALTER TABLE aems."WeatherData" OWNER TO aems;
 
 ALTER FUNCTION aems.get_user_password(varchar) OWNER TO aems;
 ALTER FUNCTION aems.register_user(varchar, varchar) OWNER TO aems;
