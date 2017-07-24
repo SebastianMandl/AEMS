@@ -1,6 +1,7 @@
 package at.htlgkr.aems.database;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,15 +76,18 @@ public class DatabaseConnection {
 		p.setProperty("password", password);
 		
 		connectionHandle = DriverManager.getConnection("jdbc:postgresql://localhost:5432/AEMSData", p);
+		connectionHandle.setAutoCommit(false);
 		statementHandle = connectionHandle.createStatement();
 	}
 	
 	/**
 	 * This method provides the functionality to close the connection to the datbase if no longer required.
+	 * WARNING: This method also exerts a commit!!!
 	 * @throws SQLException - if an sql error occurs databasewise 
 	 */
 	public void close() throws SQLException {
 		statementHandle.close();
+		connectionHandle.commit();
 		connectionHandle.close();
 	}
 	
@@ -129,14 +133,20 @@ public class DatabaseConnection {
 	@SuppressWarnings("unchecked")
 	public <T> T callFunction(String schema, String functionName, Class<T> returnClazz, Object... params) throws SQLException {
 		schema = (schema == null) ? defaultSchema : schema;
+		if(params == null)
+			params = new Object[0];
 		
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("{ ? = call \"").append(schema).append("\".\"").append(functionName).append("\" ( ");
+		buffer.append("{ ");
+		if(!returnClazz.equals(Void.class))
+			buffer.append("? = ");
+		buffer.append("call \"").append(schema).append("\".\"").append(functionName).append("\" ( ");
 		
 		for(@SuppressWarnings("unused") Object o : params) {
 			buffer.append("?, ");
 		}
-		buffer.setLength(buffer.length() - 2);
+		if(params.length > 0)
+			buffer.setLength(buffer.length() - 2);
 		buffer.append(" ) }");
 		
 		CallableStatement func = connectionHandle.prepareCall(buffer.toString());
@@ -151,19 +161,21 @@ public class DatabaseConnection {
 		else if(returnClazz.equals(Double.class) || returnClazz.equals(Float.class))
 			type = Types.DECIMAL;
 		
+		if(!returnClazz.equals(Void.class))
+			func.registerOutParameter(1, type);
 		
-		func.registerOutParameter(1, type);
+		int offset = (returnClazz.equals(Void.class)) ? 1 : 2;
 		
 		for(int i = 0; i < params.length; i++) {
-			Object o = params[i];	
+			Object o = params[i];
 			if(o.getClass().equals(String.class))
-				func.setString(i + 2, o.toString());
-			else if(returnClazz.equals(Integer.class))
-				func.setInt(i + 2, Integer.parseInt(o.toString()));
-			else if(returnClazz.equals(Long.class))
-				func.setLong(i + 2, Long.parseLong(o.toString()));
-			else if(returnClazz.equals(Double.class) || returnClazz.equals(Float.class))
-				func.setBigDecimal(i + 2, new BigDecimal(o.toString()));
+				func.setString(i + offset, o.toString());
+			else if(o.getClass().equals(Integer.class))
+				func.setInt(i + offset, Integer.parseInt(o.toString()));
+			else if(o.getClass().equals(Long.class))
+				func.setLong(i + offset, Long.parseLong(o.toString()));
+			else if(o.getClass().equals(Double.class) || o.getClass().equals(Float.class) || o.getClass().equals(BigDecimal.class) || o.getClass().equals(BigInteger.class))
+				func.setBigDecimal(i + offset, new BigDecimal(o.toString()));
 		}
 		
 		func.execute();

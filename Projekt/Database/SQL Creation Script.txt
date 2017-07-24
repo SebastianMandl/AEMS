@@ -24,7 +24,7 @@ CREATE TABLE aems."Users"
 (
   id numeric(10,0) NOT NULL,
   username character varying(32) NOT NULL,
-  password character varying(4096) NOT NULL,
+  password bytea NOT NULL,
   CONSTRAINT pk_users PRIMARY KEY (id),
   CONSTRAINT users_username_key UNIQUE (username)
 )
@@ -74,8 +74,21 @@ CREATE TABLE aems."WeatherData"
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 
+DROP TABLE IF EXISTS aems."TransferInfos" CASCADE;
+CREATE TABLE aems."TransferInfos"
+(
+  id numeric(10,0) NOT NULL,
+  secret_number numeric(3,0) NOT NULL,
+  mod_number numeric(100,0) NOT NULL,
+  key character varying(48),
+  CONSTRAINT pk_transfer_infos PRIMARY KEY (id)
+)
+
 -- setting up all the functions
 
+/**
+ * this function deletes a user.
+**/
 DROP FUNCTION aems.delete_user(varchar);
 CREATE OR REPLACE FUNCTION aems.delete_user(p_username character varying) RETURNS boolean AS $$
 declare
@@ -102,36 +115,51 @@ begin
 end;
 $$ LANGUAGE plpgsql;
 
-DROP FUNCTION aems.get_user_password(varchar);
-CREATE OR REPLACE FUNCTION aems.get_user_password(p_username character varying) RETURNS character varying AS $$
+/**
+  * This function returns an encrypted json.
+  * It comprises information about all users including their usernames and passwords.
+  * this functions requires a tranfer-key to be priorly exchanged!
+**/
+DROP FUNCTION aems.get_user_infos();
+CREATE OR REPLACE FUNCTION aems.get_user_infos() RETURNS character varying AS $$
 declare
-	pass_bytes bytea;
 	decrypted_password_bytes bytea;
 	aes_key varchar(48);
 	aes_key_bytes bytea;
 	user_password_bytes bytea;
+	decrypted_password varchar(32);
 
 	datafile text default 'key.txt';
+
+	user_record record;
+	json varchar(500000) default '';
 begin
 	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
 	-- key file must be relocated in the future!!!
 	aes_key := pg_read_file(datafile, 0, 48);
-
-	select "password" into user_password_bytes
-	from aems."Users"
-	where username = p_username;
-
 	aes_key_bytes := convert_to(aes_key, 'UTF-8');
-	decrypted_password_bytes := decrypt(user_password_bytes, aes_key_bytes, 'aes');
 
-	return convert_from(decrypted_password_bytes, 'UTF-8');
+	json := '[ ';
+	for user_record in (select username, "password"
+			    from aems."Users") loop
+		decrypted_password_bytes := decrypt(user_record."password", aes_key_bytes, 'aes');
+		decrypted_password := convert_from(decrypted_password_bytes, 'UTF-8');
 
-exception
-	when others then
-		return null;	-- will occur if the username is not valid
+		raise notice 'is: %' ,decrypted_password;
+
+		json := json || '{ username:"' || user_record."username" || '", password:"' || decrypted_password || '" }, ';
+	end loop;
+	select substr(json, 0, char_length(json) - 1) into json;
+	json := json || ' ]';
+
+	return json;
 end;
 $$ LANGUAGE plpgsql;
 
+/**
+  * this function registers a new user meaning it creates a record for the user.
+  * the password will be encrypted by the aes standard. the key is deposited outside of the database
+**/
 DROP FUNCTION aems.register_user(varchar, varchar);
 CREATE OR REPLACE FUNCTION aems.register_user(username character varying, clear_text_password character varying) RETURNS boolean AS $$
 declare
@@ -175,6 +203,79 @@ exception
 end;
 $$ LANGUAGE plpgsql;
 
+/**
+  * This function initiates the diffie-hellman-procedure
+  * calling this function will prepare the next transfer-key generation
+**/
+CREATE OR REPLACE FUNCTION aems.get_transfer_infos()
+  RETURNS character varying AS
+$BODY$
+declare
+
+	json varchar(200);
+	secret_number decimal(3, 0);
+	mod_number decimal(100, 0);
+	base_number decimal(2, 0);
+	combination decimal(30, 0);
+
+begin
+
+	json := '{ ';
+
+	-- generate base factor
+
+	select random() * 9 + 11 into base_number;
+	json := json || 'base:' || base_number;
+
+	-- generate modulus
+
+	select random() * (random() * 81657531897453431354687831513154354546878645513213245) into mod_number;
+	json := json || ', mod:' || mod_number;
+
+	-- generate secret number
+
+	select random() * 9 + 4 into secret_number;
+	select mod(pow(base_number, secret_number), mod_number) into combination;
+	--select pow(base_number, secret_number) into combination;
+
+	json := json || ', combination:' || combination || ' }';
+
+
+	delete from aems."TransferInfos"; -- erase priorly specified data
+	insert into aems."TransferInfos" (id, secret_number, mod_number) -- store the secret and modulus number into "TransferInfos"
+	values (0, secret_number, mod_number);
+
+	-- return info
+	return json;
+end;
+$$ LANGUAGE plpgsql;
+
+/**
+  * This function concludes the diffie-hellman-procedure commenced by aems.get_transfer_infos()
+  * This function computes the key and temporarily stores it into a table.
+**/
+CREATE OR REPLACE FUNCTION aems.verify_transfer_infos(combination numeric) RETURNS void AS $$
+declare
+
+	akey decimal(400, 0);
+	varchar_key varchar(500);
+
+begin
+
+	select mod(pow(combination, secret_number), mod_number) into akey
+	from aems."TransferInfos"
+	where id = 0;
+
+	SELECT CAST(akey AS varchar(500)) into varchar_key;	
+	select substr(varchar_key, 1, 48) into varchar_key;
+	
+
+	update aems."TransferInfos" -- store the key into "TransferInfos"
+	set "key" = varchar_key
+	where id = 0;
+end;
+$$ LANGUAGE plpgsql;
+
 -- setting up sequences
 
 CREATE SEQUENCE aems.user_seq
@@ -193,29 +294,35 @@ GRANT SELECT ON TABLE aems."Meters" TO aems;
 GRANT SELECT ON TABLE aems."MeterData" TO aems;
 GRANT SELECT ON TABLE aems."MeterTypes" TO aems;
 GRANT SELECT ON TABLE aems."WeatherData" TO aems;
+GRANT SELECT ON TABLE aems."TransferInfos" TO aems;
 
 GRANT INSERT ON TABLE aems."Users" TO aems;
 GRANT INSERT ON TABLE aems."Meters" TO aems;
 GRANT INSERT ON TABLE aems."MeterData" TO aems;
 GRANT INSERT ON TABLE aems."MeterTypes" TO aems;
 GRANT INSERT ON TABLE aems."WeatherData" TO aems;
+GRANT INSERT ON TABLE aems."TransferInfos" TO aems;
 
 GRANT UPDATE ON TABLE aems."Users" TO aems;
 GRANT UPDATE ON TABLE aems."Meters" TO aems;
 GRANT UPDATE ON TABLE aems."MeterData" TO aems;
 GRANT UPDATE ON TABLE aems."MeterTypes" TO aems;
 GRANT UPDATE ON TABLE aems."WeatherData" TO aems;
+GRANT UPDATE ON TABLE aems."TransferInfos" TO aems;
 
 GRANT DELETE ON TABLE aems."Users" TO aems;
 GRANT DELETE ON TABLE aems."Meters" TO aems;
 GRANT DELETE ON TABLE aems."MeterData" TO aems;
 GRANT DELETE ON TABLE aems."MeterTypes" TO aems;
 GRANT DELETE ON TABLE aems."WeatherData" TO aems;
+GRANT DELETE ON TABLE aems."TransferInfos" TO aems;
 
 -- grant the user "aems" to execute the required functions for proper operation
 GRANT EXECUTE ON FUNCTION aems.delete_user(varchar) TO aems;
-GRANT EXECUTE ON FUNCTION aems.get_user_password(varchar) TO aems;
+GRANT EXECUTE ON FUNCTION aems.get_user_infos() TO aems;
 GRANT EXECUTE ON FUNCTION aems.register_user(varchar, varchar) TO aems;
+GRANT EXECUTE ON FUNCTION aems.get_transfer_infos() TO aems;
+GRANT EXECUTE ON FUNCTION aems.verify_transfer_infos(numeric) TO aems;
 
 -- revoking all the privileges from others that do not need accessibility
 -- REVOKE ALL PRIVILEGES ON DATABASE "AEMSData" FROM public;
@@ -229,9 +336,12 @@ ALTER TABLE aems."MeterData" OWNER TO aems;
 ALTER TABLE aems."Meters" OWNER TO aems;
 ALTER TABLE aems."MeterTypes" OWNER TO aems;
 ALTER TABLE aems."WeatherData" OWNER TO aems;
+ALTER TABLE aems."TransferInfos" OWNER TO aems;
 
-ALTER FUNCTION aems.get_user_password(varchar) OWNER TO aems;
+ALTER FUNCTION aems.get_user_infos() OWNER TO aems;
 ALTER FUNCTION aems.register_user(varchar, varchar) OWNER TO aems;
 ALTER FUNCTION aems.delete_user(varchar) OWNER TO aems;
+ALTER FUNCTION aems.verify_transfer_infos(numeric) OWNER TO aems;
+ALTER FUNCTION aems.get_transfer_infos() OWNER TO aems;
 
 ALTER SEQUENCE aems.user_seq OWNER TO aems;
