@@ -9,7 +9,7 @@ import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.database.MeterValue;
 import at.htlgkr.aems.main.Main;
 import at.htlgkr.aems.util.BotConfiguration;
-import at.htlgkr.aems.util.Utils;
+import at.htlgkr.aems.util.Logger.LogType;
 
 /**
  * This class is used to gather data by reading the downloaded
@@ -29,18 +29,24 @@ public class ExcelDataExtracter implements Runnable {
   }
   
   public void run() {
-    
+
     String filePath = Main.config.get(BotConfiguration.FILE_STORAGE, "Exceldateien") + "/" + user.getUsername();
     File excelFolder = new File(filePath);
     
+    if(!excelFolder.exists()) {
+      return;
+    }
+    Main.logger.log(LogType.INFO, "(%0%) Reading Excel Files (%1% in total)", 
+        user.getUsername(), excelFolder.list().length);
     for(File excelFile : excelFolder.listFiles()) {
+      
       ExcelFileReader reader = new ExcelFileReader(excelFile);
       String meterId = FilenameUtils.removeExtension(excelFile.getName());
       MeterValue row;
       while((row = reader.read()) != null) {
           row.setId(meterId);
           if(row.isValid()) {
-            //databaseConnection.insertMeterData(row);
+            // database.saveMeter...
           }
       }
       

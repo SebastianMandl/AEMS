@@ -1,7 +1,9 @@
 package at.htlgkr.aems.main;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import at.htlgkr.aems.database.AemsDatabaseHelper;
@@ -9,6 +11,9 @@ import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.file.ExcelDataExtracter;
 import at.htlgkr.aems.file.FileDownloader;
 import at.htlgkr.aems.util.BotConfiguration;
+import at.htlgkr.aems.util.Logger;
+import at.htlgkr.aems.util.Logger.LogType;
+import at.htlgkr.aems.weather.TemperatureGetter;
 
 /**
  * Entry point for the AEMS Report Bot
@@ -20,12 +25,27 @@ public class Main {
   public static List<FileDownloader> downloaders = new ArrayList<FileDownloader>();
   public static List<ExcelDataExtracter> extracters = new ArrayList<ExcelDataExtracter>();
   public static List<AemsUser> usersToHandle = new ArrayList<AemsUser>();
+  public static Logger logger = new Logger(LogType.DEBUG);
 
   public static void main(String[] args) throws SQLException {
+    
+    if(args.length == 1 && args[0].equals("-temp")) {
+      updateTemperatures();
+      return;
+    }
+    logger.log(LogType.INFO, "Starting AEMS-ReportBot at %0%", 
+        new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date()));
     usersToHandle = getUsers();
     populateDownloaders();
   }
   
+  private static void updateTemperatures() {
+    usersToHandle = getUsers();
+    for(AemsUser user : usersToHandle) {
+      new TemperatureGetter(user).updateTemperatures();
+    }
+  }
+
   /**
    * Populates the downloaders list with a fixed number of users in order to limit the
    * amount of active FileDownloader threads running at once ("chunking").
@@ -64,7 +84,6 @@ public class Main {
   }
   public static void setComplete(FileDownloader downloader) {
     downloaders.remove(downloader);
-    System.out.println(downloader.getUser().getUsername() + " has finished!");
     if (downloaders.isEmpty()) {
       if(usersToHandle.isEmpty()) {
         readExcelFiles();
@@ -84,8 +103,11 @@ public class Main {
       downloader.repeat();
       downloaders.add(downloader);
       new Thread(downloader).start();
+      logger.log(LogType.INFO, "StatusCodeException for User %0%. Process will be run again", downloader.getUser().getUsername());
     } else {
       // Downloader has failed
+      logger.log(LogType.INFO, "StatusCodeException for User %0%. File collection has failed", downloader.getUser().getUsername());
+
       if (downloaders.isEmpty()) {
         if(usersToHandle.isEmpty()) {
           readExcelFiles();

@@ -1,5 +1,8 @@
 package at.htlgkr.aems.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class represents an user in the AEMS system.
  * @author Niklas
@@ -9,6 +12,7 @@ public class AemsUser {
   private int id;
   private String username;
   private String password;
+  private List<AemsMeter> meters;
   
   public AemsUser(int id) {
     this(id, null, null);
@@ -26,6 +30,7 @@ public class AemsUser {
     this.id = id;
     this.username = username;
     this.password = password;
+    this.meters = new ArrayList<AemsMeter>();
   }
   
   public String getUsername() {
@@ -45,6 +50,12 @@ public class AemsUser {
   }
   public void setId(int id) {
     this.id = id;
+  }
+  public List<AemsMeter> getMeters() {
+    return this.meters;
+  }
+  public void setMeters(List<AemsMeter> meters) {
+    this.meters = meters;
   }
   
   @Override
