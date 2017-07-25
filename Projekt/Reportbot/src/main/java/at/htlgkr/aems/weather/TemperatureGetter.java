@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import at.htlgkr.aems.database.AemsDatabaseHelper;
 import at.htlgkr.aems.database.AemsMeter;
 import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.main.Main;
@@ -26,26 +25,13 @@ public class TemperatureGetter {
   
   private AemsUser user;
   private final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather";
-  public static final double ABSOLUTE_ZERO = -273.15;
+  public static final double ABSOLUTE_ZERO = -273.15; // Will be error return value
   
   public TemperatureGetter(AemsUser user) {
     this.user = user;
   }
   
   public void updateTemperatures() {
-    AemsDatabaseHelper database = new AemsDatabaseHelper();
-    // db.open()
-    
-    try {
-      List<AemsMeter> meters = database.getMetersOfUser(this.user);
-      for(AemsMeter m : meters) {
-        double temp = getTemperature(m);
-        // Send to database
-        Main.logger.log(LogType.DEBUG, "Temperature at %0%: %1%", m.getLocation(), temp);
-      }
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
     
   }
   

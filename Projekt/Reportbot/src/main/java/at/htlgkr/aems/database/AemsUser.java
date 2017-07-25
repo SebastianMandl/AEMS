@@ -18,14 +18,6 @@ public class AemsUser {
     this(id, null, null);
   }
   
-  @Deprecated
-  /**
-   * This constructor is deprecated, a user should always be created with an id.
-   */
-  public AemsUser(String username, String password) {
-    this(0, username, password);
-  }
-  
   public AemsUser(int id, String username, String password) {
     this.id = id;
     this.username = username;

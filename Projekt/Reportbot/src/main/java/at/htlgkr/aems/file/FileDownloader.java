@@ -84,8 +84,9 @@ public class FileDownloader implements Runnable {
       Main.retry(this);
     } catch (LoginFailedException e) {
       Main.logger.log(LogType.ERROR, "Cannot log into account of user '%0%'. Wrong password?", user.getUsername());
+      Main.failed(this);
     } catch (Exception e) {
-      Main.logger.log(LogType.ERROR, "An unexpected error occured while handling user %0%. Shutting down..w", user.getUsername());
+      Main.logger.log(LogType.ERROR, "An unexpected error occured while handling user %0%. Shutting down...", user.getUsername());
       Main.failed(this);
     }
   }
@@ -214,7 +215,6 @@ public class FileDownloader implements Runnable {
     while (consumptionButtons.size() < detailsCount) {
       Thread.sleep(1000);
       consumptionButtons = getConsumptionButtons(meterPage);
-      // System.out.println("Waiting..");
     }
     return consumptionButtons;
   }

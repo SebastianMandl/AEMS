@@ -1,10 +1,11 @@
 package at.htlgkr.aems.file;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import at.htlgkr.aems.database.AemsDatabaseHelper;
 import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.database.MeterValue;
 import at.htlgkr.aems.main.Main;
@@ -21,11 +22,9 @@ import at.htlgkr.aems.util.Logger.LogType;
 public class ExcelDataExtracter implements Runnable {
 
   private AemsUser user;
-  private AemsDatabaseHelper databaseConnection;
   
-  public ExcelDataExtracter(AemsUser user, AemsDatabaseHelper dbCon) {
+  public ExcelDataExtracter(AemsUser user) {
     this.user = user;
-    this.databaseConnection = dbCon;
   }
   
   public void run() {
@@ -51,6 +50,13 @@ public class ExcelDataExtracter implements Runnable {
       }
       
     }
+    try {
+      FileUtils.deleteDirectory(excelFolder);
+    } catch(IOException e) {
+      Main.logger.log(LogType.ERROR, "Unable to delete folder at %0%", excelFolder.getAbsolutePath());
+      e.printStackTrace(Main.logger.getPrinter());
+    }
+    
     
   }
   
