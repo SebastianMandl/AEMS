@@ -9,3 +9,9 @@ Design des Login-Modals:
 ---------------------------------------------------
 https://bootsnipp.com/snippets/featured/clean-modal-login-form
 
+
+---------------------------------------------------
+Notifications:
+---------------------------------------------------
+notify.js
+

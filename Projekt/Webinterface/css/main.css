@@ -23,9 +23,17 @@
 
 }
 .navbar-header .navbar-brand.titleFormat .titleImage {
-	margin-top: -38px;
-	width: 360px;
+	margin-top: -32px;
+	width: 20em;
 }
 .modal-footer.footerFormat {
 	margin-top: 25px;
+}
+
+@media (max-width: 767px){
+	.navbar-header .navbar-brand.titleFormat .titleImage {
+	width: 16em;
+	margin-top: -20px;
+	margin-left: -0.4em;
+}
 }
