@@ -1,0 +1,34 @@
+> CREATE EXTENSION pgcrypto; -- needs to be issued otherwise no encryption or decryption functionality is available
+> CREATE EXTENSION pljava; -- will enable java in postgres: one is required to specify the pljava.libjvm_location (jvm location)
+
+-- setting up pljava -----------------------------------------------------------------
+
+https://tada.github.io/pljava/install/install.html -- installation
+https://github.com/tada/pljava/wiki/SQL-functions -- functions
+
+SET client_min_messages TO NOTICE; -- or anything finer (INFO, DEBUG, ...) specify output stream
+SET pljava.libjvm_location TO 'P:\Java\jdk1.8.0_102\jre\bin\server\jvm.dll'; -- specify the location of the jvm lib
+
+ALTER DATABASE "AEMSData" SET client_min_messages FROM CURRENT;
+ALTER DATABASE "AEMSData" SET pljava.libjvm_location FROM CURRENT; -- making changes persisent
+
+if committed then run -> CREATE EXTENSION pljava FROM unpackaged
+
+
+--- SELECT sqlj.install_jar(<jar_url>, <jar_name>, <deploy>) -- load jar
+SELECT sqlj.install_jar('file:///C:\Users\Sebastian\Desktop\Util.jar', 'Util', true);
+SELECT sqlj.set_classpath('aems', 'Util'); -- required to be specified otherwise the database associates the function with the false schema!!!
+----------------------------------------------------------------------------------------
+
+> plpgsql -- the language to use to parse the postgresql script
+
+> pg_read_file(<filepath>, <offset>, <max_read_size_in_bytes>); -- utilized to read from a file at serverside
+
+>	encrypted_text_bytes := encrypt(pass_bytes, aes_key_bytes, 'aes');
+>	decrypted_text := decrypt(encrypted_text_bytes, aes_key_bytes, 'aes');
+
+do $$
+begin
+	raise notice '%', get_user_password('x');
+end;
+$$ language plpgsql;
