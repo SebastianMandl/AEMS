@@ -1,5 +1,5 @@
 -- run this setup script as the database administrator
--- this script is required to be run within an existing database
+-- this script is required to be run within an existing database named "AEMSData"
 
 DROP OWNED BY aems CASCADE; -- everything which has been owned by the user "aems" will be dropped by issuing this command
 DROP USER IF EXISTS aems;
@@ -24,7 +24,7 @@ CREATE TABLE aems."Users"
 (
   id numeric(10,0) NOT NULL,
   username character varying(32) NOT NULL,
-  password bytea NOT NULL,
+  "password" bytea NOT NULL,
   CONSTRAINT pk_users PRIMARY KEY (id),
   CONSTRAINT users_username_key UNIQUE (username)
 )
@@ -53,7 +53,7 @@ CREATE TABLE aems."MeterData"
   id numeric(10,0) NOT NULL,
   meter character varying(150),
   "timestamp" timestamp without time zone NOT NULL,
-  measuredvalue numeric(7,5) NOT NULL,
+  measured_value numeric(7,5) NOT NULL,
   CONSTRAINT pk_meterdata PRIMARY KEY (id),
   CONSTRAINT fk_meterdata_meters FOREIGN KEY (meter)
       REFERENCES aems."Meters" (id) MATCH SIMPLE
@@ -80,7 +80,7 @@ CREATE TABLE aems."TransferInfos"
   id numeric(10,0) NOT NULL,
   secret_number numeric(3,0) NOT NULL,
   mod_number numeric(100,0) NOT NULL,
-  key character varying(48),
+  "key" character varying(48),
   CONSTRAINT pk_transfer_infos PRIMARY KEY (id)
 )
 
@@ -121,7 +121,7 @@ $$ LANGUAGE plpgsql;
   * this functions requires a tranfer-key to be priorly exchanged!
 **/
 DROP FUNCTION aems.get_user_infos();
-CREATE OR REPLACE FUNCTION aems.get_user_infos() RETURNS character varying AS $$
+CREATE OR REPLACE FUNCTION aems.get_user_infos() RETURNS bytea AS $$
 declare
 	decrypted_password_bytes bytea;
 	aes_key varchar(48);
@@ -134,9 +134,7 @@ declare
 	user_record record;
 	json varchar(500000) default '';
 begin
-	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
-	-- key file must be relocated in the future!!!
-	aes_key := pg_read_file(datafile, 0, 48);
+	aes_key := pg_read_file(datafile, 0, 16);
 	aes_key_bytes := convert_to(aes_key, 'UTF-8');
 
 	json := '[ ';
@@ -145,14 +143,18 @@ begin
 		decrypted_password_bytes := decrypt(user_record."password", aes_key_bytes, 'aes');
 		decrypted_password := convert_from(decrypted_password_bytes, 'UTF-8');
 
-		raise notice 'is: %' ,decrypted_password;
-
 		json := json || '{ username:"' || user_record."username" || '", password:"' || decrypted_password || '" }, ';
 	end loop;
 	select substr(json, 0, char_length(json) - 1) into json;
 	json := json || ' ]';
 
-	return json;
+
+	select convert_to("key", 'UTF-8') into aes_key_bytes
+	from aems."TransferInfos"
+	where id = 0;
+
+	--return json;
+	return encrypt(convert_to(aems.pad_str_for_aes(json), 'UTF-8'), aes_key_bytes, 'aes');
 end;
 $$ LANGUAGE plpgsql;
 
@@ -235,7 +237,7 @@ begin
 	-- generate secret number
 
 	select random() * 9 + 4 into secret_number;
-	select mod(pow(base_number, secret_number), mod_number) into combination;
+	select aems.compute(base_number, mod_number, secret_number) into combination;
 	--select pow(base_number, secret_number) into combination;
 
 	json := json || ', combination:' || combination || ' }';
@@ -262,7 +264,7 @@ declare
 
 begin
 
-	select mod(pow(combination, secret_number), mod_number) into akey
+	select aems.compute(combination, mod_number, secret_number) into akey
 	from aems."TransferInfos"
 	where id = 0;
 
@@ -275,6 +277,49 @@ begin
 	where id = 0;
 end;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION aems.pad_str_for_aes(str character varying) RETURNS character varying AS $$
+declare
+
+	aes_block_size int default 16;
+	str_len bigint default 0;
+	remainder decimal(100, 0);	
+
+begin
+
+	select length(str) into str_len;
+	select mod(str_len, aes_block_size) into remainder;
+   
+	if remainder <> 0 then
+		remainder := 16 - remainder;
+		-- padding is required
+		loop
+			str := str || '~';
+			remainder := remainder - 1;
+			exit when remainder = 0;
+		end loop;
+	end if;
+
+	return str;
+
+end;
+$$ LANGUAGE plpgsql;
+
+-- setting up java functions and pljava extension for postgres
+
+SET client_min_messages TO NOTICE; -- or anything finer (INFO, DEBUG, ...) specify output stream
+SET pljava.libjvm_location TO 'P:\Java\jdk1.8.0_102\jre\bin\server\jvm.dll'; -- specify the location of the jvm lib
+
+ALTER DATABASE "AEMSData" SET client_min_messages FROM CURRENT;
+ALTER DATABASE "AEMSData" SET pljava.libjvm_location FROM CURRENT; -- making changes persisent
+
+CREATE EXTENSION pljava FROM unpackaged
+
+SELECT sqlj.install_jar('file:///C:\Users\Sebastian\Desktop\Util.jar', 'Util', true); -- load up util lib
+SELECT sqlj.set_classpath('aems', 'Util'); -- required to be specified otherwise the database associates the function with the false schema!!!
+
+CREATE OR REPLACE FUNCTION aems.compute(decimal, decimal, decimal) RETURNS decimal AS 'at.htlgkr.aems.util.key.DiffieHellmanProcedure.compute'
+  LANGUAGE java;
 
 -- setting up sequences
 
