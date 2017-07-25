@@ -9,15 +9,15 @@
 		  
 
 		  if(measuredElectricity>maxElectricity){
-			  alert("Ihr Stromverbrauch ist höher als sonst!", "warn");
+			  $.notify("Ihr Stromverbrauch ist höher als sonst!", "warn");
 		  }
 		  if(measuredGas>maxGas){
-			  alert("Ihr Gasverbrauch ist höher als sonst!", "warn");
+			  $.notify("Ihr Gasverbrauch ist höher als sonst!", "warn");
 		  }
 		  if(measuredWater>maxWater){
-			 alert("Ihr Wasserverbrauch ist höher als sonst!", "warn");
+			 $.notify("Ihr Wasserverbrauch ist höher als sonst!", "warn");
 			 }
 		  if(report>0){
-			  alert("Ein neuer Bericht steht zum Download bereit!", "info")
+			  $.notify("Ein neuer Bericht steht zum Download bereit!", "info")
 		  }
 	  }  
