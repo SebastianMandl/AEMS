@@ -85,10 +85,10 @@
 				<div class="loginmodal-container">
 					<h1>Login to Your Account</h1><br>
 				  <form>
-					<input type="text" name="user" placeholder="Username">
-					<input type="password" name="pass" placeholder="Password">
-					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
-					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+					<input type="text" name="user" placeholder="Username" required>
+					<input type="password" name="pass" placeholder="Password" required>
+					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
+					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
 				</div>
 			</div>
@@ -102,15 +102,14 @@
 				<div class="loginmodal-container">
 					<h1>Register your Account</h1><br>
 				  <form>
-					<input type="text" name="user" placeholder="Username">
-					<input type="password" name="pass" placeholder="Password">
+					<input type="text" name="user" placeholder="Username" required>
+					<input type="password" name="pass" placeholder="Password" required>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-				  </form>				
+				  </form>			
 				</div>
 			</div>
-		  </div>  
-
+		  </div>  	
 
   <script src="js/jquery-1.11.3.min.js"></script>
   <script src="js/bootstrap.js"></script>
