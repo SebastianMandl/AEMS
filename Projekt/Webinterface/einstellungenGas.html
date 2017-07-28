@@ -68,7 +68,35 @@
 
   
   <article class="einstellungen">
-		<h1>Einstellungen</h1>
+		<h2>Einstellungen für Gaszähler</h2>
+		<br/>
+		<h4>Berücksichtigte Zähler</h4>
+		<h5>Derzeit werden 2 von 7 Zählern berücksichtigt. <a href="#">Bearbeiten</a></h5>
+		<ul>
+			<li>AT00123</li> <!-- Maybe add a link here to redirect to a configuration page for that meter (Config Location etc.) -->
+			<li>AT00234</li>
+		</ul>
+		<br/>
+		<h4>Berichte</h4>
+		<h5>Berichtsperioden - In welchen Zeitabständen sollen Berichte erstellt werden?</h5>
+		<ul style="list-style: none"> <!-- Put this into .css file obviously. Duh -->
+			<li><input type="checkbox"> Wöchentlich</input></li>
+			<li><input type="checkbox"> Monatlich</input></li> <!-- Add Javascript so only one can be checked at once -->
+			<li onclick="javascript:$.notify('Dann kommt eine Eingabemaske für die Datumseingabe :)', 'info')"><input type="checkbox"> Benutzerdefiniert</input></li>
+		</ul>
+		<h5>Berichtsinhalte - Was sollen die Berichte enthalten?</h5>
+		<ul style="list-style: none">
+			<li><input type="checkbox"> Inhalt Alpha</input></li>
+			<li><input type="checkbox"> Inhalt Bravo</input></li>
+			<li><input type="checkbox"> Inhalt Ausreißer</input></li>
+		</ul>
+		<p><i>Und weitere Sachen ...</i></p>
+		<br/>
+		<h4>Statistiken</h4>
+		<p><i>Blaaaaaaaaaaaaaaaaaaaaaaaaa...</i></p>
+		
+		<button type="submit" value="ImNotInAForm">Speichern</button>
+		
 	</article>
   
   
