@@ -43,5 +43,10 @@ public class AemsMeter {
   public void setLocation(AemsLocation location) {
     this.location = location;
   }
+  
+  @Override
+  public String toString() {
+    return this.id + "@" + this.location;
+  }
 
 }

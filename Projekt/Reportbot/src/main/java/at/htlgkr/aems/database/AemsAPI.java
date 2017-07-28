@@ -1,11 +1,12 @@
 package at.htlgkr.aems.database;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +17,7 @@ import at.htlgkr.aems.util.Logger.LogType;
 
 
 public class AemsAPI {
-  
+  /* Before any static method is called, initialize the userList */
   static {
     initialize();
   }
@@ -25,20 +26,20 @@ public class AemsAPI {
   
   /**
    * This methods initializes this class by populating the {@link #userList}.
-   * Therefore, the AMES-API is called.
    */
   private static void initialize() {
     userList = new ArrayList<AemsUser>();
     
-    userList.add(new AemsUser(0, "Some", "User"));
-    
     try {
-      URL url = new URL("https://some.api.aems.at");
+      URL url = new URL("https://google.at"); // Just a placeholder for now
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       
       if(connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
         // MUST. DECRYPT. JSON
-        JSONArray users = new JSONArray(connection.getContent()); 
+        // connection.getContent() [InputStream]
+        
+        String rawData = readDataFromStream(new FileInputStream("test-login.json"));
+        JSONArray users = new JSONArray(rawData); 
         AemsUser aemsUser;
         for(int i = 0; i < users.length(); i++) {
           JSONObject user = users.getJSONObject(i);
@@ -59,15 +60,14 @@ public class AemsAPI {
             
             aemsUser.getMeters().add(new AemsMeter(meterId, type, location));
           }
-          
           userList.add(aemsUser);
-          
         }
         
       }
     } catch(Exception e) {
       Main.logger.log(LogType.WARN, "Error when initializing users list in AemsAPI! See log for details");
       e.printStackTrace(Main.logger.getPrinter());
+      e.printStackTrace();
     }
   }
   
@@ -79,7 +79,16 @@ public class AemsAPI {
     return new ArrayList<AemsUser>(userList);
   }
   
-  public static void insertWeatherData(List<Integer>lol) {
+  public static void insertWeatherData(/* Some WeatherData list */) {
     
   }
+  
+
+  private static String readDataFromStream(InputStream stream) throws IOException {
+    StringBuffer buffer = new StringBuffer();
+    while (stream.available() > 0) {
+        buffer.append((char) stream.read());
+    }
+    return buffer.toString();
+}
 }

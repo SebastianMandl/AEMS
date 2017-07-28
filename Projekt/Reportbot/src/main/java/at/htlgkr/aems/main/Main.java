@@ -62,6 +62,7 @@ public class Main {
   public static Logger logger = new Logger(LogType.DEBUG);
 
   public static void main(String[] args) {    
+    
     if(args.length == 1 && args[0].equals("-temp")) {
       updateTemperatures();
       return;
@@ -69,8 +70,7 @@ public class Main {
     logger.log(LogType.INFO, "Starting AEMS-ReportBot at %0%", 
         new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date()));
     usersToHandle = getUsers();
-    readExcelFiles();
-    //populateDownloaders();
+    populateDownloaders();
   }
   
   private static void updateTemperatures() {
