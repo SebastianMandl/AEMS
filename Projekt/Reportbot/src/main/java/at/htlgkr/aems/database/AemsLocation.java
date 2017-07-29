@@ -85,10 +85,17 @@ public class AemsLocation {
     return "AemsLocation {lat="+this.latitude + ", long=" + this.longitude + "}";
   }
   
+  /**
+   * Converts an AemsLocation (represented by a {@link JSONObject}) into an
+   * AemsLocation object. The {@code location} must (at least) contain either a
+   * {@code name} attribute or, if the {@code name} is {@code null}, a {@code lat} and a
+   * {@code long} attribute (as a {@link Double} value).
+   * @param location The location, as a JSONObject
+   * @return The location, as an AemsLocation
+   */
   public static AemsLocation fromJsonObject(JSONObject location) {
-    String name = location.getString("name");
-    if(name != null) {
-      return new AemsLocation(name);
+    if(location.get("name") != JSONObject.NULL) {
+      return new AemsLocation(location.getString("name"));
     }
     double lat = location.getDouble("lat");
     double lng = location.getDouble("long");

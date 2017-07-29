@@ -9,11 +9,11 @@ package at.htlgkr.aems.database;
  */
 public class AEMSDatabase {
 
-	public static final String METERS = Meters.class.getName();
-	public static final String METERTYPES = MeterTypes.class.getName();
-	public static final String USERS = Users.class.getName();
-	public static final String METERDATA = MeterData.class.getName();
-	public static final String WEATHERDATA = WeatherData.class.getName();
+	public static final String METERS = Meters.class.getSimpleName();
+	public static final String METERTYPES = MeterTypes.class.getSimpleName();
+	public static final String USERS = Users.class.getSimpleName();
+	public static final String METERDATA = MeterData.class.getSimpleName();
+	public static final String WEATHERDATA = WeatherData.class.getSimpleName();
 	
 	public enum Meters {
 		ID, METERTYPE, USER, CITY, LATITUDE, LONGITUDE;

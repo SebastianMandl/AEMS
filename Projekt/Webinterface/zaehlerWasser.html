@@ -39,7 +39,7 @@
             <!-- Menü Einstellungen -->
             <li class="dropdown"><a href="#" class="dropdown-toggle navBarItems" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Einstellungen<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="einstellungenStrom.html">Strom</a></li>
+                <li><a href="einstellungenBerichte.html">Berichte</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="einstellungenWasser.html">Wasser</a></li>
                 <li role="separator" class="divider"></li>
@@ -58,7 +58,10 @@
               </ul>
             </li>
              
-              <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png"></li>
+             <!-- Benachrichtigungsicon -->
+            <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png">
+                  <span id="notificationCounter" class="notification-counter" notificationCounter();></span>   
+                     </li>
                       
           </ul>
         </div>
@@ -128,10 +131,10 @@
 				<div class="loginmodal-container">
 					<h1>Login to Your Account</h1><br>
 				  <form>
-					<input type="text" name="user" placeholder="Username">
-					<input type="password" name="pass" placeholder="Password">
-					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
-					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+					<input type="text" name="user" placeholder="Username" required>
+					<input type="password" name="pass" placeholder="Password" required>
+					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
+					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
 				</div>
 			</div>
@@ -145,14 +148,14 @@
 				<div class="loginmodal-container">
 					<h1>Register your Account</h1><br>
 				  <form>
-					<input type="text" name="user" placeholder="Username">
-					<input type="password" name="pass" placeholder="Password">
+					<input type="text" name="user" placeholder="Username" required>
+					<input type="password" name="pass" placeholder="Password" required>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-				  </form>				
+				  </form>			
 				</div>
 			</div>
-		  </div>  
+		  </div>  	
 
 
   <script src="js/jquery-1.11.3.min.js"></script>

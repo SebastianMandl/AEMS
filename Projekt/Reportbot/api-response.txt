@@ -1,6 +1,7 @@
+[
 {
   "id": 0,
-  "name": "Hansi",
+  "user": "Hansi",
   "password": "hansi123",
   "meters": [
     {
@@ -23,3 +24,4 @@
     }
   ]
 }
+]
