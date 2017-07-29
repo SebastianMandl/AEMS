@@ -37,6 +37,8 @@
                 <li><a href="zaehlerWasser.html">Wasser</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="zaehlerGas.html">Gas</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="zaehlerWaerme.html">Wärme</a></li>
               </ul>
             </li>
             
@@ -45,7 +47,7 @@
               <ul class="dropdown-menu">
                 <li><a href="einstellungenBerichte.html">Berichte</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="einstellungenWasser.html">Wasser</a></li>
+               <li><a href="einstellungenStartseite.html">Startseite</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="einstellungenGas.html">Gas</a></li>
               </ul>
@@ -77,11 +79,11 @@
 
 
    <article class="einstellungen">
-		<h2>Berichte:</h2>
-		<button class="btn btn-default"><a href="#" data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Neuen Bericht erstellen</a></button>
-		<br>
-		<br>
-	 <div class="list-group reportList"> 
+	
+		<button class="btn btn-default ownButton"data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal">Neuen Bericht erstellen</button>
+		
+		<h2>Konfigurierte Berichte:</h2>
+	 <div class="list-group reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
 	  	  <a href="#" class="list-group-item ">
 		  	<h4 class="list-group-item-heading">Strombericht 1</h4>
 		  	<p class="list-group-item-text">Monatlich, automatisch generiert</p>
@@ -92,6 +94,22 @@
 		  </a>
 		  <a href="#" class="list-group-item ">
 		  	<h4 class="list-group-item-heading">Gasbericht 1</h4>
+		  	<p class="list-group-item-text">Täglich, automatisch generiert</p>
+		  </a>
+		</div>
+		
+		<h2 class="h2-downloads">Downloads:</h2>
+		<div class="list-group reportList"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Monatsbericht Strom August 2017</h4>
+		  	<p class="list-group-item-text">Monatlich, automatisch generiert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Jahresbericht Strom 2017</h4>
+		  	<p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Wochenbericht Gas Kalenderwoche 3 2017 </h4>
 		  	<p class="list-group-item-text">Täglich, automatisch generiert</p>
 		  </a>
 		</div>
@@ -134,11 +152,27 @@
 		  </div>  	
 		  
 	  	  
+	  	  
+	  	  
+<!-- Configured Report Modal -->
+ 	<div class="modal fade" id="configuredReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+			  	<h1>Gewählten Bericht...</h1><br>
+				  <form>
+				  	<button class="btn btn-default configuredReportButtons" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
+				  	<button class="btn btn-default">Löschen</button>
+					<a href="#" class="loginModalClose configuredReportClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
+				  </form>				
+				</div>
+			</div>
+		  </div>  
+	  	  
 		  	  <!-- New Report Modal -->
  <div class="modal fade" id="newReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
-					<h1>Neuen Bericht erstellen:</h1><br>
+					<h1>Neuen Bericht erstellen</h1><br>
 				  <form>
 				  	<h4>Berichtname</h4>
 					<input type="text" name="user" placeholder="Mein Bericht" required>
@@ -219,6 +253,94 @@
 				</div>
 			</div>
   </div>  <!-- New Report Modal Ende -->
+  
+  
+  
+   <!-- Edit Report Modal -->
+ <div class="modal fade" id="editReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Bericht bearbeiten</h1><br>
+				  <form>
+				  	<h4>Berichtname</h4>
+					<input type="text" name="user" placeholder="Mein Bericht" required>
+					<h4>Zählertyp</h4>
+					<div class="btn-group">
+    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						<ul class="dropdown-menu">
+							<li role="presentation"><a href="#">Strom</a></li>
+       						<li role="presentation"><a href="#">Wasser</a></li>
+        					<li role="presentation"><a href="#">Gas</a></li>     
+        					<li role="presentation"><a href="#">Wärme</a></li>
+					  </ul>
+  					</div>
+  					<h4>Verwendete Zähler</h4>
+  						<button class="btn btn-default" type="button">Alle</button>
+  						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+					
+					<h4>Zeitraum</h4>
+						<div class="btn-group">
+    						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret"></span></button>
+   								<ul class="dropdown-menu">
+									<li role="presentation"><a href="#">Tag</a></li>
+        							<li role="presentation"><a href="#">Woche</a></li>
+        							<li role="presentation"><a href="#">Monat</a></li>     
+        							<li role="presentation"><a href="#">Jahr</a></li>
+    							</ul>
+  						</div>
+  						
+  						<h4>Anomalien berücksichtigen</h4>
+						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret"></span></button>
+    						<ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Außentemperatur</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Tageszeit</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Jahreszeit</label>
+    							</div>
+    							</li>
+    						</ul>
+  						</div>
+					<h4>Bericht automatisch generieren</h4>
+					<div id="RadioButtons1">
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioYes">
+					  <label for="Radio1">Ja</label>
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioNo">
+					  <label for="Radio2">Nein</label>
+				    </div>
+				    
+					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit" value="Bericht erstellen">
+					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+				  </form>			
+				</div>
+			</div>
+  </div>  <!-- Edit Report Modal Ende -->
 
 
 
