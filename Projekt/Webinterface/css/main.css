@@ -27,8 +27,22 @@
 	width: 20em;
 }
 .modal-footer.footerFormat {
-	margin-top: 25px;
+	margin-top: 4em;
+
 }
+.nav.navbar-nav.navbar-right li .notification-counter {
+	position: absolute;
+	background-color: red;
+	top: 30px;
+	left: 40px;
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 40px 40px 40px 40px;
+	padding-left: 6px;
+	padding-top: 1px;
+	font-weight: bold;
+}
+
 
 @media (max-width: 767px){
 	.navbar-header .navbar-brand.titleFormat .titleImage {

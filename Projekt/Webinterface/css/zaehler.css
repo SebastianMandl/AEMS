@@ -11,3 +11,10 @@
 	padding-right: 10px;
 
 }
+.article .btn.btn-default.btn-statistikErstellen {
+	float: left;
+}
+.article .btn.btn-default.btn-statistikHerunterladen {
+	float: right;
+	margin-right: 2%;
+}
