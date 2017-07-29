@@ -81,16 +81,16 @@
 		<button class="btn btn-default"><a href="#" data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Neuen Bericht erstellen</a></button>
 		<br>
 		<br>
-	 <div class="list-group reportList"> 
-	  	  <a href="#" class="list-group-item ">
+	 <div class="list-group reportList" id="reportList"> 
+	  	  <a href="#" class="list-group-item" rname="Strombericht 1">
 		  	<h4 class="list-group-item-heading">Strombericht 1</h4>
 		  	<p class="list-group-item-text">Monatlich, automatisch generiert</p>
 		  </a>
-		  <a href="#" class="list-group-item ">
+		  <a href="#" class="list-group-item " rname="Strombericht 2">
 		  	<h4 class="list-group-item-heading">Strombericht 2</h4>
 		  	<p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
 		  </a>
-		  <a href="#" class="list-group-item ">
+		  <a href="#" class="list-group-item " rname="Strombericht 1241">
 		  	<h4 class="list-group-item-heading">Gasbericht 1</h4>
 		  	<p class="list-group-item-text">Täglich, automatisch generiert</p>
 		  </a>
@@ -141,7 +141,7 @@
 					<h1>Neuen Bericht erstellen:</h1><br>
 				  <form>
 				  	<h4>Berichtname</h4>
-					<input type="text" name="user" placeholder="Mein Bericht" required>
+					<input type="text" name="user" id="newReportName" placeholder="Mein Bericht" required>
 					<h4>Zählertyp</h4>
 					<div class="btn-group">
     				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
