@@ -8,9 +8,14 @@
     
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/main.css" rel="stylesheet" type="text/css">
-	<link href="css/zaehler.css" rel="stylesheet" type="text/css">
+	<link href="css/einstellungen.css" rel="stylesheet" type="text/css">
 	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
-	
+	<link href="jQueryAssets/jquery.ui.core.min.css" rel="stylesheet" type="text/css">
+	<link href="jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css">
+	<link href="jQueryAssets/jquery.ui.button.min.css" rel="stylesheet" type="text/css">
+	<link href="css/berichte.css" rel="stylesheet" type="text/css">
+  <script src="jQueryAssets/jquery-1.11.1.min.js"></script>
+  <script src="jQueryAssets/jquery.ui-1.10.4.button.min.js"></script>
   </head>
   <body style="padding-top: 70px">
     <nav class="navbar navbar-default navbar-inverse navbar-fixed-top navbarMainFormat">
@@ -21,7 +26,7 @@
          <a class="navbar-brand titleFormat" href="index.html"><img class="titleImage" src="images/logo_schrift.png" alt="Nix"></a></div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="topFixedNavbar1">
- 
+          
           <ul class="nav navbar-nav navbar-right">
             
             <!-- Menü Zählerdaten -->
@@ -56,11 +61,12 @@
                  <li> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
               </ul>
             </li>
+            
              
              <!-- Benachrichtigungsicon -->
             <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png">
                   <span id="notificationCounter" class="notification-counter" notificationCounter();></span>   
-                     </li>
+            </li>
                       
           </ul>
         </div>
@@ -69,56 +75,29 @@
       <!-- /.container-fluid -->
     </nav>
 
-  
-  
-  
-  <!-- Seiteninhalt -->
-  <article class="article">
-  
-  <h4 class="h4">Über welchen Zeitraum wollen Sie Ihre Statistik erhalten:</h4>
-  
-  <div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret"></span></button>
-    <ul class="dropdown-menu">
-		<li role="presentation"><a href="#">Tag</a></li>
-        <li role="presentation"><a href="#">Woche</a></li>
-        <li role="presentation"><a href="#">Monat</a></li>     
-        <li role="presentation"><a href="#">Jahr</a></li>
-    </ul>
-  </div>
-  
-  
-  <h4 class="h4">Von welchen Zählern wollen Sie die Statistik:</h4>
- 		
-  		<button class="btn btn-default" type="button">Alle</button>
-  		<div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
-    <ul class="dropdown-menu format">
-		<li role="presentation"><div class="checkbox">
-     		 <label><input type="checkbox" value="">AT368746482374</label>
-    		 </div>
-    	</li>
-       <li role="presentation"><div class="checkbox">
-     		 <label><input type="checkbox" value="">AT368746482374</label>
-    		 </div>
-    	</li>
-    	<li role="presentation"><div class="checkbox">
-     		 <label><input type="checkbox" value="">AT368746482374</label>
-    		 </div>
-    	</li>
-    	<li role="presentation"><div class="checkbox">
-     		 <label><input type="checkbox" value="">AT368746482374</label>
-    		 </div>
-    	</li>
-    </ul>
-  </div>
-<br>
-<br>
-<button class="btn btn-default" type="button">Statistik erstellen</button>
-  
-  </article>
-  
-  
+
+   <article class="einstellungen">
+		<h2>Berichte:</h2>
+		<button class="btn btn-default"><a href="#" data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Neuen Bericht erstellen</a></button>
+		<br>
+		<br>
+	 <div class="list-group reportList"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Strombericht 1</h4>
+		  	<p class="list-group-item-text">Monatlich, automatisch generiert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Strombericht 2</h4>
+		  	<p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Gasbericht 1</h4>
+		  	<p class="list-group-item-text">Täglich, automatisch generiert</p>
+		  </a>
+		</div>
+   </article>
+   
+
    <footer class="modal-footer footerFormat">&copy; Ein Dienst der Energiegenossenschaft Eferding</footer>
 
 
@@ -153,6 +132,94 @@
 				</div>
 			</div>
 		  </div>  	
+		  
+	  	  
+		  	  <!-- New Report Modal -->
+ <div class="modal fade" id="newReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Neuen Bericht erstellen:</h1><br>
+				  <form>
+				  	<h4>Berichtname</h4>
+					<input type="text" name="user" placeholder="Mein Bericht" required>
+					<h4>Zählertyp</h4>
+					<div class="btn-group">
+    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						<ul class="dropdown-menu">
+							<li role="presentation"><a href="#">Strom</a></li>
+       						<li role="presentation"><a href="#">Wasser</a></li>
+        					<li role="presentation"><a href="#">Gas</a></li>     
+        					<li role="presentation"><a href="#">Wärme</a></li>
+					  </ul>
+  					</div>
+  					<h4>Verwendete Zähler</h4>
+  						<button class="btn btn-default" type="button">Alle</button>
+  						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+					
+					<h4>Zeitraum</h4>
+						<div class="btn-group">
+    						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret"></span></button>
+   								<ul class="dropdown-menu">
+									<li role="presentation"><a href="#">Tag</a></li>
+        							<li role="presentation"><a href="#">Woche</a></li>
+        							<li role="presentation"><a href="#">Monat</a></li>     
+        							<li role="presentation"><a href="#">Jahr</a></li>
+    							</ul>
+  						</div>
+  						
+  						<h4>Anomalien berücksichtigen</h4>
+						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret"></span></button>
+    						<ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Außentemperatur</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Tageszeit</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Jahreszeit</label>
+    							</div>
+    							</li>
+    						</ul>
+  						</div>
+					<h4>Bericht automatisch generieren</h4>
+					<div id="RadioButtons1">
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioYes">
+					  <label for="Radio1">Ja</label>
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioNo">
+					  <label for="Radio2">Nein</label>
+				    </div>
+				    
+					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit" value="Bericht erstellen">
+					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+				  </form>			
+				</div>
+			</div>
+  </div>  <!-- New Report Modal Ende -->
+
 
 
   <script src="js/jquery-1.11.3.min.js"></script>
@@ -160,9 +227,6 @@
   <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
   <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
   <script language="javascript" type="text/javascript" src="js/notify.js"></script>
- 
-	  
-	  
-	 
+  <script language="javascript" type="text/javascript" src="js/berichte.js"></script>
 </body>
 </html>
