@@ -84,6 +84,7 @@ public class FileDownloader implements Runnable {
       Main.retry(this);
     } catch (LoginFailedException e) {
       Main.logger.log(LogType.ERROR, "Cannot log into account of user '%0%'. Wrong password?", user.getUsername());
+      e.printStackTrace(Main.logger.getPrinter());
       Main.failed(this);
     } catch (Exception e) {
       Main.logger.log(LogType.ERROR, "An unexpected error occured while handling user %0%. Shutting down...", user.getUsername());

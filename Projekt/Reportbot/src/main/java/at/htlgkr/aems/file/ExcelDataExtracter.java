@@ -35,8 +35,7 @@ public class ExcelDataExtracter implements Runnable {
     if(!excelFolder.exists()) {
       return;
     }
-    Main.logger.log(LogType.INFO, "(%0%) Reading Excel Files (%1% in total)", 
-        user.getUsername(), excelFolder.list().length);
+    
     for(File excelFile : excelFolder.listFiles()) {
       
       ExcelFileReader reader = new ExcelFileReader(excelFile);
