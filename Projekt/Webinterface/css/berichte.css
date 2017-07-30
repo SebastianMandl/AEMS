@@ -4,7 +4,7 @@
 
 }
 .einstellungen .h2-downloads {
-	margin-top: 3em;
+	margin-top: 2em;
 }
 .list-group.reportList .list-group-item. .btn.btn-default.btn-orientation{
 	float:right;
@@ -17,4 +17,6 @@
 	float: left;
 	margin-right: 10px;
 	margin-left: 55px;
+}.loginmodal-container form .login.loginmodal-submit.submitFormat {
+	margin-top: 15px;
 }

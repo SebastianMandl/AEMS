@@ -1,15 +1,18 @@
 @charset "utf-8";
+.einstellungen {
+	margin-top: 5em;
+	margin-left: 3%;
+}
 .article {
 	margin-top: 5em;
 	margin-left: 3%;
 }
 .article .h4 {
-	margin-top: 1%;
+	margin-top: 2em;
 }
 .article .btn-group .dropdown-menu.format {
 	padding-left: 10px;
 	padding-right: 10px;
-
 }
 .article .btn.btn-default.btn-statistikErstellen {
 	float: left;
@@ -17,4 +20,14 @@
 .article .btn.btn-default.btn-statistikHerunterladen {
 	float: right;
 	margin-right: 2%;
+}
+.loginmodal-container form .login.loginmodal-submit.submitFormat {
+	margin-top: 15px;
+}
+form .btn-group .dropdown-menu.zaehler_format {
+	padding-left: 10px;
+
+}
+.article .statisticTitlePosition {
+	margin-top: 2em;
 }
