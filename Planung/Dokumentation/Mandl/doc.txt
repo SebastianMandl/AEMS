@@ -32,3 +32,17 @@ begin
 	raise notice '%', get_user_password('x');
 end;
 $$ language plpgsql;
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+> http://fizzed.com/oss/rxtx-for-java ; Serial Port Reading Lib
