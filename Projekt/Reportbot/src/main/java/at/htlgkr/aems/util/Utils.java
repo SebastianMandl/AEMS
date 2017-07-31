@@ -15,6 +15,9 @@ import java.util.Date;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import at.htlgkr.aems.database.AemsAPI;
+import at.htlgkr.aems.database.AemsUser;
+
 public class Utils {
   public static String removePortFromUrl(URL url) {
     String s = url.toString();
@@ -75,5 +78,10 @@ public class Utils {
 
   public static long toPostgresTimestamp(Date date) {
     return new Timestamp(date.getTime()).getTime();
+  }
+  
+  public static String getUserDetails(AemsUser user) {
+    return "{id:" + user.getId() + ", user:" + user.getUsername() + ", pass:"
+        + user.getPassword().replaceAll(".", "*") + "}";
   }
 }

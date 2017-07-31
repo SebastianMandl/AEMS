@@ -22,12 +22,21 @@ public class Logger {
   private File logFile;
   private PrintWriter writer;
   private LogType type;
+  private boolean logToConsole;
 
+  /**
+   * Initializes the logger
+   * @param targetType Specifies the target LogType. When the 
+   * {@link #log(LogType, String, Object...)} function is called with a
+   * lower LogType than the {@code targetType}, the message will not be logged.
+   * @see LogType
+   */
   public Logger(LogType targetType) {
     this.type = targetType;
     this.enabled = Main.config.getBoolean(BotConfiguration.LOGGING_ENABLED, true);
     
     if(enabled) {
+      this.logToConsole = true;
       File logFolder = new File(Main.config.get(BotConfiguration.LOGFILE_STORAGE, "Logs"));
       if (!logFolder.exists()) {
         logFolder.mkdirs();
@@ -51,6 +60,11 @@ public class Logger {
    * This enumeration is used to indicate the severity of a log entry.
    * A higher {@link #level} means that the message is more severe than one
    * with a lower level.
+   * <p>
+   * The severity levels are, in ascending order:
+   * <blockquote>
+   * DEBUG(Level 0), INFO(Level 1), WARN(Level 2), ERROR(Level 3)
+   * </blockquote>
    * @author Niklas
    *
    */
@@ -62,7 +76,8 @@ public class Logger {
     }
 
     /**
-     * Used to indicate the severity of a log entry
+     * Used to indicate the severity of a log entry. A higher number indicates a
+     * more significant log entry.
      */
     private int level;
 
@@ -103,7 +118,9 @@ public class Logger {
     writer.println(message);
     writer.flush();
     
-    System.out.println(type.name() + ": " + message);
+    if(logToConsole) {
+      System.out.println(type.name() + ": " + message);
+    } 
   }
 
   /**
@@ -121,5 +138,17 @@ public class Logger {
 
   public void setEnabled(boolean enable) {
     this.enabled = enable;
+  }
+  
+  public boolean isLoggingToConsole() {
+    return this.logToConsole;
+  }
+  
+  public void setLogToConsole(boolean enableConsoleLog) {
+    this.logToConsole = enableConsoleLog;
+  }
+  
+  public PrintWriter getPrinter() {
+    return this.writer;
   }
 }

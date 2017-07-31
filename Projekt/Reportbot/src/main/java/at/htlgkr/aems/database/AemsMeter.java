@@ -2,7 +2,6 @@ package at.htlgkr.aems.database;
 
 public class AemsMeter {
   
-  
   public enum MeterType {
     ELECTRIC, WATER, GAS;
   }
@@ -45,6 +44,9 @@ public class AemsMeter {
     this.location = location;
   }
   
-  
+  @Override
+  public String toString() {
+    return this.id + "@" + this.location;
+  }
 
 }

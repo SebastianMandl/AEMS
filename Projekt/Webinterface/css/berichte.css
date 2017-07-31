@@ -1,0 +1,22 @@
+@charset "utf-8";
+.einstellungen .list-group.reportList {
+	margin-right: 3%;
+
+}
+.einstellungen .h2-downloads {
+	margin-top: 2em;
+}
+.list-group.reportList .list-group-item. .btn.btn-default.btn-orientation{
+	float:right;
+}.einstellungen {
+}
+.loginmodal-container form .loginModalClose.configuredReportClose {
+	padding-top: 40px;
+}
+.loginmodal-container form .btn.btn-default.configuredReportButtons {
+	float: left;
+	margin-right: 10px;
+	margin-left: 55px;
+}.loginmodal-container form .login.loginmodal-submit.submitFormat {
+	margin-top: 15px;
+}
