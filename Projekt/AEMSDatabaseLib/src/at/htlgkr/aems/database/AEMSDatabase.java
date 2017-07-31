@@ -9,18 +9,20 @@ package at.htlgkr.aems.database;
  */
 public class AEMSDatabase {
 
-	public static final String METERS = Meters.class.getName();
-	public static final String METERTYPES = MeterTypes.class.getName();
-	public static final String USERS = Users.class.getName();
-	public static final String METERDATA = MeterData.class.getName();
-	public static final String WEATHERDATA = WeatherData.class.getName();
+	public static final String SCHEMA = "aems";
+	
+	public static final String METERS = "Meters";
+	public static final String METERTYPES = "MeterTypes";
+	public static final String USERS = "Users";
+	public static final String METERDATA = "MeterData";
+	public static final String WEATHERDATA = "WeatherData";
 	
 	public enum Meters {
 		ID, METERTYPE, USER, CITY, LATITUDE, LONGITUDE;
 	}
 	
 	public enum MeterTypes {
-		ID, DISPLAYNAME;
+		ID, DISPLAY_NAME;
 	}
 	
 	public enum Users {
@@ -28,7 +30,7 @@ public class AEMSDatabase {
 	}
 	
 	public enum MeterData {
-		ID, METER, TIMESTAMP, MEASUREDVALUE;
+		ID, METER, TIMESTAMP, MEASURED_VALUE;
 	}
 	
 	public enum WeatherData {

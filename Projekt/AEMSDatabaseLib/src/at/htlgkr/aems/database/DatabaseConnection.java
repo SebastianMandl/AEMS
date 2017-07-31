@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import at.htlgkr.aems.util.logger.Logger;
-import at.htlgkr.aems.util.logger.Logger.LogType;
+import at.htlgkr.aems.logger.Logger;
+import at.htlgkr.aems.logger.Logger.LogType;
 
 /**
  * This class represents the database connection.

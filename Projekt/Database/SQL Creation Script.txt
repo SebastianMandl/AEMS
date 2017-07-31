@@ -1,6 +1,8 @@
 -- run this setup script as the database administrator
 -- this script is required to be run within an existing database named "AEMSData"
 
+CREATE EXTENSION pgcrypto;
+
 DROP OWNED BY aems CASCADE; -- everything which has been owned by the user "aems" will be dropped by issuing this command
 DROP USER IF EXISTS aems;
 CREATE USER aems WITH ENCRYPTED PASSWORD 'aems' VALID UNTIL '2018-01-01' ; -- creates the user with a predifined password. This password is required to be changed for security reasons!
@@ -90,7 +92,9 @@ CREATE TABLE aems."TransferInfos"
  * this function deletes a user.
 **/
 DROP FUNCTION aems.delete_user(varchar);
-CREATE OR REPLACE FUNCTION aems.delete_user(p_username character varying) RETURNS boolean AS $$
+CREATE FUNCTION aems.delete_user(p_username character varying) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
 declare
 
 	row_count_before integer;
@@ -113,7 +117,9 @@ begin
 		return false;
 	end if;
 end;
-$$ LANGUAGE plpgsql;
+$$;
+
+ALTER FUNCTION aems.delete_user(p_username character varying) OWNER TO aems;
 
 /**
   * This function returns an encrypted json.
@@ -121,7 +127,9 @@ $$ LANGUAGE plpgsql;
   * this functions requires a tranfer-key to be priorly exchanged!
 **/
 DROP FUNCTION aems.get_user_infos();
-CREATE OR REPLACE FUNCTION aems.get_user_infos() RETURNS bytea AS $$
+CREATE FUNCTION aems.get_user_infos() RETURNS bytea
+    LANGUAGE plpgsql
+    AS $$
 declare
 	decrypted_password_bytes bytea;
 	aes_key varchar(48);
@@ -140,8 +148,10 @@ begin
 	json := '[ ';
 	for user_record in (select username, "password"
 			    from aems."Users") loop
-		decrypted_password_bytes := decrypt(user_record."password", aes_key_bytes, 'aes');
+	        decrypted_password_bytes := aems.request_decryption(aes_key_bytes, user_record."password");
 		decrypted_password := convert_from(decrypted_password_bytes, 'UTF-8');
+
+		raise notice 'is: %' ,decrypted_password;
 
 		json := json || '{ username:"' || user_record."username" || '", password:"' || decrypted_password || '" }, ';
 	end loop;
@@ -153,17 +163,20 @@ begin
 	from aems."TransferInfos"
 	where id = 0;
 
-	--return json;
-	return encrypt(convert_to(aems.pad_str_for_aes(json), 'UTF-8'), aes_key_bytes, 'aes');
+	return aems.request_encryption(aes_key_bytes, convert_to(json, 'UTF-8'));
 end;
-$$ LANGUAGE plpgsql;
+$$;
+
+ALTER FUNCTION aems.get_user_infos() OWNER TO aems;
 
 /**
   * this function registers a new user meaning it creates a record for the user.
   * the password will be encrypted by the aes standard. the key is deposited outside of the database
 **/
 DROP FUNCTION aems.register_user(varchar, varchar);
-CREATE OR REPLACE FUNCTION aems.register_user(username character varying, clear_text_password character varying) RETURNS boolean AS $$
+CREATE FUNCTION aems.register_user(username character varying, clear_text_password character varying) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
 declare
 	pass_bytes bytea;
 	decrypted_text varchar(4096);
@@ -178,11 +191,11 @@ declare
 begin
 	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
 	-- key file must be relocated in the future!!!
-	aes_key := pg_read_file(datafile, 0, 48);
+	aes_key := pg_read_file(datafile, 0, 16);
 
 	pass_bytes := convert_to(clear_text_password, 'UTF-8');
 	aes_key_bytes := convert_to(aes_key, 'UTF-8');
-	encrypted_pass_bytes := encrypt(pass_bytes, aes_key_bytes, 'aes');
+	encrypted_pass_bytes := aems.request_encryption(aes_key_bytes, pass_bytes);
 
 	select count(*) into row_count_before
 	from aems."Users";
@@ -203,15 +216,19 @@ exception
 	when others then
 		return false;	
 end;
-$$ LANGUAGE plpgsql;
+$$;
+
+
+ALTER FUNCTION aems.register_user(username character varying, clear_text_password character varying) OWNER TO aems;
+
 
 /**
   * This function initiates the diffie-hellman-procedure
   * calling this function will prepare the next transfer-key generation
 **/
-CREATE OR REPLACE FUNCTION aems.get_transfer_infos()
-  RETURNS character varying AS
-$BODY$
+CREATE FUNCTION aems.get_transfer_infos() RETURNS character varying
+    LANGUAGE plpgsql
+    AS $$
 declare
 
 	json varchar(200);
@@ -238,7 +255,6 @@ begin
 
 	select random() * 9 + 4 into secret_number;
 	select aems.compute(base_number, mod_number, secret_number) into combination;
-	--select pow(base_number, secret_number) into combination;
 
 	json := json || ', combination:' || combination || ' }';
 
@@ -250,13 +266,19 @@ begin
 	-- return info
 	return json;
 end;
-$$ LANGUAGE plpgsql;
+
+$$;
+
+
+ALTER FUNCTION aems.get_transfer_infos() OWNER TO aems;
 
 /**
   * This function concludes the diffie-hellman-procedure commenced by aems.get_transfer_infos()
   * This function computes the key and temporarily stores it into a table.
 **/
-CREATE OR REPLACE FUNCTION aems.verify_transfer_infos(combination numeric) RETURNS void AS $$
+CREATE FUNCTION aems.verify_transfer_infos(combination numeric) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
 declare
 
 	akey decimal(400, 0);
@@ -269,41 +291,17 @@ begin
 	where id = 0;
 
 	SELECT CAST(akey AS varchar(500)) into varchar_key;	
-	select substr(varchar_key, 1, 48) into varchar_key;
+	select substr(varchar_key, 1, 16) into varchar_key;
 	
 
 	update aems."TransferInfos" -- store the key into "TransferInfos"
 	set "key" = varchar_key
 	where id = 0;
 end;
-$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION aems.pad_str_for_aes(str character varying) RETURNS character varying AS $$
-declare
+$$;
 
-	aes_block_size int default 16;
-	str_len bigint default 0;
-	remainder decimal(100, 0);	
-
-begin
-
-	select length(str) into str_len;
-	select mod(str_len, aes_block_size) into remainder;
-   
-	if remainder <> 0 then
-		remainder := 16 - remainder;
-		-- padding is required
-		loop
-			str := str || '~';
-			remainder := remainder - 1;
-			exit when remainder = 0;
-		end loop;
-	end if;
-
-	return str;
-
-end;
-$$ LANGUAGE plpgsql;
+ALTER FUNCTION aems.verify_transfer_infos(combination numeric) OWNER TO aems;
 
 -- setting up java functions and pljava extension for postgres
 
@@ -319,7 +317,19 @@ SELECT sqlj.install_jar('file:///C:\Users\Sebastian\Desktop\Util.jar', 'Util', t
 SELECT sqlj.set_classpath('aems', 'Util'); -- required to be specified otherwise the database associates the function with the false schema!!!
 
 CREATE OR REPLACE FUNCTION aems.compute(decimal, decimal, decimal) RETURNS decimal AS 'at.htlgkr.aems.util.key.DiffieHellmanProcedure.compute'
-  LANGUAGE java;
+  	LANGUAGE java;
+
+ALTER FUNCTION aems.compute(decimal, decimal, decimal) OWNER TO aems;
+
+CREATE OR REPLACE FUNCTION aems.request_decryption(bytea, bytea) RETURNS bytea AS 'at.htlgkr.aems.util.crypto.Decrypter.requestDecryption'
+	LANGUAGE java;
+
+ALTER FUNCTION aems.request_decryption(bytea, bytea) OWNER TO aems;
+
+CREATE FUNCTION request_encryption(bytea, bytea) RETURNS bytea AS 'at.htlgkr.aems.util.crypto.Encrypter.requestEncryption'
+    LANGUAGE java;
+
+ALTER FUNCTION aems.request_encryption(bytea, bytea) OWNER TO aems;
 
 -- setting up sequences
 
@@ -368,6 +378,9 @@ GRANT EXECUTE ON FUNCTION aems.get_user_infos() TO aems;
 GRANT EXECUTE ON FUNCTION aems.register_user(varchar, varchar) TO aems;
 GRANT EXECUTE ON FUNCTION aems.get_transfer_infos() TO aems;
 GRANT EXECUTE ON FUNCTION aems.verify_transfer_infos(numeric) TO aems;
+GRANT EXECUTE ON FUNCTION aems.request_encryption(bytea, bytea) TO aems;
+GRANT EXECUTE ON FUNCTION aems.request_decryption(bytea, bytea) TO aems;
+GRANT EXECUTE ON FUNCTION aems.compute(decimal, decimal, decimal) TO aems;
 
 -- revoking all the privileges from others that do not need accessibility
 -- REVOKE ALL PRIVILEGES ON DATABASE "AEMSData" FROM public;
@@ -382,11 +395,5 @@ ALTER TABLE aems."Meters" OWNER TO aems;
 ALTER TABLE aems."MeterTypes" OWNER TO aems;
 ALTER TABLE aems."WeatherData" OWNER TO aems;
 ALTER TABLE aems."TransferInfos" OWNER TO aems;
-
-ALTER FUNCTION aems.get_user_infos() OWNER TO aems;
-ALTER FUNCTION aems.register_user(varchar, varchar) OWNER TO aems;
-ALTER FUNCTION aems.delete_user(varchar) OWNER TO aems;
-ALTER FUNCTION aems.verify_transfer_infos(numeric) OWNER TO aems;
-ALTER FUNCTION aems.get_transfer_infos() OWNER TO aems;
 
 ALTER SEQUENCE aems.user_seq OWNER TO aems;
