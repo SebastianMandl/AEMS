@@ -46,6 +46,18 @@
 	font-size: 1em;
 }
 
+.loginmodal-container form .login-info {
+	color: darkgrey;
+	font-size: small;
+}
+.loginmodal-container form .termsOfUse-position {
+	margin-left: 2em;
+	margin-top: -5em;
+}
+
+
+
+
 
 
 @media (max-width: 767px){

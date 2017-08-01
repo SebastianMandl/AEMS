@@ -115,9 +115,10 @@
 				<div class="loginmodal-container">
 					<h1>Login to Your Account</h1><br>
 				  <form>
-					<input type="text" name="user" placeholder="Username" required>
-					<input type="password" name="pass" placeholder="Password" required>
+					<input type="text" id="username" name="user" placeholder="Username" required>
+					<input type="password" id="password" name="pass" placeholder="Password" required>
 					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
+					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
 				</div>
@@ -134,14 +135,14 @@
 				  <form>
 					<input type="text" name="user" placeholder="Username" required>
 					<input type="password" name="pass" placeholder="Password" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
+					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
 				  </form>			
 				</div>
 			</div>
 		  </div>  	
-		  
-	  	  
 	  	  
 	  	  
 <!-- Configured Report Modal -->
@@ -176,25 +177,25 @@
         					<li role="presentation"><a href="#">Wärme</a></li>
 					  </ul>
   					</div>
-  					<h4>Verwendete Zähler</h4>
+  					<h4>Zu verwendende Statistiken</h4>
   						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
-    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistiken<span class="caret"></span></button>
    						  <ul class="dropdown-menu zaehler_format">
 								<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Stromstatistik 1</label>
     		 					</div>
     							</li>
        							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Gasstatistik 1</label>
     		 					</div>
     							</li>
     							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Wärmemengenstatistik 3</label>
     							</div>
     							</li>
     							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Gasstatistik 2</label>
     		 					</div>
     							</li>
     						</ul>
@@ -229,12 +230,19 @@
     							</li>
     						</ul>
   						</div>
+  					<h4>Werte mit Vorperiode vergleichen</h4>
+					<div id="RadioButtonsVorperiode">
+					  <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeYes">
+					  <label for="RadioVorperiodeYes">Ja</label>
+					  <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeNo">
+					  <label for="RadioVorperiodeNo">Nein</label>
+				    </div>
 					<h4>Bericht automatisch generieren</h4>
-					<div id="RadioButtons1">
-					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioYes">
-					  <label for="Radio1">Ja</label>
-					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioNo">
-					  <label for="Radio2">Nein</label>
+					<div id="RadioButtonsAutomaticGenerating">
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateYes">
+					  <label for="RadioGenerateAutomaticallyYes">Ja</label>
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo">
+					  <label for="RadioGenerateAutomaticallyNo">Nein</label>
 				    </div>
 				    
 					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht erstellen">
@@ -264,25 +272,25 @@
         					<li role="presentation"><a href="#">Wärme</a></li>
 					  </ul>
   					</div>
-  					<h4>Verwendete Zähler</h4>
+  					<h4>Zu verwendende Statistiken</h4>
   						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
-    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistiken<span class="caret"></span></button>
    						  <ul class="dropdown-menu zaehler_format">
 								<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Stromstatistik 1</label>
     		 					</div>
     							</li>
        							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Gasstatistik 1</label>
     		 					</div>
     							</li>
     							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Wärmemengenstatistik 3</label>
     							</div>
     							</li>
     							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">AT368746482374</label>
+     		 						<label><input type="checkbox" value="">Gasstatistik 2</label>
     		 					</div>
     							</li>
     						</ul>
@@ -317,12 +325,19 @@
     							</li>
     						</ul>
   						</div>
+					<h4>Werte mit Vorperiode vergleichen</h4>
+					<div id="RadioButtonsVorperiode">
+					  <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeYes">
+					  <label for="RadioVorperiodeYes">Ja</label>
+					  <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeNo">
+					  <label for="RadioVorperiodeNo">Nein</label>
+				    </div>
 					<h4>Bericht automatisch generieren</h4>
-					<div id="RadioButtons1">
-					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioYes">
-					  <label for="Radio1">Ja</label>
-					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioNo">
-					  <label for="Radio2">Nein</label>
+					<div id="RadioButtonsAutomaticGenerating">
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateYes">
+					  <label for="RadioGenerateAutomaticallyYes">Ja</label>
+					  <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo">
+					  <label for="RadioGenerateAutomaticallyNo">Nein</label>
 				    </div>
 				    
 					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht bearbeiten">

@@ -1,3 +1,7 @@
 $(function() {
-	$( "#RadioButtons1" ).buttonset(); 
+	$( "#RadioButtonsVorperiode" ).buttonset(); 
+});
+
+$(function() {
+	$( "#RadioButtonsAutomaticGenerating" ).buttonset(); 
 });

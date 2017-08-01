@@ -11,33 +11,34 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * This class provides decryption functionality.
- * It decrypts using the AES algorithm.
+ * This class provides encryption functionality.
+ * It encrypts using the AES Algorithm.
  * 
  * This class will be used at client side as well as at server side and database side.
  * @author Sebastian
- * @since 25-07-2017
+ * @since 28-07-2017
  * @version 1.0
+ * 
  */
-public class Decrypter {
+public class Encrypter {
 
 	/**
-	 * This function is utilized to decrypt prior encrypted bytes with AES.
+	 * This function is utilized to encrypt raw bytes with AES.
 	 * @param key - the key formatted according to AES
-	 * @param encrypted - the encrypted bytes which shell be decrypted
-	 * @return the decrypted byte array version of the encrypted byte array passed into this function.
+	 * @param raw - the raw bytes which shell be encrypted
+	 * @return the encrypted byte array version of the raw byte array passed into this function.
 	 * @throws IllegalBlockSizeException - if the block size is not a multiple of the key length
 	 * @throws BadPaddingException - if the padding of the encrypted bytes is invalid
 	 * @throws InvalidKeyException - if the key is not valid for the specified algoritm AES
-	 * @throws NoSuchAlgorithmException - this exception cannot occur since this function takes care of the integrity of the decryption functionality.
+	 * @throws NoSuchAlgorithmException - this exception cannot occur since this function takes care of the integrity of the encryption functionality.
 	 * @throws NoSuchPaddingException - if the padding is not proper
 	 */
-	public static byte[] requestDecryption(byte[] key, byte[] encrypted) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
+	public static byte[] requestEncryption(byte[] key, byte[] raw) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 		Key keyBytes = new SecretKeySpec(key, "AES");
 		Cipher cipher = Cipher.getInstance("AES");
-		cipher.init(Cipher.DECRYPT_MODE, keyBytes);
-		byte[] decrypted = cipher.doFinal(encrypted);
-		return decrypted;
+		cipher.init(Cipher.ENCRYPT_MODE, keyBytes);
+		byte[] encrypted = cipher.doFinal(raw);
+		return encrypted;
 	}
 	
 }
