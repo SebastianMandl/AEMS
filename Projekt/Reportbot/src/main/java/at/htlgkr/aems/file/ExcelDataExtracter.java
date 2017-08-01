@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import at.htlgkr.aems.database.AemsAPI;
 import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.database.MeterValue;
 import at.htlgkr.aems.main.Main;
@@ -44,7 +45,7 @@ public class ExcelDataExtracter implements Runnable {
       while((row = reader.read()) != null) {
           row.setId(meterId);
           if(row.isValid()) {
-            // database.saveMeter...
+            AemsAPI.insertMeterData(row);
           }
       }
       

@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -80,7 +81,15 @@ public class AemsAPI {
   }
   
   public static void insertWeatherData(/* Some WeatherData list */) {
-    
+    throw new NotImplementedException("Not supported yet!");
+  }
+  
+  public static void insertMeterData(MeterValue meter) {
+    //IMPORTANT: Due to the way this is programmed it is possible that
+    // rows could be inserted multiple times. On insert, the database will have
+    // to check if an entry like this (same meterId and timestamp) already
+    // exists. If so, do not insert this row.
+    throw new NotImplementedException("Not supported yet!");
   }
   
 
