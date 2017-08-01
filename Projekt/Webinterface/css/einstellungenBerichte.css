@@ -17,3 +17,6 @@ form .btn-group .dropdown-menu.zaehler_format {
 .loginmodal-container form .loginModalClose.configuredReportClose {
 	padding-top: 40px;
 }
+.einstellungen .list-group.reportList {
+	margin-right: 3%;
+}

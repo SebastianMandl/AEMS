@@ -50,7 +50,7 @@
                 <li role="separator" class="divider"></li>
                 <li onClick="functionLogout();"> <a href="#" class="navBarItems">Logout</a></li>
                 <li role="separator" class="divider"></li>
-                 <li> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
+                 <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
               </ul>
             </li>
    
@@ -99,6 +99,7 @@
 					<input type="text" id="username" name="user" placeholder="Username" required>
 					<input type="password" id="password" name="pass" placeholder="Password" required>
 					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
+					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
 				</div>
@@ -115,7 +116,9 @@
 				  <form>
 					<input type="text" name="user" placeholder="Username" required>
 					<input type="password" name="pass" placeholder="Password" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
+					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
 				  </form>			
 				</div>
