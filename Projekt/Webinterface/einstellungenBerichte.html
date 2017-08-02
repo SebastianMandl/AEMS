@@ -74,15 +74,15 @@
 		
 		<h2 class="h2-downloads">Konfigurierte Berichte:</h2>
 	 <div class="list-group reportList" id="reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
-	  	  <a href="#" class="list-group-item" rname="Strombericht 1">
+	  	  <a href="#" class="list-group-item" rname="Strombericht 1" onClick="setConfiguredModalText('Strombericht 1')">
 		  	<h4 class="list-group-item-heading">Strombericht 1</h4>
 		  	<p class="list-group-item-text">Monatlich, automatisch generiert</p>
 		  </a>
-		  <a href="#" class="list-group-item" rname="Strombericht 2">
+		  <a href="#" class="list-group-item" rname="Strombericht 2" onClick="setConfiguredModalText('Strombericht 2')">
 		  	<h4 class="list-group-item-heading">Strombericht 2</h4>
 		  	<p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
 		  </a>
-		  <a href="#" class="list-group-item" rname="Gasbericht 1">
+		  <a href="#" class="list-group-item" rname="Gasbericht 1" onClick="setConfiguredModalText('Gasbericht 1')">
 		  	<h4 class="list-group-item-heading">Gasbericht 1</h4>
 		  	<p class="list-group-item-text">Täglich, automatisch generiert</p>
 		  </a>
@@ -149,9 +149,9 @@
  	<div class="modal fade" id="configuredReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
-			  	<h1>Gewählten Bericht...</h1><br>
+			  	<h1 id="configuredReportName">Gewählten Bericht...</h1><br>
 				  <form>
-				  	<button class="btn btn-default configuredReportButtons" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
+				  	<button class="btn btn-default configuredReportButtons" onclick="openEditReportModal()" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
 				  	<button class="btn btn-default">Löschen</button>
 					<a href="#" class="loginModalClose configuredReportClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
@@ -262,7 +262,7 @@
 					<h1>Bericht bearbeiten</h1><br>
 				  <form>
 				  	<h4>Berichtname</h4>
-					<input type="text" name="user" placeholder="Mein Bericht" required>
+					<input id="newReportName" type="text" name="user" placeholder="Mein Bericht" required>
 					<h4>Zählertyp</h4>
 					<div class="btn-group">
     				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
