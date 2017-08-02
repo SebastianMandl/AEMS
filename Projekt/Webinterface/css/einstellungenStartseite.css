@@ -27,3 +27,8 @@ form .btn-group .dropdown-menu.zaehler_format {
 .article .btn-group .dropdown-menu.format {
 	padding-left: 10px;
 }
+.loginmodal-container form .btn.btn-default.btn-addStatisticToIndexpage {
+	position: relative;
+	width: 100%;
+	margin-bottom: 1em;
+}
