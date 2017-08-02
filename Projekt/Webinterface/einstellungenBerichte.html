@@ -37,7 +37,7 @@
               <ul class="dropdown-menu">
                 <li><a href="einstellungenBerichte.html">Berichte</a></li>
                 <li role="separator" class="divider"></li>
-               <li><a href="einstellungenStartseite.html">Startseite</a></li>
+               <li><a href="einstellungenStartseite.html">Statistiken und<br>Startseite</a></li>
 				 <li role="separator" class="divider"></li>
                <li><a href="einstellungenWarnungen.html">Warnungen</a></li>
               </ul>
@@ -73,16 +73,16 @@
 		<button class="btn btn-default ownButton"data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal">Neuen Bericht erstellen</button>
 		
 		<h2 class="h2-downloads">Konfigurierte Berichte:</h2>
-	 <div class="list-group reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
-	  	  <a href="#" class="list-group-item ">
+	 <div class="list-group reportList" id="reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item" rname="Strombericht 1">
 		  	<h4 class="list-group-item-heading">Strombericht 1</h4>
 		  	<p class="list-group-item-text">Monatlich, automatisch generiert</p>
 		  </a>
-		  <a href="#" class="list-group-item ">
+		  <a href="#" class="list-group-item" rname="Strombericht 2">
 		  	<h4 class="list-group-item-heading">Strombericht 2</h4>
 		  	<p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
 		  </a>
-		  <a href="#" class="list-group-item ">
+		  <a href="#" class="list-group-item" rname="Gasbericht 1">
 		  	<h4 class="list-group-item-heading">Gasbericht 1</h4>
 		  	<p class="list-group-item-text">Täglich, automatisch generiert</p>
 		  </a>
@@ -211,6 +211,7 @@
         							<li role="presentation"><a href="#">Jahr</a></li>
     							</ul>
   						</div>
+  						<input type="date" class="dateFormat" required>
   						
   						<h4>Anomalien berücksichtigen</h4>
 						<div class="btn-group">
@@ -306,6 +307,7 @@
         							<li role="presentation"><a href="#">Jahr</a></li>
     							</ul>
   						</div>
+  						<input type="date" class="dateFormat" required>
   						
   						<h4>Anomalien berücksichtigen</h4>
 						<div class="btn-group">

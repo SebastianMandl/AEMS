@@ -31,3 +31,7 @@ form .btn-group .dropdown-menu.zaehler_format {
 .article .statisticTitlePosition {
 	margin-top: 2em;
 }
+.dateFormat {
+	margin-left: 10px;
+	visibility: hidden;
+}

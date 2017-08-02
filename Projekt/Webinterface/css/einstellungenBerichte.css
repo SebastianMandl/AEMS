@@ -20,3 +20,8 @@ form .btn-group .dropdown-menu.zaehler_format {
 .einstellungen .list-group.reportList {
 	margin-right: 3%;
 }
+.dateFormat {
+	margin-left: 10px;
+	visibility: hidden;
+}
+

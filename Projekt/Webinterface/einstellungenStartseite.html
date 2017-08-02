@@ -33,7 +33,7 @@
               <ul class="dropdown-menu">
                 <li><a href="einstellungenBerichte.html">Berichte</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="einstellungenStartseite.html">Startseite</a></li>
+                <li><a href="einstellungenStartseite.html">Statistiken und<br>Startseite</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="einstellungenWarnungen.html">Warnungen</a></li>
               </ul>
@@ -65,9 +65,25 @@
 
 	<article class="einstellungen">
 	
-		<button class="btn btn-default ownButton"data-toggle="modal" data-target="#newIndexpageStatistic-modal" data-backdrop="false" data-dismiss="modal">Neue Statistik anlegen</button>
+		<button class="btn btn-default ownButton"data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Neue Statistik anlegen</button>
 		
 		<h2 class="statistics-h2">Statistiken der Startseite:</h2>
+	 <div class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Stromstatistik 1</h4>
+		  	<p class="list-group-item-text">Monatlich</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Stromstatistik 2</h4>
+		  	<p class="list-group-item-text">Wöchentlich</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Gasstatistik 1</h4>
+		  	<p class="list-group-item-text">Täglich</p>
+		  </a>
+		</div>
+		
+		<h2 class="statistics-h2">Alle Statistiken</h2>
 	 <div class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
 	  	  <a href="#" class="list-group-item ">
 		  	<h4 class="list-group-item-heading">Stromstatistik 1</h4>
@@ -80,6 +96,18 @@
 		  <a href="#" class="list-group-item ">
 		  	<h4 class="list-group-item-heading">Gasstatistik 1</h4>
 		  	<p class="list-group-item-text">Täglich</p>
+		  </a>
+		   <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Gasstatistik 2</h4>
+		  	<p class="list-group-item-text">Wöchentlich</p>
+		  </a>
+		   <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Gasstatistik 3</h4>
+		  	<p class="list-group-item-text">Monatlich</p>
+		  </a>
+		   <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Gasstatistik 4</h4>
+		  	<p class="list-group-item-text">Jährlich</p>
 		  </a>
 		</div>
    </article>
@@ -124,12 +152,30 @@
 		  </div>  	  	
 		  
 		  
+		  
+		   <!-- Indexpage Statistics Modal -->
+ 	<div class="modal fade" id="indexpageStatistics-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+			  	<h1>Gewählte Statistik...</h1><br>
+				  <form>
+				    <button class="btn btn-default btn-addStatisticToIndexpage">Von Startseite entfernen</button>
+					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
+				  </form>				
+				</div>
+			</div>
+		  </div>  
+		  
+		  
+		  
+		  
 		  <!-- Configured Statistics Modal -->
  	<div class="modal fade" id="configuredStatistics-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
 			  	<h1>Gewählte Statistik...</h1><br>
 				  <form>
+				    <button class="btn btn-default btn-addStatisticToIndexpage">Zu Startseite hinzufügen</button>
 				  	<button class="btn btn-default configuredStatisticButtons" data-toggle="modal" data-target="#editIndexpageStatistic-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
 				  	<button class="btn btn-default">Löschen</button>
 					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
@@ -138,8 +184,8 @@
 			</div>
 		  </div>  
 	  	  
-		  	  <!-- New Indexpage Statistic Modal -->
- <div class="modal fade" id="newIndexpageStatistic-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+		  	  <!-- New Statistic Modal -->
+ <div class="modal fade" id="newStatistic-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
 					<h1>Neue Statistik erstellen</h1><br>

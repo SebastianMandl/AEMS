@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,7 +32,7 @@
               <ul class="dropdown-menu">
                 <li><a href="einstellungenBerichte.html">Berichte</a></li>
                 <li role="separator" class="divider"></li>
-               <li><a href="einstellungenStartseite.html">Startseite</a></li>
+               <li><a href="einstellungenStartseite.html">Statistiken und<br>Startseite</a></li>
                <li role="separator" class="divider"></li>
                 <li><a href="einstellungenWarnungen.html">Warnungen</a></li>
               </ul>
@@ -67,7 +67,7 @@
   <!-- Seiteninhalt -->
   <article class="article">
   
-  <button class="btn btn-default ownButton"data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
+  <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
   <button class="btn btn-default btn-statistikHerunterladen" type="button">Statistik herunterladen</button>
   
   <h2 class="statisticTitlePosition">Hier wird dann der Name der Statistik angezeigt</h2>
@@ -168,6 +168,8 @@
     							</ul>
   						</div>
   						
+  						<input type="date" class="dateFormat" required>
+  						
   						<h4>Anomalien berücksichtigen</h4>
 						<div class="btn-group">
     					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret"></span></button>
@@ -193,6 +195,7 @@
 				</div>
 			</div>
   </div>  <!-- New Statistic Modal Ende -->	
+  
 
 
   <script src="js/jquery-1.11.3.min.js"></script>
