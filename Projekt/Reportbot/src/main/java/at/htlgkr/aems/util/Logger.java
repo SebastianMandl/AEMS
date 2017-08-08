@@ -131,6 +131,17 @@ public class Logger {
   public void log(LogType type, String message) {
     log(type, message, new Object[] {});
   }
+  
+  /**
+   * Logs an exception
+   */
+  public void log(LogType type, Exception e) {
+    e.printStackTrace(this.writer);
+    writer.flush();
+    if(logToConsole) {
+      e.printStackTrace();
+    }
+  }
 
   public boolean isEnabled() {
     return this.enabled;

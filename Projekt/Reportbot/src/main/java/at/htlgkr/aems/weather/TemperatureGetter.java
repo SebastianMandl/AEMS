@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import at.htlgkr.aems.database.AemsAPI;
 import at.htlgkr.aems.database.AemsMeter;
 import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.main.Main;
@@ -32,6 +33,14 @@ public class TemperatureGetter {
   }
   
   public void updateTemperatures() {
+    try {
+      for(AemsMeter meter : user.getMeters()) {
+        double temp = getTemperature(meter);
+      }
+    } catch(Exception e) {
+      Main.logger.log(LogType.ERROR, "Error when collecting weather data of user %0%", user.getUsername());
+      Main.logger.log(LogType.ERROR, e);
+    }
     
   }
   
@@ -62,5 +71,5 @@ public class TemperatureGetter {
         buffer.append((char) stream.read());
     }
     return buffer.toString();
-}
+  }
 }

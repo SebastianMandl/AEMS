@@ -1,8 +1,10 @@
 package at.htlgkr.aems.database;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,7 +18,15 @@ import at.htlgkr.aems.database.AemsMeter.MeterType;
 import at.htlgkr.aems.main.Main;
 import at.htlgkr.aems.util.Logger.LogType;
 
-
+/**
+ * This class is specifically designed to access and write data regarding
+ * the back-end data collection. This includes data such as users (and
+ * their credentials), meters, meter values and weather data. <p>
+ * 
+ * It is <b>not</b> made for accessing data from structures that were
+ * created by the AEMS team, such as Statistics / Report Data.
+ * @author Niklas
+ */
 public class AemsAPI {
   /* Before any static method is called, initialize the userList */
   static {
@@ -94,10 +104,12 @@ public class AemsAPI {
   
 
   private static String readDataFromStream(InputStream stream) throws IOException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
     StringBuffer buffer = new StringBuffer();
-    while (stream.available() > 0) {
-        buffer.append((char) stream.read());
+    String line;
+    while((line = reader.readLine()) != null) {
+      buffer.append(line);
     }
     return buffer.toString();
-}
+  }
 }
