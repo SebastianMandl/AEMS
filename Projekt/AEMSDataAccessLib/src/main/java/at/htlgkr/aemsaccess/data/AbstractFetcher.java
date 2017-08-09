@@ -7,11 +7,14 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -20,7 +23,8 @@ import org.json.JSONObject;
  * the {@link #fetch(Object...)} or the {@link #bulkFetch(Object...)} method(s)
  * (depending if the API-Call returns one piece of data or a set of data).
  * @author Niklas
- *
+ * @see SingleItemFetcher
+ * @see MultiItemFetcher
  */
 public abstract class AbstractFetcher implements ApiFetcher {
 
@@ -44,6 +48,12 @@ public abstract class AbstractFetcher implements ApiFetcher {
   
   public abstract String getSubUrl();
   
+  /**
+   * This method converts the contents of an {@link InputStream} into a String
+   * @param stream The stream to be read
+   * @return The contents of the stream
+   * @throws IOException If an IOException occures
+   */
   protected String readDataFromStream(InputStream stream) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
     StringBuffer buffer = new StringBuffer();
@@ -66,18 +76,19 @@ public abstract class AbstractFetcher implements ApiFetcher {
   
   /**
    * Executes a HTTP POST request against the {@code customUrl}. The result of this call
-   * is supposed to be a JSON string. The JSON string is parsed into an appropriate 
-   * structure (JSONObject / JSONArray) and returned.
+   * will be parsed into a JSON string and wrapped into the appropriate JSON structure.
    * @param customUrl 
    * @return The result of the call, represented as a JSON Structure
+   * @see JSONArray
+   * @see JSONObject
    */
   protected Object fetchJsonFromUrl(String customUrl) {
     try {
       URL url = new URL(customUrl);
-      
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("GET"); //TODO: Set to POST
-      connection.setDoOutput(true);
+      
+      connection.setRequestMethod("GET");
+      connection.setDoInput(true);
       connection.setRequestProperty("Authorization", "Basic " + encodeBase64(authenticationString));
       
       InputStream response = (InputStream) connection.getContent();
@@ -87,10 +98,15 @@ public abstract class AbstractFetcher implements ApiFetcher {
       } else {
         return new JSONObject(rawData);
       }
-    } catch (Exception e) {
+    } catch (MalformedURLException e) {
       e.printStackTrace();
+    } catch (ProtocolException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch(JSONException e) {
+       e.printStackTrace();
     }
-    //
     return null;
   }
 
