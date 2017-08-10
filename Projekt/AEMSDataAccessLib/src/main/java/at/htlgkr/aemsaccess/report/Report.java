@@ -5,7 +5,7 @@ import java.util.List;
 import at.htlgkr.aemsaccess.data.ApiData;
 import at.htlgkr.aemsaccess.statistic.Statistic;
 
-public class Report implements ApiData{
+public class Report implements ApiData {
   
   private Integer reportId;
   private Integer userId;
