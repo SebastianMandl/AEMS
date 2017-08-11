@@ -14,5 +14,7 @@
 		MeasuredValue ( = Messwert)
 	Logindaten (Users)
 30:		ID
+		Email
+		Postalcode
 		Username
 		Password (encrypted)
