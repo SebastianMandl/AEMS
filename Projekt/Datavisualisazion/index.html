@@ -2,23 +2,31 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<link href="css/chartist/chartist.css" rel="stylesheet"/>
-		<!-- <script src="javascript/chartist/chartist.js"></script>  FIND CHARTIST LOCAL "DOCUMENTS" -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.js"></script>
+		<script src="javascript/chartist/Chart.js"></script>
 		<script src="javascript/jquery/jquery-3.2.1.min.js"></script>
 		<style>
-			p, i {
+			p, h3 {
 				font-family: Tahoma;
 			}
+			
+			canvas {}
 		</style>
 	</head>
 	<body>
-		<p>Energieverbräuche dieser Woche:</p>
-		<div class="chart-here" style="width: 90%">
-		</div>
-		<p>Klicken Sie auf die Kreise für genauere Info</p>
-		<i>Versuche die Bildschirmbreite zu verändern und achte auf die Wochentage :)</i>
-		<script src="javascript/custom/linechart.js"></script>
-	
+		<h3>Dies ist ein Test</h3>
+		<p>Hier soll ein BAR CHART zum Darstellen des Stromverbrauches und ein LINE GRAPH zum Darstellen
+		der Temperatur erscheinen! </p>
+	<div>
+		<canvas id="canvas" style="width: 600px;height: 400px"></canvas>
+	</div>
 	</body>
+	
+	<script src="javascript/custom/show-consumption.js"></script>
+	<script>
+		var time = ["KW 29", "KW 30", "KW 31", "KW 32"];
+		var avgConsumptions = [120, 110, 90, 110];
+		var avgTemp = [31, 24, 30, 30];
+		showConsumption(time, avgConsumptions, avgTemp);
+		
+	</script>
 </html>

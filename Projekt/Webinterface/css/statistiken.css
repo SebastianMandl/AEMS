@@ -35,3 +35,22 @@ form .btn-group .dropdown-menu.zaehler_format {
 	margin-left: 10px;
 	visibility: hidden;
 }
+
+.statistic-container {
+	width: 600px;
+	height: 400px;
+}
+
+.statistic-temp  {
+	display: inline;
+}
+
+.statistic-consumption {
+	display: inline;
+	float: right;
+}
+
+.statistic-container canvas {
+	width: inherit;
+	height: inherit;
+}

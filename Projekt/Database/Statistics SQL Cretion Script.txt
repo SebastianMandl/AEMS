@@ -48,6 +48,7 @@ CREATE TABLE ames."StatisticOptions"
 (
   option_id numeric(10,0) NOT NULL,
   statistic_id numeric(10,0) NOT NULL,
+  time_id numeric(10,0) NOT NULL,
 
   operating_time_start TIME,
   operating_time_end TIME,
