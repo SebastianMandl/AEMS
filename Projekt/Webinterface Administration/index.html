@@ -32,14 +32,12 @@
           	<li class="navBarItems"><a href="administration.html">Administration</a></li>      
           	<li class="navBarItems"><a href="zustaendigkeit.html">Zuständigkeit</a></li>      
             
-            <!-- Menü Login, Logout und Registrieren -->
+            <!-- Menü Login, Logout -->
              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>         
                 <li role="separator" class="divider"></li>
                 <li onClick="functionLogout();"> <a href="#" class="navBarItems">Logout</a></li>
-                <li role="separator" class="divider"></li>
-                 <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
               </ul>
             </li>
                       
@@ -113,25 +111,6 @@
 				</div>
 			</div>
 		  </div>  
- 
- 
- 
- <!-- Register Modal -->
- <div class="modal fade" id="register-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  		<div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Register your Account</h1><br>
-				  <form>
-					<input type="text" name="user" placeholder="Username" required>
-					<input type="password" name="pass" placeholder="Password" required>
-					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
-					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
-					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-				  </form>			
-				</div>
-			</div>
-		  </div>  	
- 
  
  
  <!-- AEMS Users Modal -->
