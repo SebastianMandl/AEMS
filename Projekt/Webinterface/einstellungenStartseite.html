@@ -126,6 +126,7 @@
 					<input type="password" id="password" name="pass" placeholder="Password" required>
 					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
 					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
+					<a href="#" name="forgotPassword" data-dismiss="modal" aria-hidden="true" >Passwort vergessen</a>
 					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
 				</div>
@@ -142,7 +143,10 @@
 				  <form>
 					<input type="text" name="user" placeholder="Username" required>
 					<input type="password" name="pass" placeholder="Password" required>
-					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<input type="text" name="plz" placeholder="Postleitzahl" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> 
+					<label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
 					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -194,16 +198,27 @@
 					<input type="text" name="user" placeholder="Meine Statistik" required>
 					<h4>Zählertyp</h4>
 					<div class="btn-group">
-    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
-   						<ul class="dropdown-menu">
-							<li role="presentation"><a href="#">Strom</a></li>
-       						<li role="presentation"><a href="#">Wasser</a></li>
-        					<li role="presentation"><a href="#">Gas</a></li>     
-        					<li role="presentation"><a href="#">Wärme</a></li>
-					  </ul>
-  					</div>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
   					<h4>Verwendete Zähler</h4>
-  						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
     					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
    						  <ul class="dropdown-menu zaehler_format">
@@ -236,6 +251,21 @@
         							<li role="presentation"><a href="#">Jahr</a></li>
     							</ul>
   						</div>
+  						
+  					<h4>Anomalien berücksichtigen</h4>
+						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret"></span></button>
+    						<ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Außentemperatur</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Jahreszeit</label>
+    							</div>
+    							</li>
+    						</ul>
+  						</div>	
 				     <h4>Anmerkung</h4>
 				    <input type="text">
 					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik erstellen">
@@ -257,16 +287,27 @@
 					<input type="text" name="user" placeholder="Meine Statistik" required>
 					<h4>Zählertyp</h4>
 					<div class="btn-group">
-    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
-   						<ul class="dropdown-menu">
-							<li role="presentation"><a href="#">Strom</a></li>
-       						<li role="presentation"><a href="#">Wasser</a></li>
-        					<li role="presentation"><a href="#">Gas</a></li>     
-        					<li role="presentation"><a href="#">Wärme</a></li>
-					  </ul>
-  					</div>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
   					<h4>Verwendete Zähler</h4>
-  						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
     					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
    						  <ul class="dropdown-menu zaehler_format">
@@ -298,6 +339,20 @@
         							<li role="presentation"><a href="#">Monat</a></li>     
         							<li role="presentation"><a href="#">Jahr</a></li>
     							</ul>
+  						</div>
+  						<h4>Anomalien berücksichtigen</h4>
+						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret"></span></button>
+    						<ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Außentemperatur</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Jahreszeit</label>
+    							</div>
+    							</li>
+    						</ul>
   						</div>
 				     <h4>Anmerkung</h4>
 				    	<input type="text">

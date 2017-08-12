@@ -29,7 +29,8 @@
           <ul class="nav navbar-nav navbar-right">
             
             <!-- Menü Administration -->
-          	<li class="navBarItems"><a href="administration.html">Administration</a></li>            
+          	<li class="navBarItems"><a href="administration.html">Administration</a></li>
+          	<li class="navBarItems"><a href="zustaendigkeit.html">Zuständigkeit</a></li>            
             
             <!-- Menü Login, Logout und Registrieren -->
              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
@@ -37,8 +38,6 @@
                 <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>         
                 <li role="separator" class="divider"></li>
                 <li onClick="functionLogout();"> <a href="#" class="navBarItems">Logout</a></li>
-                <li role="separator" class="divider"></li>
-                 <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
               </ul>
             </li>
                       
@@ -110,24 +109,7 @@
 				</div>
 			</div>
 		  </div>  
- 
- 
- 
- <!-- Register Modal -->
- <div class="modal fade" id="register-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  		<div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Register your Account</h1><br>
-				  <form>
-					<input type="text" name="user" placeholder="Username" required>
-					<input type="password" name="pass" placeholder="Password" required>
-					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
-					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
-					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-				  </form>			
-				</div>
-			</div>
-		  </div>  	
+
  
  
  <!-- New Admin Modal -->
@@ -138,8 +120,10 @@
 				  <form>
 					<h4>Name</h4>
 					<input type="text" name="user" placeholder="Max Mustermann" required>
-					<h4>Zuständigkeitsbereich</h4>
-					<input type="text" name="user" placeholder="Lösung noch offen" required>
+					<h4>E-Mail</h4>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<h4>Benutzername</h4>
+					<input type="text" name="user" placeholder="Benutzername" required>
 					<h4>Berechtigungen</h4>
 					<p>
 					  <label>
@@ -170,8 +154,10 @@
 				  <form>
 					<h4>Name</h4>
 					<input type="text" name="user" placeholder="Max Mustermann" required>
-					<h4>Zuständigkeitsbereich</h4>
-					<input type="text" name="user" placeholder="Lösung noch offen" required>
+					<h4>E-Mail</h4>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<h4>Benutzername</h4>
+					<input type="text" name="user" placeholder="Benutzername" required>
 					<h4>Berechtigungen</h4>
 					<p>
 					  <label>
@@ -200,6 +186,7 @@
 			  	<h1>Gewählten Administrator...</h1><br>
 				  <form>
 		    		<button type="submit" class="btn btn-default btn-editOrDelete" data-toggle="modal" data-target="#editAdmin-modal" data-dismiss="modal" aria-hidden="true">Bearbeiten</button>
+		    		<button type="submit" class="btn btn-default btn-editOrDelete"  data-dismiss="modal" aria-hidden="true">Passwort zurücksetzen</button>
 		    		<button type="submit" class="btn btn-default btn-editOrDelete"  data-dismiss="modal" aria-hidden="true">Löschen</button>
 					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
 				  </form>				
