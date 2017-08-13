@@ -37,8 +37,25 @@ form .btn-group .dropdown-menu.zaehler_format {
 }
 
 .statistic-container {
-	width: 600px;
-	height: 400px;
+	width: 100%;
+	height: 100%;
+	display: block;
+	margin-top: 30px;
+}
+
+/* Aktuelle Statistik */
+.statistic-primary {
+	width: 500px;
+	height: 350px;
+	display: inline-block;
+}
+
+/* Statistik des Vorjahres */
+.statistic-secondary {
+	width: 500px;
+	height: 350px;
+	display: inline-block;
+	margin-left: 40px;
 }
 
 .statistic-temp  {
@@ -53,4 +70,8 @@ form .btn-group .dropdown-menu.zaehler_format {
 .statistic-container canvas {
 	width: inherit;
 	height: inherit;
+}
+
+btn btn-default {
+	display: block;
 }

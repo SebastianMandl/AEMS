@@ -12,7 +12,7 @@ function showConsumption(canvasId, intervals, valuesConsumption, valuesTemperatu
     labels: intervals,
     datasets: [
 	 {
-        label: "My First dataset",
+        label: "Stromverbrauch",
 		yAxesGroup: "1",
         //new option, type will default to bar as that what is used to create the scale
         type: "bar",
@@ -47,29 +47,36 @@ function showConsumption(canvasId, intervals, valuesConsumption, valuesTemperatu
 		 scaleFontColor: "rgba(151,187,205,0.8)"
 	 }]
 };	
-
-	var canvas = document.getElementById(canvasId).getContext("2d");
-	window.myChart = new Chart(canvas).Overlay(data, {
+	try {
+		var canvas = document.getElementById(canvasId).getContext("2d");
+		window.myChart = new Chart(canvas).Overlay(data, {
 		populateSparseData: true,
 		overlayBars: false,
 		datasetFill: true,
 	}); 
+	} catch(ex) {
+		canvas.font = "15px Arial";
+		canvas.fillText("Error, check console", 10, 50);
+		console.log("Error while rendering statistic in canvas " + canvasId + ": " + ex);
+	}
+	
 
 
 }
 // https://davidwalsh.name/convert-image-data-uri-javascript
-function getDataUri(url, callback) {
+function getDataUri(url, callbackOk, callbackFail) {
     var image = new Image();
-
     image.onload = function () {
         var canvas = document.createElement('canvas');
         canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
         canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-
-        canvas.getContext('2d').drawImage(this, 0, 0);
-
-        // ... or get as Data URI
-        callback(canvas.toDataURL('image/png'));
+		
+		try {
+			callbackOk(canvas.toDataURL('image/png'));
+		} catch(err) {
+			console.log(err);
+		}
+        
     };
 
     image.src = url;

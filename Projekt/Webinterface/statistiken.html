@@ -68,18 +68,49 @@
   <article class="article">
   
   <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
-  <button class="btn btn-default btn-statistikHerunterladen" type="button">Statistik herunterladen</button>
-  
-  <h2 class="statisticTitlePosition">Hier wird dann der Name der Statistik angezeigt</h2>
-  <p>Und die dazugehörige Statistik</p>
-  
-  <h2 class="statisticTitlePosition">Stromstatistico numero uno</h2>
-  	<div class="statistic-container">
+	
+	<div class="statistic-container">
+		<div class="statistic-primary">
+			<h2>Statistico Numero Uno</h2>
+			<p class="statistic-temp">Temperatur (Gelb)</p>
+			<p class="statistic-consumption">Verbrauch (Lila)</p>
+			<canvas id="canvas_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+			<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+		</div>
+		<div class="statistic-secondary">
+			<h2>Statistiko los Vorperiodos</h2>
+			<p class="statistic-temp">Temperatur (Gelb)</p>
+			<p class="statistic-consumption">Verbrauch (Lila)</p>
+			<canvas id="canvas_1_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+			<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+		</div>
+	</div>
+	
+	<div class="statistic-container">
+		<div class="statistic-primary">
+			<h2>I'ma fluento in Espanól</h2>
+			<p class="statistic-temp">Temperatur (Gelb)</p>
+			<p class="statistic-consumption">Verbrauch (Lila)</p>
+			<canvas id="canvas_2"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+			<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+		</div>
+	</div>
+	
+	<!--
+	<div class="statistic-container">
 		<p class="statistic-temp">Temperatur (Gelb)</p>
 		<p class="statistic-consumption">Verbrauch (Lila)</p>
-		<canvas id="canvas_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+		<canvas id="canvas_1"></canvas> 
 		<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
 	</div>
+	
+	<div class="statistic-container compare">
+		<p class="statistic-temp">Temperatur (Gelb)</p>
+		<p class="statistic-consumption">Verbrauch (Lila)</p>
+		<canvas id="canvas_2"></canvas> 
+		<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+	</div>
+	-->
 
   </article>
   
@@ -234,31 +265,23 @@
 		var avgConsumptions = [120, 110, 90, 110];
 		var avgTemp = [31, 24, 30, 30];
 		showConsumption("canvas_1", time, avgConsumptions, avgTemp);
+		showConsumption("canvas_1_1", time, avgConsumptions, avgTemp);
+		showConsumption("canvas_2", time, avgConsumptions, avgTemp);
+
 		
 		$("#download-s").click(function() {
 		    var button = $(this);
-		    button.text("PDF wird erstellt (Bitte einen Moment Geduld ...)");
 			html2canvas($("#canvas_1"), {
             onrendered: function(canvas) {         
                 var imgData = canvas.toDataURL(
-                    'image/png');              
+                    'image/png');
                 var doc = new jsPDF('p', 'mm');
-				doc.setFontSize(50);
-				doc.text("BIG TEXT!", 20, 20);
+				doc.setFontSize(35);
+				doc.text("ICH BIMS GROSSES TEXT", 20, 30);
 				doc.setFontSize(10);
-				doc.text("I hope you are enjoying this wonderful PDF document!", 20, 25);
-                doc.addImage(imgData, 'PNG', 20, 30);
-				
-				// Thaddäus hat Gene ;)
-				getDataUri("images/squid.jpg", function(imageData) {
-					doc.addImage(imageData, 'PNG', 20, 120);
-					doc.save('stromstatistik-1.pdf');
-					button.text("");
-					button.append("<span></span> ");
-					button.append("PDF herunterladen");
-					button.find("span").addClass("glyphicon glyphicon-download-alt");
-				});
-                
+				doc.text("Erfreuen Sie sich an dieser Statistik :)", 22, 35);
+                doc.addImage(imgData, 'PNG', 20, 50);
+				doc.save("statistik.pdf");
             }
         });
 		});
