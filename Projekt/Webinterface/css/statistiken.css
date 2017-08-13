@@ -45,17 +45,22 @@ form .btn-group .dropdown-menu.zaehler_format {
 
 /* Aktuelle Statistik */
 .statistic-primary {
-	width: 500px;
-	height: 350px;
+	width: 50em;
+	height: 25em;
+	margin-left: 3%;
 	display: inline-block;
+	margin-right: 5%;
+	margin-bottom: 10em;
 }
 
 /* Statistik des Vorjahres */
 .statistic-secondary {
-	width: 500px;
-	height: 350px;
+	width: 50em;
+	height: 25em;
+	margin-left: 3%;
 	display: inline-block;
-	margin-left: 40px;
+	margin-right: 5%;
+	margin-bottom: 10em;
 }
 
 .statistic-temp  {
