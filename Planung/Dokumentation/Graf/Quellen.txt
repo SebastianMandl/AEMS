@@ -4,3 +4,4 @@ INPUT STREAM TO FILE: https://www.mkyong.com/java/how-to-convert-inputstream-to-
 APACHE POI (EXCEL FILE API): https://www.tutorialspoint.com/apache_poi/apache_poi_core_classes.htm
 AES DECRYPTION IN JAVA: https://stackoverflow.com/questions/20796042/aes-encryption-and-decryption-with-java
 CHARTIST ON CLICK: https://stackoverflow.com/questions/40861541/chartist-js-and-events
+CANVAS 2 PDF: https://stackoverflow.com/questions/19699366/html5-canvas-to-pdf

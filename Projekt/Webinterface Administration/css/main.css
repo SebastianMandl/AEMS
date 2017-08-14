@@ -1,0 +1,65 @@
+@charset "utf-8";
+.nav.navbar-nav.navbar-right li .notificationIcon {
+	width: 3em;
+	margin-top: 0.25em;
+	margin-right: 20px;
+	margin-left: 10px;
+}
+.container-fluid .navbar-header .navbar-brand.titleFormat {
+	color: #FFFFFF;
+	font-size: 1.25em;
+	font-style: normal;
+}
+.nav.navbar-nav.navbar-right .dropdown .dropdown-toggle.navBarItems {
+	font-size: 1em;
+}
+.nav.navbar-nav.navbar-right li .navBarItems {
+	font-size: 1em;
+}
+
+.navbar.navbar-default.navbar-inverse.navbar-fixed-top.navbarMainFormat {
+	padding-top: 1.2em;
+	padding-bottom: 1.2em;
+
+}
+.navbar-header .navbar-brand.titleFormat .titleImage {
+	margin-top: -32px;
+	width: 20em;
+}
+.modal-footer.footerFormat {
+	margin-top: 4em;
+
+}
+.nav.navbar-nav.navbar-right li .notification-counter {
+	position: absolute;
+	background-color: red;
+	top: 30px;
+	left: 40px;
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 40px 40px 40px 40px;
+	padding-left: 6px;
+	padding-top: 1px;
+	font-weight: bold;
+}
+#topFixedNavbar1 .nav.navbar-nav.navbar-right .navBarItems {
+	font-size: 1em;
+}
+
+.loginmodal-container form .login-info {
+	color: darkgrey;
+	font-size: small;
+}
+.loginmodal-container form .termsOfUse-position {
+	margin-left: 2em;
+	margin-top: -5em;
+}
+
+
+@media (max-width: 767px){
+	.navbar-header .navbar-brand.titleFormat .titleImage {
+	width: 15em;
+	margin-top: -20px;
+	margin-left: -0.4em;
+}
+}

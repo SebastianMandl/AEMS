@@ -68,11 +68,50 @@
   <article class="article">
   
   <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
-  <button class="btn btn-default btn-statistikHerunterladen" type="button">Statistik herunterladen</button>
-  
-  <h2 class="statisticTitlePosition">Hier wird dann der Name der Statistik angezeigt</h2>
-  <p>Und die dazugehörige Statistik</p>
-  
+	
+	<div class="statistic-container">
+		<div class="statistic-primary">
+			<h2>Statistico Numero Uno</h2>
+			<p class="statistic-temp">Temperatur (Gelb)</p>
+			<p class="statistic-consumption">Verbrauch (Lila)</p>
+			<canvas id="canvas_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+			<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+		</div>
+		<div class="statistic-secondary">
+			<h2>Statistiko los Vorperiodos</h2>
+			<p class="statistic-temp">Temperatur (Gelb)</p>
+			<p class="statistic-consumption">Verbrauch (Lila)</p>
+			<canvas id="canvas_1_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+			<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+		</div>
+	</div>
+	
+	<div class="statistic-container">
+		<div class="statistic-primary">
+			<h2>I'ma fluento in Espanól</h2>
+			<p class="statistic-temp">Temperatur (Gelb)</p>
+			<p class="statistic-consumption">Verbrauch (Lila)</p>
+			<canvas id="canvas_2"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+			<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+		</div>
+	</div>
+	
+	<!--
+	<div class="statistic-container">
+		<p class="statistic-temp">Temperatur (Gelb)</p>
+		<p class="statistic-consumption">Verbrauch (Lila)</p>
+		<canvas id="canvas_1"></canvas> 
+		<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+	</div>
+	
+	<div class="statistic-container compare">
+		<p class="statistic-temp">Temperatur (Gelb)</p>
+		<p class="statistic-consumption">Verbrauch (Lila)</p>
+		<canvas id="canvas_2"></canvas> 
+		<button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+	</div>
+	-->
+
   </article>
   
 
@@ -105,14 +144,17 @@
 				  <form>
 					<input type="text" name="user" placeholder="Username" required>
 					<input type="password" name="pass" placeholder="Password" required>
-					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<input type="text" name="plz" placeholder="Postleitzahl" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> 
+					<label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
 					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
 				  </form>			
 				</div>
 			</div>
-		  </div>  	
+		  </div>
 	  		
 		  		
 		  			 <!-- New Statistic Modal -->
@@ -125,16 +167,28 @@
 					<input type="text" name="user" placeholder="Meine Statistik" required>
 					<h4>Zählertyp</h4>
 					<div class="btn-group">
-    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
-   						<ul class="dropdown-menu">
-							<li role="presentation"><a href="#">Strom</a></li>
-       						<li role="presentation"><a href="#">Wasser</a></li>
-        					<li role="presentation"><a href="#">Gas</a></li>     
-        					<li role="presentation"><a href="#">Wärme</a></li>
-					  </ul>
-  					</div>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+	
   					<h4>Verwendete Zähler</h4>
-  						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
     					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
    						  <ul class="dropdown-menu zaehler_format">
@@ -178,10 +232,6 @@
      		 						<label><input type="checkbox" value="">Außentemperatur</label>
     		 					</div>
     							</li>
-       							<li role="presentation"><div class="checkbox">
-     		 						<label><input type="checkbox" value="">Tageszeit</label>
-    		 					</div>
-    							</li>
     							<li role="presentation"><div class="checkbox">
      		 						<label><input type="checkbox" value="">Jahreszeit</label>
     							</div>
@@ -203,6 +253,38 @@
   <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
   <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
   <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+  <script language="javascript" type="text/javascript" src="js/chartist/Chart.js"></script>
+  <script src="js/show-consumption.js"></script>
+  <script src="js/html2canvas.js"></script>
+  <script src="js/jsPDF.js"></script>
+	<script>
+		
+		// For each (alle statistiken des users):
+		var time = ["KW 29", "KW 30", "KW 31", "KW 32"];
+		var avgConsumptions = [120, 110, 90, 110];
+		var avgTemp = [31, 24, 30, 30];
+		showConsumption("canvas_1", time, avgConsumptions, avgTemp);
+		showConsumption("canvas_1_1", time, avgConsumptions, avgTemp);
+		showConsumption("canvas_2", time, avgConsumptions, avgTemp);
+
+		
+		$("#download-s").click(function() {
+		    var button = $(this);
+			html2canvas($("#canvas_1"), {
+            onrendered: function(canvas) {         
+                var imgData = canvas.toDataURL(
+                    'image/png');
+                var doc = new jsPDF('p', 'mm');
+				doc.setFontSize(35);
+				doc.text("ICH BIMS GROSSES TEXT", 20, 30);
+				doc.setFontSize(10);
+				doc.text("Erfreuen Sie sich an dieser Statistik :)", 22, 35);
+                doc.addImage(imgData, 'PNG', 20, 50);
+				doc.save("statistik.pdf");
+            }
+        });
+		});
+	</script>
 	 
 </body>
 </html>

@@ -10,3 +10,8 @@
 .statistics .listStyle {
 	list-style-type: none;
 }
+
+.statistic-container {
+	width: 700px;
+	height: 450px;
+}

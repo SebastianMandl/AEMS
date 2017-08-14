@@ -55,14 +55,9 @@
 	margin-top: -5em;
 }
 
-
-
-
-
-
 @media (max-width: 767px){
 	.navbar-header .navbar-brand.titleFormat .titleImage {
-	width: 16em;
+	width: 15em;
 	margin-top: -20px;
 	margin-left: -0.4em;
 }

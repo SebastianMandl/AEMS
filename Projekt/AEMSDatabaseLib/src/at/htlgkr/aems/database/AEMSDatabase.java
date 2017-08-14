@@ -10,7 +10,6 @@ package at.htlgkr.aems.database;
 public class AEMSDatabase {
 
 	public static final String SCHEMA = "aems";
-	
 	public static final String METERS = "Meters";
 	public static final String METERTYPES = "MeterTypes";
 	public static final String USERS = "Users";

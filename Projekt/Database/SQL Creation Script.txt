@@ -26,6 +26,8 @@ CREATE TABLE aems."Users"
 (
   id numeric(10,0) NOT NULL,
   username character varying(32) NOT NULL,
+  email character varying(64) NOT NULL,
+  postalcode character varying(5) NOT NULL,
   "password" bytea NOT NULL,
   CONSTRAINT pk_users PRIMARY KEY (id),
   CONSTRAINT users_username_key UNIQUE (username)

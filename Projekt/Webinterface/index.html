@@ -71,16 +71,22 @@
   <article class="statistics">
   	<ul class="listStyle">
   		<li class="statistikElement">
-  		 <h2>Titel 1</h2> 
-  		 <p>Das ist die erste Statistik</p>
+  		 <div class="statistic-container">
+			<h2>Titel 1</h2> 
+			<canvas id="statistic_1" width="600" height="400"></canvas>
+		 </div>
   		 </li>
   		<li class="statistikElement">
-  		 <h2>Titel 2</h2> 
-  		 <p>Das ist die zweite Statistik</p>
+  		 <div class="statistic-container">
+			<h2>Titel 2</h2> 
+			<canvas id="statistic_2" width="600" height="400"></canvas>
+		 </div>
   		 </li>
   		<li class="statistikElement">
-  		 <h2>Titel 3</h2> 
-  		 <p>Das ist die dritte Statistik</p>
+  		 <div class="statistic-container">
+			<h2>Titel 9000</h2> 
+			<canvas id="statistic_3" width="600" height="400"></canvas>
+		 </div>
   		 </li>
   	</ul>
   </article>
@@ -116,7 +122,10 @@
 				  <form>
 					<input type="text" name="user" placeholder="Username" required>
 					<input type="password" name="pass" placeholder="Password" required>
-					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<input type="text" name="plz" placeholder="Postleitzahl" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> 
+					<label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
 					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -132,6 +141,10 @@
   <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
   <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
   <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+  <script language="javascript" type="text/javascript" src="js/charts/Chart.js"></script>
+  
+  <script language="javascript" type="text/javascript" src="js/show-charts.js"></script>
+  
 
 	 
 </body>

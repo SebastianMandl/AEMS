@@ -127,7 +127,7 @@
  
  
  
- <!-- Register Modal -->
+<!-- Register Modal -->
  <div class="modal fade" id="register-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
@@ -135,7 +135,10 @@
 				  <form>
 					<input type="text" name="user" placeholder="Username" required>
 					<input type="password" name="pass" placeholder="Password" required>
-					<input type="checkbox" name="termsofuse" id="termsofuse" required/> <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<input type="text" name="plz" placeholder="Postleitzahl" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> 
+					<label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
 					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
 					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
 					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -163,16 +166,27 @@
   					</div>
   					<h4>Zählertyp</h4>
 					<div class="btn-group">
-    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
-   						<ul class="dropdown-menu">
-							<li role="presentation"><a href="#">Strom</a></li>
-       						<li role="presentation"><a href="#">Wasser</a></li>
-        					<li role="presentation"><a href="#">Gas</a></li>     
-        					<li role="presentation"><a href="#">Wärme</a></li>
-					  </ul>
-  					</div>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
   					<h4>Verwendete Zähler</h4>
-  						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
     					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
    						  <ul class="dropdown-menu zaehler_format">
@@ -271,14 +285,26 @@
   					</div>
   					<h4>Zählertyp</h4>
 					<div class="btn-group">
-    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
-   						<ul class="dropdown-menu">
-							<li role="presentation"><a href="#">Strom</a></li>
-       						<li role="presentation"><a href="#">Wasser</a></li>
-        					<li role="presentation"><a href="#">Gas</a></li>     
-        					<li role="presentation"><a href="#">Wärme</a></li>
-					  </ul>
-  					</div>
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
   					<h4>Verwendete Zähler</h4>
   						<button class="btn btn-default" type="button">Alle</button>
   						<div class="btn-group">
@@ -365,7 +391,7 @@
  	<div class="modal fade" id="configuredWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
-			  	<h1>Gewählten Bericht...</h1><br>
+			  	<h1>Gewählte Warnung...</h1><br>
 				  <form>
 				  	<button class="btn btn-default configuredWarningButtons" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
 				  	<button class="btn btn-default">Löschen</button>
