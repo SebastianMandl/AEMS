@@ -47,3 +47,4 @@ $$ language plpgsql;
 
 > http://fizzed.com/oss/rxtx-for-java ; Serial Port Reading Lib
 > http://raspberrypi4u.blogspot.co.at/2016/11/raspberry-pi-smarthome-openhab2.html ; installation of OPEN HAB + acquisition of repository where the installation package 																						of OPEN HAB lies within.
+https://blogs.oracle.com/jtc/serial-port-communication-for-java-se-embedded
