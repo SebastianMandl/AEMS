@@ -2,7 +2,7 @@
 var l = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 var av = [];
 var pv = [];
-var t = [-12, 12, 15, 13, 17, 23, 28, 31, 24, 22, 14, 10];
+var t = [1,2,3,4,5,6,7,8,9,10,11,12];
 randomValues();
 showChart("statistic_1", l, av, pv, t);
 showChart("statistic_2", l, av, pv, t);
@@ -19,6 +19,7 @@ var highestValueP = Math.max.apply(Math, previousValues);
 var highestValueToDisplay = Math.max(highestValueA, highestValueP);
 
 var ctx = document.getElementById(canvasId).getContext('2d');
+  
 var mixedChart = new Chart(ctx, {
   type: 'bar',
   data: {
@@ -34,13 +35,13 @@ var mixedChart = new Chart(ctx, {
 		{
           label: 'Aktuell',
           data: actualValues,
-		  backgroundColor: "orange",
+		  backgroundColor: "rgba(255, 202, 68, 1)",
 		  yAxisID: "primary"
         }, 
 		{
 			label: "Vorperiode",
 			data: previousValues,
-			backgroundColor: "red",
+			backgroundColor: "rgba(255, 202, 68, 0.5)",
 			yAxisID: "primary"
 		}
 		],
@@ -74,6 +75,23 @@ var mixedChart = new Chart(ctx, {
     }
   }
 });
+}
+/* Checks if the array parameter is null or empty. If not, the values will be added to the cart */
+function addValuesIfNeeded(chart, array, label, color, axisId, chartType) {
+	if(chartType == null) {
+		chartType = "bar";
+	}
+	if(array != null && array != undefined && array.length > 0) {
+	var vals = {
+		  label: label,
+          data: array,
+		  backgroundColor: color,
+		  yAxisID: axisId,
+		  type: chartType
+		};
+	chart.data.datasets.push(vals);
+	}
+	return chart;
 }
 
 function randomValues() {

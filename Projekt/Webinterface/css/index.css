@@ -14,4 +14,6 @@
 .statistic-container {
 	width: 700px;
 	height: 450px;
+	margin-bottom: 25px;
+	display: inline-block;
 }

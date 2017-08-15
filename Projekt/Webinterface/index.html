@@ -72,20 +72,23 @@
   	<ul class="listStyle">
   		<li class="statistikElement">
   		 <div class="statistic-container">
-			<h2>Titel 1</h2> 
+			<h2 id="Titel 1" class="stat-title">Titel 1</h2> 
 			<canvas id="statistic_1" width="600" height="400"></canvas>
+			<button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
 		 </div>
   		 </li>
   		<li class="statistikElement">
   		 <div class="statistic-container">
-			<h2>Titel 2</h2> 
+			<h2 id="Titel 2" class="stat-title">Titel 2</h2> 
 			<canvas id="statistic_2" width="600" height="400"></canvas>
+			<button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
 		 </div>
   		 </li>
   		<li class="statistikElement">
   		 <div class="statistic-container">
-			<h2>Titel 9000</h2> 
+			<h2 id="Titel 9000" class="stat-title">Titel 9000</h2> 
 			<canvas id="statistic_3" width="600" height="400"></canvas>
+			<button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
 		 </div>
   		 </li>
   	</ul>
@@ -142,8 +145,16 @@
   <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
   <script language="javascript" type="text/javascript" src="js/notify.js"></script>
   <script language="javascript" type="text/javascript" src="js/charts/Chart.js"></script>
+  <script language="javascript" type="text/javascript" src="js/statistics/html2canvas.js"></script>
+  <script language="javascript" type="text/javascript" src="js/statistics/jsPDF.js"></script>
   
-  <script language="javascript" type="text/javascript" src="js/show-charts.js"></script>
+  <script language="javascript" type="text/javascript" src="js/statistics/show-charts.js"></script>
+  <script language="javascript" type="text/javascript" src="js/statistics/statistic-download.js"></script>
+  <!-- Image Support Libs -->
+	<script type="text/javascript" src="js/statistics/lib/png_support/zlib.js"></script>
+	<script type="text/javascript" src="js/statistics/lib/png_support/png.js"></script>
+	<script type="text/javascript" src="js/statistics/lib/plugins/addimage.js"></script>
+	<script type="text/javascript" src="js/statistics/lib/plugins/png_support.js"></script>
   
 
 	 
