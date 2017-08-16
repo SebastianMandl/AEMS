@@ -8,7 +8,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.json.JSONArray;
@@ -34,12 +37,13 @@ public class AemsAPI {
   }
   
   private static List<AemsUser> userList;
-  
+  private static Map<AemsLocation, Double> temperatureMap;
   /**
    * This methods initializes this class by populating the {@link #userList}.
    */
   private static void initialize() {
     userList = new ArrayList<AemsUser>();
+    temperatureMap = new HashMap<AemsLocation, Double>();
     
     try {
       URL url = new URL("https://google.at"); // Just a placeholder for now
@@ -90,8 +94,12 @@ public class AemsAPI {
     return new ArrayList<AemsUser>(userList);
   }
   
-  public static void insertWeatherData(/* Some WeatherData list */) {
-    throw new NotImplementedException("Not supported yet!");
+  public static void insertWeatherData(AemsLocation location, Double value) {
+    temperatureMap.put(location, value);
+  }
+  
+  public static void commitWeatherData() {
+    
   }
   
   public static void insertMeterData(MeterValue meter) {
