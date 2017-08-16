@@ -13,7 +13,7 @@ $(".download-pdf").click(function() {
 		html2canvas($(statistic), {
 			onrendered: function(canvas) {
 				var imageData = canvas.toDataURL('image/png');
-				var pdf = new jsPDF('p', 'mm');
+				var pdf = new jsPDF('l', 'mm');
 				
 				pdf.setFontSize(25);
 				pdf.text(title, pdf_xaxis_indent, 35);
