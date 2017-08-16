@@ -5,3 +5,4 @@ APACHE POI (EXCEL FILE API): https://www.tutorialspoint.com/apache_poi/apache_po
 AES DECRYPTION IN JAVA: https://stackoverflow.com/questions/20796042/aes-encryption-and-decryption-with-java
 CHARTIST ON CLICK: https://stackoverflow.com/questions/40861541/chartist-js-and-events
 CANVAS 2 PDF: https://stackoverflow.com/questions/19699366/html5-canvas-to-pdf
+IMAGE TO BASE64: https://stackoverflow.com/questions/32833797/convert-local-image-to-base64-string-in-javascript
