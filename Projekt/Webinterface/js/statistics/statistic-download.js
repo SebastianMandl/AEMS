@@ -28,6 +28,7 @@ $(".download-pdf").click(function() {
 					var idx = base64.indexOf(',');
 					var imgData = "data:image/png;base64" + base64.substring(idx);
 					pdf.addImage(imgData, 'PNG', pdf_xaxis_indent - 5, 0);
+					pdf.save(title + ".pdf");
 				});
 				
 			}
