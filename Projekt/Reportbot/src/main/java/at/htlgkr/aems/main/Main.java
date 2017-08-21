@@ -59,9 +59,12 @@ public class Main {
   public static List<FileDownloader> downloaders = new ArrayList<FileDownloader>();
   public static List<ExcelDataExtracter> extracters = new ArrayList<ExcelDataExtracter>();
   public static List<AemsUser> usersToHandle = new ArrayList<AemsUser>();
-  public static Logger logger = new Logger(LogType.DEBUG);
+  public static Logger logger;
 
   public static void main(String[] args) {    
+    
+    LogType targetLogType = LogType.valueOf(config.get(BotConfiguration.LOG_LEVEL));
+    logger = new Logger(targetLogType);
     
     if(args.length == 1 && args[0].equals("-temp")) {
       updateTemperatures();
