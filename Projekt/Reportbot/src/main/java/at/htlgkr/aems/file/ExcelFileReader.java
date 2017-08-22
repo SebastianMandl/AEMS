@@ -37,12 +37,20 @@ public class ExcelFileReader {
     }
   } 
   
+  /**
+   * Reads the next excel row
+   * @return The next row, or {@code null} if all rows have been read
+   */
   public HSSFRow readRow() {
     return rowCount < excelSheet.getPhysicalNumberOfRows() ? excelSheet.getRow(rowCount++) : null;
   }
   
+  /**
+   * Reads the next excel row and converts it into a {@link MeterValue} object
+   * @return The next row as a MeterValue, or {@code null} if all rows have been read
+   */
   public MeterValue read() {
-    HSSFRow row = excelSheet.getRow(rowCount++);
+    HSSFRow row = readRow();
     if(row == null) {
       return null;
     }

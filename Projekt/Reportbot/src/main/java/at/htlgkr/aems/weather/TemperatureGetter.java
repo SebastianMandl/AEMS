@@ -36,6 +36,7 @@ public class TemperatureGetter {
     try {
       for(AemsMeter meter : user.getMeters()) {
         double temp = getTemperature(meter);
+        System.out.println(meter.getLocation() + " TEMP: " + temp);
       }
     } catch(Exception e) {
       Main.logger.log(LogType.ERROR, "Error when collecting weather data of user %0%", user.getUsername());

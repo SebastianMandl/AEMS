@@ -64,7 +64,7 @@ public class Main {
   public static void main(String[] args) {    
     
     LogType targetLogType = LogType.valueOf(config.get(BotConfiguration.LOG_LEVEL));
-    logger = new Logger(targetLogType);
+    logger = new Logger(LogType.DEBUG);
     
     if(args.length == 1 && args[0].equals("-temp")) {
       updateTemperatures();
@@ -115,6 +115,12 @@ public class Main {
   private static List<AemsUser> getUsers() {
     return AemsAPI.getAemsUsers();
   }
+  
+  /**
+   * Calling this method indicates that the specified {@link FileDownloader} process has been completed
+   * without any errors. 
+   * @param downloader The downloader that has completed his task.
+   */
   public static void setComplete(FileDownloader downloader) {
     downloaders.remove(downloader);
     if (downloaders.isEmpty()) {
@@ -127,6 +133,12 @@ public class Main {
     }
   }
   
+  /**
+   * Calling this method indicates that the specified {@link FileDownloader} process
+   * has failed but will be run again unless the process has reached the maximum
+   * retry count as specified in the BotConfiguration.
+   * @param downloader The downloader that has failed.
+   */
   public static void retry(FileDownloader downloader) {
     downloaders.remove(downloader);
     int maxRetrys = config.getInt(BotConfiguration.MAX_RETRIES, 2);
@@ -151,6 +163,11 @@ public class Main {
     }
   }
   
+  /**
+   * Calling this method indicates that the specified {@link FileDownloader} process has failed
+   * and will not be run again.
+   * @param downloader The downloader that has failed.
+   */
   public static void failed(FileDownloader downloader) {
     downloaders.remove(downloader);
     if (downloaders.isEmpty()) {
