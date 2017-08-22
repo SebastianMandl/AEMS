@@ -88,6 +88,15 @@ CREATE TABLE aems."TransferInfos"
   CONSTRAINT pk_transfer_infos PRIMARY KEY (id)
 )
 
+DROP TABLE IF EXISTS aems."Periods" CASCADE;
+CREATE TABLE aems."Periods"
+(
+  period_id numeric(2, 0) NOT NULL,
+  display_name character varying(64) NOT NULL,
+
+  CONSTRAINT pk_periods PRIMARY KEY (period_id)
+)
+
 -- setting up all the functions
 
 /**

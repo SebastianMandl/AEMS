@@ -7,7 +7,7 @@ CREATE TABLE aems."Warnings"
   
   is_warning BOOLEAN, -- Warning or Info Message
   max_derivation numeric(3,0) NOT NULL, -- 0 to 100 Percent
-  -- Base Value to calculate derivation ?
+  -- Base Value to calculate derivation ? Or will that value be dynamically created by inspecting past values
   
   CONSTRAINT pk_warnings PRIMARY KEY(warning_id),
   CONSTRAINT warnings_userid FOREIGN KEY ("user_id")
@@ -20,15 +20,13 @@ CREATE TABLE aems."WarningMeters"
 (
   meter_id character varying(150) NOT NULL,
   warning_id NUMERIC(10,0) NOT NULL
-)
 
-DROP TABLE IF EXISTS aems."Regulations" CASCADE;
-CREATE TABLE aems."Regulations"
-(
-  regulation_id NUMERIC(2, 0) NOT NULL,
-  display_name character varying(32) NOT NULL,
-  
-  CONSTRAINT pk_regulations PRIMARY KEY(regulation_id)
+    CONSTRAINT warningmeters_meterid FOREIGN KEY ("meter_id")
+    REFERENCES aems."Meters" (id) MATCH SIMPLE
+	ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT warningmeters_warningid FOREIGN KEY ("warning_id")
+    REFERENCES aems."Warnings" (warning_id) MATCH SIMPLE
+	ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 
 DROP TABLE IF EXISTS aems."WarningException" CASCADE;
@@ -43,12 +41,15 @@ CREATE TABLE aems."WarningException"
   to_date DATE,
   
   -- From and To Date, OR:
-  regulation_id NUMERIC(2, 0),
-  regulation_value_from NUMERIC(3, 0),
-  regulation_value_to NUMERIC(3, 0)
+  period_id NUMERIC(2, 0),
+  period_value_from NUMERIC(2, 0),
+  period_value_to NUMERIC(2, 0),
   
-  CONSTRAINT pl_warning_exception PRIMARY KEY(exception_id),
+  CONSTRAINT pk_warning_exception PRIMARY KEY(exception_id),
   CONSTRAINT fk_warning_exception_wid FOREIGN KEY ("warning_id"),
     REFERENCES aems."Warnings" (warning_id) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT fk_warning_exception_periodid FOREIGN KEY ("period_id"),
+    REFERENCES aems."Periods" (period_id) MATCH SIMPLE
     ON UPDATE NO ACTION ON DELETE NO ACTION
 )
