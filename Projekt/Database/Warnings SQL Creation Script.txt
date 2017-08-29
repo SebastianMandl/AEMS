@@ -1,0 +1,55 @@
+DROP TABLE IF EXISTS aems."Warnings" CASCADE;
+CREATE TABLE aems."Warnings"
+(
+  warning_id NUMERIC(10,0) NOT NULL,
+  user_id NUMERIC(10, 0) NOT NULL,
+  name character varying(100) NOT NULL,
+  
+  is_warning BOOLEAN, -- Warning or Info Message
+  max_derivation numeric(3,0) NOT NULL, -- 0 to 100 Percent
+  -- Base Value to calculate derivation ? Or will that value be dynamically created by inspecting past values
+  
+  CONSTRAINT pk_warnings PRIMARY KEY(warning_id),
+  CONSTRAINT warnings_userid FOREIGN KEY ("user_id")
+    REFERENCES aems."Users" (id) MATCH SIMPLE
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+DROP TABLE IF EXISTS aems."WarningMeters" CASCADE;
+CREATE TABLE aems."WarningMeters"
+(
+  meter_id character varying(150) NOT NULL,
+  warning_id NUMERIC(10,0) NOT NULL
+
+    CONSTRAINT warningmeters_meterid FOREIGN KEY ("meter_id")
+    REFERENCES aems."Meters" (id) MATCH SIMPLE
+	ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT warningmeters_warningid FOREIGN KEY ("warning_id")
+    REFERENCES aems."Warnings" (warning_id) MATCH SIMPLE
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+DROP TABLE IF EXISTS aems."WarningException" CASCADE;
+CREATE TABLE aems."WarningException"
+(
+  exception_id NUMERIC(10,0) NOT NULL,
+  warning_id NUMERIC(10, 0) NOT NULL,
+  
+  max_derivation NUMERIC(10, 0) NOT NULL,
+  
+  from_date DATE,
+  to_date DATE,
+  
+  -- From and To Date, OR:
+  period_id NUMERIC(2, 0),
+  period_value_from NUMERIC(2, 0),
+  period_value_to NUMERIC(2, 0),
+  
+  CONSTRAINT pk_warning_exception PRIMARY KEY(exception_id),
+  CONSTRAINT fk_warning_exception_wid FOREIGN KEY ("warning_id"),
+    REFERENCES aems."Warnings" (warning_id) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT fk_warning_exception_periodid FOREIGN KEY ("period_id"),
+    REFERENCES aems."Periods" (period_id) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION
+)

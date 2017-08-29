@@ -10,7 +10,7 @@
 	<link href="css/main.css" rel="stylesheet" type="text/css">
 	<link href="css/einstellungen.css" rel="stylesheet" type="text/css">
 	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
-	<link href="css/einstellungenStartseite.css" rel="stylesheet" type="text/css">
+	<link href="css/einstellungenStatistiken.css" rel="stylesheet" type="text/css">
   </head>
   <body style="padding-top: 70px">
     <nav class="navbar navbar-default navbar-inverse navbar-fixed-top navbarMainFormat">
@@ -33,11 +33,12 @@
               <ul class="dropdown-menu">
                 <li><a href="einstellungenBerichte.html">Berichte</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="einstellungenStartseite.html">Statistiken und<br>Startseite</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="einstellungenWarnungen.html">Warnungen</a></li>
+               <li><a href="einstellungenStatistiken.html">Statistiken, App und Startseite</a></li>
+				 <li role="separator" class="divider"></li>
+               <li><a href="einstellungenWarnungen.html">Benachrichtigungen und Warnungen</a></li>
               </ul>
             </li>
+            
             
             <!-- Menü Login, Logout und Registrieren -->
              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
@@ -82,6 +83,24 @@
 		  	<p class="list-group-item-text">Täglich</p>
 		  </a>
 		</div>
+		
+		
+		<h2 class="statistics-h2">Android-App Statistiken:</h2>
+	 <div class="list-group statisticsList" data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Stromstatistik 4</h4>
+		  	<p class="list-group-item-text">Monatlich</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Stromstatistik 5</h4>
+		  	<p class="list-group-item-text">Wöchentlich</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Gasstatistik 2</h4>
+		  	<p class="list-group-item-text">Täglich</p>
+		  </a>
+		</div>
+		
 		
 		<h2 class="statistics-h2">Alle Statistiken</h2>
 	 <div class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
@@ -169,6 +188,19 @@
 			</div>
 		  </div>  
 		  
+		  <!-- Android-App Statistics Modal -->
+ 	<div class="modal fade" id="androidAppStatistics-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+			  	<h1>Gewählte Statistik...</h1><br>
+				  <form>
+				    <button class="btn btn-default btn-addStatisticToIndexpage">Aus Android-App entfernen</button>
+					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
+				  </form>				
+				</div>
+			</div>
+		  </div>  
+		  
 		  
 		  
 		  
@@ -179,6 +211,7 @@
 			  	<h1>Gewählte Statistik...</h1><br>
 				  <form>
 				    <button class="btn btn-default btn-addStatisticToIndexpage">Zu Startseite hinzufügen</button>
+				    <button class="btn btn-default btn-addStatisticToIndexpage">Zu Android-App hinzufügen</button>
 				  	<button class="btn btn-default configuredStatisticButtons" data-toggle="modal" data-target="#editIndexpageStatistic-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
 				  	<button class="btn btn-default">Löschen</button>
 					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>

@@ -1,7 +1,15 @@
 package at.htlgkr.aems.database;
 
+/**
+ * This class represents a meter in the AEMS system
+ * @author Niklas
+ */
 public class AemsMeter {
   
+  /**
+   * This enumeration specifies the type of an AEMS meter.
+   * @author Niklas
+   */
   public enum MeterType {
     ELECTRIC, WATER, GAS;
   }

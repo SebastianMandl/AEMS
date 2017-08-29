@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Hier soll die ausgewählte Statistik heruntergeladen werden können", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -134,20 +134,24 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             switch (position){
+
                 case 0:
-                    Tab_Statistic_1 tab_statistic_1 = new Tab_Statistic_1();
-                    return tab_statistic_1;
+                    App_Tab_1 app_tab_1 = new App_Tab_1();
+                    return app_tab_1;
 
                 case 1:
-                    Tab_Statistic_2 tab_statistic_2 = new Tab_Statistic_2();
-                    return tab_statistic_2;
+                    App_Tab_2 app_tab_2 = new App_Tab_2();
+                    return app_tab_2;
 
                 case 2:
-                    Tab_Statistic_3 tab_statistic_3 = new Tab_Statistic_3();
-                    return tab_statistic_3;
+                    App_Tab_3 app_tab_3 = new App_Tab_3();
+                    return  app_tab_3;
 
-                default: return null ;
+                default:
+                    return null;
             }
+
+
         }
 
         @Override

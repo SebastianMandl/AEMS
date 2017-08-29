@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 
 import at.htlgkr.aems.main.Main;
 
@@ -18,6 +19,7 @@ import at.htlgkr.aems.main.Main;
  */
 public class Logger {
 
+  public static final LogType DEFAULT_LOG_TYPE = LogType.INFO;
   private boolean enabled;
   private File logFile;
   private PrintWriter writer;
@@ -32,6 +34,9 @@ public class Logger {
    * @see LogType
    */
   public Logger(LogType targetType) {
+    if(targetType == null)
+      targetType = DEFAULT_LOG_TYPE;
+    
     this.type = targetType;
     this.enabled = Main.config.getBoolean(BotConfiguration.LOGGING_ENABLED, true);
     

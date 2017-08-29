@@ -25,6 +25,7 @@ public class BotConfiguration {
   public static final String MAX_USERS = "max-users-at-once";
   public static final String MAX_RETRIES = "max-retries";
   public static final String API_KEY = "openweahermap-apikey";
+  public static final String LOG_LEVEL = "log-level";
   
   public BotConfiguration() {
     this.configFile = new File("bot.properties");
@@ -47,6 +48,7 @@ public class BotConfiguration {
         this.props.setProperty(BotConfiguration.LOGFILE_STORAGE, "Logs");
         this.props.setProperty(BotConfiguration.LOGGING_ENABLED, "true");
         this.props.setProperty(BotConfiguration.API_KEY, "API-KEY-HERE");
+        this.props.setProperty(BotConfiguration.LOG_LEVEL, Logger.DEFAULT_LOG_TYPE.name());
         
         FileWriter writer = new FileWriter(configFile);
         this.props.store(writer, "AEMS Bot Konfigurationsdatei");

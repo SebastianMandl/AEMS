@@ -1,3 +1,14 @@
+
+/** ---------------------------------------
+*	STATISTICS CREATION SCRIPT VERSION 2.0 |
+*   ---------------------------------------
+*   Changes: Model was simplified, everything regarding configurations and
+*   warnings has been relocated to the WARNINGS model.
+*   Updated period system, one can now specify a start and end value to a period. This allows,
+*   for example, to recieve statistics only regarding weekdays or weekends-
+**/
+
+
 /**
 * Creates the Statistics Table.
 * STATISTIC_ID (PK), USER_ID (FK [Users]), STATISTIC_NAME, OPTIONS_ID (FK [StatisticOptions])
@@ -7,17 +18,43 @@ CREATE TABLE aems."Statistics"
 (
   statistic_id numeric(10,0) NOT NULL,
   user_id numeric(10,0) NOT NULL,
-  statistic_name character varying(32),
-  options_id numeric(10,0),
+  statistic_name character varying(64),
 
   CONSTRAINT pk_transfer_infos PRIMARY KEY (statistic_id),
   CONSTRAINT fk_statistics_user FOREIGN KEY (user_id)
     REFERENCES aems."Users" (id) MATCH SIMPLE
-    ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_statistics_optionsid FOREIGN KEY (options_id)
-    REFERENCES aems."StatisticOptions" (option_id) MATCH SIMPLE
     ON UPDATE NO ACTION ON DELETE NO ACTION
 )
+
+/**
+* Creates the StatisticTimes table.
+* TIME_ID (PK), OPTIONS_ID (FK [StatisticOptions]), PERIOD_ID (FK [StatisticPeriods])
+* FROM_DATE, TO_DATE, PERIOD_VALUE_START, PERIOD_VALUE_END
+*
+* The meaning of the period_value fields depends on the value of the period_id
+**/
+DROP TABLE IF EXISTS aems."StatisticTimes" CASCADE;
+CREATE TABLE aems."StatisticTimes"
+(
+  time_id numeric(10, 0) NOT NULL,
+  statistic_id numeric(10, 0) NOT NULL,
+  period_id NUMERIC(2, 0) NOT NULL,
+  
+  period_value_start NUMERIC(10, 0),
+  period_value_end NUMERIC(10, 0),
+  
+  from_date DATE,
+  to_date DATE,
+
+  CONSTRAINT pk_statistic_times PRIMARY KEY (time_id),
+  CONSTRAINT fk_times_statisticid FOREIGN KEY (statistic_id)
+    REFERENCES aems."Statistics" (statistic_id) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT fk_times_periodid FOREIGN KEY (period_id)
+    REFERENCES aems."Periods" (period_id) MATCH SIMPLE
+    ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
 
 /**
 * Creates the StatisticMeters Table. It's a "Many-to-Many" resolution table.
@@ -29,117 +66,10 @@ CREATE TABLE aems."StatisticMeters"
 (
   meter_id numeric(10,0) NOT NULL,
   statistic_id numeric(10, 0) NOT NULL,
-  CONSTRAINT fk_statisticmeters_meterid FOREIGN KEY(meter_id)
+  CONSTRAINT fk_statisticmeters_meterid FOREIGN KEY(id)
     REFERENCES aems."Meters" (id) MATCH SIMPLE
     ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT fk_statisticmeters_statisticid FOREIGN KEY(statistic_id)
     REFERENCES aems."Statistics" (id) MATCH SIMPLE
     ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
-/**
-* Create the StatisticOptions table.
-* OPTION_ID (PK), STATISTIC_ID (FK [Statistics]),
-* OPERATION_TIME_START, OPERATION_TIME_END,
-* CONSIDER_TEMPERATURE, EXPECTED_ENERGY_CONSUMPTIONS
-**/
-DROP TABLE IF EXISTS aems."StatisticOptions" CASCADE;
-CREATE TABLE ames."StatisticOptions"
-(
-  option_id numeric(10,0) NOT NULL,
-  statistic_id numeric(10,0) NOT NULL,
-  time_id numeric(10,0) NOT NULL,
-
-  operating_time_start TIME,
-  operating_time_end TIME,
-  consider_temperature BOOLEAN,
-  expected_energy_consumption numeric(10,0),
-  -- More options go here
-
-  CONSTRAINT pk_statistic_options PRIMARY KEY (option_id),
-  CONSTRAINT fk_statisticmeters_statisticid FOREIGN KEY(statistic_id)
-    REFERENCES aems."Statistics" (id) MATCH SIMPLE
-    ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
-/**
-* Creates the StatisticPeriods table. It is used to indicate if a report should be
-* generated frequently ("Weekly", "Monthly") or at a specific time ("Specific")
-* PERIOD_ID (PK), DISPLAY_NAME
-**/
-DROP TABLE IF EXISTS aems."StatisticPeriods" CASCADE;
-CREATE TABLE ames."StatisticPeriods"
-(
-  period_id numeric(2,0) NOT NULL,
-  display_name character varying(32) NOT NULL,
-
-  CONSTRAINT pk_periods PRIMARY KEY(period_id)
-)
-
-/**
-* Creates the StatisticTimes table.
-* TIME_ID (PK), OPTIONS_ID (FK [StatisticOptions]), PERIOD_ID (FK [StatisticPeriods])
-* DAY, START_DATE, END_DATE
-*
-* If the PERIOD_ID is set to be something frequent (like "Weekly"), then the DAY
-* attribute corrseponds to the day of the week (e.g. "1" for "Monday"). 
-* If the PERIOD_ID is set to be "Monthly", then the DAY attribute corresponds to
-* the day of the month (e.g. "15" for the 15th of each month)
-* If the PERIOD_ID is set to be something infrequently "Specific", then the DAY
-* attribute is ignored and only start_date and end_date will be considered
-**/
-DROP TABLE IF EXISTS aems."StatisticTimes" CASCADE;
-CREATE TABLE ames."StatisticTimes"
-(
-  time_id numeric(10,0) NOT NULL,
-  options_id numeric(10,0) NOT NULL,
-  period_id numeric(2,0) NOT NULL,
-  
-  day numeric(10,0),
-  start_date DATE,
-  end_date DATE,
-
-  CONSTRAINT pk_statistic_times PRIMARY KEY(time_id),
-  CONSTRAINT fk_statistictimes_optionsid FOREIGN KEY(options_id)
-    REFERENCES aems."StatisticOptions" (option_id) MATCH SIMPLE
-    ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_statistictimes_periodid FOREIGN KEY(period_id)
-    REFERENCES aems."StatisticPeriods" (period_id) MATCH SIMPLE
-    ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
-/**
-* Creates the StatisticExceptions table. This table is structured like the
-* StatisticOptions table. An exception is when a statistic option 
-* (like operating time) gets altered for a specific timeframe or on a 
-* regular basis (See "StatisticTimes" documentation).
-* 
-* EXCEPTION_ID (PK), OPTIONS_ID (FK [StatisticOptions]), PERIOD_ID (FK [StatisticPeriods])
-* OPERATION_TIME_START, OPERATION_TIME_END,
-* CONSIDER_TEMPERATURE, EXPECTED_ENERGY_CONSUMPTIONS
-**/
-DROP TABLE IF EXISTS aems."StatisticExceptions" CASCADE;
-CREATE TABLE ames."StatisticExceptions"
-(
-  exception_id numeric(10,0) NOT NULL,
-  options_id numeric(10,0) NOT NULL,
-  period_id numeric(2,0) NOT NULL,
-
-  operating_time_start TIME,
-  operating_time_end TIME,
-  consider_temperature BOOLEAN,
-  expected_energy_consumption numeric(10,0),
-  -- More options go here
-
-  day numeric(10,0),
-  start_date DATE,
-  end_date DATE,
-
-  CONSTRAINT fk_statisticexceptions_optionsid FOREIGN KEY(options_id)
-    REFERENCES aems."StatisticOptions" (option_id) MATCH SIMPLE
-    ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_statisticexceptions_periodid FOREIGN KEY(period_id)
-    REFERENCES aems."StatisticPeriods" (period_id) MATCH SIMPLE
-    ON UPDATE NO ACTION ON DELETE NO ACTION
-
 )
