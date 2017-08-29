@@ -42,6 +42,11 @@ public abstract class AbstractFetcher implements ApiFetcher {
     this.authenticationString = authString;
   }
   
+  public AbstractFetcher(String authString, String baseUrl) {
+    this.authenticationString = authString;
+    this.baseURL = baseUrl;
+  }
+  
   public abstract ApiData fetch(Object...params);
   
   public abstract List<? extends ApiData> bulkFetch(Object...params);
@@ -68,7 +73,7 @@ public abstract class AbstractFetcher implements ApiFetcher {
    * Uses the {@link #baseURL} and the result from the {@link #getSubUrl()} method to
    * create an url. This url will be used to recieve a json result.
    * @see #fetchJsonFromUrl(String)
-   * @return
+   * @return The api call result
    */
   protected Object fetchJson() {
     return fetchJsonFromUrl(baseURL + getSubUrl());
@@ -77,7 +82,7 @@ public abstract class AbstractFetcher implements ApiFetcher {
   /**
    * Executes a HTTP POST request against the {@code customUrl}. The result of this call
    * will be parsed into a JSON string and wrapped into the appropriate JSON structure.
-   * @param customUrl 
+   * @param customUrl The special url 
    * @return The result of the call, represented as a JSON Structure
    * @see JSONArray
    * @see JSONObject
@@ -87,7 +92,7 @@ public abstract class AbstractFetcher implements ApiFetcher {
       URL url = new URL(customUrl);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       
-      connection.setRequestMethod("GET");
+      connection.setRequestMethod("GET"); // TODO: Set to POST (GET for testing purposes)
       connection.setDoInput(true);
       connection.setRequestProperty("Authorization", "Basic " + encodeBase64(authenticationString));
       

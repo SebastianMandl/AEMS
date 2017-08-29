@@ -18,18 +18,20 @@ public abstract class SingleItemFetcher extends AbstractFetcher {
   public SingleItemFetcher(String authString) {
     super(authString);
   }
+  
+  public SingleItemFetcher(String authString, String baseUrl) {
+    super(authString, baseUrl);
+  }
 
   @Override
   public abstract ApiData fetch(Object... params);
   /**
-   * {@inheritDoc AbstractFetcher}
-   * <p>
    * The SingleItemFetcher class is designed to aquire only a field of data. This
    * means that the result of the API-Call will be parsed into a JSONObject. If
    * this parse fails (e.g. because the API-Call returns a JSONArray), a
    * JSONException is thrown.
    * @return The result of the API-Call, as a JSONObject
-   * @throws JSONException
+   * @throws JSONException If the API-Call result cannot be parsed into a JSONObject
    */
   @Override
   protected JSONObject fetchJsonFromUrl(String customUrl) {
@@ -48,7 +50,7 @@ public abstract class SingleItemFetcher extends AbstractFetcher {
   /**
    * The SingleItemFetcher class is not designed to fetch sets of data. This method is
    * unused and will throw an {@link UnsupportedOperationException}
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedOperationException If this method is called
    */
   @Override
   public final List<? extends ApiData> bulkFetch(Object... params) {

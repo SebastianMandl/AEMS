@@ -18,10 +18,14 @@ public abstract class MultiItemFetcher extends AbstractFetcher {
   public MultiItemFetcher(String authString) {
     super(authString);
   }
+  
+  public MultiItemFetcher(String authString, String baseUrl) {
+    super(authString, baseUrl);
+  }
   /**
    * The MultiItemFetcher class is not designed to fetch single pieces of data. This method is
    * unused and will throw an {@link UnsupportedOperationException}
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedOperationException If this method is called
    */
   @Override
   public final ApiData fetch(Object... params) {
