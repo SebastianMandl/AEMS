@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+
+    private int tab_position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +59,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Statistik wird heruntergeladen", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+
+
             }
         });
 
@@ -132,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            tab_position = position;
 
             switch (position){
 
