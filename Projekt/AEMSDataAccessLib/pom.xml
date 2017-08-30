@@ -19,6 +19,10 @@
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-javadoc-plugin</artifactId>
+			<configuration>
+      			<source>1.8</source>
+      			<target>1.8</target>
+    		</configuration>
 			<executions>
 				<execution>
 					<id>attach-javadocs</id>
@@ -27,6 +31,7 @@
 					</goals>
 				</execution>
 			</executions>
+			
 		</plugin>
 	</plugins>
 	</build>

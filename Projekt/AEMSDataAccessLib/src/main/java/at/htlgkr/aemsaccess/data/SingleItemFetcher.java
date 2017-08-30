@@ -1,5 +1,6 @@
 package at.htlgkr.aemsaccess.data;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -31,10 +32,11 @@ public abstract class SingleItemFetcher extends AbstractFetcher {
    * this parse fails (e.g. because the API-Call returns a JSONArray), a
    * JSONException is thrown.
    * @return The result of the API-Call, as a JSONObject
+   * @throws IOException If an error occurs while communicating with the AEMS API
    * @throws JSONException If the API-Call result cannot be parsed into a JSONObject
    */
   @Override
-  protected JSONObject fetchJsonFromUrl(String customUrl) {
+  protected JSONObject fetchJsonFromUrl(String customUrl) throws IOException {
     Object result = super.fetchJsonFromUrl(customUrl);
     if(result instanceof JSONObject) {
       return (JSONObject) result;
@@ -43,7 +45,7 @@ public abstract class SingleItemFetcher extends AbstractFetcher {
   }
   
   @Override
-  protected JSONObject fetchJson() {
+  protected JSONObject fetchJson() throws IOException {
     return fetchJsonFromUrl(baseURL + getSubUrl());
   }
 
