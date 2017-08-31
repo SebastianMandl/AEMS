@@ -38,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    /** RIESIGER KOMMENTAR ( 1 / 3)
+     *
+     * Referenzen in der MainActivity auf die einzelnen Tabs
+     *
+     */
+    private App_Tab_1 tab1 = new App_Tab_1();
+    private App_Tab_2 tab2 = new App_Tab_2();
+    private App_Tab_3 tab3 = new App_Tab_3();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * RIESIGER KOMMENTAR ( 2 / 3)
+     * So könnte man dann Methoden aus den verschiedenen Tabs verwenden:
+     *
+     */
+    public void exampleMethod() {
+        Toast.makeText(this, tab1.eineBeispielMethode(), Toast.LENGTH_LONG).show();
+        // tab2.irgendwas()
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            exampleMethod();
             return true;
         }
 
@@ -138,17 +158,22 @@ public class MainActivity extends AppCompatActivity {
 
             switch (position){
 
+                /**
+                 * RIESIGER KOMMENTAR ( 3 / 3)
+                 * Einfach die Referenz zurückgeben
+                 *
+                 */
+
                 case 0:
-                    App_Tab_1 app_tab_1 = new App_Tab_1();
-                    return app_tab_1;
+                    // App_Tab_1 tab1 = new App_Tab_1();
+                    // return tab1;
+                    return tab1; // Wenns dir klarer ist könntest du auch this.tab1 schreiben
 
                 case 1:
-                    App_Tab_2 app_tab_2 = new App_Tab_2();
-                    return app_tab_2;
+                    return tab2;
 
                 case 2:
-                    App_Tab_3 app_tab_3 = new App_Tab_3();
-                    return  app_tab_3;
+                    return tab3;
 
                 default:
                     return null;

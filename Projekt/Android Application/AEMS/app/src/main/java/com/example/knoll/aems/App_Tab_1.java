@@ -67,5 +67,9 @@ public class App_Tab_1 extends Fragment{
         chart.invalidate();
     }
 
+    public String eineBeispielMethode() {
+        return "Dies ist ein Beispiel";
+    }
+
 
 }
