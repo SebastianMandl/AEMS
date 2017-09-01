@@ -38,8 +38,26 @@ public abstract class AbstractFetcher implements ApiFetcher {
    * */
   protected String authenticationString;
   
+  /**
+   * Deprecated. Use {@link #AbstractFetcher(String, String)} instead.
+   * @param authString The authentification string
+   */
+  @Deprecated
   public AbstractFetcher(String authString) {
     this.authenticationString = authString;
+  }
+  
+  /**
+   * Initializes the fetcher object with an authentification string and a base url.
+   * The authentification string must contain the username and password in the 
+   * following form: username:password
+   * @param authString The authentification string
+   * @param baseUrl The base URL for all api call requests
+   * @see #authenticationString
+   */
+  public AbstractFetcher(String authString, String baseUrl) {
+    this.authenticationString = authString;
+    this.baseURL = baseUrl;
   }
   
   public abstract ApiData fetch(Object...params);
@@ -68,26 +86,26 @@ public abstract class AbstractFetcher implements ApiFetcher {
    * Uses the {@link #baseURL} and the result from the {@link #getSubUrl()} method to
    * create an url. This url will be used to recieve a json result.
    * @see #fetchJsonFromUrl(String)
-   * @return
+   * @return The api call result
    */
-  protected Object fetchJson() {
+  protected Object fetchJson() throws IOException {
     return fetchJsonFromUrl(baseURL + getSubUrl());
   }
   
   /**
    * Executes a HTTP POST request against the {@code customUrl}. The result of this call
    * will be parsed into a JSON string and wrapped into the appropriate JSON structure.
-   * @param customUrl 
+   * @param customUrl The special url 
    * @return The result of the call, represented as a JSON Structure
+   * @throws IOException 
    * @see JSONArray
    * @see JSONObject
    */
-  protected Object fetchJsonFromUrl(String customUrl) {
-    try {
+  protected Object fetchJsonFromUrl(String customUrl) throws IOException {
       URL url = new URL(customUrl);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       
-      connection.setRequestMethod("GET");
+      connection.setRequestMethod("POST");
       connection.setDoInput(true);
       connection.setRequestProperty("Authorization", "Basic " + encodeBase64(authenticationString));
       
@@ -98,16 +116,7 @@ public abstract class AbstractFetcher implements ApiFetcher {
       } else {
         return new JSONObject(rawData);
       }
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    } catch (ProtocolException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch(JSONException e) {
-       e.printStackTrace();
-    }
-    return null;
+      
   }
 
   /**

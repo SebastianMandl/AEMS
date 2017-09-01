@@ -17,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.knoll.aems.data.statistic.StatisticFetcher;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +40,16 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
 
-    private int tab_position;
+
+    /** RIESIGER KOMMENTAR ( 1 / 3)
+     *
+     * Referenzen in der MainActivity auf die einzelnen Tabs
+     *
+     */
+    private App_Tab_1 tab1 = new App_Tab_1();
+    private App_Tab_2 tab2 = new App_Tab_2();
+    private App_Tab_3 tab3 = new App_Tab_3();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +71,51 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Statistik wird heruntergeladen", Snackbar.LENGTH_LONG)
+
+                Snackbar.make(view, "Sie befinden sich auf Tab " + (mViewPager.getCurrentItem() + 1), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
 
+                switch(mViewPager.getCurrentItem()){
+                    case 0: downloadStatistic1();
+                    case 1: downloadStatistic2();
+                    case 2: downloadStatistic3();
+                }
 
             }
         });
 
+    }
+
+    private void downloadStatistic1() {
+
+    }
+
+    private void downloadStatistic2() {
+        boolean saveToGallery = tab2.getChart().saveToGallery(tab2.getStatisticTitle().getText().toString(), 80);
+
+        if(saveToGallery){
+            Toast.makeText(this, "Speichern erfolgreich", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Speichern fehlgeschlagen", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    private void downloadStatistic3() {
+    }
+
+
+
+    /**
+     * RIESIGER KOMMENTAR ( 2 / 3)
+     * So könnte man dann Methoden aus den verschiedenen Tabs verwenden:
+     *
+     */
+    public void exampleMethod() {
+        Toast.makeText(this, tab1.eineBeispielMethode(), Toast.LENGTH_LONG).show();
+        // tab2.irgendwas()
     }
 
 
@@ -85,47 +134,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_login) {
+            exampleMethod();
             return true;
+        } else if (id == R.id.action_logout){
+            Toast.makeText(this, "Sie werden abgemeldet", Toast.LENGTH_LONG).show();
         }
+
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -139,21 +158,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            tab_position = position;
 
             switch (position){
 
                 case 0:
-                    App_Tab_1 app_tab_1 = new App_Tab_1();
-                    return app_tab_1;
+                    return tab1;
 
                 case 1:
-                    App_Tab_2 app_tab_2 = new App_Tab_2();
-                    return app_tab_2;
+                    return tab2;
 
                 case 2:
-                    App_Tab_3 app_tab_3 = new App_Tab_3();
-                    return  app_tab_3;
+                    return tab3;
 
                 default:
                     return null;
@@ -168,17 +183,5 @@ public class MainActivity extends AppCompatActivity {
             return 3;
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
-        }
     }
 }

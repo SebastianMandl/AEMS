@@ -46,7 +46,6 @@ public class App_Tab_1 extends Fragment{
 
 
     public void onCreateChart1(BarChart chart){
-
         List<BarEntry> entries = new ArrayList<BarEntry>();
             entries.add(new BarEntry(1f, 2));
             entries.add(new BarEntry(2f, 1));
@@ -66,6 +65,10 @@ public class App_Tab_1 extends Fragment{
         BarData barData = new BarData(dataSet);
         chart.setData(barData);
         chart.invalidate();
+    }
+
+    public String eineBeispielMethode() {
+        return "Dies ist ein Beispiel";
     }
 
 

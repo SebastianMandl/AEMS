@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
@@ -33,14 +33,25 @@ import java.util.ArrayList;
 
 public class App_Tab_2 extends Fragment {
 
+    public CombinedChart chart;
+    public TextView statisticTitle;
+
+    public TextView getStatisticTitle() {
+        return statisticTitle;
+    }
+
+    public CombinedChart getChart() {
+        return chart;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.app_tab_2, container, false);
-        View viewMain = inflater.inflate(R.layout.activity_main, container, false);
 
-        CombinedChart chart = (CombinedChart) view.findViewById(R.id.combChart);
+
+        chart = (CombinedChart) view.findViewById(R.id.combChart);
+        statisticTitle = (TextView) view.findViewById(R.id.statisticTitle);
 
         createChart(chart);
 
@@ -55,6 +66,7 @@ public class App_Tab_2 extends Fragment {
 
     private void createChart(CombinedChart chart) {
 
+        chart.setSaveEnabled(true);
         chart.getDescription().setEnabled(false);
         chart.setDrawGridBackground(false);
         chart.setDrawBarShadow(false);
