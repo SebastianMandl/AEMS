@@ -6,12 +6,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -25,47 +27,25 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
  * Created by knoll on 26.08.2017.
  */
 
-public class App_Tab_2 extends Fragment {
+public class App_Tab_2 extends ChartViewTab {
 
-    public CombinedChart chart;
     public TextView statisticTitle;
 
-    public TextView getStatisticTitle() {
-        return statisticTitle;
+    public App_Tab_2() {
+        super(R.layout.app_tab_2, R.id.combChart);
     }
-
-    public CombinedChart getChart() {
-        return chart;
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.app_tab_2, container, false);
-
-
-        chart = (CombinedChart) view.findViewById(R.id.combChart);
-        statisticTitle = (TextView) view.findViewById(R.id.statisticTitle);
-
-        createChart(chart);
-
-        return view;
-    }
-
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    private void createChart(CombinedChart chart) {
-
+    public void onCreateChart(Chart chart1) {
+        CombinedChart chart = (CombinedChart)chart1;
         chart.setSaveEnabled(true);
         chart.getDescription().setEnabled(false);
         chart.setDrawGridBackground(false);
@@ -117,7 +97,11 @@ public class App_Tab_2 extends Fragment {
 
         chart.setData(data);
         chart.invalidate();
+    }
 
+    @Override
+    public String getStatisticTitle() {
+        return ((TextView)getView().findViewById(R.id.statisticTitle)).getText().toString();
     }
 
     private BarData generateBarData() {

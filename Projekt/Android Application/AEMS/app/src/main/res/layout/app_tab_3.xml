@@ -13,5 +13,11 @@
         android:layout_marginTop="10dp"
         android:textSize="15pt"/>
 
+    <com.github.mikephil.charting.charts.CombinedChart
+        android:id="@+id/chart3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.github.mikephil.charting.charts.CombinedChart>
+
 
 </LinearLayout>
