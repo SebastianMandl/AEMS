@@ -7,13 +7,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.BufferOverflowException;
 import java.nio.FloatBuffer;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import at.htlgkr.aems.util.crypto.Encrypter;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 
 /**
  * This class represents the software which is running on the 
@@ -128,8 +139,33 @@ public class RaspberryPiSoftware {
 		final String HTTP_METHOD = "POST";
 		final String PROPERTY_TOTAL_CONSUMPTON = "total_consumption";
 		
-		try {
+		final int TIME_OUT = 10 * 1_000; // 10 seconds
+		final long LAST_TIME = System.currentTimeMillis();
+		boolean shouldTransmitData = true;
+		final byte[] KEY = new byte[DiffieHellmanProcedure.KEY_LENGTH];
+		Thread keyExchangeThread = new Thread(() -> {
+									try {
+										DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("aems.net"), 9950));
+										System.arraycopy(DiffieHellmanProcedure.confirmKey(), 0, KEY, 0, DiffieHellmanProcedure.KEY_LENGTH);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								});
+		
+		try {			
 			HttpURLConnection connection = (HttpURLConnection) new URL("").openConnection();
+			
+			keyExchangeThread.start();
+			
+			while(keyExchangeThread.isAlive()) {
+				if(System.currentTimeMillis() - LAST_TIME >= TIME_OUT) {
+					System.err.println("key could not be exhanged! Aborting...! Connection would be insecure otherwise!");
+					shouldTransmitData = false;
+				}
+			}
+			
+			if(!shouldTransmitData)
+				return;
 			
 			// if the connection above could be established then first
 			// check if there are any values which could not be transmitted priorly.
@@ -137,7 +173,12 @@ public class RaspberryPiSoftware {
 			if(valueBuffer.position() > 0) {
 				valueBuffer.rewind();
 				while(valueBuffer.hasRemaining()) {
-					transmitDataToServer(valueBuffer.get());
+					try {
+						transmitDataToServer(Float.valueOf(new String(Encrypter.requestEncryption(KEY, String.valueOf(valueBuffer.get()).getBytes()))));
+					} catch (NumberFormatException | InvalidKeyException | IllegalBlockSizeException
+							| BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+						e.printStackTrace();
+					}
 				}
 				valueBuffer.clear();
 			}
