@@ -7,16 +7,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.charts.Chart;
+
 /**
  * Created by knoll on 26.08.2017.
  */
 
-public class App_Tab_3 extends Fragment {
+public class App_Tab_3 extends ChartViewTab {
 
-    @Nullable
+    public App_Tab_3() {
+        super(R.layout.app_tab_3, R.id.chart3);
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.app_tab_3, container, false);
+    public void onCreateChart(Chart chart) {
+        // Dis not implemento yeto
+    }
+
+    @Override
+    public String getStatisticTitle() {
+        return "WasWeißIch1";
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
 }

@@ -1,5 +1,6 @@
 package at.htlgkr.aemsaccess.data;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -24,7 +25,7 @@ public abstract class MultiItemFetcher extends AbstractFetcher {
   }
   /**
    * The MultiItemFetcher class is not designed to fetch single pieces of data. This method is
-   * unused and will throw an {@link UnsupportedOperationException}
+   * unused and will throw an {@link UnsupportedOperationException}.
    * @throws UnsupportedOperationException If this method is called
    */
   @Override
@@ -38,8 +39,17 @@ public abstract class MultiItemFetcher extends AbstractFetcher {
   @Override
   public abstract String getSubUrl();
   
+  /**
+   * The MultiItemFetcher class is designed to aquire only a set of data. This
+   * means that the result of the API-Call will be parsed into a JSONArray. If
+   * this parse fails (e.g. because the API-Call returns a JSONObject), a
+   * JSONException is thrown.
+   * @return The result of the API-Call, as a JSONObject
+   * @throws IOException If an error occurs while communicating with the AEMS API
+   * @throws JSONException If the API-Call result cannot be parsed into a JSONObject
+   */
   @Override
-  protected JSONArray fetchJsonFromUrl(String customUrl) {
+  protected JSONArray fetchJsonFromUrl(String customUrl) throws IOException {
     Object result = super.fetchJsonFromUrl(customUrl);
     if(result instanceof JSONArray) {
       return (JSONArray) result;
@@ -48,7 +58,7 @@ public abstract class MultiItemFetcher extends AbstractFetcher {
   }
   
   @Override
-  protected JSONArray fetchJson() {
+  protected JSONArray fetchJson() throws IOException {
     return fetchJsonFromUrl(baseURL + getSubUrl());
   }
 

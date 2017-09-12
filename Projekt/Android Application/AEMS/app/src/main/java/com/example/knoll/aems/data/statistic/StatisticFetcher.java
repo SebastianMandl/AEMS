@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import at.htlgkr.aemsaccess.data.MultiItemFetcher;
  */
 public class StatisticFetcher extends MultiItemFetcher {
 
-    private int userId;
+    private Integer userId = null;
 
     public StatisticFetcher(String authString, String baseUrl) {
         super(authString, baseUrl);
@@ -28,11 +30,22 @@ public class StatisticFetcher extends MultiItemFetcher {
     }
 
 
+    /**
+     * Returns a {@link List} of up to three statistics. These are the statistics that have been
+     * pinned by the user. In the case of an error, {@code null} will be returned.
+     * @param params Additional parameters if neccessary
+     * @return A {@link List} of the users pinned statistics, or {@code null} if an error occured.
+     */
     @Override
-    public List<Statistic> bulkFetch(Object... objects) {
+    public List<Statistic> bulkFetch(Object... params) {
 
         List<Statistic> result = new ArrayList<>();
-        JSONArray statistics = fetchJson();
+        JSONArray statistics = null;
+        try {
+            statistics = fetchJson();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for(int i = 0; i < statistics.length(); i++) {
             try {
                 JSONObject statistic = statistics.getJSONObject(i);
@@ -61,6 +74,7 @@ public class StatisticFetcher extends MultiItemFetcher {
                 result.add(stat);
             } catch (JSONException e) {
                 e.printStackTrace();
+                return null;
             }
 
 
@@ -86,7 +100,9 @@ public class StatisticFetcher extends MultiItemFetcher {
 
     @Override
     public String getSubUrl() {
-        // Url could look like this
+        if(userId == null) {
+            throw new RuntimeException("The userId cannot be null! Use the #setUserId function before fetching!");
+        }
         return "statistics/pinned/" + userId;
     }
 }

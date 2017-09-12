@@ -5,12 +5,27 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/statisticTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="Stromstatistik 2"
         android:layout_marginTop="10dp"
         android:textSize="15pt"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:layout_marginBottom="110dp">
+
+                <com.github.mikephil.charting.charts.CombinedChart
+                    android:id="@+id/combChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </com.github.mikephil.charting.charts.CombinedChart>
+
+        </LinearLayout>
+
 
 </LinearLayout>
