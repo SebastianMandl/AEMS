@@ -54,8 +54,6 @@ public class App_Tab_1 extends ChartViewTab {
         BarData barData = new BarData(dataSet);
         chart.setData(barData);
         chart.invalidate();
-
-
     }
 
     @Override

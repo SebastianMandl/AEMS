@@ -37,8 +37,6 @@ import java.util.ArrayList;
 
 public class App_Tab_2 extends ChartViewTab {
 
-    public TextView statisticTitle;
-
     public App_Tab_2() {
         super(R.layout.app_tab_2, R.id.combChart);
     }
