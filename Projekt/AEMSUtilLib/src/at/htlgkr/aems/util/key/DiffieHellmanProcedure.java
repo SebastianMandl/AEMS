@@ -19,13 +19,16 @@ import org.json.JSONObject;
 import at.htlgkr.aems.database.DatabaseConnection;
 
 /**
- * This class is used within the database to compute the key.
- * This class is required due to the reason of precision difference between 
+ * This class is on one hand used within the database to compute the key.
+ * With regard to the database this class is required due to reason of precision difference between 
  * programming languages. Before this class was implemented they keys weren't always
  * generated with the same precision thus not equal after computation.
  * 
  * Except for the database usage of this class, this class will also be consulted
  * by every appliction which is required to exert the Diffie-Hellman-Procedure.
+ *
+ * Applications which may deploy this class: Report-Bot, Raspberry Pi, Database
+ * 
  * @author Sebastian
  * @since 25-07-2017
  * @version 2.0
@@ -82,35 +85,62 @@ public class DiffieHellmanProcedure {
 	//private static BigDecimal baseNumber = new BigDecimal(-1);
 	private static BigDecimal modNumber = new BigDecimal(-1);
 	
-	private static final int KEY_LENGTH = 16;
-	private static final int SECRET_TOP_LIMIT = 55499;
-	private static final int SECRET_BOTTOM_LIMIT = 151;
+	public static final int KEY_LENGTH = 16;
+	private static final int SECRET_TOP_LIMIT = 499_999;
+	private static final int SECRET_BOTTOM_LIMIT = 250_111;
 	
-	private static final int BASE_TOP_LIMIT = 351;
-	private static final int BASE_BOTTOM_LIMIT = 151;
+	private static final int BASE_NUMBER_LENGTH = 60;
+	private static final int MOD_NUMBER_LENGTH = 60;
 	
+	private static BigDecimal createRandomNumber(int length) {
+		StringBuffer buffer = new StringBuffer();
+		Random random = new Random();
+		for(int i = 0; i < length; i++) {
+			buffer.append(random.nextInt(9));
+		}
+		return new BigDecimal(buffer.toString());
+		
+	}
+	
+	/**
+	 * This method is consulted with regard to acquiring the key details.
+	 * The key details comprise information about the base number the modulus number as well as the
+	 * combination of the base number the modulus number and the client/server -side generated secret number
+	 * 
+	 * Note: this method is primarily utilized by the database and the raspberry pi!
+	 * @return the key details
+	 */
+	public static String getKeyDetails() {
+		final Random RANDOM = new Random();
+		StringBuilder builder = new StringBuilder();
+		builder.append("{");
+		BigDecimal baseNumber = createRandomNumber(BASE_NUMBER_LENGTH);
+		builder.append("base:").append(baseNumber);
+		//DiffieHellmanProcedure.baseNumber = baseNumber;
+		
+		BigDecimal modNumber = new BigDecimal(RANDOM.nextInt());
+		modNumber = modNumber.multiply(createRandomNumber(MOD_NUMBER_LENGTH));
+		builder.append(", mod:").append(modNumber);
+		DiffieHellmanProcedure.modNumber = modNumber;
+		
+		BigDecimal secretNumber = new BigDecimal(RANDOM.nextInt(SECRET_TOP_LIMIT) + SECRET_BOTTOM_LIMIT);
+		secretNumberClient = secretNumber;
+		BigDecimal combination = compute(baseNumber, modNumber, secretNumber);
+		builder.append(", combination:").append(combination.toString());
+		builder.append("}");
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * This method is invoked at the corresponding side which wants to initiate a key exchange.
+	 * In most cases this side refers to the client.
+	 * @param socket - the Socket representing the connection stream between the client and the server
+	 * @throws IOException - if any error during io occurs
+	 */
 	public static void sendKeyInfos(Socket socket) throws IOException {
 		try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
-			final Random RANDOM = new Random();
-			
-			StringBuilder builder = new StringBuilder();
-			builder.append("{");
-			BigDecimal baseNumber = new BigDecimal(RANDOM.nextInt(BASE_TOP_LIMIT) + BASE_BOTTOM_LIMIT);
-			builder.append("base:").append(baseNumber);
-			//DiffieHellmanProcedure.baseNumber = baseNumber;
-			
-			BigDecimal modNumber = new BigDecimal(RANDOM.nextInt());
-			modNumber = modNumber.multiply(new BigDecimal("81657531897453431354687831513154354546878645513213245"));
-			builder.append(", mod:").append(modNumber);
-			DiffieHellmanProcedure.modNumber = modNumber;
-			
-			BigDecimal secretNumber = new BigDecimal(RANDOM.nextInt(SECRET_TOP_LIMIT) + SECRET_BOTTOM_LIMIT);
-			secretNumberClient = secretNumber;
-			BigDecimal combination = compute(baseNumber, modNumber, secretNumber);
-			builder.append(", combination:").append(combination);
-			builder.append("}");
-			
-			writer.write(builder.toString());
+			writer.write(getKeyDetails());
 			writer.write("\r\n");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,6 +153,8 @@ public class DiffieHellmanProcedure {
 	 * Runs on the server and listens to port 9950 for impending key exchange requests.
 	 * This method also provides functionality to retain the servers utilization at a minimum.
 	 * Key exchange requests will be rejected if there are sent more than one per minute from the same inet address.
+	 * 
+	 *  Note: this method is primarily utilized by the raspberry pi!
 	 * 
 	 * @throws IOException - if the server could not listen to port 9950
 	 */
@@ -171,7 +203,7 @@ public class DiffieHellmanProcedure {
 			// send key confirmation request
 			Socket clientSocket = new Socket(socket.getLocalAddress(), socket.getLocalPort() + 1);
 			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
-				writer.write("{combination:" + myCombination + "}");
+				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
 			} catch(IOException e) {
 				e.printStackTrace();
@@ -187,9 +219,21 @@ public class DiffieHellmanProcedure {
 		} finally {
 			server.close();
 		}
+		
 		return null;
 	}
 	
+	/**
+	 * This method intercepts one pending unfinished key exchange request.
+	 * This method exclusively listens to port 9951.
+	 * After a connection was established the key computation finishes and the
+	 * key exchange is considered to be done (Now the server and the client possess the same key).
+	 * 
+	 *  Note: this method is primarily utilized by the raspberry pi!
+	 * 
+	 * @return the definitive key
+	 * @throws IOException
+	 */
 	public static byte[] confirmKey() throws IOException {
 		ServerSocket server = new ServerSocket(9951);
 		Socket socket = server.accept();
