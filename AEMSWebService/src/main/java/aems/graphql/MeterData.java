@@ -28,7 +28,7 @@ public class MeterData extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.METERDATA, AEMSDatabase.MeterData.ID.name()));
+            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.METERDATA, AEMSDatabase.MeterData.ID));
         }
     }).build();
     
@@ -36,7 +36,7 @@ public class MeterData extends GraphQLObjectType {
         @Override
         public Double get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Double.valueOf(Query.execQuery(obj, AEMSDatabase.METERDATA, AEMSDatabase.MeterData.MEASURED_VALUE.name()));
+            return Double.valueOf(Query.execQuery(obj, AEMSDatabase.METERDATA, AEMSDatabase.MeterData.MEASURED_VALUE));
         }
     }).build();
     
@@ -44,7 +44,7 @@ public class MeterData extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Query.execQuery(obj, AEMSDatabase.METERDATA, AEMSDatabase.MeterData.TIMESTAMP.name());
+            return Query.execQuery(obj, AEMSDatabase.METERDATA, AEMSDatabase.MeterData.TIMESTAMP);
         }
     }).build();
     

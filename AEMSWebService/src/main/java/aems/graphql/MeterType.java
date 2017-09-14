@@ -32,7 +32,7 @@ public class MeterType extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.METERTYPES, AEMSDatabase.MeterTypes.ID.name()));
+            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.METERTYPES, AEMSDatabase.MeterTypes.ID));
         }
     }).build();
     
@@ -40,7 +40,7 @@ public class MeterType extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Query.execQuery(obj, AEMSDatabase.METERTYPES, AEMSDatabase.MeterTypes.DISPLAY_NAME.name());
+            return Query.execQuery(obj, AEMSDatabase.METERTYPES, AEMSDatabase.MeterTypes.DISPLAY_NAME);
         }
     }).build();
     

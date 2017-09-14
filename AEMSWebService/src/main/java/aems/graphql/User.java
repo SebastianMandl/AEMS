@@ -24,10 +24,10 @@ public class User extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             final JSONObject OBJ = new JSONObject(environment.getSource().toString());
-            return Integer.valueOf(Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.ID.name(), new Condition(".*AT.*") {
+            return Integer.valueOf(Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.ID, new Condition(".*AT.*") {
                 @Override
                 public String exec() {
-                    return Query.execQuery(OBJ, AEMSDatabase.METERS, AEMSDatabase.Meters.USER.name(), AEMSDatabase.USERS, AEMSDatabase.Users.ID.name(), AEMSDatabase.Users.ID.name());
+                    return Query.execQuery(OBJ, AEMSDatabase.METERS, AEMSDatabase.Meters.USER, AEMSDatabase.USERS, AEMSDatabase.Users.ID, AEMSDatabase.Users.ID);
                 }
             }));
         }
@@ -37,10 +37,10 @@ public class User extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             final JSONObject OBJ = new JSONObject(environment.getSource().toString());
-            return Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.USERNAME.name(), new Condition(".*AT.*") {
+            return Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.USERNAME, new Condition(".*AT.*") {
                 @Override
                 public String exec() {
-                    return Query.execQuery(OBJ, AEMSDatabase.METERS, AEMSDatabase.Meters.USER.name(), AEMSDatabase.USERS, AEMSDatabase.Users.ID.name(), AEMSDatabase.Users.USERNAME.name());
+                    return Query.execQuery(OBJ, AEMSDatabase.METERS, AEMSDatabase.Meters.USER, AEMSDatabase.USERS, AEMSDatabase.Users.ID, AEMSDatabase.Users.USERNAME);
                 }
             });
         }

@@ -25,7 +25,7 @@ public class RestInf extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final StringBuffer BUFFER = new StringBuffer();
-        Files.readAllLines(Paths.get("C:\\Users\\Sebastian\\Desktop\\AEMSWebService\\src\\main\\java\\aems\\query")).forEach(new Consumer<String>() {
+        Files.readAllLines(Paths.get("C:\\Users\\Sebastian\\hubiC\\AEMS\\AEMSWebService\\src\\main\\java\\aems\\query")).forEach(new Consumer<String>() {
             @Override
             public void accept(String s) {
                 BUFFER.append(s).append("\n");

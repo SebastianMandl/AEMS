@@ -28,7 +28,7 @@ public class Meter extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.ID.name());
+            return Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.ID);
         }
     }).build();
     
@@ -36,7 +36,7 @@ public class Meter extends GraphQLObjectType {
         @Override
         public Double get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Double.valueOf(Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.LATITUDE.name()));
+            return Double.valueOf(Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.LATITUDE));
         }
     }).build();
     
@@ -44,7 +44,7 @@ public class Meter extends GraphQLObjectType {
         @Override
         public Double get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Double.valueOf(Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.LONGITUDE.name()));
+            return Double.valueOf(Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.LONGITUDE));
         }
     }).build();
     
@@ -52,7 +52,7 @@ public class Meter extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.CITY.name());
+            return Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.CITY);
         }
     }).build();
     
@@ -61,7 +61,7 @@ public class Meter extends GraphQLObjectType {
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
             JSONObject returnObj = new JSONObject();
-            returnObj.put("id", Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.METERTYPE.name()));
+            returnObj.put("id", Query.execQuery(obj, AEMSDatabase.METERS, AEMSDatabase.Meters.METERTYPE));
             return returnObj.toString();
         }
     }).build();

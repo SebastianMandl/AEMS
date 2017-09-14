@@ -1,6 +1,5 @@
 {
-    users {
+    statistic_times {
         id
-        username
     }
 }

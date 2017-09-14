@@ -50,6 +50,20 @@ public class Query extends GraphQLObjectType {
         }
     }).build();
     
+    private static final GraphQLFieldDefinition STATISTIC_METERS = GraphQLFieldDefinition.newFieldDefinition().name("statistic_meters").type(GraphQLList.list(StatisticMeters.getInstance())).dataFetcher(new DataFetcher<ArrayList<String>>() {
+        @Override
+        public ArrayList<String> get(DataFetchingEnvironment environment) {
+            return processEnvironmentForEntity(environment, AEMSDatabase.STATISTIC_METERS);
+        }
+    }).build();
+    
+    private static final GraphQLFieldDefinition STATISTIC_TIMES = GraphQLFieldDefinition.newFieldDefinition().name("statistic_times").type(GraphQLList.list(StatisticTime.getInstance())).dataFetcher(new DataFetcher<ArrayList<String>>() {
+        @Override
+        public ArrayList<String> get(DataFetchingEnvironment environment) {
+            return processEnvironmentForEntity(environment, AEMSDatabase.STATISTIC_TIMES);
+        }
+    }).build();
+    
     private Query(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
     }
@@ -62,6 +76,8 @@ public class Query extends GraphQLObjectType {
         defs.add(USERS);
         defs.add(METERS);
         defs.add(METER_DATA);
+        defs.add(STATISTIC_METERS);
+        defs.add(STATISTIC_TIMES);
         
         instance = new Query("query", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;
@@ -79,7 +95,7 @@ public class Query extends GraphQLObjectType {
             ArrayList<String> projectionListHelper = new ArrayList<>();
             
             for(Field field : environment.getFields()) {
-                if(field.getName().toUpperCase().equals(table.toUpperCase())) {
+                if(field.getName().replace("_", "").toUpperCase().equals(table.toUpperCase())) {
                     for(Selection key : field.getSelectionSet().getSelections()) {
                         Field f = (Field) key;
                         projectionListHelper.add(f.getName().toLowerCase());
