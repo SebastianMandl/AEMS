@@ -1,0 +1,34 @@
+@charset "utf-8";
+.einstellungen {
+	margin-top: 5em;
+	margin-left: 3%;
+}
+.loginmodal-container form .login.loginmodal-submit.submitFormat {
+	margin-top: 15px;
+}
+.einstellungen .list-group.statisticsList {
+	margin-right: 3%;
+}
+.loginmodal-container form .loginModalClose.configuredStatisticClose {
+	padding-top: 40px;
+}
+.loginmodal-container form .btn.btn-default.configuredStatisticButtons {
+	float: left;
+	margin-right: 10px;
+	margin-left: 55px;
+}
+form .btn-group .dropdown-menu.zaehler_format {
+	padding-left: 10px;
+}
+
+.einstellungen .statistics-h2 {
+	margin-top: 2em;
+}
+.article .btn-group .dropdown-menu.format {
+	padding-left: 10px;
+}
+.loginmodal-container form .btn.btn-default.btn-addStatisticToIndexpage {
+	position: relative;
+	width: 100%;
+	margin-bottom: 1em;
+}

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AEMS - Advanced Energy Monitoring System</title>
+    
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/einstellungen.css" type="text/css">
+	<link href="css/einstellungenWarnungen.css" rel="stylesheet" type="text/css">
+  </head>
+  <body style="padding-top: 70px">
+    
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top navbarMainFormat">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+          <a class="navbar-brand titleFormat" href="index.html"><img class="titleImage" src="images/logo_schrift.png" alt="Nix"></a></div>
+          
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="topFixedNavbar1">
+         
+   
+          <ul class="nav navbar-nav navbar-right">
+            
+            <!-- Menü Statistiken -->
+          	<li class="navBarItems"><a href="statistiken.html">Statistiken</a></li>
+            
+           <!-- Menü Einstellungen -->
+            <li class="dropdown"><a href="#" class="dropdown-toggle navBarItems" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Einstellungen<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="einstellungenBerichte.html">Berichte</a></li>
+                <li role="separator" class="divider"></li>
+               <li><a href="einstellungenStatistiken.html">Statistiken, App und Startseite</a></li>
+				 <li role="separator" class="divider"></li>
+               <li><a href="einstellungenWarnungen.html">Benachrichtigungen und Warnungen</a></li>
+              </ul>
+            </li>
+            
+            
+            <!-- Menü Login, Logout und Registrieren -->
+             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>         
+                <li role="separator" class="divider"></li>
+                <li onClick="functionLogout();"> <a href="#" class="navBarItems">Logout</a></li>
+                <li role="separator" class="divider"></li>
+                 <li> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
+              </ul>
+            </li>
+   
+     		<!-- Benachrichtigungsicon -->
+            <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png">
+                  <span id="notificationCounter" class="notification-counter" notificationCounter();></span>   
+                     </li>
+                      
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+  </nav>
+
+
+  <!-- Seiteninhalt -->
+ <article class="einstellungen">
+	
+		<button class="btn btn-default ownButton"data-toggle="modal" data-target="#newWarning-modal" data-backdrop="false" data-dismiss="modal">Neue Warnung anlegen</button>
+		
+		<h2 class="h2-warnungen">Benachrichtigungen</h2>
+	 	<div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Benachrichtigung Strom 1</h4>
+		  	<p class="list-group-item-text">Fixwert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Benachrichtigung Strom 2</h4>
+		  	<p class="list-group-item-text">Fixwert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Benachrichtigung Gas 1</h4>
+		  	<p class="list-group-item-text">%-tuell</p>
+		  </a>
+		</div>
+		
+		<h2 class="h2-warnungen">Warnungen</h2>
+	 	<div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Warnung Strom 1</h4>
+		  	<p class="list-group-item-text">Fixwert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Warnung Strom 2</h4>
+		  	<p class="list-group-item-text">Fixwert</p>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">Warnung Gas 1</h4>
+		  	<p class="list-group-item-text">%-tuell</p>
+		  </a>
+		</div>
+   </article>
+  
+  <footer class="modal-footer footerFormat">&copy; Ein Dienst der Energiegenossenschaft Eferding</footer>
+  
+  
+ 
+ <!-- Login Modal -->
+ 	<div class="modal fade" id="login-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Login to Your Account</h1><br>
+				  <form>
+					<input type="text" id="username" name="user" placeholder="Username" required>
+					<input type="password" id="password" name="pass" placeholder="Password" required>
+					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
+					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
+					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
+				  </form>				
+				</div>
+			</div>
+		  </div>  
+ 
+ 
+ 
+<!-- Register Modal -->
+ <div class="modal fade" id="register-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Register your Account</h1><br>
+				  <form>
+					<input type="text" name="user" placeholder="Username" required>
+					<input type="password" name="pass" placeholder="Password" required>
+					<input type="text" name="email" placeholder="E-Mail" required>
+					<input type="text" name="plz" placeholder="Postleitzahl" required>
+					<input type="checkbox" name="termsofuse" id="termsofuse" required/> 
+					<label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
+					<input onClick="functionRegister();" type="submit" name="register" class="login loginmodal-submit" value="Register">
+					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
+					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+				  </form>			
+				</div>
+			</div>
+		  </div>  	
+		  	
+		  		
+		  			<!-- New Warning Modal -->
+ <div class="modal fade" id="newWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Neue Warnung erstellen</h1><br>
+				  <form>
+				  	<h4>Bezeichnung</h4>
+					<input type="text" name="user" placeholder="Meine Warnung" required>
+					<h4>Benachrichtigung oder Warnung</h4>
+					<div class="btn-group">
+    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Benachrichtigungstyp<span class="caret"></span></button>
+   						<ul class="dropdown-menu">
+							<li role="presentation"><a href="#">Benachrichtigung</a></li>
+       						<li role="presentation"><a href="#">Warnung</a></li>
+					  </ul>
+  					</div>
+  					<h4>Zählertyp</h4>
+					<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+  					<h4>Verwendete Zähler</h4>
+  						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+  						<h4>Ausnahme für bestimmte Tage:</h4>
+					<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Montag</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Dienstag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Mittwoch</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Donnerstag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Freitag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Samstag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Sonntag</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+				    <h4>Wie hoch darf die Abweichung sein?</h4>
+				    <div class="btn-group">
+    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Abweichung<span class="caret"></span></button>
+   						<ul class="dropdown-menu">
+							<li role="presentation"><a href="#">10%</a></li>
+       						<li role="presentation"><a href="#">20%</a></li>
+        					<li role="presentation"><a href="#">30%</a></li>     
+        					<li role="presentation"><a href="#">40%</a></li>
+        					<li role="presentation"><a href="#">50%</a></li>
+        					<li role="presentation"><a href="#">70%</a></li>
+        					<li role="presentation"><a href="#">100%</a></li>
+					  </ul>
+  					</div>
+					
+					<h4>Ausnahme für bestimmtes Datum</h4>
+ 					<input type="date">
+  					
+					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen">
+					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+				  </form>			
+				</div>
+			</div>
+  </div>  <!-- New Indexpage Statistic Modal Ende -->	
+  
+  
+  		<!-- Edit Warning Modal -->
+  <div class="modal fade" id="editWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Warnung bearbeiten</h1><br>
+				  <form>
+				  	<h4>Bezeichnung</h4>
+					<input type="text" name="user" placeholder="Meine Warnung" required>
+					<h4>Benachrichtigung oder Warnung</h4>
+					<div class="btn-group">
+    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Benachrichtigungstyp<span class="caret"></span></button>
+   						<ul class="dropdown-menu">
+							<li role="presentation"><a href="#">Benachrichtigung</a></li>
+       						<li role="presentation"><a href="#">Warnung</a></li>
+					  </ul>
+  					</div>
+  					<h4>Zählertyp</h4>
+					<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Strom</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wasser</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Gas</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Wärme</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+  					<h4>Verwendete Zähler</h4>
+  						<button class="btn btn-default" type="button">Alle</button>
+  						<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">AT368746482374</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+  						<h4>Ausnahme für bestimmte Tage:</h4>
+					<div class="btn-group">
+    					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret"></span></button>
+   						  <ul class="dropdown-menu zaehler_format">
+								<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Montag</label>
+    		 					</div>
+    							</li>
+       							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Dienstag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Mittwoch</label>
+    							</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Donnerstag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Freitag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Samstag</label>
+    		 					</div>
+    							</li>
+    							<li role="presentation"><div class="checkbox">
+     		 						<label><input type="checkbox" value="">Sonntag</label>
+    		 					</div>
+    							</li>
+    						</ul>
+  						</div>
+				    <h4>Wie hoch darf die Abweichung sein?</h4>
+				    <div class="btn-group">
+    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Abweichung<span class="caret"></span></button>
+   						<ul class="dropdown-menu">
+							<li role="presentation"><a href="#">10%</a></li>
+       						<li role="presentation"><a href="#">20%</a></li>
+        					<li role="presentation"><a href="#">30%</a></li>     
+        					<li role="presentation"><a href="#">40%</a></li>
+        					<li role="presentation"><a href="#">50%</a></li>
+        					<li role="presentation"><a href="#">70%</a></li>
+        					<li role="presentation"><a href="#">100%</a></li>
+					  </ul>
+  					</div>
+					
+					<h4>Ausnahme für bestimmtes Datum</h4>
+ 					<input type="date">
+  					
+					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung bearbeiten">
+					<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+				  </form>			
+				</div>
+			</div>
+  </div>  <!-- New Indexpage Statistic Modal Ende -->	
+  
+  
+  <!-- Configured Warning Modal -->
+ 	<div class="modal fade" id="configuredWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		<div class="modal-dialog">
+				<div class="loginmodal-container">
+			  	<h1>Gewählte Warnung...</h1><br>
+				  <form>
+				  	<button class="btn btn-default configuredWarningButtons" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
+				  	<button class="btn btn-default">Löschen</button>
+					<a href="#" class="loginModalClose configuredWarningClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
+				  </form>				
+				</div>
+			</div>
+		  </div>  
+ 
+ 
+ 
+  <script src="js/jquery-1.11.3.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+  <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+  <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+
+	 
+</body>
+</html>
