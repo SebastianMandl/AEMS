@@ -45,7 +45,7 @@ public class Statistic extends GraphQLObjectType {
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
             JSONObject returnObj = new JSONObject();
-            returnObj.put("id", obj.get("user"));
+            returnObj.put("id", Query.execQuery(obj, AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.USER));
             return returnObj.toString();
         }
     }).build();

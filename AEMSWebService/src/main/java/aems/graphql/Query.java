@@ -64,6 +64,13 @@ public class Query extends GraphQLObjectType {
         }
     }).build();
     
+    private static final GraphQLFieldDefinition PERIODS = GraphQLFieldDefinition.newFieldDefinition().name("periods").type(GraphQLList.list(Period.getInstance())).dataFetcher(new DataFetcher<ArrayList<String>>() {
+        @Override
+        public ArrayList<String> get(DataFetchingEnvironment environment) {
+            return processEnvironmentForEntity(environment, AEMSDatabase.PERIODS);
+        }
+    }).build();
+    
     private Query(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
     }
@@ -78,6 +85,7 @@ public class Query extends GraphQLObjectType {
         defs.add(METER_DATA);
         defs.add(STATISTIC_METERS);
         defs.add(STATISTIC_TIMES);
+        defs.add(PERIODS);
         
         instance = new Query("query", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;
@@ -125,8 +133,7 @@ public class Query extends GraphQLObjectType {
             }
                           
             return list;
-    }
-        
+    }        
     
     public static String execQuery(JSONObject obj, String table, String column, Condition... conditions) {
         if(obj.has("id")) {
