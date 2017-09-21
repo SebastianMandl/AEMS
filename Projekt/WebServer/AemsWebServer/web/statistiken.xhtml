@@ -1,0 +1,179 @@
+
+<!--<?xml version="1.0" encoding="UTF-8"?>
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>AEMS - Advanced Energy Monitoring System</title>
+
+        <link href="css/bootstrap.css" rel="stylesheet"/>
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="css/login-modal.css" rel="stylesheet" type="text/css"/>
+        <link href="css/statistiken.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body style="padding-top: 70px">
+        <nav class="navbar navbar-default navbar-inverse navbar-fixed-top navbarMainFormat">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <h:link class="navbar-brand titleFormat" outcome="index"><img class="titleImage" src="images/logo_schrift.png" alt="Nix"/></h:link></div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="topFixedNavbar1">
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <!-- Menü Statistiken -->
+                        <li class="navBarItems"><a href="statistiken.html">Statistiken</a></li>
+
+
+                        <!-- Menü Einstellungen -->
+                        <li class="dropdown"><a href="#" class="dropdown-toggle navBarItems" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Einstellungen<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="einstellungenBerichte.html">Berichte</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="einstellungenStatistiken.html">Statistiken, App und Startseite</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="einstellungenWarnungen.html">Benachrichtigungen und Warnungen</a></li>
+                            </ul>
+                        </li>
+
+
+                        <!-- Menü Login, Logout und Registrieren -->
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>         
+                                <li role="separator" class="divider"></li>
+                                <li onClick="functionLogout();"> <a href="#" class="navBarItems">Logout</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Benachrichtigungsicon -->
+                        <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png"/>
+                            <span id="notificationCounter" class="notification-counter" onclick="notificationCounter()"></span>   
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+
+
+
+
+        <!-- Seiteninhalt -->
+        <article class="article">
+
+            <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
+
+            <div class="statistic-container">
+                <div class="statistic-primary">
+                    <h2>Statistico Numero Uno</h2>
+                    <p class="statistic-temp">Temperatur (Gelb)</p>
+                    <p class="statistic-consumption">Verbrauch (Lila)</p>
+                    <canvas id="canvas_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+                    <button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+                </div>
+                <div class="statistic-secondary">
+                    <h2>Statistiko los Vorperiodos</h2>
+                    <p class="statistic-temp">Temperatur (Gelb)</p>
+                    <p class="statistic-consumption">Verbrauch (Lila)</p>
+                    <canvas id="canvas_1_1"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+                    <button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+                </div>
+            </div>
+
+            <div class="statistic-container">
+                <div class="statistic-primary">
+                    <h2>I'ma fluento in Espanól</h2>
+                    <p class="statistic-temp">Temperatur (Gelb)</p>
+                    <p class="statistic-consumption">Verbrauch (Lila)</p>
+                    <canvas id="canvas_2"></canvas> <!-- Hier kommt die eigentliche Statistik hin! -->
+                    <button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+                </div>
+            </div>
+
+            <!--
+            <div class="statistic-container">
+                    <p class="statistic-temp">Temperatur (Gelb)</p>
+                    <p class="statistic-consumption">Verbrauch (Lila)</p>
+                    <canvas id="canvas_1"></canvas> 
+                    <button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+            </div>
+            
+            <div class="statistic-container compare">
+                    <p class="statistic-temp">Temperatur (Gelb)</p>
+                    <p class="statistic-consumption">Verbrauch (Lila)</p>
+                    <canvas id="canvas_2"></canvas> 
+                    <button id="download-s" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> PDF herunterladen</button>
+            </div>
+            -->
+
+        </article>
+
+
+        <footer class="modal-footer footerFormat">Ein Dienst der Energiegenossenschaft Eferding</footer>
+
+
+        <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+        <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
+
+
+        <!-- New Statistic Modal -->
+        <ui:include src="/templates/new-statistic-modal.xhtml"></ui:include>
+
+        
+        <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+        <script language="javascript" type="text/javascript" src="js/chartist/Chart.js"></script>
+        <script src="js/show-consumption.js"></script>
+        <script src="js/html2canvas.js"></script>
+        <script src="js/jsPDF.js"></script>
+        <script>
+
+                            // For each (alle statistiken des users):
+                            var time = ["KW 29", "KW 30", "KW 31", "KW 32"];
+                            var avgConsumptions = [120, 110, 90, 110];
+                            var avgTemp = [31, 24, 30, 30];
+                            showConsumption("canvas_1", time, avgConsumptions, avgTemp);
+                            showConsumption("canvas_1_1", time, avgConsumptions, avgTemp);
+                            showConsumption("canvas_2", time, avgConsumptions, avgTemp);
+
+
+                            $("#download-s").click(function () {
+                                var button = $(this);
+                                html2canvas($("#canvas_1"), {
+                                    onrendered: function (canvas) {
+                                        var imgData = canvas.toDataURL(
+                                                'image/png');
+                                        var doc = new jsPDF('p', 'mm');
+                                        doc.setFontSize(35);
+                                        doc.text("ICH BIMS GROSSES TEXT", 20, 30);
+                                        doc.setFontSize(10);
+                                        doc.text("Erfreuen Sie sich an dieser Statistik :)", 22, 35);
+                                        doc.addImage(imgData, 'PNG', 20, 50);
+                                        doc.save("statistik.pdf");
+                                    }
+                                });
+                            });
+        </script>
+
+    </body>
+</html>
