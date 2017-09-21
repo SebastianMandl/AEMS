@@ -1,5 +1,14 @@
 {
-    statistic_times {
+    weather_data {
         id
+        humidity
+        temperature
+        meter {
+            id
+            user {
+                id
+                username
+            }
+        }
     }
 }

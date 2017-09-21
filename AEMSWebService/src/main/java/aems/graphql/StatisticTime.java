@@ -64,6 +64,15 @@ public class StatisticTime extends GraphQLObjectType {
         }
     }).build();
     
+    private static final GraphQLFieldDefinition PERIOD = GraphQLFieldDefinition.newFieldDefinition().name("period").type(Period.getInstance()).dataFetcher(new DataFetcher<String> () {
+        @Override
+        public String get(DataFetchingEnvironment environment) {
+            JSONObject obj = new JSONObject(environment.getSource().toString());
+            JSONObject returnObj = new JSONObject();
+            returnObj.put("id", obj.get("period"));
+            return returnObj.toString();
+        }
+    }).build();
     
     private static final GraphQLFieldDefinition STATISTIC = GraphQLFieldDefinition.newFieldDefinition().name("statistic").type(Statistic.getInstance()).dataFetcher(new DataFetcher<String> () {
         @Override
@@ -90,6 +99,7 @@ public class StatisticTime extends GraphQLObjectType {
         defs.add(PERIOD_VALUE_1);
         defs.add(PERIOD_VALUE_2);
         defs.add(STATISTIC);
+        defs.add(PERIOD);
         
         instance = new StatisticTime("statistic_time", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;
