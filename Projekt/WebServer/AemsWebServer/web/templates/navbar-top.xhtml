@@ -1,0 +1,60 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top navbarMainFormat">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                <a class="navbar-brand titleFormat" href="index.html"><img class="titleImage" src="images/logo_schrift.png" alt="Nix"/></a></div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="topFixedNavbar1">
+
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!-- Menü Statistiken -->
+                    <li class="navBarItems"><h:link outcome="statistiken">Statistiken</h:link></li>
+
+                    <!-- Menü Einstellungen -->
+                    <li class="dropdown"><a href="#" class="dropdown-toggle navBarItems" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Einstellungen<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="einstellungenBerichte.html">Berichte</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="einstellungenStatistiken.html">Statistiken, App und Startseite</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="einstellungenWarnungen.html">Benachrichtigungen und Warnungen</a></li>
+                        </ul>
+                    </li>
+
+
+                    <!-- Menü Login, Logout und Registrieren -->
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>      
+                            <li role="separator" class="divider"></li>
+                            <li onclick="functionLogout()"> <a href="#" class="navBarItems">Logout</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Benachrichtigungsicon -->
+                    <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png"/>
+                        <span id="notificationCounter" class="notification-counter"></span>   
+                    </li>
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</ui:composition>
+
+
+

@@ -2,14 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <title>AEMS - Advanced Energy Monitoring System</title>
     
-	<link href="css/bootstrap.css" rel="stylesheet">
-	<link href="css/main.css" rel="stylesheet" type="text/css">
-	<link href="css/index.css" rel="stylesheet" type="text/css">
-	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="css/index.css" rel="stylesheet" type="text/css">
+    <link href="css/login-modal.css" rel="stylesheet" type="text/css">
 	
 	
   </head>
@@ -69,6 +70,11 @@
 
   <!-- Seiteninhalt -->
   <article class="statistics">
+      <noscript>
+        Diese Website baut auf JavaScript auf. Bitte aktivieren Sie JavaScript in Ihrem Browser um diese Website in
+        vollem Umfang zu nutzen. <a href="chrome://settings/content/javascript">Chrome</a>
+      </noscript>
+      
   	<ul class="listStyle">
   		<li class="statistikElement">
   		 <div class="statistic-container">
@@ -104,8 +110,8 @@
     	  		<div class="modal-dialog">
 				<div class="loginmodal-container">
 					<h1>Login to Your Account</h1><br>
-				  <form>
-					<input type="text" id="username" name="user" placeholder="Username" required>
+                                  <form>
+					<input type="text" id="username" name="user" placeholder="Username" value="#{}" required>
 					<input type="password" id="password" name="pass" placeholder="Password" required>
 					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
 					<p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
