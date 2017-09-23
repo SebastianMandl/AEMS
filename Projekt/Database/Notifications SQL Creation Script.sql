@@ -3,7 +3,7 @@ CREATE TABLE aems."Notifications"
 (
   id NUMERIC(10,0) NOT NULL,
   "user" NUMERIC(10, 0) NOT NULL,
-  name character varying(100) NOT NULL,
+  name character varying(100) NOT NULL, -- display name
   
   type INTEGER, -- Warning or Info or Error Message
   max_deviation numeric(3,0) NOT NULL, -- 0 to 100 Percent
@@ -45,9 +45,9 @@ CREATE TABLE aems."NotificationExceptions"
   to_date DATE,
   
   -- From and To Date, OR:
-  period NUMERIC(2, 0),
-  period_value_from NUMERIC(2, 0),
-  period_value_to NUMERIC(2, 0),
+  period NUMERIC(2, 0), -- period e.g. monthly
+  period_value_from NUMERIC(2, 0), -- e.g. 3. day
+  period_value_to NUMERIC(2, 0), -- e.g. 20. day
   
   CONSTRAINT pk_notification_exceptions PRIMARY KEY(id),
   CONSTRAINT fk_notification_exceptions_notifications FOREIGN KEY (notification)

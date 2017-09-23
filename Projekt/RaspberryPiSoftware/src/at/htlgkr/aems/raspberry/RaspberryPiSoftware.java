@@ -1,5 +1,15 @@
 package at.htlgkr.aems.raspberry;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,12 +26,25 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
 import at.htlgkr.aems.util.crypto.Encrypter;
 import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
@@ -89,6 +112,8 @@ public class RaspberryPiSoftware {
 		final int CYCLE_INTERVAL = 1_000 * 60 * CYCLE_MINUTES;
 		
 		final Calendar CALENDAR = Calendar.getInstance();
+		
+		openConfigurationInterface();
 		
 		while(true) {
 			
@@ -271,10 +296,17 @@ public class RaspberryPiSoftware {
 	}
 	
 	/**
-	 * Convinience method for {@link RaspberryPiSoftware#readFromStream(String, int)}
+	 * Convinience method for {@link RaspberryPiSoftware#readFromStream(String, int, boolean)}
 	 */
 	private static String readFromStream(String command) {
-		return readFromStream(command, 0);
+		return readFromStream(command, 0, true);
+	}
+	
+	/**
+	 * Convinience method for {@link RaspberryPiSoftware#readFromStream(String, int, boolean)}
+	 */
+	private static String readFromStream(String command, boolean init) {
+		return readFromStream(command, 0, init);
 	}
 	
 	/**
@@ -294,7 +326,7 @@ public class RaspberryPiSoftware {
 	 * @param delay - an arbitrary delay after which the command will be executed (delay in milliseconds)
 	 * @return - the data read from the stream.
 	 */
-	private static String readFromStream(String command, int delay) {
+	private static String readFromStream(String command, int delay, boolean init) {
 		delay(delay);	
 		
 		Process process = execCommand(command, delay);
@@ -307,7 +339,8 @@ public class RaspberryPiSoftware {
 		final StringBuffer BUFFER = new StringBuffer();
 		int previousBufferLength = BUFFER.length();
 		
-		initiateDataExchange();
+		if(init)
+			initiateDataExchange();
 			
 		final Thread READ_THREAD = new Thread(() -> {
 			while(!isReadThreadInterrupted) {
@@ -531,6 +564,197 @@ public class RaspberryPiSoftware {
 		} catch (InterruptedException e) {
 			return false;
 		}
+	}
+	
+	// -------------------------------------------------------------------------------------------------------------------------------------
+	// GUI Starting
+	
+	private static volatile boolean shouldBlockExecution = false;
+	private static BufferedImage image;
+	
+	private static void openConfigurationInterface() {
+		JFrame frame = new JFrame("AMES Configuration Interface");
+		frame.setSize(800, 600);
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
+		
+		try {
+			image = ImageIO.read(new File("logo.png")); // load logo into memory
+			System.out.println(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		final Color COLOR1 = new Color(240, 240, 240);
+		final Color COLOR2 = new Color(220, 220, 220);
+		Color color = COLOR1;
+		final Font FONT = new Font("Arial", Font.PLAIN, 16);
+		
+		JPanel header = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(Graphics g) {
+				super.paint(g);
+				g.setColor(Color.WHITE);
+				g.fillRect(0, 0, getWidth(), getHeight());
+				g.drawImage(image, 10, 5, image.getWidth() / 2, image.getHeight() / 2, null);
+				
+				g.setColor(new Color(37, 206, 130));
+				g.setFont(FONT.deriveFont(Font.BOLD, 30));
+				
+				g.drawString("Configuration Interface", image.getWidth() / 2 + 50, image.getHeight() / 2);
+				
+				g.setFont(FONT.deriveFont(Font.BOLD, 20));
+				g.setColor(Color.BLACK);
+				g.drawString("Ports:", 10, image.getHeight() - 40);
+			}
+		};
+		header.setPreferredSize(new Dimension(800, 150));
+		frame.add(header, BorderLayout.NORTH);
+		JPanel ports = new JPanel();
+		ports.setBackground(Color.WHITE);
+		ports.setLayout(new BoxLayout(ports, BoxLayout.Y_AXIS));
+		
+		JScrollPane pane = new JScrollPane(ports);
+		JScrollBar bar = new JScrollBar(JScrollBar.VERTICAL);
+		bar.setUnitIncrement(20);
+		pane.setVerticalScrollBar(bar);
+		pane.setHorizontalScrollBar(null);
+		frame.add(pane, BorderLayout.CENTER);
+		
+		final HashMap<String, JComboBox<String>> CONFIG = new HashMap<>();
+		
+		String commandResult = readFromStream(readCommand("listDevsCommand.bash"), false);
+		final Pattern TTY_USB_PATTERN = Pattern.compile("(?:.*(ttyUSB[0-9]+).*)+");
+		Matcher matcher = TTY_USB_PATTERN.matcher(commandResult);
+		int count = 0;
+		while(matcher.find()) {
+			System.out.println(matcher.group(1));
+			for(int i = 1; i <= matcher.groupCount(); i++) {
+				JPanel container = new JPanel();
+				container.setLayout(new FlowLayout());
+				container.setPreferredSize(new Dimension(800, 40));
+				container.setMaximumSize(new Dimension(800, 40));
+				container.setBackground(color);
+				
+				String ttyUSBPort = matcher.group(i);
+				System.out.println("found port " + ttyUSBPort);
+				
+				JTextField field = new JTextField(ttyUSBPort);
+				field.setBorder(null);
+				field.setBackground(color);
+				field.setFont(FONT.deriveFont(Font.BOLD));
+				field.setEditable(false);
+				container.add(field);
+				
+				JComboBox<String> comboBox = new JComboBox<>();
+				comboBox.addItem("Electricity Meter");
+				comboBox.addItem("Gas Meter");
+				comboBox.addItem("Water Meter");
+				comboBox.addItem("Other");
+				comboBox.setFont(FONT);
+				comboBox.setSelectedIndex(3);
+				container.add(comboBox);
+				
+				CONFIG.put(ttyUSBPort, comboBox);
+				
+				ports.add(container);
+				
+				
+				if(color == COLOR1)
+					color = COLOR2;
+				else
+					color = COLOR1;
+				}
+			count++;
+		} 
+
+		if(count == 0){
+			// no interfaces are connected			
+			JTextField field = new JTextField("No device is connected via usb!");
+			field.setEditable(false);
+			field.setFont(FONT);
+			field.setForeground(Color.WHITE);	
+			field.setHorizontalAlignment(JTextField.CENTER);
+			
+			field.setBackground(new Color(239, 19, 19));
+			ports.add(field);
+			
+			System.out.println("No device is connected via usb!!");
+		};
+		
+		JPanel credentials = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(Graphics g) {
+				super.paint(g);
+				g.setFont(FONT.deriveFont(Font.BOLD, 20));
+				g.setColor(Color.BLACK);
+				FontMetrics metrics = new FontMetrics(FONT) {
+					private static final long serialVersionUID = 1L;
+				};
+				g.drawString("Credentials:", 10, getX() + metrics.getHeight() + 10);
+			};
+		};
+		credentials.setLayout(new BoxLayout(credentials, BoxLayout.Y_AXIS));
+		
+		credentials.setPreferredSize(new Dimension(800, 145));
+		JSeparator seperator = new JSeparator();
+		seperator.setBackground(Color.GREEN);
+		seperator.setPreferredSize(new Dimension(800, 20));
+		credentials.add(seperator);
+		credentials.setBackground(Color.WHITE);
+
+		credentials.add(createInput("Username:", FONT, false));
+		credentials.add(createInput("Password:", FONT, true));
+		
+		JPanel configurePanel = new JPanel();
+		configurePanel.setBackground(Color.WHITE);
+		
+		JButton configure = new JButton("configure");
+		configure.setFont(FONT.deriveFont(Font.BOLD));
+		configure.setPreferredSize(new Dimension(200, 25));
+	
+		configurePanel.add(configure);
+		credentials.add(configurePanel);
+		
+		frame.add(credentials, BorderLayout.SOUTH);
+		
+		shouldBlockExecution = true;
+		
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				shouldBlockExecution = false;
+			}
+		});
+		
+		frame.setVisible(true);
+	
+		while(shouldBlockExecution);
+	}
+	
+	private static JComponent createInput(String title, final Font FONT, boolean isPassword) {
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setMaximumSize(new Dimension(800, 35));
+		panel.setPreferredSize(new Dimension(800, 35));
+		JTextField label = new JTextField(title);
+		label.setFont(FONT.deriveFont(Font.BOLD));
+		label.setBackground(Color.WHITE);
+		label.setEditable(false);
+		label.setBorder(null);
+		panel.add(label);
+		JTextField input = isPassword ? new JPasswordField() : new JTextField();
+		input.setFont(FONT);
+		input.setEditable(true);
+		input.setBackground(Color.WHITE);
+		input.setPreferredSize(new Dimension(350, 25));
+		panel.add(input);
+		
+		return panel;
 	}
 	
 }
