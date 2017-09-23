@@ -5,7 +5,7 @@ var pv = [];
 var t = [1,2,3,4,5,6,7,8,9,10,11,12];
 randomValues();
 showChart("statistic_1", l, av, pv, t);
-showChart("statistic_2", l, av, pv, t);
+showChart("statistic_2", ["KW 08", "KW 09", "KW 10", "KW 11"], [150,120,120, 100], [150,130,130,90], t);
 showChart("statistic_3", l, av, pv, t);
 
 function showChart(canvasId, labels, actualValues, previousValues, temperature) {

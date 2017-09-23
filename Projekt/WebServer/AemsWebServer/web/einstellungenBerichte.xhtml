@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <head>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>AEMS - Advanced Energy Monitoring System</title>
+
+        <link href="css/bootstrap.css" rel="stylesheet" />
+        <link href="css/main.css" rel="stylesheet" type="text/css" />
+        <link href="css/einstellungen.css" rel="stylesheet" type="text/css" />
+        <link href="css/login-modal.css" rel="stylesheet" type="text/css" />
+        <link href="jQueryAssets/jquery.ui.core.min.css" rel="stylesheet" type="text/css" />
+        <link href="jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css" />
+        <link href="jQueryAssets/jquery.ui.button.min.css" rel="stylesheet" type="text/css" />
+        <link href="css/einstellungenBerichte.css" rel="stylesheet" type="text/css" />
+
+        <script src="jQueryAssets/jquery-1.11.1.min.js"></script>
+
+        <script src="jQueryAssets/jquery.ui-1.10.4.button.min.js"></script>
+    </head>
+
+    <body style="padding-top: 70px;">
+
+        <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+
+        <article class="einstellungen">
+
+            <button class="btn btn-default" data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal">Neuen Bericht erstellen</button>
+
+
+            <h2 class="h2-downloads">Konfigurierte Berichte:</h2>
+
+            <div class="list-group reportList" id="reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
+                <a href="#" class="list-group-item" rname="Strombericht 1">
+
+                    <h4 class="list-group-item-heading">Strombericht 1</h4>
+
+                    <p class="list-group-item-text">Monatlich, automatisch generiert</p>
+                </a>
+                <a href="#" class="list-group-item" rname="Strombericht 2">
+
+                    <h4 class="list-group-item-heading">Strombericht 2</h4>
+
+                    <p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
+                </a>
+                <a href="#" class="list-group-item" rname="Gasbericht 1">
+
+                    <h4 class="list-group-item-heading">Gasbericht 1</h4>
+
+                    <p class="list-group-item-text">Täglich, automatisch generiert</p>
+                </a>
+            </div>
+
+
+            <h2 class="h2-downloads">Downloads:</h2>
+
+            <div class="list-group reportList"> 
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">Monatsbericht Strom August 2017</h4>
+
+                    <p class="list-group-item-text">Monatlich, automatisch generiert</p>
+                </a>
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">Jahresbericht Strom 2017</h4>
+
+                    <p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
+                </a>
+
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">Wochenbericht Gas Kalenderwoche 3 2017 </h4>
+
+                    <p class="list-group-item-text">Täglich, automatisch generiert</p>
+                </a>
+            </div>
+        </article>
+
+        <footer class="modal-footer footerFormat">© Ein Dienst der Energiegenossenschaft Eferding</footer>
+
+        <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+        <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
+
+        <!-- Configured Report Modal -->
+
+        <div class="modal fade" id="configuredReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Gewählten Bericht...</h1><br />
+                    <form>
+                        <button class="btn btn-default configuredReportButtons" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
+                        <button class="btn btn-default">Löschen</button>
+                        <a href="#" class="loginModalClose configuredReportClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </form>				
+                </div>
+            </div>
+        </div>  
+
+        <!-- New Report Modal -->
+
+        <div class="modal fade" id="newReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Neuen Bericht erstellen</h1><br />
+                    <form>
+
+                        <h4>Berichtname</h4>
+                        <input type="text" name="user" placeholder="Mein Bericht" required="" />
+
+
+                        <h4>Zählertyp</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Strom</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wasser</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gas</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärme</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <h4>Zeitraum</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
+
+                            <ul class="dropdown-menu">
+
+                                <li role="presentation"><a href="#">Tag</a></li>
+
+                                <li role="presentation"><a href="#">Woche</a></li>
+
+                                <li role="presentation"><a href="#">Monat</a></li>     
+
+                                <li role="presentation"><a href="#">Jahr</a></li>
+                            </ul>
+                        </div>
+                        <input type="date" class="dateFormat" required="" />
+
+
+                        <h4>Zu verwendende Statistiken</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistiken<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Stromstatistik 1</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gasstatistik 1</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärmemengenstatistik 3</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gasstatistik 2</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+
+                        <h4>Anomalien berücksichtigen</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Jahreszeit</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Werte mit Vorperiode vergleichen</h4>
+
+                        <div id="RadioButtonsVorperiode">
+                            <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeYes" />
+                            <label for="RadioVorperiodeYes">Ja</label>
+                            <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeNo" />
+                            <label for="RadioVorperiodeNo">Nein</label>
+                        </div>
+
+                        <h4>Bericht automatisch generieren</h4>
+
+                        <div id="RadioButtonsAutomaticGenerating">
+                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateYes" />
+                            <label for="RadioGenerateAutomaticallyYes">Ja</label>
+                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo" />
+                            <label for="RadioGenerateAutomaticallyNo">Nein</label>
+                        </div>
+
+                        <h4>Anmerkung</h4>
+                        <input type="text" />
+                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht erstellen" />
+                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </form>			
+                </div>
+            </div>
+        </div>  <!-- New Report Modal Ende -->
+
+
+
+        <!-- Edit Report Modal -->
+
+        <div class="modal fade" id="editReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Bericht bearbeiten</h1><br />
+                    <form>
+
+                        <h4>Berichtname</h4>
+                        <input type="text" name="user" placeholder="Mein Bericht" required="" />
+
+                        <h4>Zählertyp</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Strom</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wasser</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gas</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärme</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <h4>Zeitraum</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
+
+                            <ul class="dropdown-menu">
+
+                                <li role="presentation"><a href="#">Tag</a></li>
+
+                                <li role="presentation"><a href="#">Woche</a></li>
+
+                                <li role="presentation"><a href="#">Monat</a></li>     
+
+                                <li role="presentation"><a href="#">Jahr</a></li>
+                            </ul>
+                        </div>
+                        <input type="date" class="dateFormat" required="" />
+
+
+
+                        <h4>Zu verwendende Statistiken</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistiken<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Stromstatistik 1</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gasstatistik 1</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärmemengenstatistik 3</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gasstatistik 2</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+
+                        <h4>Anomalien berücksichtigen</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Jahreszeit</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Werte mit Vorperiode vergleichen</h4>
+
+                        <div id="RadioButtonsVorperiode">
+                            <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeYes" />
+                            <label for="RadioVorperiodeYes">Ja</label>
+                            <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeNo" />
+                            <label for="RadioVorperiodeNo">Nein</label>
+                        </div>
+
+                        <h4>Bericht automatisch generieren</h4>
+
+                        <div id="RadioButtonsAutomaticGenerating">
+                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateYes" />
+                            <label for="RadioGenerateAutomaticallyYes">Ja</label>
+                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo" />
+                            <label for="RadioGenerateAutomaticallyNo">Nein</label>
+                        </div>
+
+                        <h4>Anmerkung</h4>
+                        <input type="text" />
+                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht bearbeiten" />
+                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </form>			
+                </div>
+            </div>
+        </div>  <!-- Edit Report Modal Ende -->
+
+        <script src="js/jquery-1.11.3.min.js"></script>
+
+        <script src="js/bootstrap.js"></script>
+
+        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+
+        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+
+        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+
+        <script language="javascript" type="text/javascript" src="js/berichte.js"></script>
+    </body></html>

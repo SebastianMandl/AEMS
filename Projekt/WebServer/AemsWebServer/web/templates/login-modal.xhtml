@@ -10,13 +10,23 @@
         <div class="loginmodal-container">
                 <h1>Login to Your Account</h1><br/>             
             
+                <h:form>
+                    <h:outputLabel for="username">Username</h:outputLabel>
+                    <h:inputText id="username" value="#{user.username}"></h:inputText>
+                    <h:outputLabel for="password">Passwort</h:outputLabel>
+                    <h:inputText id="password" value="#{user.password}"></h:inputText>
+                    <h:commandButton class="login loginmodal-submit" value="Einloggen" action="#{user.doLogin()}"></h:commandButton>
+                    <p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
+                    <a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
+                </h:form>
+                <!--
             <form>
                 <input type="text" id="username" name="user" placeholder="Username"/>
                 <input type="password" id="password" name="pass" placeholder="Password"/>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Login" onclick="loginButtonClicked"/>
                 <p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
                 <a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
-            </form>				
+            </form> -->				
         </div>
     </div>
 </div> 

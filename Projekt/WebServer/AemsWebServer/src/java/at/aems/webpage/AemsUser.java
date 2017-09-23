@@ -6,6 +6,7 @@
 package at.aems.webpage;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
@@ -36,6 +37,6 @@ public class AemsUser {
     }
     
     public String doLogin() {
-        return password != null && password.equals("hello") ? "statistiken" : "statistiken";
+        return "";
     }
 }
