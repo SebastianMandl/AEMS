@@ -8,12 +8,12 @@
             <div class="loginmodal-container">
                 <h1>Register your Account</h1><br/>
                 <form>
-                    <input type="text" name="user" placeholder="Ihr netzonline Username"/>
-                    <input type="password" name="pass" placeholder="Ihr netzonline Passwort"/>
-                    <input type="text" name="email" placeholder="E-Mail"/>
-                    <input type="text" name="plz" placeholder="Postleitzahl"/>
-                    <input type="checkbox" name="termsofuse" id="termsofuse"/> 
-                    <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="termsOfUse.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
+                    <input type="text" name="user" placeholder="Ihr netzonline Username" required="required"/>
+                    <input type="password" name="pass" placeholder="Ihr netzonline Passwort" required="required"/>
+                    <input type="text" name="email" placeholder="E-Mail" required="required"/>
+                    <input type="text" name="plz" placeholder="Postleitzahl" required="required"/>
+                    <input type="checkbox" name="termsofuse" id="termsofuse" required="required"/> 
+                    <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="terms.html" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
                     <input onclick="functionRegister()" type="submit" name="register" class="login loginmodal-submit" value="Register"/>
                     <p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>

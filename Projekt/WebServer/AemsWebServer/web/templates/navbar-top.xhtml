@@ -9,11 +9,10 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-                <a class="navbar-brand titleFormat" href="index.html"><img class="titleImage" src="images/logo_schrift.png" alt="Nix"/></a></div>
-
+                <h:link outcome="index" class="navbar-brand titleFormat"><img class="titleImage" src="images/logo_schrift.png" alt="Logo"/></h:link>
+            </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="topFixedNavbar1">
-
 
                 <ul class="nav navbar-nav navbar-right">
 
@@ -23,11 +22,11 @@
                     <!-- Menü Einstellungen -->
                     <li class="dropdown"><a href="#" class="dropdown-toggle navBarItems" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Einstellungen<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="einstellungenBerichte.html">Berichte</a></li>
+                            <li><h:link outcome="einstellungenBerichte">Berichte</h:link></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="einstellungenStatistiken.html">Statistiken, App und Startseite</a></li>
+                            <li><h:link outcome="einstellungenStatistiken">Statistiken, App und Startseite</h:link></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="einstellungenWarnungen.html">Benachrichtigungen und Warnungen</a></li>
+                            <li><h:link outcome="einstellungenWarnungen">Benachrichtigungen und Warnungen</h:link></li>
                         </ul>
                     </li>
 
