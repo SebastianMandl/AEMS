@@ -1,5 +1,8 @@
 package com.example.knoll.aems;
 
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.util.Output;
@@ -36,24 +39,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.jar.Manifest;
 
-
 public class MainActivity extends AppCompatActivity {
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
-
-
 
     /** RIESIGER KOMMENTAR ( 1 / 3)
      *
@@ -64,11 +53,14 @@ public class MainActivity extends AppCompatActivity {
     private ChartViewTab tab2;
     private ChartViewTab tab3;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+
 
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
@@ -106,8 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void downloadStatistic(ChartViewTab tab) {
-        boolean saveToSd = false;
+        boolean saveToSd = true;
 
         Chart chart = tab.getChart();
         Bitmap image = chart.getChartBitmap();
@@ -115,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(saveToSd) {
             ActivityCompat.requestPermissions(this, new String[] {android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            File filePath = new File(Environment.getExternalStorageDirectory(), "/meinetollencharts/");
+            File filePath = new File(Environment.getExternalStorageDirectory(), "/Charts/");
             filePath.mkdirs();
 
             File imageFile = new File(filePath, filename);
@@ -133,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             String url = MediaStore.Images.Media.insertImage(getContentResolver(), image, filename, "Hello");
             if(url == null) {
-                makeToast("Speichern fehlgeschlagen.");
+                makeToast("Speichern fehlgeschlagen!");
             } else {
-                makeToast("Statistik wurde gespeichert.");
+                makeToast("Statistik wurde gespeichert!");
             }
         }
     }
@@ -159,9 +152,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_login) {
-            return true;
-        } else if (id == R.id.action_logout){
+        if (id == R.id.action_logout){
             Toast.makeText(this, "Sie werden abgemeldet", Toast.LENGTH_LONG).show();
         }
 
@@ -212,4 +203,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }

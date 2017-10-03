@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Niklas on 06.09.2017.
+ * Created by knoll on 06.09.2017.
  * This class represents a general chart fragment.
  */
 
