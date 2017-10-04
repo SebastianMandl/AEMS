@@ -44,11 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    /** RIESIGER KOMMENTAR ( 1 / 3)
-     *
-     * Referenzen in der MainActivity auf die einzelnen Tabs
-     *
-     */
+
+     // Referenzen in der MainActivity auf die einzelnen Tabs
+
     private ChartViewTab tab1;
     private ChartViewTab tab2;
     private ChartViewTab tab3;

@@ -19,7 +19,7 @@
             android:layout_marginBottom="30dp"
             android:layout_gravity="center_horizontal"
             android:contentDescription=""
-            tools:ignore="ContentDescription" />
+            />
 
         <!--  Email Label -->
         <!-- <android.support.design.widget.TextInputLayout
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Password"
-                tools:ignore="HardcodedText" />
+                />
     <!--    </android.support.design.widget.TextInputLayout> -->
 
 
@@ -60,7 +60,7 @@
             android:layout_marginBottom="24dp"
             android:padding="12dp"
             android:text="Login"
-            tools:ignore="HardcodedText" />
+            />
 
         <!--<android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_login"
