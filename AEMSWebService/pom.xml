@@ -26,12 +26,22 @@
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
         </dependency>
-        
+        <!-- https://mvnrepository.com/artifact/com.graphql-java/graphql-java -->
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
             <version>3.0.0</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>xx</groupId>
+            <artifactId>yy</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>C:\Users\Sebastian\hubiC\AEMS\AEMSWebService\lib\AEMSUtil.jar</systemPath>
+        </dependency>
+
         <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>

@@ -9,11 +9,11 @@ package aems;
  *
  * @author Sebastian
  */
-public abstract class Condition {
+public abstract class GraphQLCondition {
     
     private final String PATTERN;
     
-    public Condition(String pattern) {
+    public GraphQLCondition(String pattern) {
         this.PATTERN = pattern;
     }
     

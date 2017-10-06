@@ -1,6 +1,6 @@
 package aems.graphql;
 
-import aems.Condition;
+import aems.GraphQLCondition;
 import aems.database.AEMSDatabase;
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
@@ -24,7 +24,7 @@ public class User extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             final JSONObject OBJ = new JSONObject(environment.getSource().toString());
-            return Integer.valueOf(Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.ID, new Condition(".*AT.*") {
+            return Integer.valueOf(Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.ID, new GraphQLCondition(".*AT.*") {
                 @Override
                 public String exec() {
                     return Query.execQuery(OBJ, AEMSDatabase.METERS, AEMSDatabase.Meters.USER, AEMSDatabase.USERS, AEMSDatabase.Users.ID, AEMSDatabase.Users.ID);
@@ -37,7 +37,7 @@ public class User extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             final JSONObject OBJ = new JSONObject(environment.getSource().toString());
-            return Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.USERNAME, new Condition(".*AT.*") {
+            return Query.execQuery(OBJ, AEMSDatabase.USERS, AEMSDatabase.Users.USERNAME, new GraphQLCondition(".*AT.*") {
                 @Override
                 public String exec() {
                     return Query.execQuery(OBJ, AEMSDatabase.METERS, AEMSDatabase.Meters.USER, AEMSDatabase.USERS, AEMSDatabase.Users.ID, AEMSDatabase.Users.USERNAME);
