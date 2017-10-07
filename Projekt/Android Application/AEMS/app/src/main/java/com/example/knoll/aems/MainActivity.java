@@ -44,11 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    /** RIESIGER KOMMENTAR ( 1 / 3)
-     *
-     * Referenzen in der MainActivity auf die einzelnen Tabs
-     *
-     */
+
+     // Referenzen in der MainActivity auf die einzelnen Tabs
+
     private ChartViewTab tab1;
     private ChartViewTab tab2;
     private ChartViewTab tab3;
@@ -66,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
         tab2 = new App_Tab_2();
         tab3 = new App_Tab_3();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+  //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+  //      setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -153,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout){
-            Toast.makeText(this, "Sie werden abgemeldet", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
 
 

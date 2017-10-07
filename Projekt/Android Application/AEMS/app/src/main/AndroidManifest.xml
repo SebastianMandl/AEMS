@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.knoll.aems.LoginActivity" android:theme="@style/AppTheme.Dark" />
+        <activity android:name="com.example.knoll.aems.LoginActivity"  android:theme="@style/AppTheme.Dark"  android:screenOrientation="portrait" />
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

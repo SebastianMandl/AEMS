@@ -1,6 +1,6 @@
 package aems.graphql;
 
-import aems.Condition;
+import aems.GraphQLCondition;
 import aems.DatabaseConnectionManager;
 import aems.database.AEMSDatabase;
 import aems.database.DatabaseConnection;
@@ -116,9 +116,9 @@ public class Query extends GraphQLObjectType {
             return list;
     }        
     
-    public static String execQuery(JSONObject obj, String table, String column, Condition... conditions) {
+    public static String execQuery(JSONObject obj, String table, String column, GraphQLCondition... conditions) {
         if(obj.has("id")) {
-            for(Condition condition : conditions) {
+            for(GraphQLCondition condition : conditions) {
                 if(condition.matches(obj.getString("id")))
                     return condition.exec();
             }
@@ -140,9 +140,9 @@ public class Query extends GraphQLObjectType {
         }
     }
     
-    public static String execQuery(JSONObject obj, String sourceTable, String sourceColumn, String destTable, String destColumn, String column, Condition... conditions) {
+    public static String execQuery(JSONObject obj, String sourceTable, String sourceColumn, String destTable, String destColumn, String column, GraphQLCondition... conditions) {
         if(obj.has("id")) {
-            for(Condition condition : conditions) {
+            for(GraphQLCondition condition : conditions) {
                 if(condition.matches(obj.getString("id")))
                     return condition.exec();
             }
