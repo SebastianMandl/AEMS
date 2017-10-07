@@ -1,0 +1,31 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<url-mapping id="index">
+		<pattern value="/home" />
+		<view-id value="/faces/index.xhtml" />
+	</url-mapping>
+        <url-mapping id="einstellungenBerichte">
+		<pattern value="/berichte" />
+		<view-id value="/faces/einstellungenBerichte.xhtml" />
+	</url-mapping>
+        <url-mapping id="statistiken">
+		<pattern value="/statistiken" />
+		<view-id value="/faces/einstellungenStatistiken.xhtml" />
+	</url-mapping>
+        <url-mapping id="warnungen">
+		<pattern value="/warnungen" />
+		<view-id value="/faces/einstellungenWarnungen.xhtml" />
+	</url-mapping>
+        <url-mapping id="schnellstatistik">
+		<pattern value="/schnellstatistik" />
+		<view-id value="/faces/statistiken.xhtml" />
+	</url-mapping>
+        <url-mapping id="terms">
+		<pattern value="/nutzungsbedingungen" />
+		<view-id value="/faces/terms.xhtml" />
+	</url-mapping>
+
+</pretty-config>
