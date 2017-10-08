@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.knoll.aems.data.statistic.StatisticFetcher;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.CombinedChart;
 
@@ -51,13 +50,16 @@ public class MainActivity extends AppCompatActivity {
     private ChartViewTab tab2;
     private ChartViewTab tab3;
 
+    private boolean isLoggedIn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+
 
 
         tab1 = new App_Tab_1();
@@ -96,9 +98,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setLoggedIn(boolean in) {
+        this.isLoggedIn = in;
+    }
 
+
+    /**
+     * javadoc
+     * @param tab
+     */
     private void downloadStatistic(ChartViewTab tab) {
-        boolean saveToSd = true;
+        boolean saveToSd = false;
 
         Chart chart = tab.getChart();
         Bitmap image = chart.getChartBitmap();
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             File filePath = new File(Environment.getExternalStorageDirectory(), "/Charts/");
             filePath.mkdirs();
 
-            File imageFile = new File(filePath, filename);
+            File imageFile = new File(filePath, filename + ".jpg");
             OutputStream stream = null;
             try {
                 stream = new FileOutputStream(imageFile);
