@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
     <head>
 
-        <meta charset="utf-8" />
+        <meta charset="UTF-8" />
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -25,7 +25,7 @@
 
         <article class="einstellungen">
 
-            <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Neue Statistik anlegen</button>
+            <button id="createStatistic" class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Neue Statistik anlegen</button>
 
 
             <h2 class="statistics-h2">Statistiken der Startseite:</h2>
@@ -41,13 +41,13 @@
 
                     <h4 class="list-group-item-heading">Stromstatistik 2</h4>
 
-                    <p class="list-group-item-text">Wöchentlich</p>
+                    <p class="list-group-item-text">WÃ¶chentlich</p>
                 </a>
                 <a href="#" class="list-group-item ">
 
                     <h4 class="list-group-item-heading">Gasstatistik 1</h4>
 
-                    <p class="list-group-item-text">Täglich</p>
+                    <p class="list-group-item-text">TÃ¤glich</p>
                 </a>
             </div>
 
@@ -66,13 +66,13 @@
 
                     <h4 class="list-group-item-heading">Stromstatistik 5</h4>
 
-                    <p class="list-group-item-text">Wöchentlich</p>
+                    <p class="list-group-item-text">WÃ¶chentlich</p>
                 </a>
                 <a href="#" class="list-group-item ">
 
                     <h4 class="list-group-item-heading">Gasstatistik 2</h4>
 
-                    <p class="list-group-item-text">Täglich</p>
+                    <p class="list-group-item-text">TÃ¤glich</p>
                 </a>
             </div>
 
@@ -91,19 +91,19 @@
 
                     <h4 class="list-group-item-heading">Stromstatistik 2</h4>
 
-                    <p class="list-group-item-text">Wöchentlich</p>
+                    <p class="list-group-item-text">WÃ¶chentlich</p>
                 </a>
                 <a href="#" class="list-group-item ">
 
                     <h4 class="list-group-item-heading">Gasstatistik 1</h4>
 
-                    <p class="list-group-item-text">Täglich</p>
+                    <p class="list-group-item-text">TÃ¤glich</p>
                 </a>
                 <a href="#" class="list-group-item ">
 
                     <h4 class="list-group-item-heading">Gasstatistik 2</h4>
 
-                    <p class="list-group-item-text">Wöchentlich</p>
+                    <p class="list-group-item-text">WÃ¶chentlich</p>
                 </a>
                 <a href="#" class="list-group-item ">
 
@@ -115,12 +115,12 @@
 
                     <h4 class="list-group-item-heading">Gasstatistik 4</h4>
 
-                    <p class="list-group-item-text">Jährlich</p>
+                    <p class="list-group-item-text">JÃ¤hrlich</p>
                 </a>
             </div>
         </article>
 
-        <footer class="modal-footer footerFormat footerFormat">© Ein Dienst der Energiegenossenschaft Eferding</footer>
+        <footer class="modal-footer footerFormat footerFormat">&copy; Ein Dienst der Energiegenossenschaft Eferding</footer>
                 <!-- Login Modal -->
         <ui:include src="/templates/login-modal.xhtml"></ui:include>
 
@@ -137,7 +137,7 @@
 
                 <div class="loginmodal-container">
 
-                    <h1>Gewählte Statistik...</h1><br />
+                    <h1>GewÃ¤hlte Statistik...</h1><br />
                     <form>
                         <button class="btn btn-default btn-addStatisticToIndexpage">Von Startseite entfernen</button>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -154,7 +154,7 @@
 
                 <div class="loginmodal-container">
 
-                    <h1>Gewählte Statistik...</h1><br />
+                    <h1>GewÃŸhlte Statistik...</h1><br />
                     <form>
                         <button class="btn btn-default btn-addStatisticToIndexpage">Aus Android-App entfernen</button>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -174,12 +174,12 @@
 
                 <div class="loginmodal-container">
 
-                    <h1>Gewählte Statistik...</h1><br />
+                    <h1>GewÃ¤hlte Statistik...</h1><br />
                     <form>
-                        <button class="btn btn-default btn-addStatisticToIndexpage">Zu Startseite hinzufügen</button>
-                        <button class="btn btn-default btn-addStatisticToIndexpage">Zu Android-App hinzufügen</button>
+                        <button class="btn btn-default btn-addStatisticToIndexpage">Zu Startseite hinzufÃŸgen</button>
+                        <button class="btn btn-default btn-addStatisticToIndexpage">Zu Android-App hinzufÃŸgen</button>
                         <button class="btn btn-default configuredStatisticButtons" data-toggle="modal" data-target="#editIndexpageStatistic-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
-                        <button class="btn btn-default">Löschen</button>
+                        <button class="btn btn-default">LÃ¶schen</button>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
                     </form>				
                 </div>
@@ -195,74 +195,45 @@
                 <div class="loginmodal-container">
 
                     <h1>Neue Statistik erstellen</h1><br />
+                    <h:inputHidden id="uId" value="#{user.userId}"/>
                     <form>
 
                         <h4>Statistikname</h4>
                         <input type="text" name="user" placeholder="Meine Statistik" required="" />
 
-                        <h4>Zählertyp</h4>
+                        <h4>ZÃ¤hlertyp</h4>
 
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ZÃ¤hlertyp<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
+                            <ul id="meterType" class="dropdown-menu zaehler_format">
 
+                                <!--
                                 <li role="presentation">
                                     <div class="checkbox">
                                         <label><input type="checkbox" value="" />Strom</label>
                                     </div>
                                 </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wasser</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gas</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wärme</label>
-                                    </div>
-                                </li>
+                                -->
+                               
                             </ul>
                         </div>
 
-                        <h4>Verwendete Zähler</h4>
+                        <h4>Verwendete ZÃ¤hler</h4>
 
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ZÃ¤hler<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
+                            <ul id="meters" class="dropdown-menu zaehler_format">
 
+                                <!--
                                 <li role="presentation">
                                     <div class="checkbox">
                                         <label><input type="checkbox" value="" />AT368746482374</label>
                                     </div>
                                 </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
+                                -->
+                                
                             </ul>
                         </div>
 
@@ -285,7 +256,7 @@
                         </div>
 
 
-                        <h4>Anomalien berücksichtigen</h4>
+                        <h4>Anomalien berÃ¼cksichtigen</h4>
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
@@ -294,7 +265,7 @@
 
                                 <li role="presentation">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                        <label><input type="checkbox" value="" />AuÃŸentemperatur</label>
                                     </div>
                                 </li>
 
@@ -326,74 +297,42 @@
                 <div class="loginmodal-container">
 
                     <h1>Statistik bearbeiten</h1><br />
-                    <form>
+                    <h:form>
 
                         <h4>Statistikname</h4>
-                        <input type="text" name="user" placeholder="Meine Statistik" required="" />
-
-                        <h4>Zählertyp</h4>
+                        <h:inputText a:required="" a:placeholder="Meine Statistik" value="#{statistic.name}"/>
+                     <!--   <input type="text" name="user" placeholder="Meine Statistik" required="" /> -->
+                        <h4>ZÃ¤hlertyp</h4>
 
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ZÃ¤hlertyp<span class="caret" /></button>
 
                             <ul class="dropdown-menu zaehler_format">
 
+                                <!-- WILL BE LOADED WITH AJAX
                                 <li role="presentation">
                                     <div class="checkbox">
                                         <label><input type="checkbox" value="" />Strom</label>
                                     </div>
                                 </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wasser</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gas</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wärme</label>
-                                    </div>
-                                </li>
+                                -->
                             </ul>
                         </div>
 
-                        <h4>Verwendete Zähler</h4>
+                        <h4>Verwendete ZÃ¤hler</h4>
 
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ZÃ¤hler<span class="caret" /></button>
 
                             <ul class="dropdown-menu zaehler_format">
 
+                                <!-- AJAX JOB :)
                                 <li role="presentation">
                                     <div class="checkbox">
                                         <label><input type="checkbox" value="" />AT368746482374</label>
                                     </div>
                                 </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
+                                -->
                             </ul>
                         </div>
 
@@ -415,7 +354,7 @@
                             </ul>
                         </div>
 
-                        <h4>Anomalien berücksichtigen</h4>
+                        <h4>Anomalien berÃ¼cksichtigen</h4>
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
@@ -424,7 +363,7 @@
 
                                 <li role="presentation">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                        <label><input type="checkbox" value="" />AuÃŸentemperatur</label>
                                     </div>
                                 </li>
 
@@ -440,7 +379,7 @@
                         <input type="text" />
                         <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik bearbeiten" />
                         <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>			
+                    </h:form>			
                 </div>
             </div>
         </div>  <!-- Edit Indexpage Statistic Modal Ende -->
@@ -457,6 +396,8 @@
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
 
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+        
+        <script language="javascript" type="text/javascript" src="js/statistics/new.js"></script>
 
 
 
