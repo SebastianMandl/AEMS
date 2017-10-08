@@ -1,0 +1,28 @@
+@charset "utf-8";
+.einstellungen {
+	margin-top: 5em;
+	margin-left: 3%;
+}
+form .btn-group .dropdown-menu.zaehler_format {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.einstellungen .h2-downloads {
+	margin-top: 2em;
+}
+.loginmodal-container form .btn.btn-default.configuredReportButtons {
+	float: left;
+	margin-right: 10px;
+	margin-left: 55px;
+}
+.loginmodal-container form .loginModalClose.configuredReportClose {
+	padding-top: 40px;
+}
+.einstellungen .list-group.reportList {
+	margin-right: 3%;
+}
+.dateFormat {
+	margin-left: 10px;
+	visibility: hidden;
+}
+
