@@ -1,6 +1,8 @@
 package com.example.knoll.aems;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.Bitmap;
@@ -42,15 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-
-
      // Referenzen in der MainActivity auf die einzelnen Tabs
 
     private ChartViewTab tab1;
     private ChartViewTab tab2;
     private ChartViewTab tab3;
 
-    private boolean isLoggedIn;
+    private static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +60,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
 
-
-
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
         tab3 = new App_Tab_3();
 
-  //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-  //      setSupportActionBar(toolbar);
+        //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //      setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -87,19 +85,21 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
 
-                switch(mViewPager.getCurrentItem()){
-                    case 0: downloadStatistic(tab1); break;
-                    case 1: downloadStatistic(tab2); break;
-                    case 2: downloadStatistic(tab3); break;
+                switch (mViewPager.getCurrentItem()) {
+                    case 0:
+                        downloadStatistic(tab1);
+                        break;
+                    case 1:
+                        downloadStatistic(tab2);
+                        break;
+                    case 2:
+                        downloadStatistic(tab3);
+                        break;
                 }
 
             }
         });
 
-    }
-
-    public void setLoggedIn(boolean in) {
-        this.isLoggedIn = in;
     }
 
 
