@@ -1,7 +1,6 @@
 aems\graphql\ReportStatistic.class
 aems\database\AEMSDatabase$NotificationMeters.class
 aems\DatabaseConnectionManager.class
-aems\KeyExchangeService.class
 aems\graphql\MeterData$2.class
 aems\graphql\User$1$1.class
 aems\graphql\Meter$4.class
@@ -14,7 +13,7 @@ aems\database\AEMSDatabase$WeatherData.class
 aems\graphql\StatisticTime$1.class
 aems\graphql\StatisticTime$4.class
 aems\database\DatabaseConnection.class
-aems\HTTPRequest.class
+aems\DiffieHellmanProcedure.class
 aems\graphql\Statistic$2.class
 aems\database\AEMSDatabase$StatisticTimes.class
 aems\graphql\MeterType.class
@@ -25,7 +24,6 @@ aems\database\ResultSet$ResultSetIterator.class
 aems\graphql\StatisticTime$7.class
 aems\database\AEMSDatabase$Notifications.class
 aems\graphql\Meter$3.class
-aems\AuthenticationDetails.class
 aems\graphql\MeterData$3.class
 aems\graphql\User.class
 aems\database\AEMSDatabase$Reports.class
