@@ -31,8 +31,7 @@
                 android:layout_width="match_parent"
                 android:textColor="@color/monsoon"
                 android:layout_height="wrap_content"
-                android:hint="Benutzername"
-                tools:ignore="HardcodedText" />
+                android:hint="Benutzername" />
        <!-- </android.support.design.widget.TextInputLayout> -->
 
         <!--  Password Label -->
@@ -47,8 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"
-                />
+                android:hint="Password" />
     <!--    </android.support.design.widget.TextInputLayout> -->
 
 

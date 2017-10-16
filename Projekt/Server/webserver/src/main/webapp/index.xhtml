@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <title>AEMS - Advanced Energy Monitoring System</title>
+
+        <link href="css/bootstrap.css" rel="stylesheet"/>
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="css/index.css" rel="stylesheet" type="text/css"/>
+        <link href="css/login-modal.css" rel="stylesheet" type="text/css"/>
+        <link href="css/login.css" rel="stylesheet"/>
+
+
+    </head>
+    <body style="padding-top: 70px">
+
+        <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+
+        <c:if test="#{!user.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+        </c:if>
+        
+        <!-- Seiteninhalt -->
+        <c:if test="#{user.loggedIn}">
+        <article class="statistics">
+            
+            
+
+            <ul class="listStyle">
+                <li class="statistikElement">
+                    <div class="statistic-container">
+                        <h2 id="Titel 1" class="stat-title">Titel 1</h2> 
+                        <canvas id="statistic_1" width="600" height="400"></canvas>
+                        <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                    </div>
+                </li>
+                <li class="statistikElement">
+                    <div class="statistic-container">
+                        <h2 id="Titel 2" class="stat-title">Titel 2</h2> 
+                        <canvas id="statistic_2" width="600" height="400"></canvas>
+                        <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                    </div>
+                </li>
+                <li class="statistikElement">
+                    <div class="statistic-container">
+                        <h2 id="Titel 9000" class="stat-title">Titel 9000</h2> 
+                        <canvas id="statistic_3" width="600" height="400"></canvas>
+                        <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                    </div>
+                </li>
+            </ul>
+        </article>
+            </c:if>
+
+        <footer class="modal-footer footerFormat">Ein Dienst der Energiegenossenschaft Eferding</footer>
+
+        <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+        <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
+
+        <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+        <script language="javascript" type="text/javascript" src="js/charts/Chart.js"></script>
+        <script language="javascript" type="text/javascript" src="js/statistics/html2canvas.js"></script>
+        <script language="javascript" type="text/javascript" src="js/statistics/jsPDF.js"></script>
+
+        <script language="javascript" type="text/javascript" src="js/statistics/show-charts.js"></script>
+        <script language="javascript" type="text/javascript" src="js/statistics/statistic-download.js"></script>
+        <!-- Image Support Libs -->
+        <script type="text/javascript" src="js/statistics/lib/png_support/zlib.js"></script>
+        <script type="text/javascript" src="js/statistics/lib/png_support/png.js"></script>
+        <script type="text/javascript" src="js/statistics/lib/plugins/addimage.js"></script>
+        <script type="text/javascript" src="js/statistics/lib/plugins/png_support.js"></script>
+
+
+
+    </body>
+</html>

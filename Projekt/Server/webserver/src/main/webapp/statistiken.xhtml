@@ -1,0 +1,85 @@
+
+<!--<?xml version="1.0" encoding="UTF-8"?>
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>AEMS - Advanced Energy Monitoring System</title>
+
+        <link href="css/bootstrap.css" rel="stylesheet"/>
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="css/login-modal.css" rel="stylesheet" type="text/css"/>
+        <link href="css/statistiken.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body style="padding-top: 70px">
+        
+        <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+        <!-- Seiteninhalt -->
+        <article class="article">
+
+            <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
+
+        </article>
+
+
+        <footer class="modal-footer footerFormat">Ein Dienst der Energiegenossenschaft Eferding</footer>
+
+
+        <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+        <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
+
+
+        <!-- New Statistic Modal -->
+        <ui:include src="/templates/new-statistic-modal.xhtml"></ui:include>
+
+        
+        <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+        <script language="javascript" type="text/javascript" src="js/chartist/Chart.js"></script>
+        <script src="js/show-consumption.js"></script>
+        <script src="js/html2canvas.js"></script>
+        <script src="js/jsPDF.js"></script>
+        <script>
+
+                            // For each (alle statistiken des users):
+                            var time = ["KW 29", "KW 30", "KW 31", "KW 32"];
+                            var avgConsumptions = [120, 110, 90, 110];
+                            var avgTemp = [31, 24, 30, 30];
+                            showConsumption("canvas_1", time, avgConsumptions, avgTemp);
+                            showConsumption("canvas_1_1", time, avgConsumptions, avgTemp);
+                            showConsumption("canvas_2", time, avgConsumptions, avgTemp);
+
+
+                            $("#download-s").click(function () {
+                                var button = $(this);
+                                html2canvas($("#canvas_1"), {
+                                    onrendered: function (canvas) {
+                                        var imgData = canvas.toDataURL(
+                                                'image/png');
+                                        var doc = new jsPDF('p', 'mm');
+                                        doc.setFontSize(35);
+                                        doc.text("ICH BIMS GROSSES TEXT", 20, 30);
+                                        doc.setFontSize(10);
+                                        doc.text("Erfreuen Sie sich an dieser Statistik :)", 22, 35);
+                                        doc.addImage(imgData, 'PNG', 20, 50);
+                                        doc.save("statistik.pdf");
+                                    }
+                                });
+                            });
+        </script>
+
+    </body>
+</html>

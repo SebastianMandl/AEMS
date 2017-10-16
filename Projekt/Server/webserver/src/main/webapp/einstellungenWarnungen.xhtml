@@ -1,0 +1,482 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <head>
+
+        <meta charset="utf-8" />
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>AEMS - Advanced Energy Monitoring System</title>
+
+        <link href="css/bootstrap.css" rel="stylesheet" />
+        <link href="css/main.css" rel="stylesheet" type="text/css" />
+        <link href="css/index.css" rel="stylesheet" type="text/css" />
+        <link href="css/login-modal.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="css/einstellungen.css" type="text/css" />
+        <link href="css/einstellungenWarnungen.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body style="padding-top: 70px;">
+
+    <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+    <!-- Seiteninhalt -->
+    <article class="einstellungen">
+
+        <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newWarning-modal" data-backdrop="false" data-dismiss="modal">Neue Warnung anlegen</button>
+
+
+        <h2 class="h2-warnungen">Benachrichtigungen</h2>
+
+        <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
+            <a href="#" class="list-group-item ">
+
+                <h4 class="list-group-item-heading">Benachrichtigung Strom 1</h4>
+
+                <p class="list-group-item-text">Fixwert</p>
+            </a>
+            <a href="#" class="list-group-item ">
+
+                <h4 class="list-group-item-heading">Benachrichtigung Strom 2</h4>
+
+                <p class="list-group-item-text">Fixwert</p>
+            </a>
+            <a href="#" class="list-group-item ">
+
+                <h4 class="list-group-item-heading">Benachrichtigung Gas 1</h4>
+
+                <p class="list-group-item-text">%-tuell</p>
+            </a>
+        </div>
+
+
+        <h2 class="h2-warnungen">Warnungen</h2>
+
+        <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
+            <a href="#" class="list-group-item ">
+
+                <h4 class="list-group-item-heading">Warnung Strom 1</h4>
+
+                <p class="list-group-item-text">Fixwert</p>
+            </a>
+            <a href="#" class="list-group-item ">
+
+                <h4 class="list-group-item-heading">Warnung Strom 2</h4>
+
+                <p class="list-group-item-text">Fixwert</p>
+            </a>
+            <a href="#" class="list-group-item ">
+
+                <h4 class="list-group-item-heading">Warnung Gas 1</h4>
+
+                <p class="list-group-item-text">%-tuell</p>
+            </a>
+        </div>
+    </article>
+
+    <footer class="modal-footer footerFormat">� Ein Dienst der Energiegenossenschaft Eferding</footer>
+
+
+
+    <!-- Login Modal -->
+
+            <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+        <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
+
+
+    <!-- New Warning Modal -->
+
+    <div class="modal fade" id="newWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+        <div class="modal-dialog">
+
+            <div class="loginmodal-container">
+
+                <h1>Neue Warnung erstellen</h1><br />
+                <form>
+
+                    <h4>Bezeichnung</h4>
+                    <input type="text" name="user" placeholder="Meine Warnung" required="" />
+
+                    <h4>Benachrichtigung oder Warnung</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Benachrichtigungstyp<span class="caret" /></button>
+
+                        <ul class="dropdown-menu">
+
+                            <li role="presentation"><a href="#">Benachrichtigung</a></li>
+
+                            <li role="presentation"><a href="#">Warnung</a></li>
+                        </ul>
+                    </div>
+
+                    <h4>Z�hlertyp</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Z�hlertyp<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Strom</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Wasser</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Gas</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />W�rme</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h4>Verwendete Z�hler</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Z�hler<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h4>Ausnahme f�r bestimmte Tage:</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Montag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Dienstag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Mittwoch</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Donnerstag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Freitag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Samstag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Sonntag</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h4>Wie hoch darf die Abweichung sein?</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Abweichung<span class="caret" /></button>
+
+                        <ul class="dropdown-menu">
+
+                            <li role="presentation"><a href="#">10%</a></li>
+
+                            <li role="presentation"><a href="#">20%</a></li>
+
+                            <li role="presentation"><a href="#">30%</a></li>     
+
+                            <li role="presentation"><a href="#">40%</a></li>
+
+                            <li role="presentation"><a href="#">50%</a></li>
+
+                            <li role="presentation"><a href="#">70%</a></li>
+
+                            <li role="presentation"><a href="#">100%</a></li>
+                        </ul>
+                    </div>
+
+
+                    <h4>Ausnahme f�r bestimmtes Datum</h4>
+                    <input type="date" />
+
+                    <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
+                    <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                </form>			
+            </div>
+        </div>
+    </div>  <!-- New Indexpage Statistic Modal Ende -->	
+
+
+    <!-- Edit Warning Modal -->
+
+    <div class="modal fade" id="editWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+        <div class="modal-dialog">
+
+            <div class="loginmodal-container">
+
+                <h1>Warnung bearbeiten</h1><br />
+                <form>
+
+                    <h4>Bezeichnung</h4>
+                    <input type="text" name="user" placeholder="Meine Warnung" required="" />
+
+                    <h4>Benachrichtigung oder Warnung</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Benachrichtigungstyp<span class="caret" /></button>
+
+                        <ul class="dropdown-menu">
+
+                            <li role="presentation"><a href="#">Benachrichtigung</a></li>
+
+                            <li role="presentation"><a href="#">Warnung</a></li>
+                        </ul>
+                    </div>
+
+                    <h4>Z�hlertyp</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Z�hlertyp<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Strom</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Wasser</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Gas</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />W�rme</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h4>Verwendete Z�hler</h4>
+                    <button class="btn btn-default" type="button">Alle</button>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Z�hler<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h4>Ausnahme f�r bestimmte Tage:</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Montag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Dienstag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Mittwoch</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Donnerstag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Freitag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Samstag</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Sonntag</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h4>Wie hoch darf die Abweichung sein?</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Abweichung<span class="caret" /></button>
+
+                        <ul class="dropdown-menu">
+
+                            <li role="presentation"><a href="#">10%</a></li>
+
+                            <li role="presentation"><a href="#">20%</a></li>
+
+                            <li role="presentation"><a href="#">30%</a></li>     
+
+                            <li role="presentation"><a href="#">40%</a></li>
+
+                            <li role="presentation"><a href="#">50%</a></li>
+
+                            <li role="presentation"><a href="#">70%</a></li>
+
+                            <li role="presentation"><a href="#">100%</a></li>
+                        </ul>
+                    </div>
+
+
+                    <h4>Ausnahme f�r bestimmtes Datum</h4>
+                    <input type="date" />
+
+                    <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung bearbeiten" />
+                    <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                </form>			
+            </div>
+        </div>
+    </div>  <!-- New Indexpage Statistic Modal Ende -->	
+
+
+    <!-- Configured Warning Modal -->
+
+    <div class="modal fade" id="configuredWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+        <div class="modal-dialog">
+
+            <div class="loginmodal-container">
+
+                <h1>Gew�hlte Warnung...</h1><br />
+                <form>
+                    <button class="btn btn-default configuredWarningButtons" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
+                    <button class="btn btn-default">L�schen</button>
+                    <a href="#" class="loginModalClose configuredWarningClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
+                </form>				
+            </div>
+        </div>
+    </div>  
+
+
+
+
+    <script src="js/jquery-1.11.3.min.js"></script>
+
+    <script src="js/bootstrap.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+
+    <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+
+</body></html>
