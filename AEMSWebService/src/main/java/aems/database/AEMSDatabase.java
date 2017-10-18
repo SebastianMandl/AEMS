@@ -111,23 +111,27 @@ public class AEMSDatabase {
             public static final String USER = "user";
             public static final String NAME = "name";
             public static final String TYPE = "type";
-            public static final String MAX_DEVIATION = "max_deviation";
+            public static final String MIN_POSITIVE_DEVIATION = "min_positive_deviation";
+            public static final String MIN_NEGATIVE_DEVIATION = "min_negative_deviation";
         }
         
         public class NotificationMeters {
             public static final String METER = "meter";
             public static final String NOTIFICATION = "notification";
+            public static final String POSITIVE_DEVIATION = "positive_deviation";
+            public static final String NEGATIVE_DEVIATION = "negative_deviation";
+            public static final String PERIOD = "period";
+            public static final String POSITIVE_DEVIATION_VALUE = "positive_deviation_value";
+            public static final String NEGATIVE_DEVIATION_VALUE = "negative_deviation_value";
+            
         }
         
         public class NotificationExceptions {
             public static final String ID = "id";
             public static final String NOTIFICATION = "notification";
-            public static final String MAX_DEVIATION = "max_deviation";
-            public static final String FROM_DATE = "from_date";
-            public static final String TO_DATE = "to_date";
             public static final String PERIOD = "period";
-            public static final String PERIOD_VALUE_FROM = "period_value_from";
-            public static final String PERIOD_VALUE_TO = "period_value_to";
+            public static final String MIN_POSITIVE_DEVIATION = "min_positive_deviation";
+            public static final String MIN_NEGATIVE_DEVIATION = "min_negative_deviation";
         }
 	
 }
