@@ -18,15 +18,17 @@
                 <ul class="nav navbar-nav navbar-right">
 
                     <!-- Menü Statistiken -->
-                    <li class="navBarItems"><h:link outcome="statistiken">Statistiken</h:link></li>
+                    <li class="navBarItems"><h:link outcome="statistiken">Schnellauswertungen</h:link></li>
 
                     <!-- Menü Einstellungen -->
                     <li class="dropdown"><a href="#" class="dropdown-toggle navBarItems" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Einstellungen<span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li><h:link outcome="einstellungenSpeicherpunkte">Speicherpunkte</h:link></li>
+                            <li role="separator" class="divider"></li>
+                            <li><h:link outcome="einstellungenStatistiken">Statistiken</h:link></li>
+                            <li role="separator" class="divider"></li>
                             <li><h:link outcome="einstellungenBerichte">Berichte</h:link></li>
-                            <li role="separator" class="divider"></li>
-                            <li><h:link outcome="einstellungenStatistiken">Statistiken, App und Startseite</h:link></li>
-                            <li role="separator" class="divider"></li>
+                            <li role="separator" class="divider"></li>    
                             <li><h:link outcome="einstellungenWarnungen">Benachrichtigungen und Warnungen</h:link></li>
                         </ul>
                     </li>
@@ -38,7 +40,7 @@
                             
                             <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>      
                             <li role="separator" class="divider"></li>
-                            <li onclick="functionLogout()">Logout</li>
+                            <li> <a href="#" onclick="functionLogout()">Logout</a></li>
                             <li role="separator" class="divider"></li>
                             <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
                             
