@@ -1,0 +1,222 @@
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+    
+<meta charset="utf-8" />
+	
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+<title>AEMS - Advanced Energy Monitoring System</title>
+    
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/main.css" rel="stylesheet" type="text/css" />
+	<link href="css/einstellungen.css" rel="stylesheet" type="text/css" />
+	<link href="css/login-modal.css" rel="stylesheet" type="text/css" />
+	<link href="jQueryAssets/jquery.ui.core.min.css" rel="stylesheet" type="text/css" />
+	<link href="jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css" />
+	<link href="jQueryAssets/jquery.ui.button.min.css" rel="stylesheet" type="text/css" />
+	<link href="css/einstellungenBerichte.css" rel="stylesheet" type="text/css" />
+  
+<script src="jQueryAssets/jquery-1.11.1.min.js"></script>
+<script src="jQueryAssets/jquery.ui-1.10.4.button.min.js"></script>
+  </head>
+  
+<body style="padding-top: 70px;">
+    
+    <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+
+    
+   <article class="einstellungen">
+	
+		<button class="btn btn-default" data-toggle="modal" data-target="#newReport-modal" data-backdrop="false" data-dismiss="modal">Neuen Speicherpunkt erstellen</button>
+		
+		
+<h2 class="h2-downloads">Angelegte Speicherpunkte:</h2>
+	 
+<div class="list-group reportList" id="reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item" rname="Strombericht 1">
+		  	
+<h4 class="list-group-item-heading">Personenanzahl-Zähler</h4>
+		  	
+<p class="list-group-item-text">Monatlich, automatisch generiert</p>
+		  </a>
+		  <a href="#" class="list-group-item" rname="Strombericht 2">
+		  	
+<h4 class="list-group-item-heading">Kompetenzzähler</h4>
+		  	
+<p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
+		  </a>
+		  <a href="#" class="list-group-item" rname="Gasbericht 1">
+		  	
+<h4 class="list-group-item-heading">Dieselauto-Zähler</h4>
+		  	
+<p class="list-group-item-text">Täglich, automatisch generiert</p>
+		  </a>
+		</div>
+   </article>
+   
+  <ui:include src="/templates/footer.xhtml"></ui:include>
+
+   <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+   <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
+   
+        
+<!-- Configured Report Modal -->
+ 	
+<div class="modal fade" id="configuredReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		
+<div class="modal-dialog">
+				
+<div class="loginmodal-container">
+			  	
+<h1>Gewählten Speicherpunkt...</h1><br />
+				  <form>
+				  	<button class="btn btn-default configuredReportButtons" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
+				  	<button class="btn btn-default">Löschen</button>
+					<a href="#" class="loginModalClose configuredReportClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
+				  </form>				
+				</div>
+			</div>
+		  </div>  
+	  	  
+
+<!-- New Speicherpunkt Modal -->
+ 
+<div class="modal fade" id="newReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		
+<div class="modal-dialog">
+				
+<div class="loginmodal-container">
+					
+<h1>Neuen Speicherpunkt anlegen</h1><br />
+		<form>
+				  	
+<h4>Bezeichnung</h4>
+<input type="text" name="user" placeholder="Mein Zähler" required="" />
+					
+					
+<h4>Zählertyp</h4>
+					
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+   						  
+<ul class="dropdown-menu zaehler_format">
+								
+<li role="presentation">
+<div class="checkbox">
+     	<label><input type="checkbox" value="" />Strom</label>
+</div>
+</li>
+       							
+<li role="presentation">
+<div class="checkbox">
+    <label><input type="checkbox" value="" />Wasser</label>
+</div>
+</li>
+    							
+<li role="presentation">
+<div class="checkbox">
+    <label><input type="checkbox" value="" />Gas</label>
+</div>
+</li>
+    							
+<li role="presentation">
+<div class="checkbox">
+    <label><input type="checkbox" value="" />Wärme</label>
+</div>
+</li>
+</ul>
+</div>
+  						
+  					
+<h4>Neuer Zählertyp</h4>
+    <input type="text" placeholder="Kompetenzzähler" />	
+ 					
+ 					
+<h4>Einheit</h4>
+    <input type="text" name="user" placeholder="kWh" required="" />	
+  						
+  					
+<h4>Standort</h4>
+    <input type="text" placeholder="HTL EG-32" />
+				    
+				    
+<h4>Erstelldatum</h4>
+    <input type="date" />
+				    
+				    
+<h4>Leseintervall in Minuten</h4>
+    <input type="number" placeholder="15" />
+  						
+				    
+<h4>Anmerkung</h4>
+    <input type="text" placeholder="Probezähler" />
+	<input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Speicherpunkt erstellen" />
+	<a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+</form>			
+</div>
+</div>
+</div>  
+<!-- New Speicherpunkt Modal Ende -->
+  
+  
+  
+   <!-- Edit Speicherpunkt Modal -->
+ 
+<div class="modal fade" id="editReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  		
+<div class="modal-dialog">
+				
+<div class="loginmodal-container">
+					
+<h1>Speicherpunkt bearbeiten</h1><br />
+<form>
+				  	
+<h4>Bezeichnung</h4>
+<input type="text" name="user" placeholder="Mein Zähler" required="" />
+					
+					
+<h4>Zählertyp</h4>
+<input type="text" name="user" placeholder="Kompetenzzähler" required="" />
+ 					
+ 					
+<h4>Einheit</h4>
+<input type="text" name="user" placeholder="kWh" required="" />	
+  						
+  					
+<h4>Standort</h4>
+<input type="text" placeholder="HTL EG-32" />
+				    
+				    
+<h4>Erstelldatum</h4>
+<input type="date" />
+				    
+				    
+<h4>Leseintervall in Minuten</h4>
+<input type="number" placeholder="15" />
+  						
+				    
+<h4>Anmerkung</h4>
+    <input type="text" placeholder="Probezähler" />
+        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Speicherpunkt bearbeiten" />
+        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+</form>			
+</div>
+</div>
+  </div>  
+   <!-- Edit Speicherpunkt Modal Ende -->
+  
+<script src="js/jquery-1.11.3.min.js"></script> 
+<script src="js/bootstrap.js"></script> 
+<script src="js/mobile-functions.js"></script>
+<script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+<script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+<script language="javascript" type="text/javascript" src="js/notify.js"></script>  
+<script language="javascript" type="text/javascript" src="js/berichte.js"></script>
+</body></html>

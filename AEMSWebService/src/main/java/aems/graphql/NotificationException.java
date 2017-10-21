@@ -22,13 +22,10 @@ public class NotificationException extends GraphQLObjectType {
     private static NotificationException instance;
     
     private static final GraphQLFieldDefinition ID = Query.getFieldDefinition("id", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.ID, Scalars.GraphQLInt);
-    private static final GraphQLFieldDefinition MAX_DEVIATION = Query.getFieldDefinition("max_deviation", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.MAX_DEVIATION, Scalars.GraphQLFloat);
     private static final GraphQLFieldDefinition NOTIFICATION = Query.getFieldDefinition("notification", Notification.getInstance());
     private static final GraphQLFieldDefinition PERIOD = Query.getFieldDefinition("period", Period.getInstance());
-    private static final GraphQLFieldDefinition PERIOD_VALUE_FROM = Query.getFieldDefinition("period_value_from", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.PERIOD_VALUE_FROM, Scalars.GraphQLInt);
-    private static final GraphQLFieldDefinition PERIOD_VALUE_TO = Query.getFieldDefinition("period_value_to", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.PERIOD_VALUE_TO, Scalars.GraphQLInt);
-    private static final GraphQLFieldDefinition FROM_DATE = Query.getFieldDefinition("from_date", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.FROM_DATE, Scalars.GraphQLString);
-    private static final GraphQLFieldDefinition TO_DATE = Query.getFieldDefinition("to_date", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.TO_DATE, Scalars.GraphQLString);
+    private static final GraphQLFieldDefinition MIN_POSITIVE_DEVIATION = Query.getFieldDefinition("min_positive_deviation", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.MIN_POSITIVE_DEVIATION, Scalars.GraphQLFloat);
+     private static final GraphQLFieldDefinition MIN_NEGATIVE_DEVIATION = Query.getFieldDefinition("min_negative_deviation", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.MIN_NEGATIVE_DEVIATION, Scalars.GraphQLFloat);
     
     
     public NotificationException(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
@@ -41,13 +38,10 @@ public class NotificationException extends GraphQLObjectType {
         
         ArrayList<GraphQLFieldDefinition> defs = new ArrayList<>();
         defs.add(ID);
-        defs.add(MAX_DEVIATION);
         defs.add(NOTIFICATION);
         defs.add(PERIOD);
-        defs.add(PERIOD_VALUE_FROM);
-        defs.add(PERIOD_VALUE_TO);
-        defs.add(FROM_DATE);
-        defs.add(TO_DATE);
+        defs.add(MIN_POSITIVE_DEVIATION);
+        defs.add(MIN_NEGATIVE_DEVIATION);
         
         instance = new NotificationException("notification_exception", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;

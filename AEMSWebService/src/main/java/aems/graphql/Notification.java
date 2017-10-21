@@ -26,8 +26,9 @@ public class Notification extends GraphQLObjectType {
     
     private static final GraphQLFieldDefinition ID = Query.getFieldDefinition("id", AEMSDatabase.NOTIFICATIONS, AEMSDatabase.Notifications.ID, Scalars.GraphQLInt);
     private static final GraphQLFieldDefinition TYPE = Query.getFieldDefinition("type", AEMSDatabase.NOTIFICATIONS, AEMSDatabase.Notifications.TYPE, Scalars.GraphQLInt);
-    private static final GraphQLFieldDefinition MAX_DEVIATION = Query.getFieldDefinition("max_deviation", AEMSDatabase.NOTIFICATIONS, AEMSDatabase.Notifications.MAX_DEVIATION, Scalars.GraphQLFloat);
     private static final GraphQLFieldDefinition NAME = Query.getFieldDefinition("name", AEMSDatabase.NOTIFICATIONS, AEMSDatabase.Notifications.NAME, Scalars.GraphQLString);
+    private static final GraphQLFieldDefinition MIN_POSITIVE_DEVIATION = Query.getFieldDefinition("min_positive_deviation", AEMSDatabase.NOTIFICATIONS, AEMSDatabase.Notifications.MIN_POSITIVE_DEVIATION, Scalars.GraphQLFloat);
+    private static final GraphQLFieldDefinition MIN_NEGATIVE_DEVIATION = Query.getFieldDefinition("min_negative_deviation", AEMSDatabase.NOTIFICATIONS, AEMSDatabase.Notifications.MIN_NEGATIVE_DEVIATION, Scalars.GraphQLFloat);
     private static final GraphQLFieldDefinition USER = GraphQLFieldDefinition.newFieldDefinition().name("user").type(User.getInstance()).dataFetcher(new DataFetcher<String> () {
         @Override
         public String get(DataFetchingEnvironment environment) {
@@ -49,9 +50,10 @@ public class Notification extends GraphQLObjectType {
         ArrayList<GraphQLFieldDefinition> defs = new ArrayList<>();
         defs.add(ID);
         defs.add(TYPE);
-        defs.add(MAX_DEVIATION);
         defs.add(NAME);
         defs.add(USER);
+        defs.add(MIN_NEGATIVE_DEVIATION);
+        defs.add(MIN_POSITIVE_DEVIATION);
         
         instance = new Notification("notification", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;
