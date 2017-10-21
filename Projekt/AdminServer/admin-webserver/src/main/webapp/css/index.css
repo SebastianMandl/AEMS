@@ -1,0 +1,22 @@
+.content {
+	margin-top: 7em;
+	margin-left: 3em;
+	margin-right: 3em;
+}
+
+.statistikElement {
+	margin-bottom: 5%;	
+}
+
+.content .listStyle {
+	list-style-type: none;
+}
+.content .h2-admin {
+	margin-top: 3em;
+
+}
+.loginmodal-container form .btn.btn-default.btn-kickUser {
+	position: relative;
+	width: 100%;
+	margin-bottom: 1em;
+}

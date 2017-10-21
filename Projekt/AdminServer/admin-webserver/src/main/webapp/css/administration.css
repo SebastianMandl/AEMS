@@ -1,0 +1,17 @@
+.content {
+	margin-top: 7em;
+	margin-left: 3em;
+	margin-right: 3em;
+}.content .h2-admin_config {
+	margin-top: 2em;
+}
+.content .btn.btn-default.btn-admin_position {
+}
+.loginmodal-container form .login.loginmodal-submit.btn-admin_position {
+	margin-top: 15px;
+}
+.loginmodal-container form .btn.btn-default.btn-editOrDelete {
+	position: relative;
+	width: 100%;
+	margin-bottom: 1em;
+}
