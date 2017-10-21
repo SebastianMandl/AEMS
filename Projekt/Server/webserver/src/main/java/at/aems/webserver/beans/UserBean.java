@@ -5,9 +5,11 @@
  */
 package at.aems.webserver.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -16,7 +18,7 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean(name="user")
 @SessionScoped
 public class UserBean implements Serializable {
-    private int userId;
+    private int userId = 0;
     private String username;
     private String password;
     
@@ -51,5 +53,14 @@ public class UserBean implements Serializable {
         return userId != 0;
     }
     
+    public void checkLogin() {
+        try {
+            if(!isLoggedIn()) {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xthml");
+            }
+        } catch(IOException e) {
+            
+        }
+    }
     
 }

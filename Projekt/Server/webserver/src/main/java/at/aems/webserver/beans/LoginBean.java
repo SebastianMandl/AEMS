@@ -6,12 +6,15 @@
 package at.aems.webserver.beans;
 
 import at.aems.webserver.AemsAPI;
+import java.io.IOException;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 /**
  * This managed bean class is designated to serve as the login interface by calling

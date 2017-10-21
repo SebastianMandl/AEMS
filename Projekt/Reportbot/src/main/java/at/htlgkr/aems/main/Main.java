@@ -82,7 +82,7 @@ public class Main {
   public static void main(String[] args) {    
     
     LogType targetLogType = LogType.valueOf(config.get(BotConfiguration.LOG_LEVEL));
-    logger = new Logger(LogType.DEBUG);
+    logger = new Logger(targetLogType);
     
     if(args.length == 1 && args[0].equals("-temp")) {
       updateTemperatures();
