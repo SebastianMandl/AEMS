@@ -126,17 +126,13 @@ public class MainActivity extends AppCompatActivity {
                 image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 stream.flush();
                 stream.close();
-                Toast.makeText(this, "Speichern erfolgreich", Toast.LENGTH_LONG).show();
             } catch(IOException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Speichern fehlgeschlagen", Toast.LENGTH_LONG).show();
             }
         } else {
             String url = MediaStore.Images.Media.insertImage(getContentResolver(), image, filename, "Hello");
             if(url == null) {
                 makeToast("Speichern fehlgeschlagen!");
-            } else {
-                makeToast("Statistik wurde gespeichert!");
             }
         }
     }
