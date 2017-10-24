@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <head>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -27,6 +28,13 @@
     <body style="padding-top: 70px;">
 
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+        
+        <c:if test="#{!user.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+        </c:if>
+        
+         <c:if test="#{user.loggedIn}">
+        
 
         <article class="einstellungen">
 
@@ -81,14 +89,6 @@
                 </a>
             </div>
         </article>
-
-        <ui:include src="/templates/footer.xhtml"></ui:include>
-
-        <!-- Login Modal -->
-        <ui:include src="/templates/login-modal.xhtml"></ui:include>
-
-        <!-- Register Modal -->
-        <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
         <!-- Configured Report Modal -->
 
@@ -411,6 +411,16 @@
                 </div>
             </div>
         </div>  <!-- Edit Report Modal Ende -->
+        </c:if>
+        
+        
+        <ui:include src="/templates/footer.xhtml"></ui:include>
+
+        <!-- Login Modal -->
+        <ui:include src="/templates/login-modal.xhtml"></ui:include>
+
+        <!-- Register Modal -->
+        <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>

@@ -56,7 +56,9 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
             userBean.setUsername(username);
             userBean.setPassword(password);
         }
-        return "index";
+        FacesContext context = FacesContext.getCurrentInstance();
+        String viewId = context.getViewRoot().getViewId();
+        return viewId;
     }
     
     public String doLogout() {
