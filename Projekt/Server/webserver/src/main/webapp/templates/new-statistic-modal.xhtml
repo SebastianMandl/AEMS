@@ -2,14 +2,15 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <div class="modal fade" id="newStatistic-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="loginmodal-container">
-                    <form>
+                    <h:form>
                 <h1>Statistik erstellen</h1><br/>
                         <h4>Statistikname</h4>
-                        <input type="text" name="user" placeholder="Meine Statistik"/>
+                        <input name="name" placeholder="Meine Statistik" value="#{newStatistic.name}"/>
                             <h4>Zählertyp</h4>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret"></span></button>
@@ -86,7 +87,7 @@
                             <br />
                             <input type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik erstellen"/>
                             <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>			
+                    </h:form>			
             </div>
         </div>
     </div>  

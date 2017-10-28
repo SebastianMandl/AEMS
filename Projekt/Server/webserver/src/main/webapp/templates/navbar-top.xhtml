@@ -37,13 +37,13 @@
                     <!-- Menü Login, Logout und Registrieren -->
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
                         <ul class="dropdown-menu">                            
-                            
+                            <h:form>
                             <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>      
                             <li role="separator" class="divider"></li>
-                            <li> <a href="#" onclick="functionLogout()">Logout</a></li>
+                            <li> <h:commandLink action="#{login.doLogout()}" value="Logout"></h:commandLink></li>
                             <li role="separator" class="divider"></li>
                             <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
-                            
+                            </h:form>
                         </ul>
                     </li>
 

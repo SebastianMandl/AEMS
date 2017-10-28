@@ -6,7 +6,8 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -19,16 +20,25 @@ and open the template in the editor.
         <link href="css/statistiken.css" rel="stylesheet" type="text/css"/>
     </head>
     <body style="padding-top: 70px">
-        
 
-        
+
+
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
-        <!-- Seiteninhalt -->
-        <article class="article">
 
-            <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
+        <c:if test="#{!user.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+        </c:if>
 
-        </article>
+        <c:if test="#{user.loggedIn}">
+
+            <!-- Seiteninhalt -->
+            <article class="article">
+
+                <button class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik erstellen</button>
+
+            </article>
+
+        </c:if>
 
         <ui:include src="/templates/footer.xhtml"></ui:include>
 
@@ -43,7 +53,7 @@ and open the template in the editor.
         <!-- New Statistic Modal -->
         <ui:include src="/templates/new-statistic-modal.xhtml"></ui:include>
 
-        
+
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/mobile-functions.js"></script>
@@ -56,31 +66,31 @@ and open the template in the editor.
         <script src="js/jsPDF.js"></script>
         <script>
 
-                            // For each (alle statistiken des users):
-                            var time = ["KW 29", "KW 30", "KW 31", "KW 32"];
-                            var avgConsumptions = [120, 110, 90, 110];
-                            var avgTemp = [31, 24, 30, 30];
-                            showConsumption("canvas_1", time, avgConsumptions, avgTemp);
-                            showConsumption("canvas_1_1", time, avgConsumptions, avgTemp);
-                            showConsumption("canvas_2", time, avgConsumptions, avgTemp);
+            // For each (alle statistiken des users):
+            var time = ["KW 29", "KW 30", "KW 31", "KW 32"];
+            var avgConsumptions = [120, 110, 90, 110];
+            var avgTemp = [31, 24, 30, 30];
+            showConsumption("canvas_1", time, avgConsumptions, avgTemp);
+            showConsumption("canvas_1_1", time, avgConsumptions, avgTemp);
+            showConsumption("canvas_2", time, avgConsumptions, avgTemp);
 
 
-                            $("#download-s").click(function () {
-                                var button = $(this);
-                                html2canvas($("#canvas_1"), {
-                                    onrendered: function (canvas) {
-                                        var imgData = canvas.toDataURL(
-                                                'image/png');
-                                        var doc = new jsPDF('p', 'mm');
-                                        doc.setFontSize(35);
-                                        doc.text("ICH BIMS GROSSES TEXT", 20, 30);
-                                        doc.setFontSize(10);
-                                        doc.text("Erfreuen Sie sich an dieser Statistik :)", 22, 35);
-                                        doc.addImage(imgData, 'PNG', 20, 50);
-                                        doc.save("statistik.pdf");
-                                    }
-                                });
-                            });
+            $("#download-s").click(function () {
+                var button = $(this);
+                html2canvas($("#canvas_1"), {
+                    onrendered: function (canvas) {
+                        var imgData = canvas.toDataURL(
+                                'image/png');
+                        var doc = new jsPDF('p', 'mm');
+                        doc.setFontSize(35);
+                        doc.text("ICH BIMS GROSSES TEXT", 20, 30);
+                        doc.setFontSize(10);
+                        doc.text("Erfreuen Sie sich an dieser Statistik :)", 22, 35);
+                        doc.addImage(imgData, 'PNG', 20, 50);
+                        doc.save("statistik.pdf");
+                    }
+                });
+            });
         </script>
 
     </body>

@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <head>
 
         <meta charset="UTF-8" />
@@ -24,107 +25,117 @@
 
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
 
-        <article class="einstellungen">
+        <c:if test="#{!user.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+        </c:if>
 
-            <button id="createStatistic" class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Neue Statistik anlegen</button>
-
-
-            <h2 class="statistics-h2">Statistiken der Startseite:</h2>
-
-            <div class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">Stromstatistik 1</h4>
-
-                    <p class="list-group-item-text">Monatlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">Stromstatistik 2</h4>
-
-                    <p class="list-group-item-text">Wöchentlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">Gasstatistik 1</h4>
-
-                    <p class="list-group-item-text">Täglich</p>
-                </a>
-            </div>
+        <c:if test="#{user.loggedIn}">
 
 
 
-            <h2 class="statistics-h2">Android-App Statistiken:</h2>
+            <article class="einstellungen">
 
-            <div class="list-group statisticsList" data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">Stromstatistik 4</h4>
-
-                    <p class="list-group-item-text">Monatlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">Stromstatistik 5</h4>
-
-                    <p class="list-group-item-text">Wöchentlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">Gasstatistik 2</h4>
-
-                    <p class="list-group-item-text">Täglich</p>
-                </a>
-            </div>
+                <button id="createStatistic" class="btn btn-default ownButton" data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Neue Statistik anlegen</button>
 
 
+                <h2 class="statistics-h2">Statistiken der Startseite:</h2>
 
-            <h2 class="statistics-h2">Alle Statistiken</h2>
+                <div class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <a href="#" class="list-group-item ">
 
-            <div class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                <a href="#" class="list-group-item ">
+                        <h4 class="list-group-item-heading">Stromstatistik 1</h4>
 
-                    <h4 class="list-group-item-heading">Stromstatistik 1</h4>
+                        <p class="list-group-item-text">Monatlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
 
-                    <p class="list-group-item-text">Monatlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
+                        <h4 class="list-group-item-heading">Stromstatistik 2</h4>
 
-                    <h4 class="list-group-item-heading">Stromstatistik 2</h4>
+                        <p class="list-group-item-text">Wöchentlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
 
-                    <p class="list-group-item-text">Wöchentlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
+                        <h4 class="list-group-item-heading">Gasstatistik 1</h4>
 
-                    <h4 class="list-group-item-heading">Gasstatistik 1</h4>
+                        <p class="list-group-item-text">Täglich</p>
+                    </a>
+                </div>
 
-                    <p class="list-group-item-text">Täglich</p>
-                </a>
-                <a href="#" class="list-group-item ">
 
-                    <h4 class="list-group-item-heading">Gasstatistik 2</h4>
 
-                    <p class="list-group-item-text">Wöchentlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
+                <h2 class="statistics-h2">Android-App Statistiken:</h2>
 
-                    <h4 class="list-group-item-heading">Gasstatistik 3</h4>
+                <div class="list-group statisticsList" data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <a href="#" class="list-group-item ">
 
-                    <p class="list-group-item-text">Monatlich</p>
-                </a>
-                <a href="#" class="list-group-item ">
+                        <h4 class="list-group-item-heading">Stromstatistik 4</h4>
 
-                    <h4 class="list-group-item-heading">Gasstatistik 4</h4>
+                        <p class="list-group-item-text">Monatlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
 
-                    <p class="list-group-item-text">Jährlich</p>
-                </a>
-            </div>
-        </article>
+                        <h4 class="list-group-item-heading">Stromstatistik 5</h4>
 
-       <ui:include src="/templates/footer.xhtml"></ui:include>
-       
-       
-                <!-- Login Modal -->
+                        <p class="list-group-item-text">Wöchentlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Gasstatistik 2</h4>
+
+                        <p class="list-group-item-text">Täglich</p>
+                    </a>
+                </div>
+
+
+
+                <h2 class="statistics-h2">Alle Statistiken</h2>
+
+                <div class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Stromstatistik 1</h4>
+
+                        <p class="list-group-item-text">Monatlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Stromstatistik 2</h4>
+
+                        <p class="list-group-item-text">Wöchentlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Gasstatistik 1</h4>
+
+                        <p class="list-group-item-text">Täglich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Gasstatistik 2</h4>
+
+                        <p class="list-group-item-text">Wöchentlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Gasstatistik 3</h4>
+
+                        <p class="list-group-item-text">Monatlich</p>
+                    </a>
+                    <a href="#" class="list-group-item ">
+
+                        <h4 class="list-group-item-heading">Gasstatistik 4</h4>
+
+                        <p class="list-group-item-text">Jährlich</p>
+                    </a>
+                </div>
+            </article>
+
+        </c:if>
+
+        <ui:include src="/templates/footer.xhtml"></ui:include>
+
+
+        <!-- Login Modal -->
         <ui:include src="/templates/login-modal.xhtml"></ui:include>
 
         <!-- Register Modal -->
@@ -218,7 +229,7 @@
                                     </div>
                                 </li>
                                 -->
-                               
+
                             </ul>
                         </div>
 
@@ -236,7 +247,7 @@
                                     </div>
                                 </li>
                                 -->
-                                
+
                             </ul>
                         </div>
 
@@ -304,7 +315,7 @@
 
                         <h4>Statistikname</h4>
                         <h:inputText a:required="" a:placeholder="Meine Statistik" value="#{statistic.name}"/>
-                     <!--   <input type="text" name="user" placeholder="Meine Statistik" required="" /> -->
+                        <!--   <input type="text" name="user" placeholder="Meine Statistik" required="" /> -->
                         <h4>Zählertyp</h4>
 
                         <div class="btn-group">

@@ -12,7 +12,7 @@ import javax.faces.bean.ManagedBean;
  *
  * @author Niklas
  */
-@ManagedBean(name="statistic")
+@ManagedBean(name="newStatistic")
 public class NewStatisticBean implements Serializable {
     private String name;
     
