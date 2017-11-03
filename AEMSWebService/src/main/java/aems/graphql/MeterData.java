@@ -32,7 +32,7 @@ public class MeterData extends GraphQLObjectType {
         }
     }).build();
     
-    private static final GraphQLFieldDefinition MEASURE_VALUE = GraphQLFieldDefinition.newFieldDefinition().name("value").type(Scalars.GraphQLFloat).dataFetcher(new DataFetcher<Double> () {
+    private static final GraphQLFieldDefinition MEASURE_VALUE = GraphQLFieldDefinition.newFieldDefinition().name("measured_value").type(Scalars.GraphQLFloat).dataFetcher(new DataFetcher<Double> () {
         @Override
         public Double get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
