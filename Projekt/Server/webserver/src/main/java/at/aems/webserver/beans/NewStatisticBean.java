@@ -15,6 +15,7 @@ import javax.faces.bean.ManagedBean;
 @ManagedBean(name="newStatistic")
 public class NewStatisticBean implements Serializable {
     private String name;
+    private String meters;
     
     public String getName() {
         return this.name;
@@ -22,6 +23,20 @@ public class NewStatisticBean implements Serializable {
     
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMeters() {
+        return meters;
+    }
+
+    public void setMeters(String meters) {
+        this.meters = meters;
+    }
+    
+    
+    
+    public String doCreate() {
+        return "statistiken";
     }
     
 }

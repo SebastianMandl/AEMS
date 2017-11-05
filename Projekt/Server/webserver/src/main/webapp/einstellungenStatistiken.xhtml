@@ -40,93 +40,30 @@
 
                 <h2 class="statistics-h2">Statistiken der Startseite:</h2>
 
-                <div class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                <div id="homepageList" class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <!--
                     <a href="#" class="list-group-item ">
 
                         <h4 class="list-group-item-heading">Stromstatistik 1</h4>
 
                         <p class="list-group-item-text">Monatlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Stromstatistik 2</h4>
-
-                        <p class="list-group-item-text">Wöchentlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Gasstatistik 1</h4>
-
-                        <p class="list-group-item-text">Täglich</p>
-                    </a>
+                    </a> -->
                 </div>
 
 
 
                 <h2 class="statistics-h2">Android-App Statistiken:</h2>
 
-                <div class="list-group statisticsList" data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Stromstatistik 4</h4>
-
-                        <p class="list-group-item-text">Monatlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Stromstatistik 5</h4>
-
-                        <p class="list-group-item-text">Wöchentlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Gasstatistik 2</h4>
-
-                        <p class="list-group-item-text">Täglich</p>
-                    </a>
+                <div id="androidList" class="list-group statisticsList" data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <!-- Ajax -->
                 </div>
 
 
 
                 <h2 class="statistics-h2">Alle Statistiken</h2>
 
-                <div class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Stromstatistik 1</h4>
-
-                        <p class="list-group-item-text">Monatlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Stromstatistik 2</h4>
-
-                        <p class="list-group-item-text">Wöchentlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Gasstatistik 1</h4>
-
-                        <p class="list-group-item-text">Täglich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Gasstatistik 2</h4>
-
-                        <p class="list-group-item-text">Wöchentlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Gasstatistik 3</h4>
-
-                        <p class="list-group-item-text">Monatlich</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Gasstatistik 4</h4>
-
-                        <p class="list-group-item-text">Jährlich</p>
-                    </a>
+                <div id="allList" class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <!-- Ajax -->
                 </div>
             </article>
 
@@ -201,104 +138,10 @@
         </div>  
 
         <!-- New Statistic Modal -->
+        
+        <ui:include src="/templates/new-statistic-modal.xhtml"></ui:include>
 
-        <div class="modal fade" id="newStatistic-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-
-            <div class="modal-dialog">
-
-                <div class="loginmodal-container">
-
-                    <h1>Neue Statistik erstellen</h1><br />
-                    <h:inputHidden id="uId" value="#{user.userId}"/>
-                    <form>
-
-                        <h4>Statistikname</h4>
-                        <input type="text" name="user" placeholder="Meine Statistik" required="" />
-
-                        <h4>Zählertyp</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
-
-                            <ul id="meterType" class="dropdown-menu zaehler_format">
-
-                                <!--
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
-                                    </div>
-                                </li>
-                                -->
-
-                            </ul>
-                        </div>
-
-                        <h4>Verwendete Zähler</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
-
-                            <ul id="meters" class="dropdown-menu zaehler_format">
-
-                                <!--
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-                                -->
-
-                            </ul>
-                        </div>
-
-
-                        <h4>Zeitraum</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
-
-                            <ul class="dropdown-menu">
-
-                                <li role="presentation"><a href="#">Tag</a></li>
-
-                                <li role="presentation"><a href="#">Woche</a></li>
-
-                                <li role="presentation"><a href="#">Monat</a></li>     
-
-                                <li role="presentation"><a href="#">Jahr</a></li>
-                            </ul>
-                        </div>
-
-
-                        <h4>Anomalien berücksichtigen</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Außentemperatur</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Jahreszeit</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>	
-
-                        <h4>Anmerkung</h4>
-                        <input type="text" />
-                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik erstellen" />
-                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>			
-                </div>
-            </div>
-        </div>  <!-- New Indexpage Statistic Modal Ende -->
+          <!-- New Indexpage Statistic Modal Ende -->
 
 
 
@@ -408,7 +251,7 @@
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>     
         <script language="javascript" type="text/javascript" src="js/statistics/new.js"></script>
-
+        <script language="javascript" type="text/javascript" src="js/statistics/einstellungenStatistiken.js"></script>
 
 
 

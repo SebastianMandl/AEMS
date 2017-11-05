@@ -1,5 +1,9 @@
 var _meterData = [];
 $(document).ready(function() {
+    
+    const STATISTIC_NAME_LIMIT = 64;
+    const STATISTIC_ANNOTATION_LIMIT = 255;
+    
    $("#createStatistic").on("click", function() {
        $("#meterType").empty();
        let userId = $("#uId").val();
@@ -19,11 +23,50 @@ $(document).ready(function() {
        
    });
    
+   $("#submitNewStatistic").on("click", function() {
+       
+       var name = $("#statisticName").val();
+       var annotation = $("#statisticAnnotation").val();
+       var userId = $("#uId").val();
+       var boxes = $("#meters label input:checked");
+       var meterIds = [];
+       boxes.each(function(index, obj) {
+           meterIds.push(this.value);
+       });
+       
+       var data = {
+           name: name,
+           annotation: annotation,
+           meters: meterIds,
+           user_id: userId
+       };
+       
+       if(isDataValid(data)) {
+           console.log(data);
+       } else {
+           $.notify("Bitte überprüfen Sie Ihre Eingaben!", "warn");
+       }
+       
+       
+   });
+   
+   function isDataValid(data) {
+       if(data.name.length > STATISTIC_NAME_LIMIT || data.name.length < 1)
+           return false;
+       if(data.annotation.length > STATISTIC_ANNOTATION_LIMIT)
+           return false;
+       if(data.meters.length === 0)
+           return false;
+       
+       return true;
+   }
+   
+   
    function appendElement(list, element) {
        let li = $("<li role='presentation'></li>");
        let div = $("<div class='checkbox'>");
        let labl = $("<label></label>");
-       let box = $("<input type='checkbox' value=''></input>");
+       let box = $("<input type='checkbox'></input>");
        box.val(element);
        
        box.on("click", function() {
@@ -47,8 +90,8 @@ $(document).ready(function() {
                let li = $("<li role='presentation'></li>");
                let div = $("<div class='checkbox'>");
                let labl = $("<label></label>");
-               let box = $("<input type='checkbox' value=''></input>");
-               
+               let box = $("<input type='checkbox'></input>");
+               box.val(meter.id);
                labl.append(box);
                labl.append(meter.id);
                div.append(labl);
