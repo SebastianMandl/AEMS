@@ -29,6 +29,8 @@ public class AEMSDatabase {
         public static final String NOTIFICATIONS = "Notifications";
         public static final String NOTIFICATION_METERS = "NotificationMeters";
         public static final String NOTIFICATION_EXCEPTIONS = "NotificationExceptions";
+        
+        public static final String ARCHIVED_METER_NOTIFICATIONS = "ArchivedMeterNotifications";
 	
 	public class Meters {
             public static final String ID = "id";
@@ -117,13 +119,7 @@ public class AEMSDatabase {
         
         public class NotificationMeters {
             public static final String METER = "meter";
-            public static final String NOTIFICATION = "notification";
-            public static final String POSITIVE_DEVIATION = "positive_deviation";
-            public static final String NEGATIVE_DEVIATION = "negative_deviation";
-            public static final String PERIOD = "period";
-            public static final String POSITIVE_DEVIATION_VALUE = "positive_deviation_value";
-            public static final String NEGATIVE_DEVIATION_VALUE = "negative_deviation_value";
-            
+            public static final String NOTIFICATION = "notification";            
         }
         
         public class NotificationExceptions {
@@ -132,6 +128,19 @@ public class AEMSDatabase {
             public static final String PERIOD = "period";
             public static final String MIN_POSITIVE_DEVIATION = "min_positive_deviation";
             public static final String MIN_NEGATIVE_DEVIATION = "min_negative_deviation";
+        }
+        
+        public class ArchivedMeterNotifications {
+            public static final String ID = "id";
+            public static final String METER = "meter";
+            public static final String NOTIFICATION = "notification";
+            public static final String POSITIVE_DEVIATION = "positive_deviation";
+            public static final String NEGATIVE_DEVIATION = "negative_deviation";
+            public static final String POSITIVE_DEVIATION_VALUE = "positive_deviation_value";
+            public static final String NEGATIVE_DEVIATION_VALUE = "negative_deviation_value";
+            public static final String PERIOD = "period";
+            public static final String INITIAL_OCCURRENCE = "initial_occurrence";
+            public static final String LAST_OCCURRENCE = "last_occurrence";
         }
 	
 }
