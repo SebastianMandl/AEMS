@@ -7,17 +7,17 @@
         <div class="modal-dialog">
             <div class="loginmodal-container">
                 <h1>Register your Account</h1><br/>
-                <form>
-                    <input type="text" name="user" placeholder="Ihr netzonline Username" required="required"/>
-                    <input type="password" name="pass" placeholder="Ihr netzonline Passwort" required="required"/>
-                    <input type="text" name="email" placeholder="E-Mail" required="required"/>
-                    <input type="text" name="plz" placeholder="Postleitzahl" required="required"/>
+                <h:form>
+                    <input type="text" name="user" value="#{register.username}" placeholder="Ihr netzonline Username" required="required"/>
+                    <input type="password" name="pass" value="#{register.password}" placeholder="Ihr netzonline Passwort" required="required"/>
+                    <input type="text" name="email" value="#{register.email}" placeholder="E-Mail" required="required"/>
+                    <input type="text" name="plz" value="#{register.plz}" placeholder="Postleitzahl" required="required"/>
                     <input type="checkbox" name="termsofuse" id="termsofuse" required="required"/> 
                     <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="nutzungsbedingungen" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
-                    <input onclick="functionRegister()" type="submit" name="register" class="login loginmodal-submit" value="Register"/>
+                    <h:commandButton action="#{register.doRegister()}" value="Register"/>
                     <p class="login-info">Zur Registrierung, bzw. zum Login sind dieselben Login/Registrierungsdaten, wie bei der Netz-Online Website zu verwenden</p>
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                </form>			
+                </h:form>			
             </div>
         </div>
     </div>

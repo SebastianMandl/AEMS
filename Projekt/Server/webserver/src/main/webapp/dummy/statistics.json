@@ -1,0 +1,18 @@
+[
+    {
+        "statistic_id": 123,
+        "statistic_name": "Strom 1",
+        "annotation": "Stromstatistik für Gebäude XYZ (AT1234 und AT9284)",
+        "display_home": true,
+        "display_android": false,
+        "meters": []   
+    },
+    {
+        "statistic_id": 1234,
+        "statistic_name": "Gas 3",
+        "annotation": "Statistik sämtlicher Gaszähler der Region XYZ",
+        "display_home": false,
+        "display_android": true,
+        "meters": []   
+    }
+]

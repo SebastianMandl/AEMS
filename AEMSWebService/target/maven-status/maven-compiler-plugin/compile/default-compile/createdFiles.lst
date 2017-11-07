@@ -1,4 +1,5 @@
 aems\graphql\ReportStatistic.class
+aems\database\AEMSDatabase$ArchivedMeterNotifications.class
 aems\database\AEMSDatabase$NotificationMeters.class
 aems\DatabaseConnectionManager.class
 aems\graphql\MeterData$2.class
@@ -61,6 +62,7 @@ aems\graphql\Query$1.class
 aems\RestInf.class
 aems\database\AEMSDatabase$ReportStatistics.class
 aems\database\AEMSDatabase$StatisticMeters.class
+aems\graphql\ArchivedMeterNotification.class
 aems\graphql\Notification$1.class
 aems\graphql\MeterType$2.class
 aems\graphql\MeterData.class

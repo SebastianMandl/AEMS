@@ -19,6 +19,7 @@ CREATE TABLE aems."Statistics"
   statistic_id numeric(10,0) NOT NULL,
   user_id numeric(10,0) NOT NULL,
   statistic_name character varying(64),
+  annotation character varying(256),
 
   CONSTRAINT pk_transfer_infos PRIMARY KEY (statistic_id),
   CONSTRAINT fk_statistics_user FOREIGN KEY (user_id)
