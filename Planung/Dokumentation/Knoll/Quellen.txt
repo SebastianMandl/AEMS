@@ -15,3 +15,10 @@ Notifications:
 ---------------------------------------------------
 notify.js
 
+
+
+---------------------------------------------------
+Notifications Android-App:
+---------------------------------------------------
+https://stackoverflow.com/questions/8461208/android-notification-after-reboot
+

@@ -81,12 +81,11 @@
 
 
 
-    <!-- Login Modal -->
 
-            <!-- Login Modal -->
+    <!-- Login Modal -->
         <ui:include src="/templates/login-modal.xhtml"></ui:include>
 
-        <!-- Register Modal -->
+    <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
 
@@ -259,9 +258,21 @@
 
 
                     <h4>Ausnahme für bestimmtes Datum</h4>
-                    <input type="date" />
+                    <input id="newDate" type="date" class="btn-block"/>
+                    <input id="addDate" type="button" class="btn btn-default btn-sm" value="Datum hinzufügen" /> <br /> <br />
 
+                    <ul id="dateList" style="list-style-type:none;">
+                        <li>18.10.1998</li>
+                        <li>20.11.2013</li>
+                        <li>19.08.2018</li>
+
+                    </ul>
+                    
                     <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
+                    
+                    
+
+                    
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                 </form>			
             </div>
@@ -296,7 +307,7 @@
                         </ul>
                     </div>
 
-                    <h4>Z�hlertyp</h4>
+                    <h4>Zählertyp</h4>
 
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
@@ -329,7 +340,7 @@
                         </ul>
                     </div>
 
-                    <h4>Verwendete Z�hler</h4>
+                    <h4>Verwendete Zähler</h4>
                     <button class="btn btn-default" type="button">Alle</button>
 
                     <div class="btn-group">
@@ -473,6 +484,7 @@
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/mobile-functions.js"></script>
+    <script src="js/einstellungenWarnungen.js"></script>
     <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
     <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
     <script language="javascript" type="text/javascript" src="js/notify.js"></script>
