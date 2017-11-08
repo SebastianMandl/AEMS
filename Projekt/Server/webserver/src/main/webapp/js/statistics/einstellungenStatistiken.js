@@ -1,6 +1,6 @@
 const BASE_URL = "http://localhost:8080/webserver/";
 $(document).ready(function() {
-   $.post("http://localhost:8080/webserver/dummy/statistics.json", populateStatisticLists, "json");
+     $.post("http://localhost:8080/webserver/dummy/statistics.json", populateStatisticLists, "json");
 });
 
 function populateStatisticLists(data) {
