@@ -1,14 +1,15 @@
-$(document).load($(window).bind("resize", startFormat));
+$(document).ready(function(){
+    
+//function addDateToList(){
+//    var date = $('#newDate').val();
+//    $('#dateList').add('li').val(date);
+//}
 
-function startFormat(){
-	footerFormat();
-	navbarFormat();
+$('#addDate').on('click', addListItem);
+
+function addListItem(){
+    var date = $('#newDate').val();
+    $('#dateList').add('li').val(date);
 }
 
-function footerFormat(){
-
-if (/Mobi/.test(navigator.userAgent)) {
-    $('footer').removeClass("footer");
-	$('footer').removeClass("navbar-fixed-bottom");
-}
-}
+});
