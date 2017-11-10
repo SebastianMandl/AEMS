@@ -343,7 +343,7 @@ public class DatabaseConnection {
                     }
                 }
             }
-            return '\t';
+            return 'a';
         }
 	
 	/**
