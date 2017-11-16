@@ -1,80 +1,37 @@
 $(document).ready(function() {
-   getNotifications(); 
+    $("#notifIcon").one("click", getNotifications);
 });
 
 function getNotifications() {
     var userId = 1;
     var graphQL = `{
-        notifications(user: ${userId}) {
-            name
-            type
-            meters {
-                id
+        archived_meter_notifications(user_id: ${userId}, viewed: false) {
+            id
+            notification {
+                name
+                type
             }
         }
     }`;
     
-    $.post(API_URL, {query: graphQL}, displayNotifications);
+    $.post(API_URL + "warnings.json", {query: graphQL}, displayNotifications, "json");
 }
 
 function displayNotifications(data) {
     for(var noti of data) {
-        // Display
+        var type = noti.notification.type;
+        
+        var n = new Noty({
+            text: noti.notification.name,
+            type: type,
+            callbacks: {
+                onClose: function() {
+                    alert(noti.id);
+                }
+            }
+        });
+        n.show();
+        console.log(n);
     }
+    $("#notificationCounter").text("0");
 }
-
-var notifications = 0;
-var measuredElectricity = 10;
-var maxElectricity = 5;
-var measuredGas = 15;
-var maxGas = 4;
-var measuredWater;
-var maxWater;
-var report = 1;
-
-function functionNotifications() {
-    if (measuredElectricity > maxElectricity) {
-        $.notify("Ihr Stromverbrauch ist höher als sonst!", "warn");
-        notifications--;
-    }
-    if (measuredGas > maxGas) {
-        $.notify("Ihr Gasverbrauch ist höher als sonst!", "warn");
-        notifications--;
-    }
-    if (measuredWater > maxWater) {
-        $.notify("Ihr Wasserverbrauch ist höher als sonst!", "warn");
-        notifications--;
-    }
-    if (report > 0) {
-        $.notify("Ein neuer Bericht steht zum Download bereit!", "info");
-        notifications--;
-    }
-
-    if (notifications < 0) {
-        $('#notificationCounter').text('0');
-    } else {
-        $('#notificationCounter').text('' + notifications);
-    }
-
-}
-
-
-
-window.onload = function () {
-
-    if (measuredElectricity > maxElectricity) {
-        notifications++;
-    }
-    if (measuredGas > maxGas) {
-        notifications++;
-    }
-    if (measuredWater > maxWater) {
-        notifications++;
-    }
-    if (report > 0) {
-        notifications++;
-    }
-
-    $('#notificationCounter').text('' + notifications);
-
-};

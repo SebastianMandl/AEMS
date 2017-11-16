@@ -29,37 +29,37 @@ and open the template in the editor.
         <c:if test="#{!user.loggedIn}">
             <ui:include src="/templates/welcome.xhtml"></ui:include>
         </c:if>
-        
+
         <!-- Seiteninhalt -->
         <c:if test="#{user.loggedIn}">
-        <article class="statistics">
-                        
+            <article class="statistics">
 
-            <ul class="listStyle">
-                <li class="statistikElement">
-                    <div class="statistic-container">
-                        <h2 id="Titel 1" class="stat-title">Titel 1</h2> 
-                        <canvas id="statistic_1" width="600" height="400"></canvas>
-                        <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
-                    </div>
-                </li>
-                <li class="statistikElement">
-                    <div class="statistic-container">
-                        <h2 id="Titel 2" class="stat-title">Titel 2</h2> 
-                        <canvas id="statistic_2" width="600" height="400"></canvas>
-                        <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
-                    </div>
-                </li>
-                <li class="statistikElement">
-                    <div class="statistic-container">
-                        <h2 id="Titel 9000" class="stat-title">Titel 9000</h2> 
-                        <canvas id="statistic_3" width="600" height="400"></canvas>
-                        <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
-                    </div>
-                </li>
-            </ul>
-        </article>
-            </c:if>
+
+                <ul class="listStyle">
+                    <li class="statistikElement">
+                        <div class="statistic-container">
+                            <h2 id="Titel 1" class="stat-title">Titel 1</h2> 
+                            <canvas id="statistic_1" width="600" height="400"></canvas>
+                            <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                        </div>
+                    </li>
+                    <li class="statistikElement">
+                        <div class="statistic-container">
+                            <h2 id="Titel 2" class="stat-title">Titel 2</h2> 
+                            <canvas id="statistic_2" width="600" height="400"></canvas>
+                            <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                        </div>
+                    </li>
+                    <li class="statistikElement">
+                        <div class="statistic-container">
+                            <h2 id="Titel 9000" class="stat-title">Titel 9000</h2> 
+                            <canvas id="statistic_3" width="600" height="400"></canvas>
+                            <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+        </c:if>
 
         <ui:include src="/templates/footer.xhtml"></ui:include>
 
@@ -69,6 +69,12 @@ and open the template in the editor.
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
+
+        <script src="js/lib/noty.js"></script>
+        <link href="js/lib/noty.css" rel="stylesheet"></link>
+
+
+        <script src="js/basic.js"></script>
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/mobile-functions.js"></script>
@@ -86,8 +92,6 @@ and open the template in the editor.
         <script type="text/javascript" src="js/statistics/lib/png_support/png.js"></script>
         <script type="text/javascript" src="js/statistics/lib/plugins/addimage.js"></script>
         <script type="text/javascript" src="js/statistics/lib/plugins/png_support.js"></script>
-
-
 
     </body>
 </html>

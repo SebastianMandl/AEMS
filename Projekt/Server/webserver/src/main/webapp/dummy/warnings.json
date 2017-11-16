@@ -1,0 +1,9 @@
+[
+    {
+        "id": "193045",
+        "notification": {
+            "name": "This notification will close in 5 seconds!",
+            "type": "warning"
+        }
+    }
+]

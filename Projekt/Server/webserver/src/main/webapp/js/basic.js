@@ -1,1 +1,1 @@
-const API_URL = "https://api.aems.at";
+const API_URL = "http://localhost:8080/webserver/dummy/";

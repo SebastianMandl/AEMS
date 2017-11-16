@@ -8,6 +8,13 @@ $(document).ready(function () {
         $("#meterType").empty();
         let userId = $("#uId").val();
         let userData = {"userId": userId};
+        
+        var q = `{\n
+            meters(user_id: ${userId}) {\n
+                id\n
+                metertype\n
+            }\n
+        }`;
         $.post("http://localhost:8080/webserver/dummy/meters.json", userData, addMeterTypes, "json");
     });
 
