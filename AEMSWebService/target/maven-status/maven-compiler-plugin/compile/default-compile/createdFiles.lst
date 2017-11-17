@@ -57,6 +57,7 @@ aems\graphql\Report.class
 aems\database\ResultSet.class
 aems\graphql\Meter$5.class
 aems\graphql\StatisticTime$5.class
+aems\graphql\utils\Argument.class
 aems\graphql\StatisticTime.class
 aems\graphql\Query$1.class
 aems\RestInf.class
