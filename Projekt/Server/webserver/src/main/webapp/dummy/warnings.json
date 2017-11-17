@@ -2,7 +2,14 @@
     {
         "id": "193045",
         "notification": {
-            "name": "This notification will close in 5 seconds!",
+            "name": "I bims 1 INFO LUGGI",
+            "type": "info"
+        }
+    },
+        {
+        "id": "193045",
+        "notification": {
+            "name": "I bims 1 WARNING LUGGI",
             "type": "warning"
         }
     }

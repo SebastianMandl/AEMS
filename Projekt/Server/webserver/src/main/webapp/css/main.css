@@ -64,6 +64,15 @@
     width: 20%;
 }
 
+/* Fix for ugly logout link due to h:form */
+.logoutLink {
+    margin: 10px;
+    color: #333;
+    padding: 3px 20px;
+    line-height: 1.42857143;
+    text-decoration: none;
+}
+
 @media (max-width: 767px){
 	.navbar-header .navbar-brand.titleFormat .titleImage {
 	width: 15em;

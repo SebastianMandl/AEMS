@@ -35,20 +35,22 @@
 
 
                     <!-- Menü Login, Logout und Registrieren -->
-                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> #{user.username}<span class="caret"></span></a>
                         <ul class="dropdown-menu">                            
                             <h:form>
+                                <!--
                             <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>      
+                            <li role="separator" class="divider"></li> -->
+                            <li> <h:commandLink action="#{login.doLogout()}" value="Logout" class="logoutLink"></h:commandLink></li>
+                            <!--
                             <li role="separator" class="divider"></li>
-                            <li> <h:commandLink action="#{login.doLogout()}" value="Logout"></h:commandLink></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
+                            <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>-->
                             </h:form>
                         </ul>
                     </li>
 
                     <!-- Benachrichtigungsicon -->
-                    <li id="notifIcon" onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png"/>
+                    <li id="notifIcon"><img class="notificationIcon" src="images/notification.png"/>
                         <span id="notificationCounter" class="notification-counter"></span>   
                     </li>
 
