@@ -32,6 +32,8 @@ public class MeterData extends GraphQLObjectType {
         }
     }).build();
     
+     private static final GraphQLFieldDefinition UNIT = Query.getFieldDefinition("unit", AEMSDatabase.METERDATA, AEMSDatabase.MeterData.UNIT, Scalars.GraphQLString);
+    
     private static final GraphQLFieldDefinition MEASURE_VALUE = GraphQLFieldDefinition.newFieldDefinition().name("measured_value").type(Scalars.GraphQLFloat).dataFetcher(new DataFetcher<Double> () {
         @Override
         public Double get(DataFetchingEnvironment environment) {
@@ -72,6 +74,7 @@ public class MeterData extends GraphQLObjectType {
         defs.add(MEASURE_VALUE);
         defs.add(TIMESTAMP);
         defs.add(METER);
+        defs.add(UNIT);
         
         instance = new MeterData("meterdata", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;

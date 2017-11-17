@@ -4,6 +4,7 @@ import aems.GraphQLCondition;
 import aems.DatabaseConnectionManager;
 import aems.database.AEMSDatabase;
 import aems.database.DatabaseConnection;
+import aems.graphql.utils.Argument;
 import graphql.Scalars;
 import graphql.language.Field;
 import graphql.language.Selection;
@@ -19,6 +20,8 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLScalarType;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,20 +35,58 @@ public class Query extends GraphQLObjectType {
 
     private static Query instance;
 
-    private static final GraphQLFieldDefinition USERS = Query.getRootFieldDefinition("users", AEMSDatabase.USERS, User.getInstance(), "id", AEMSDatabase.Users.ID);    
-    private static final GraphQLFieldDefinition METERS = Query.getRootFieldDefinition("meters", AEMSDatabase.METERS, Meter.getInstance(), "id", AEMSDatabase.Meters.ID);
-    private static final GraphQLFieldDefinition METER_DATA = Query.getRootFieldDefinition("meterdata", AEMSDatabase.METERDATA, MeterData.getInstance(), "meter", AEMSDatabase.MeterData.METER);
-    private static final GraphQLFieldDefinition STATISTIC_METERS = Query.getRootFieldDefinition("statistic_meters", AEMSDatabase.STATISTIC_METERS, StatisticMeter.getInstance());
-    private static final GraphQLFieldDefinition STATISTICS = Query.getRootFieldDefinition("statistics", AEMSDatabase.STATISTICS, StatisticMeter.getInstance());
-    private static final GraphQLFieldDefinition STATISTIC_TIMES = Query.getRootFieldDefinition("statistic_times", AEMSDatabase.STATISTIC_TIMES, StatisticTime.getInstance());
-    private static final GraphQLFieldDefinition PERIODS = Query.getRootFieldDefinition("periods", AEMSDatabase.PERIODS, Period.getInstance());
-    private static final GraphQLFieldDefinition REPORTS = Query.getRootFieldDefinition("reports", AEMSDatabase.REPORTS, Report.getInstance());
-    private static final GraphQLFieldDefinition NOTIFICATIONS = Query.getRootFieldDefinition("notifications", AEMSDatabase.NOTIFICATIONS, Notification.getInstance());
-    private static final GraphQLFieldDefinition WEATHER_DATA = Query.getRootFieldDefinition("weather_data", AEMSDatabase.WEATHERDATA, WeatherData.getInstance(), "meter", AEMSDatabase.WeatherData.METER);
-    private static final GraphQLFieldDefinition NOTIFICATION_METERS = Query.getRootFieldDefinition("notification_meters", AEMSDatabase.NOTIFICATION_METERS, NotificationMeter.getInstance());
-    private static final GraphQLFieldDefinition NOTIFICATION_EXCEPTIONS = Query.getRootFieldDefinition("notification_exceptions", AEMSDatabase.NOTIFICATION_EXCEPTIONS, NotificationException.getInstance());
-    private static final GraphQLFieldDefinition REPORT_STATISTICS = Query.getRootFieldDefinition("report_statistics", AEMSDatabase.REPORT_STATISTICS, ReportStatistic.getInstance());
-    private static final GraphQLFieldDefinition ARCHIVED_METER_NOTIFICATIONS = Query.getRootFieldDefinition("archived_meter_notifications", AEMSDatabase.ARCHIVED_METER_NOTIFICATIONS, ArchivedMeterNotification.getInstance());
+    private static final GraphQLFieldDefinition USERS = 
+            Query.getRootFieldDefinition("users", AEMSDatabase.USERS, User.getInstance(), 
+                    getArgumentList(
+                            new Argument("id", AEMSDatabase.Users.ID, Argument.EQUAL))); 
+    
+    private static final GraphQLFieldDefinition METERS = 
+            Query.getRootFieldDefinition("meters", AEMSDatabase.METERS, Meter.getInstance(), 
+                    getArgumentList(
+                            new Argument("id", AEMSDatabase.Meters.ID, Argument.LIKE)));
+    
+    private static final GraphQLFieldDefinition METER_DATA = 
+            Query.getRootFieldDefinition("meter_data", AEMSDatabase.METERDATA, MeterData.getInstance(), 
+                    getArgumentList(
+                            new Argument("meter", AEMSDatabase.MeterData.METER, Argument.LIKE)));
+    
+    private static final GraphQLFieldDefinition STATISTIC_METERS = 
+            Query.getRootFieldDefinition("statistic_meters", AEMSDatabase.STATISTIC_METERS, StatisticMeter.getInstance());
+    
+    private static final GraphQLFieldDefinition STATISTICS = 
+            Query.getRootFieldDefinition("statistics", AEMSDatabase.STATISTICS, Statistic.getInstance(), 
+                    getArgumentList(new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL)));
+    
+    private static final GraphQLFieldDefinition STATISTIC_TIMES = 
+            Query.getRootFieldDefinition("statistic_times", AEMSDatabase.STATISTIC_TIMES, StatisticTime.getInstance());
+    
+    private static final GraphQLFieldDefinition PERIODS = 
+            Query.getRootFieldDefinition("periods", AEMSDatabase.PERIODS, Period.getInstance());
+    
+    private static final GraphQLFieldDefinition REPORTS = 
+            Query.getRootFieldDefinition("reports", AEMSDatabase.REPORTS, Report.getInstance());
+    
+    private static final GraphQLFieldDefinition NOTIFICATIONS = 
+            Query.getRootFieldDefinition("notifications", AEMSDatabase.NOTIFICATIONS, Notification.getInstance());
+    
+    private static final GraphQLFieldDefinition WEATHER_DATA = 
+            Query.getRootFieldDefinition("weather_data", AEMSDatabase.WEATHERDATA, WeatherData.getInstance(), 
+                    getArgumentList(
+                            new Argument("meter", AEMSDatabase.WeatherData.METER, Argument.LIKE),
+                            new Argument("start", AEMSDatabase.WeatherData.TIMESTAMP, Argument.GTE),
+                            new Argument("end", AEMSDatabase.WeatherData.TIMESTAMP, Argument.LTE)));
+    
+    private static final GraphQLFieldDefinition NOTIFICATION_METERS = 
+            Query.getRootFieldDefinition("notification_meters", AEMSDatabase.NOTIFICATION_METERS, NotificationMeter.getInstance());
+    
+    private static final GraphQLFieldDefinition NOTIFICATION_EXCEPTIONS = 
+            Query.getRootFieldDefinition("notification_exceptions", AEMSDatabase.NOTIFICATION_EXCEPTIONS, NotificationException.getInstance());
+    
+    private static final GraphQLFieldDefinition REPORT_STATISTICS = 
+            Query.getRootFieldDefinition("report_statistics", AEMSDatabase.REPORT_STATISTICS, ReportStatistic.getInstance());
+    
+    private static final GraphQLFieldDefinition ARCHIVED_METER_NOTIFICATIONS = 
+            Query.getRootFieldDefinition("archived_meter_notifications", AEMSDatabase.ARCHIVED_METER_NOTIFICATIONS, ArchivedMeterNotification.getInstance());
     
     
     private Query(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
@@ -76,16 +117,15 @@ public class Query extends GraphQLObjectType {
         return instance;
     }
     
-    public static ArrayList<String> processEnvironmentForEntity(DataFetchingEnvironment environment, String table) {
-        return processEnvironmentForEntity(environment, table, null, null);
+    private static List<Argument> getArgumentList(Argument... args) {
+        return Arrays.asList(args);
     }
     
-    public static ArrayList<String> processEnvironmentForEntity(DataFetchingEnvironment environment, String table, String idColumn, String id) {
-        if(id != null && id.equals("*")) {
-            idColumn = null;
-            id = null;
-        }
-        
+    public static ArrayList<String> processEnvironmentForEntity(DataFetchingEnvironment environment, String table) {
+        return processEnvironmentForEntity(environment, table, new ArrayList<Argument>());
+    }
+    
+    public static ArrayList<String> processEnvironmentForEntity(DataFetchingEnvironment environment, String table, List<Argument> arguments) {        
         ArrayList<String> list = new ArrayList<>();
                     
             DatabaseConnection con = DatabaseConnectionManager.getDatabaseConnection();
@@ -102,15 +142,53 @@ public class Query extends GraphQLObjectType {
             }
             projection.add(projectionListHelper.toArray(new String[projectionListHelper.size()]));
             
-            HashMap<String, String> selection = new HashMap<>();
-            if(id != null && idColumn != null) {
-                selection.put(idColumn, id);
-            } else {
-                selection = null;
+            // where clause
+            StringBuilder customWhere = new StringBuilder();
+            for(Argument arg : arguments) {
+                Object argument = environment.getArgument(arg.name);
+                
+                if(argument == null)
+                    continue;
+                
+                String argumentValue = argument.toString();
+                if(argumentValue.equals("*")) // ignore ; default value ; everything shell be queried
+                    continue;
+                
+                customWhere.append(arg.column);
+                
+                switch (arg.comparison) {
+                    case Argument.EQUAL:
+                        customWhere.append("=");
+                        break;
+                    case Argument.LIKE:
+                        customWhere.append(" LIKE ");
+                        break;
+                    case Argument.LTE:
+                        customWhere.append(" <= ");
+                        break;
+                    case Argument.GTE:
+                        customWhere.append(" >= ");
+                        break;
+                    default:
+                        break;
+                }
+                
+                
+                try {
+                    Double.parseDouble(argumentValue);
+                    customWhere.append(argumentValue);
+                } catch(Exception e) {
+                    customWhere.append("'").append(argumentValue).append("'");
+                }
+                
+                customWhere.append(" AND ");
             }
+            
+            customWhere.append(" 1 = 1 "); // in case of no argument passed append
+            // this snipped to produce a valid sql statement after all
 
             try {
-                for(Object[] row : con.select("aems", table, projection, selection)) {
+                for(Object[] row : con.select("aems", table, null, projection, null, true, customWhere.toString())) {
                     int index = 0;
                     JSONObject root = new JSONObject();
                     for(String key : projectionListHelper) {                                
@@ -123,7 +201,7 @@ public class Query extends GraphQLObjectType {
             }
                           
             return list;
-    }        
+    }  
     
     public static String execQuery(JSONObject obj, String table, String column, GraphQLCondition... conditions) {
         if(obj.has("id")) {
@@ -208,23 +286,22 @@ public class Query extends GraphQLObjectType {
     }
     
     public static GraphQLFieldDefinition getRootFieldDefinition(final String FIELD_NAME, final String TABLE, final GraphQLObjectType TYPE) {
-        return getRootFieldDefinition(FIELD_NAME, TABLE, TYPE, null, null);
+        return getRootFieldDefinition(FIELD_NAME, TABLE, TYPE, new ArrayList<Argument>());
     }
     
-    public static GraphQLFieldDefinition getRootFieldDefinition(final String FIELD_NAME, final String TABLE, final GraphQLObjectType TYPE, final String ARGUMENT_NAME, final String ID_COLUMN) {
+    public static GraphQLFieldDefinition getRootFieldDefinition(final String FIELD_NAME, final String TABLE, final GraphQLObjectType TYPE, final List<Argument> ARGUMENTS) {
         GraphQLFieldDefinition.Builder field  = GraphQLFieldDefinition.newFieldDefinition().name(FIELD_NAME).type(GraphQLList.list(TYPE)).dataFetcher(new DataFetcher<ArrayList<String>>() {
            @Override
            public ArrayList<String> get(DataFetchingEnvironment environment) {
-               Object argument = environment.getArgument(ARGUMENT_NAME);
-               return processEnvironmentForEntity(environment, TABLE, ID_COLUMN, argument == null ? "*" : argument.toString());
+               return processEnvironmentForEntity(environment, TABLE, ARGUMENTS);
            }
        });
-        
-       if(ARGUMENT_NAME == null) {
-           return field.build();
-       } else {
-           return field.argument(GraphQLArgument.newArgument().defaultValue("*").name(ARGUMENT_NAME).type(Scalars.GraphQLString).build()).build();
+       
+       for(Argument arg : ARGUMENTS) {
+           field = field.argument(GraphQLArgument.newArgument().defaultValue("*").name(arg.name).type(Scalars.GraphQLString).build());
        }
-    }
+        
+       return field.build();
+    }      
 
 }

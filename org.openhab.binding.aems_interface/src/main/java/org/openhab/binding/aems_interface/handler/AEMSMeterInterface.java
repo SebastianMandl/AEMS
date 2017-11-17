@@ -46,10 +46,17 @@ public class AEMSMeterInterface extends BaseThingHandler {
 
     private static final String SERVER_DOMAIN = "http://localhost:8084/AEMSWebService/RestInf";
 
+    private static String query = "{\r\n" + "    weather_data (meter:?, start:?, end:?) {\r\n"
+            + "        temperature\r\n" + "        humidity\r\n" + "    }\r\n" + "    \r\n"
+            + "    meter_data (meter:?, start:?, end:?) {\r\n" + "        measured_value\r\n" + "    }\r\n" + "}"; // cache
+                                                                                                                   // the
+                                                                                                                   // base
+                                                                                                                   // query
+
     @SuppressWarnings("null")
     // {humidity=30.0, temperature=15.0}
     private static final Pattern JSON_PATTERN = Pattern.compile(
-            "humidity=(?<humidity>\\d{1,5}(?:\\.\\d{1,5})?),\\stemperature=(?<temperature>\\d{1,5}(?:\\.\\d{1,5})?)");
+            "humidity=(?<humidity>\\d{1,5}(?:\\.\\d{1,5})?),\\stemperature=(?<temperature>\\d{1,5}(?:\\.\\d{1,5})?).*measured_value=(?<measured_value>\\\\d{1,5}(?:\\\\.\\\\d{1,5})?)");
     @Nullable
     private AEMSInterfaceConfiguration config;
 
@@ -83,20 +90,36 @@ public class AEMSMeterInterface extends BaseThingHandler {
     }
 
     @SuppressWarnings("null")
+    private String replaceQuestionMarks(String query, String[] fillIns) {
+        StringBuilder builder = new StringBuilder();
+        int index = 0;
+        for (char c : query.toCharArray()) {
+            if (c == '?') {
+                builder.append(fillIns[index]);
+                index++;
+                continue;
+            }
+            builder.append(c);
+        }
+        return builder.toString();
+    }
+
+    @SuppressWarnings("null")
     public void updateData() {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(SERVER_DOMAIN).openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
             con.setRequestMethod("POST");
-            StringBuilder builder = new StringBuilder("{\n");
-            builder.append("weather_data(meter:\"").append(config.meterId).append("\") {\n");
-            builder.append("\thumidity,\n");
-            builder.append("\ttemperature\n");
-            builder.append("}\n}");
-            System.out.println(builder.toString());
+
+            String[] fillIns = new String[] { config.meterId, "2017-06-15", "2017-06-2015", config.meterId,
+                    "2017-06-15", "2017-06-2015" };
+
+            query = replaceQuestionMarks(query, fillIns);
+
+            System.out.println(query);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-            writer.write("operation=POST&query=" + builder.toString());
+            writer.write("operation=POST&query=" + query);
             writer.flush();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -104,17 +127,21 @@ public class AEMSMeterInterface extends BaseThingHandler {
 
             String humidity = "not set";
             String temperature = "not set";
+            String measured_value = "not set";
 
             Matcher matcher = JSON_PATTERN.matcher(jsonLine);
             while (matcher.find()) {
                 humidity = matcher.group("humidity");
                 temperature = matcher.group("temperature");
+                measured_value = matcher.group("measured_value");
             }
 
             updateState(getThing().getChannel(AemsInterfaceBindingConstants.HUMIDITY_CHANNEL).getUID(),
                     new StringType(humidity + " %"));
             updateState(getThing().getChannel(AemsInterfaceBindingConstants.TEMPERATURE_CHANNEL).getUID(),
                     new StringType(temperature + " °"));
+            updateState(getThing().getChannel(AemsInterfaceBindingConstants.CURRENT_CONSUMPTION_CHANNEL).getUID(),
+                    new StringType(measured_value + " kwH"));
 
             logger.info("AEMS Interface for meter {} has been updated!", config.meterId);
 

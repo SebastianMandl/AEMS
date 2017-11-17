@@ -1,0 +1,10 @@
+{
+    weather_data (meter:?, start:?, end:?) {
+        temperature
+        humidity
+    }
+    
+    meter_data (meter:?, start:?, end:?) {
+        measured_value
+    }
+}
