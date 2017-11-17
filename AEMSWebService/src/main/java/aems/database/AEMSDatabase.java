@@ -57,6 +57,7 @@ public class AEMSDatabase {
             public static final String METER = "meter";
             public static final String TIMESTAMP = "timestamp";
             public static final String MEASURED_VALUE = "measured_value";
+            public static final String UNIT = "unit";
 	}
 	
 	public class WeatherData {
