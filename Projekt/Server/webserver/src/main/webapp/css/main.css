@@ -27,8 +27,11 @@
 	width: 20em;
 }
 .modal-footer.footerFormat {
-	margin-top: 4em;
-
+	margin-top: 4em;  
+}
+/* To fix transparent footer */
+.footerFormat {
+    background-color: #fff;
 }
 .nav.navbar-nav.navbar-right li .notification-counter {
 	position: absolute;
