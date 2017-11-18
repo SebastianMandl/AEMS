@@ -24,6 +24,7 @@ showChart("statistic_1", l, av, pv, t);
 showChart("statistic_2", ["KW 08", "KW 09", "KW 10", "KW 11"], [150, 120, 120, 100], [150, 130, 130, 90], t);
 showChart("statistic_3", l, av, pv, t);
 
+
 function showChart(canvasId, labels, actualValues, previousValues, temperature) {
 
     var highestTemperature = Math.max.apply(Math, temperature);
@@ -112,7 +113,8 @@ function addValuesIfNeeded(chart, array, label, color, axisId, chartType) {
 
 function randomValues() {
     for (var i = 0; i < l.length; i++) {
-        av.push(Math.floor(Math.random() * 200) + 50);
-        pv.push(Math.floor(Math.random() * 200) + 50);
+        var r = Math.floor(Math.random() * 200) + 50;
+        av.push(r);
+        pv.push(r + Math.floor(Math.random() * 50) - 25);
     }
 }

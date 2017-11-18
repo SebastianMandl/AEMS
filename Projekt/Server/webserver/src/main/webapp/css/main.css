@@ -27,8 +27,11 @@
 	width: 20em;
 }
 .modal-footer.footerFormat {
-	margin-top: 4em;
-
+	margin-top: 4em;  
+}
+/* To fix transparent footer */
+.footerFormat {
+    background-color: #fff;
 }
 .nav.navbar-nav.navbar-right li .notification-counter {
 	position: absolute;
@@ -62,6 +65,15 @@
 .loginDiv input {
     height: 1em;
     width: 20%;
+}
+
+/* Fix for ugly logout link due to h:form */
+.logoutLink {
+    margin: 10px;
+    color: #333;
+    padding: 3px 20px;
+    line-height: 1.42857143;
+    text-decoration: none;
 }
 
 @media (max-width: 767px){

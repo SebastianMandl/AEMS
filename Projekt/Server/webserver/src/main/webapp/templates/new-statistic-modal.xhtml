@@ -11,9 +11,9 @@
                 <div class="loginmodal-container">
 
                     <h1>Neue Statistik erstellen</h1><br />
-                    <h:inputHidden id="uId" value="#{user.userId}"/>
+                    
                     <form>
-
+                        <input type="hidden" value="#{user.userId}"/>
                         <h4>Statistikname</h4>
                         <input type="text" maxlength="64" id="statisticName" placeholder="Meine Statistik" required="" />
 
@@ -56,20 +56,14 @@
 
                         <h4>Zeitraum</h4>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
+                        <select class="form-control">
+                            <option value="day">Tag</option>
+                                <option valu="week">Woche</option>
+                                <option value="month">Monat</option>
+                                <option value="year">Jahr</option>
+                            </select>
 
-                            <ul class="dropdown-menu">
 
-                                <li role="presentation"><a href="#">Tag</a></li>
-
-                                <li role="presentation"><a href="#">Woche</a></li>
-
-                                <li role="presentation"><a href="#">Monat</a></li>     
-
-                                <li role="presentation"><a href="#">Jahr</a></li>
-                            </ul>
-                        </div>
 
                         <h4>Anmerkung</h4>
                         <input type="text" id="statisticAnnotation" placeholder="Optionale Anmerkung" />

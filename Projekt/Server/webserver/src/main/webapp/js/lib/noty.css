@@ -13,7 +13,7 @@
   max-width: 90%; }
 
 #noty_layout__top {
-  top: 0;
+  top: 5%;
   left: 5%;
   width: 90%; }
 
@@ -30,7 +30,7 @@
           transform: translate(calc(-50% - .5px)) translateZ(0) scale(1, 1); }
 
 #noty_layout__topRight {
-  top: 20px;
+  top: 100px;
   right: 20px;
   width: 325px; }
 

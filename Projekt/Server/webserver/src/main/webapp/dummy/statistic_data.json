@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Stromstatistik",
+        "unit": "kWh",
+        "show_temperature": false,
+        "time": 2,
+        "values": [150, 120, 120, 110],
+        "prevValues": [100, 120, 120, 100],
+        "labels": ["KW 12", "KW 13", "KW 14", "KW 15"]
+    }
+]

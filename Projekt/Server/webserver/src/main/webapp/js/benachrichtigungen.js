@@ -1,5 +1,19 @@
-$(document).ready(function() {
-    $("#notifIcon").one("click", getNotifications);
+var notifications;
+var notifSelected = false;
+$(document).ready(function () {
+    $("#notifIcon").on("click", function() {
+        if(notifSelected) {
+            notifSelected = false;
+            Noty.closeAll();
+            return;
+        }
+        notifSelected = true;
+       if(notifications === undefined) {
+           getNotifications();
+       } else {
+           displayNotifications();
+       }
+    });
 });
 
 function getNotifications() {
@@ -13,25 +27,29 @@ function getNotifications() {
             }
         }
     }`;
-    
-    $.post(API_URL + "warnings.json", {query: graphQL}, displayNotifications, "json");
+
+    $.post(API_URL + "warnings.json", {query: graphQL}, (result) => {notifications = result; displayNotifications(result)}, "json");
 }
 
 function displayNotifications(data) {
-    for(var noti of data) {
+    if(notifications === undefined)
+        notifications = data;
+    for (var noti of notifications) {
         var type = noti.notification.type;
         
         var n = new Noty({
             text: noti.notification.name,
             type: type,
+            theme: "relax",
             callbacks: {
-                onClose: function() {
-                    alert(noti.id);
+                onClose: function () {
+                    if(notifSelected === true)
+                        alert(noti.id);
                 }
             }
-        });
+        }); 
         n.show();
-        console.log(n);
+
     }
     $("#notificationCounter").text("0");
 }
