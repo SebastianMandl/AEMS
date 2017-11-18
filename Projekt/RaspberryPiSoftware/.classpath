@@ -18,5 +18,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/AEMSDatabaseLib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AEMSUtilLib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AEMSPlugInLib"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
