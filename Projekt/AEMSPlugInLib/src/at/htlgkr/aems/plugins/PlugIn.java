@@ -2,6 +2,7 @@ package at.htlgkr.aems.plugins;
 
 import java.io.InputStream;
 
+import at.htlgkr.aems.raspberry.upload.Uploader;
 import at.htlgkr.aems.settings.Setting;
 
 public abstract class PlugIn {
@@ -10,9 +11,19 @@ public abstract class PlugIn {
 	private String name;
 	private Setting setting;
 	
+	private Uploader uploader;
+	
 	public PlugIn(String name, Setting setting) {
 		this.name = name;
 		this.setting = setting;
+	}
+	
+	public void setUploader(Uploader uploader) {
+		this.uploader = uploader;
+	}
+	
+	public Uploader getUploader() {
+		return uploader;
 	}
 	
 	/**

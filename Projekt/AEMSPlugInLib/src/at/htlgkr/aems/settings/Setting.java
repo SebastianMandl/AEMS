@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Setting {
 	
+	private String meterId;
 	private MeterType meterType;
 	private ArrayList<Position> positions;
 	
@@ -12,11 +13,16 @@ public class Setting {
 	private String port;
 	private long millisUntilRepetition;
 	
-	private Setting(MeterType meter, ArrayList<Position> positions, ScriptFile file) {
+	private Setting(String meterId, MeterType meter, ArrayList<Position> positions, ScriptFile file) {
 		this.meterType = meter;
 		this.positions = positions;
 		millisUntilRepetition = 15 * 1000 * 60; // 15 minutes as we store the values in the database in a 15 minutes period
 		setScriptFile(file);
+		this.meterId = meterId;
+	}
+	
+	public String getMeterId() {
+		return meterId;
 	}
 	
 	public void setScriptFile(ScriptFile file) {
@@ -55,12 +61,12 @@ public class Setting {
 		return positions.toArray(new Position[positions.size()]);
 	}
 	
-	public static Setting getSetting(MeterTypes type, ScriptFile file, Position... positions) {
+	public static Setting getSetting(String meterId, MeterTypes type, ScriptFile file, Position... positions) {
 		ArrayList<Position> list = new ArrayList<>(positions.length);
 		for(Position pos : positions) {
 			list.add(pos);
 		}
-		return new Setting(new MeterType(type), list, file);
+		return new Setting(meterId, new MeterType(type), list, file);
 	}
 	
 }
