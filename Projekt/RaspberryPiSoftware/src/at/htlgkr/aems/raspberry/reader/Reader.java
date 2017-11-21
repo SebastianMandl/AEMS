@@ -23,18 +23,32 @@ public class Reader implements Runnable {
 	private Setting setting;
 	private ScriptFile file;
 	
+	private boolean shouldTerminate;
+	private boolean isRunning;
+	
 	public Reader(PlugIn plugin) {
 		this.plugin = plugin;
 		
 		this.setting = plugin.getSetting();
 		this.file = plugin.getSetting().getScriptFile();
+	}
+	
+	public void start() {
+		shouldTerminate = false;
+		
+		while(isRunning); // while running await thread death
+		isRunning = true;
 		
 		new Thread(this).start();
 	}
 	
+	public void stop() {
+		shouldTerminate = true;
+	}
+	
 	@Override
 	public void run() {
-		while(true) {
+		while(!shouldTerminate) {
 			// start process
 			InputStream is = null;
 			Process process = null;
@@ -95,6 +109,8 @@ public class Reader implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		
+		isRunning = false;
 	}
 	
 }

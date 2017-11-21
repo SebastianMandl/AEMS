@@ -42,4 +42,9 @@ public abstract class PlugIn {
 		return setting;
 	}
 	
+	@Override
+	public String toString() {
+		return name;
+	}
+	
 }

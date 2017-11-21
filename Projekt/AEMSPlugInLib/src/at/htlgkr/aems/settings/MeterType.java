@@ -1,6 +1,6 @@
 package at.htlgkr.aems.settings;
 
-class MeterType {
+public class MeterType {
 	
 	private MeterTypes type;
 	
