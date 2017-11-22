@@ -5,7 +5,7 @@ import java.io.InputStream;
 import at.htlgkr.aems.raspberry.upload.Uploader;
 import at.htlgkr.aems.settings.Setting;
 
-public abstract class PlugIn {
+public abstract class PlugIn implements Cloneable {
 
 	// internal name which will be consulted by the PlugInManager
 	private String name;
@@ -45,6 +45,20 @@ public abstract class PlugIn {
 	@Override
 	public String toString() {
 		return name;
+	}
+	
+	@Override
+	public PlugIn clone() {
+		final PlugIn _this = this;
+		PlugIn plugin = new PlugIn(name, setting.clone()) {
+			
+			@Override
+			public boolean readCyclic(InputStream inputStream) {
+				return _this.readCyclic(inputStream);
+			}
+		};
+		plugin.setUploader(uploader);
+		return plugin;
 	}
 	
 }

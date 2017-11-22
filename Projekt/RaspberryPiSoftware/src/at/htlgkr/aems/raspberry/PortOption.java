@@ -16,9 +16,10 @@ public class PortOption {
 		this.port = port;
 	}
 	
-	public PortOption(PlugIn plugin, String title) {
+	public PortOption(PlugIn plugin, String title, String port) {
 		this.title = title;
 		this.plugin = plugin;
+		this.port = port;
 	}
 	
 	public void setMeterType(MeterTypes type) {

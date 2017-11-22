@@ -15,17 +15,30 @@ import at.htlgkr.aems.settings.MeterTypes;
 
 public class PlugInManager {
 
-	public static final ArrayList<PlugIn> PLUGINS = new ArrayList<>();
+	public static final ArrayList<PlugIn> PLUGINS_PREFABS = new ArrayList<>();
 	public static final HashMap<String, Meter> METERS = new HashMap<>();
 	
 	public static final String DIRECTORY = "plugins";
 	
-	public static void setPluginForMeter(String meterId, String port, PlugIn plugin) {
+	public static void unsetPluginForMeter(String meterId) {
+		METERS.remove(meterId);
+	}
+	
+	
+	public static PlugIn getPluginByName(String name) {
+		return PLUGINS_PREFABS.stream().filter(x -> {
+			return x.getName().equals(name);
+		}).toArray(size -> new PlugIn[size])[0];
+	}
+	
+	public static PlugIn setPluginForMeter(String meterId, String port, PlugIn plugin) {
+		PlugIn _plugin = plugin.clone();
 		if(METERS.containsKey(meterId)) {
-			METERS.get(meterId).reinitialize(meterId, port, plugin);
+			METERS.get(meterId).reinitialize(meterId, port, _plugin);
 		} else {
-			METERS.put(meterId, new Meter(meterId, port, plugin));
+			METERS.put(meterId, new Meter(meterId, port, _plugin));
 		}
+		return _plugin;
 	}
 	
 	public static void runAllPlugins() {
@@ -41,7 +54,7 @@ public class PlugInManager {
 	}
 	
 	public static PlugIn[] getPluginsForType(MeterTypes type) {
-		return PLUGINS.stream().filter(x -> {
+		return PLUGINS_PREFABS.stream().filter(x -> {
 			return x.getSetting().getMeterType().getType().equals(type);
 		}).toArray(size -> new PlugIn[size]);
 	}
@@ -59,7 +72,7 @@ public class PlugInManager {
 							
 							@SuppressWarnings("unchecked")
 							Class<PlugIn> clazz = (Class<PlugIn>) Class.forName(entry.getName().substring(0, entry.getName().length() - 6), true, loader);
-							PLUGINS.add(clazz.newInstance());
+							PLUGINS_PREFABS.add(clazz.newInstance());
 						}
 					}
 					is.close();

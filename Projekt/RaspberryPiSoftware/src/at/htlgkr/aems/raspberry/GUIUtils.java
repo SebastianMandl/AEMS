@@ -22,6 +22,7 @@ public class GUIUtils {
 		panel.setMaximumSize(panelSize);
 		panel.setPreferredSize(panelSize);
 		JTextField label = new JTextField(title);
+		label.setForeground(Color.BLACK);
 		label.setPreferredSize(new Dimension(120, inputFieldSize.height));
 		label.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		label.setFont(FONT.deriveFont(Font.BOLD));

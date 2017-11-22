@@ -21,8 +21,8 @@ public class RaspberryPiSoftware {
 		
 		final Calendar CALENDAR = Calendar.getInstance();
 		
+		PlugInManager.loadPlugIns();
 		DashboardConfigFrame.doInterface();
-		PlugInManager.runAllPlugins();
 		
 	}
 	

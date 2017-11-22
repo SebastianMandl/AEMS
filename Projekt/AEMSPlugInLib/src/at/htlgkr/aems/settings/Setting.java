@@ -2,7 +2,7 @@ package at.htlgkr.aems.settings;
 
 import java.util.ArrayList;
 
-public class Setting {
+public class Setting implements Cloneable {
 	
 	private String meterId;
 	private MeterType meterType;
@@ -70,6 +70,19 @@ public class Setting {
 			list.add(pos);
 		}
 		return new Setting(new MeterType(type), list, file);
+	}
+	
+	@Override
+	public Setting clone() {
+		ArrayList<Position> pos = new ArrayList<>(positions.size());
+		for(Position position : positions) {
+			pos.add(position);
+		}
+		Setting setting = new Setting(meterType, pos, file);
+		setting.setMeterId(meterId);
+		setting.setMillisUntilRepetition(millisUntilRepetition);
+		setting.setPort(port);
+		return setting;
 	}
 	
 }

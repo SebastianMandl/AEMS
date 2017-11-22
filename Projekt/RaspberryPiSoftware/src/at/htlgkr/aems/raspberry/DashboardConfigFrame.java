@@ -10,8 +10,15 @@ import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,15 +27,26 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import at.htlgkr.aems.logger.Logger;
 import at.htlgkr.aems.logger.Logger.LogType;
+import at.htlgkr.aems.plugins.PlugIn;
+import at.htlgkr.aems.raspberry.plugins.PlugInManager;
 import at.htlgkr.aems.settings.MeterTypes;
 
 public class DashboardConfigFrame {
@@ -37,6 +55,9 @@ public class DashboardConfigFrame {
 	
 	private static final Color SEPARATOR_COLOR = new Color(0, 180, 50);
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 16);
+	
+	public static final HashMap<String, JTextField> PORT_LABELS = new HashMap<>();
+	public static final HashMap<String, JComboBox<PortOption>> COMBOBOXES = new HashMap<>();
 	
 	private static volatile boolean shouldBlockExecution = true;
 	private static BufferedImage image;
@@ -70,20 +91,125 @@ public class DashboardConfigFrame {
 			public void paint(Graphics g) {
 				super.paint(g);
 				g.setColor(Color.WHITE);
-				g.fillRect(0, 0, getWidth(), getHeight());
-				g.drawImage(image, 10, 5, image.getWidth() / 2, image.getHeight() / 2, null);
+				g.fillRect(0, 30, getWidth(), getHeight());
+				g.drawImage(image, 10, 35, image.getWidth() / 2, image.getHeight() / 2, null);
 				
-				g.setColor(new Color(37, 206, 130));
+				g.setColor(DetailConfigFrame.SEPARATOR_COLOR);
 				g.setFont(FONT.deriveFont(Font.BOLD, 30));
 				
-				g.drawString("Configuration Interface", image.getWidth() / 2 + 50, image.getHeight() / 2);
+				g.drawString("       Konfigurationstool", image.getWidth() / 2 + 50, image.getHeight() / 2 + 35);
 				
 				g.setFont(FONT.deriveFont(Font.BOLD, 20));
 				g.setColor(Color.BLACK);
-				g.drawString("Anschlüsse:", 10, image.getHeight() - 40);
+				g.drawString("Anschlüsse:", 10, image.getHeight() - 10);
 			}
 		};
-		header.setPreferredSize(new Dimension(800, 150));
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setPreferredSize(new Dimension(800, 25));
+		
+		JMenu file = new JMenu("Datei");
+		menuBar.add(file);
+		
+		JMenuItem _import = new JMenuItem("Konfiguration importieren...");
+		_import.addActionListener(x -> {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			chooser.setFileFilter(new FileNameExtensionFilter("Konfigurationsdatei", "conf"));
+			chooser.setDialogTitle("Konfiguration importieren");
+			int result = chooser.showOpenDialog(frame);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File configFile = chooser.getSelectedFile();
+				try {
+					BufferedReader reader = new BufferedReader(new FileReader(configFile));
+					StringBuilder builder = new StringBuilder();
+					for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+						builder.append(line);
+					}		
+					reader.close();
+					
+					String definitiveString = builder.toString();
+					Logger.log(LogType.INFO, "Read %d bytes from \"%s\"", definitiveString.getBytes().length, configFile.getAbsolutePath());
+					
+					JSONArray root = new JSONArray(definitiveString);
+					int i = 0;
+					for(; i < root.length(); i++) {
+						JSONObject obj = root.getJSONObject(i);
+						String meterId = obj.getString("meterId");
+						String port = obj.getString("port");
+						String pluginName = obj.getString("plugin");
+						
+						PlugIn _plugin = PlugInManager.getPluginByName(pluginName);
+						PortOption _option = new PortOption(_plugin, meterId, port);
+						_option.setMeterType(_plugin.getSetting().getMeterType().getType());
+						DetailConfigFrame.CONFIGURATIONS.put(port, _option);
+						DetailConfigFrame.doInterface(_option, true);
+						
+						PlugInManager.setPluginForMeter(meterId, port, _plugin);
+					}
+					
+					Logger.log(LogType.INFO, "Imported %d port configurations", i);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(frame, "Konfigurationsdatei konnte nicht gelesen werden!", "Fehler", JOptionPane.OK_OPTION);
+					Logger.log(LogType.ERROR, "Configuration could not be imported! %s", e.getMessage());
+				}
+			}
+		});
+		file.add(_import);
+		
+		JMenuItem _export = new JMenuItem("Konfiguration exportieren...");
+		_export.addActionListener(x -> {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Konfiguration exportieren");
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int result = chooser.showSaveDialog(frame);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				File dir = chooser.getSelectedFile();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+				String fileName = "aems_config_" + dateFormat.format(new Date()) + ".conf";
+				File configFile = new File(dir.getAbsolutePath() + File.separator + fileName);
+				try {
+					configFile.createNewFile();
+					StringBuilder builder = new StringBuilder();
+					builder.append("[\n");
+					BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
+					for(String key : DetailConfigFrame.CONFIGURATIONS.keySet()) {
+						PortOption option = DetailConfigFrame.CONFIGURATIONS.get(key);
+						String plugInName = option.getPlugIn().getName();
+						String port = option.getPort();
+						builder.append("\t{ ").append("meterId : \"").append(option.getPlugIn().getSetting().getMeterId()).append("\", ");
+						builder.append("plugin : \"").append(plugInName).append("\", ");
+						builder.append("port : \"").append(port).append("\" },\n");
+					}
+					builder.setLength(builder.length() - 2);
+					builder.append("\n]");
+					
+					String definitiveString = builder.toString();
+					Logger.log(LogType.INFO, "Exported %d bytes to \"%s%s%s\"", definitiveString.getBytes().length, dir.getAbsolutePath(), File.separator, fileName);
+					
+					writer.write(definitiveString);
+					writer.flush();
+					writer.close();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(frame, "Konfigurationsdatei konnte nicht erstellt werden!", "Fehler", JOptionPane.OK_OPTION);
+					Logger.log(LogType.ERROR, "Configuration could not be exported! %s", e.getMessage());
+				}
+			}
+		});
+		file.add(_export);
+		
+		JMenuItem _exit = new JMenuItem("Beenden");
+		_exit.addActionListener(x -> {
+			int response = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie das Programm beenden wollen?", "Beenden?", JOptionPane.YES_NO_OPTION);
+			if(response == JOptionPane.YES_OPTION) {
+				System.exit(0);
+			}			
+		});
+		file.add(_exit);
+		
+		header.add(menuBar);
+		
+		header.setPreferredSize(new Dimension(800, 180));
 		frame.add(header, BorderLayout.NORTH);
 		JPanel ports = new JPanel();
 		ports.setBackground(Color.WHITE);
@@ -97,7 +223,7 @@ public class DashboardConfigFrame {
 		frame.add(pane, BorderLayout.CENTER);
 		
 		String commandResult = "ttyUSB0, ttyUSB1, ttyUSB2, ttyUSB3"; //readFromStream(readCommand("listDevsCommand.bash"), false);
-		final Pattern TTY_USB_PATTERN = Pattern.compile("tty(USB[0-9]+)+");
+		final Pattern TTY_USB_PATTERN = Pattern.compile("(ttyUSB[0-9]+)+");
 		Matcher matcher = TTY_USB_PATTERN.matcher(commandResult);
 		int count = 0;
 		while(matcher.find()) {
@@ -109,10 +235,12 @@ public class DashboardConfigFrame {
 				container.setBackground(color);
 				
 				String ttyUSBPort = matcher.group(i);
-				Logger.log(LogType.INFO, "detected port \"tty%s\"", ttyUSBPort);
+				Logger.log(LogType.INFO, "detected port \"%s\"", ttyUSBPort);
 				
-				JTextField field = new JTextField(ttyUSBPort);
+				JTextField field = new JTextField(ttyUSBPort.substring(3));
 				field.setBorder(null);
+				field.setForeground(Color.BLACK);
+				PORT_LABELS.put(ttyUSBPort, field);
 				field.setBackground(color);
 				field.setFont(FONT.deriveFont(Font.BOLD));
 				field.setEditable(false);
@@ -127,6 +255,8 @@ public class DashboardConfigFrame {
 				comboBox.setFont(FONT);
 				comboBox.setSelectedIndex(3);
 				container.add(comboBox);
+				
+				COMBOBOXES.put(ttyUSBPort, comboBox);
 				
 				JButton config = new JButton(new ImageIcon("gear.png"));
 				config.setPreferredSize(new Dimension(35, 35));
@@ -217,6 +347,11 @@ public class DashboardConfigFrame {
 		configure.setFont(FONT.deriveFont(Font.BOLD));
 		configure.setPreferredSize(new Dimension(200, 25));
 	
+		configure.addActionListener(x -> {
+			frame.dispose(); // exchange with loading screen introduction
+			PlugInManager.runAllPlugins();
+		});
+		
 		configurePanel.add(configure);
 		credentials.add(configurePanel);
 		

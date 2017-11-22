@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -24,15 +25,19 @@ import at.htlgkr.aems.raspberry.plugins.PlugInManager;
 
 public class DetailConfigFrame {
 
-	private static final Color SEPARATOR_COLOR = new Color(0, 180, 50);
+	public static final Color SEPARATOR_COLOR = new Color(0, 180, 50);
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 16);
 	private static final int WINDOW_WIDTH = 600;
 	
 	private static JComponent meterId = null;
 	
-	private static final HashMap<String, PortOption> CONFIGURATIONS = new HashMap<>();
+	public static final HashMap<String, PortOption> CONFIGURATIONS = new HashMap<>();
 	
 	public static void doInterface(PortOption option) {
+		doInterface(option, false);
+	}
+	
+	public static void doInterface(PortOption option, boolean closeImmediately) {
 		
 		PortOption config = CONFIGURATIONS.get(option.getPort());
 		
@@ -46,6 +51,7 @@ public class DetailConfigFrame {
 		header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
 		header.setBackground(Color.WHITE);
 		JLabel label = new JLabel(option.getTitle() + " (" + option.getPort() + ")");
+		label.setForeground(Color.BLACK);
 		label.setFont(FONT.deriveFont(Font.BOLD));
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		label.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -74,15 +80,13 @@ public class DetailConfigFrame {
 		container.setLayout(new FlowLayout());
 		
 		JLabel pluginListLabel = new JLabel("Plugin:");
+		pluginListLabel.setForeground(Color.BLACK);
 		pluginListLabel.setFont(FONT.deriveFont(Font.BOLD));
 		pluginListLabel.setPreferredSize(new Dimension(120, 25));
 		container.add(pluginListLabel);
 		
 		JComboBox<PlugIn> pluginList = new JComboBox<>();
 		pluginList.setPreferredSize(new Dimension(400, 25));
-		
-		if(PlugInManager.PLUGINS.size() == 0)
-			PlugInManager.loadPlugIns();
 		
 		int selectedIndex = 0;
 		for(PlugIn plugin : PlugInManager.getPluginsForType(option.getMeterType())) {
@@ -119,22 +123,66 @@ public class DetailConfigFrame {
 			frame.dispose();
 		});
 		
+		JButton resetConfiguration = new JButton("dekonfigurieren");
+		resetConfiguration.setFont(FONT);
+		resetConfiguration.setPreferredSize(new Dimension(150, 25));
+		resetConfiguration.addActionListener(x -> {
+			JTextField field = ((JTextField) meterId.getComponents()[1]);
+			CONFIGURATIONS.remove(option.getPort());
+			PlugInManager.unsetPluginForMeter(field.getText());
+			field.setText("");
+			pluginList.setSelectedIndex(0);
+			
+			if(DashboardConfigFrame.PORT_LABELS.containsKey(option.getPort())) {
+				DashboardConfigFrame.PORT_LABELS.get(option.getPort()).setForeground(Color.BLACK);
+			}
+			
+			if(DashboardConfigFrame.COMBOBOXES.containsKey(option.getPort())) {
+				DashboardConfigFrame.COMBOBOXES.get(option.getPort()).setEnabled(true);
+			}
+			
+			frame.dispose();
+		});
+		
 		JButton confirm = new JButton("Bestätigen");
 		confirm.setFont(FONT.deriveFont(Font.BOLD));
 		confirm.setPreferredSize(new Dimension(150, 25));
 		confirm.addActionListener(x -> {
 			String mID = ((JTextField) meterId.getComponents()[1]).getText();
-			PlugInManager.setPluginForMeter(mID, option.getPort(), (PlugIn) pluginList.getSelectedItem());
-			CONFIGURATIONS.put(option.getPort(), new PortOption((PlugIn) pluginList.getSelectedItem(), mID));
+			
+			if(mID == null || mID.isEmpty()) {
+				JOptionPane.showMessageDialog(frame, "Zählernummer wurde nicht angegeben!", "Fehler", JOptionPane.OK_OPTION);
+				return;
+			}
+			
+			
+			PortOption _option = new PortOption((PlugIn) pluginList.getSelectedItem(), mID, option.getPort());
+			_option.setPlugin(PlugInManager.setPluginForMeter(mID, option.getPort(), (PlugIn) pluginList.getSelectedItem()));
+			CONFIGURATIONS.put(option.getPort(), _option);
+			
+			if(DashboardConfigFrame.PORT_LABELS.containsKey(option.getPort())) {
+				DashboardConfigFrame.PORT_LABELS.get(option.getPort()).setForeground(SEPARATOR_COLOR);
+			}
+			
+			if(DashboardConfigFrame.COMBOBOXES.containsKey(option.getPort())) {
+				DashboardConfigFrame.COMBOBOXES.get(option.getPort()).setEnabled(false);
+			}
+			
 			frame.dispose();
 		});
 		
 		footer.add(dismiss);
+		footer.add(resetConfiguration);
 		footer.add(confirm);
 		
 		frame.add(footer, BorderLayout.SOUTH);
 		
-		frame.setVisible(true);
+		if(!closeImmediately)
+			frame.setVisible(true);
+		else {
+			confirm.doClick();
+			frame.dispose();
+		}
 		
 	}
 	

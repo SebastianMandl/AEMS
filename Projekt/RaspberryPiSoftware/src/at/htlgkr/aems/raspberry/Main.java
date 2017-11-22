@@ -15,7 +15,7 @@ public class Main {
 		PlugInManager.loadPlugIns();
 		Uploader uploader = null;
 		PlugIn p = null;
-		for(PlugIn plugin : PlugInManager.PLUGINS) {
+		for(PlugIn plugin : PlugInManager.PLUGINS_PREFABS) {
 			plugin.getSetting().setPort("/dev/ttyUSB0");
 			new Reader(plugin);
 			uploader = new AEMSUploader(plugin);
