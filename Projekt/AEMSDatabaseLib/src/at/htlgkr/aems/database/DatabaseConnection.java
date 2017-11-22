@@ -262,8 +262,8 @@ public class DatabaseConnection {
 	 * 													  FROM ...
 	 * @param selection - HashMap<String, String> - the where clause: the key of the HashMap represents the column and the value of the HashMap represents the value
 	 * @param and - states whether the where condition should be concatenated with LOGICAL ANDS or with LOGICAL ORS
-	 * @param customSelection - if selection is null the custom selection will be consulted. Will simply be appened at the end of the statement.
-	 * @throws SQLException - if an sql error occurs databasewise 
+	 * @param customSelection - if selection is null the custom selection will be consulted. Will simply be appended at the end of the statement.
+	 * @throws SQLException - if an sql error occurs database-wise 
 	 * @return {@link ResultSet}
 	 */
 	public ResultSet select(String schema, String tableName, HashMap<String, String[]> joins, ArrayList<String[]> projection, HashMap<String, String> selection, boolean and, String customSelection) throws SQLException {
@@ -308,7 +308,7 @@ public class DatabaseConnection {
 		if(customSelection == null && selection != null) {
 			buffer.append(" WHERE ");
 			for(String key : selection.keySet()) {
-				buffer.append(formatEqualOrLike(key, selection.get(key), false));
+				buffer.append(getColumnQualifier(projection, key)).append(".").append(formatEqualOrLike(key, selection.get(key), false));
 				if(and)
 					buffer.append(" AND ");
 				else
@@ -332,6 +332,19 @@ public class DatabaseConnection {
 		Logger.log(LogType.INFO, sql);
 		return customSelect(sql);
 	}
+        
+        private char getColumnQualifier(ArrayList<String[]> projection, String column) {
+            char tableQualifier = 'a' - 1;
+            for(String[] s : projection) {
+                tableQualifier++;
+                for(String str : s) {
+                    if(column.toUpperCase().equals(str.toUpperCase())) {
+                        return tableQualifier;
+                    }
+                }
+            }
+            return 'a';
+        }
 	
 	/**
 	 * Convenience method.

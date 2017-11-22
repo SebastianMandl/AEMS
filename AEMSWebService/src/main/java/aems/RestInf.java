@@ -46,6 +46,17 @@ public class RestInf extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
+    /**
+     * 
+     * sample query:
+     * { id:"AT...3333", meters : [{user:185}, {user:190}]}
+     * 
+     * 
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException 
+     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] results = checkRequest(req, resp);
@@ -75,10 +86,10 @@ public class RestInf extends HttpServlet {
             JSONArray table = (JSONArray) obj;
             switch (operation) {
                 case OP_INSERT:
-                    SQL.append("INSERT INTO ").append("aems.").append(key).append(" (%) VALUES (");
+                    SQL.append("INSERT INTO ").append("aems.").append("\"").append(key).append("\"").append(" (%) VALUES (");
                     break;
                 case OP_UPDATE:
-                    SQL.append("UPDATE ").append("aems.").append(key).append(" SET ");
+                    SQL.append("UPDATE ").append("aems.").append("\"").append(key).append("\"").append(" SET ");
                     break;
                 // fail
                 default:
@@ -92,8 +103,13 @@ public class RestInf extends HttpServlet {
                         if(operation.equals(OP_UPDATE)) {
                             SQL.append(column).append("=").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replace("\\s", "") + "'" : entryObj.get(column)).append(",");
                         } else if(operation.equals(OP_INSERT)) {
-                            COLUMN_BUFFER.append(column).append(",");
-                            SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
+                            if(COLUMN_BUFFER.length() == 0) {
+                                COLUMN_BUFFER.append(column).append(",");
+                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
+                            } else {
+                                COLUMN_BUFFER.append(",").append(column).append(",");
+                                SQL.append(",").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
+                            }
                         }
                     }
                     
@@ -124,7 +140,7 @@ public class RestInf extends HttpServlet {
         try {
             DatabaseConnectionManager.getDatabaseConnection().executeSQL(sqlQuery);
         } catch (SQLException ex) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The issued SQL statement caused an error while execution!");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The issued SQL statement caused an error during execution!");
         }
     }
     

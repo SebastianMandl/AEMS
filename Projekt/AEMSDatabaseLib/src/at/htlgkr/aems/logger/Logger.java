@@ -24,7 +24,7 @@ public class Logger {
 		INFO, WARNING, ERROR;
 	}
 	
-	public static void log(LogType type, String msg) {
+	public static void log(LogType type, String msg, Object... args) {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("[").append(type).append("]");
@@ -35,9 +35,9 @@ public class Logger {
 		String methodName = elements[2].getMethodName(); // get caller method
 		buffer.append("[").append(className).append("]");
 		buffer.append("[").append(methodName).append("]");
-		buffer.append(" -> ").append(msg);
+		buffer.append(" -> ").append(msg).append("%n");
 		
-		System.out.println(buffer.toString());
+		System.out.printf(buffer.toString(), args);
 	}
 	
 }
