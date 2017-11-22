@@ -1,16 +1,16 @@
 [
     {
-        "id": "193045",
+        "id": 193045,
         "notification": {
             "name": "I bims 1 INFO LUGGI",
-            "type": "info"
+            "type": 0
         }
     },
         {
-        "id": "193045",
+        "id": 93045,
         "notification": {
             "name": "I bims 1 WARNING LUGGI",
-            "type": "warning"
+            "type": 1
         }
     }
 ]

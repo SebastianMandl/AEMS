@@ -10,8 +10,11 @@ package at.aems.webserver.data;
  * @author Niklas
  */
 public class Statistic {
-    /** The user id of the owning user */
-    private int ownerId;
-    
+    private String id;
     private String name;
+    /* Whether the statistic should be shown at the start page */
+    private boolean showHome;
+    
+    /* Whether the statistic should be shown in the android app */
+    private boolean showAndroid;
 }

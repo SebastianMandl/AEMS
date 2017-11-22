@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
     <head>
 
         <meta charset="utf-8" />
@@ -109,7 +110,7 @@
                 <div class="loginmodal-container">
 
                     <h1>Neue Warnung erstellen</h1><br />
-                    <form>
+                    <h:form>
 
                         <h4>Bezeichnung</h4>
                         <input type="text" name="user" placeholder="Meine Warnung" required="" />
@@ -280,14 +281,11 @@
                         <li>19.08.2018</li>
 
                     </ul>
-                    
                     <input id="newWarning" type="button" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
-                    
-                    
-
+  
                     
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                </form>			
+                </h:form>			
 
             </div>
         </div>  <!-- New Indexpage Statistic Modal Ende -->	
@@ -468,8 +466,7 @@
 
 
                         <h4>Ausnahme für bestimmtes Datum</h4>
-                        <input type="date" />
-
+                        <!--<input type="date" />-->
                         <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung bearbeiten" />
                         <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                     </form>			
