@@ -1,7 +1,5 @@
 package at.htlgkr.aems.raspberry;
 
-import java.util.Calendar;
-
 import at.htlgkr.aems.raspberry.plugins.PlugInManager;
 
 /**
@@ -14,16 +12,9 @@ import at.htlgkr.aems.raspberry.plugins.PlugInManager;
 public class RaspberryPiSoftware {
 	
 
-	public static void main(String[] args) {
-		
-		final int CYCLE_MINUTES = 10;
-		final int CYCLE_INTERVAL = 1_000 * 60 * CYCLE_MINUTES;
-		
-		final Calendar CALENDAR = Calendar.getInstance();
-		
+	public static void main(String[] args) {		
 		PlugInManager.loadPlugIns();
 		DashboardConfigFrame.doInterface();
-		
 	}
 	
 }
