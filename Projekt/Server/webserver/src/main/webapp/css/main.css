@@ -5,6 +5,9 @@
 	margin-right: 20px;
 	margin-left: 10px;
 }
+.notificationIcon:hover {
+    cursor: pointer;
+}
 .container-fluid .navbar-header .navbar-brand.titleFormat {
 	color: #FFFFFF;
 	font-size: 1.25em;

@@ -1,4 +1,3 @@
-var notifications;
 var notifSelected = false;
 $(document).ready(function () {
     $("#notifIcon").on("click", function() {
@@ -35,16 +34,16 @@ function displayNotifications(data) {
     if(notifications === undefined)
         notifications = data;
     for (var noti of notifications) {
-        var type = noti.notification.type;
+        var type = noti.type;
         
         var n = new Noty({
-            text: noti.notification.name,
-            type: type,
+            text: noti.name,
+            type: type.toLowerCase(),
             theme: "relax",
             callbacks: {
                 onClose: function () {
                     if(notifSelected === true)
-                        alert(noti.id);
+                        alert(noti.notificationId);
                 }
             }
         }); 
