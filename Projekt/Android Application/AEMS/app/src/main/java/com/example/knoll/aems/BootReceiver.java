@@ -22,10 +22,10 @@ public class BootReceiver extends BroadcastReceiver {
         builder.setContentTitle("Warnung");
         builder.setContentText("Stromzähler 1 braucht 90% zu viel Strom");
 
-        Intent in = new Intent(context, Notification.class);
+        Intent in = new Intent(context, AllNotifications.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addParentStack(AllNotifications.class);
         stackBuilder.addNextIntent(in);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);

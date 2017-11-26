@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/logo_icon" />
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="-3dp"
+        android:layout_toEndOf="@+id/imageView"
+        android:text="Stromstatistik 1"
+        android:textColor="@color/black"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/textViewInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignStart="@+id/textViewNotificationType"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="-3dp"
+        android:text="Verbrauch ist um 90 % zu hoch" />
+
+    <TextView
+        android:id="@+id/textViewNotificationType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textViewTitle"
+        android:layout_below="@+id/textViewTitle"
+        android:layout_marginTop="-3dp"
+        android:text="Warnung" />
+</RelativeLayout>

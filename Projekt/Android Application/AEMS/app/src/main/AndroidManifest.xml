@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Notification">
+        <activity android:name=".AllNotifications">
             <intent-filter>
                 <action android:name="second_filter" />
                 <category android:name="android.intent.category.DEFAULT" />
