@@ -19,16 +19,27 @@
         <activity android:name=".AllNotifications">
             <intent-filter>
                 <action android:name="second_filter" />
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.knoll.aems.LoginActivity"  android:theme="@style/AppTheme.Dark"
-            android:screenOrientation="portrait" />
+        <activity android:name="com.example.knoll.aems.LoginActivity"
+                  android:theme="@style/AppTheme.Dark"
+                  android:screenOrientation="portrait" />
         <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
         </receiver>
+        <activity android:name=".Notification">
+            <intent-filter>
+                <action android:name="second_filter" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action."></action>
+            </intent-filter>
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>

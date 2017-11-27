@@ -14,15 +14,15 @@ import android.widget.Button;
 
 public class Notification extends Activity {
 
+
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.notification);
 
         loadBackHome();
         loadAllNotifications();
-
-
     }
 
     private void loadAllNotifications() {

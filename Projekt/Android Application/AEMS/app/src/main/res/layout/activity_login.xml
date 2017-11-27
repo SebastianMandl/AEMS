@@ -40,12 +40,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"> -->
-            <EditText android:id="@+id/input_password"
-                android:textColor="@color/monsoon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Password" />
+        <EditText
+            android:id="@+id/input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Passwort"
+            android:inputType="textPassword"
+            android:textColor="@color/monsoon" />
     <!--    </android.support.design.widget.TextInputLayout> -->
 
 

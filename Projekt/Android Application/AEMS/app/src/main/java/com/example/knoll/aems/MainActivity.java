@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private ChartViewTab tab2;
     private ChartViewTab tab3;
 
+    private int counter = 0;
+
     private static MainActivity instance;
 
     @Override
@@ -57,8 +59,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        if(counter ==0){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
+
 
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
