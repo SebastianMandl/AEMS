@@ -1,49 +1,21 @@
 package at.htlgkr.aems.raspberry;
 
-import at.htlgkr.aems.plugins.PlugIn;
-import at.htlgkr.aems.settings.MeterTypes;
-
 public class PortOption {
 
 	private String title;
-	private String port;
+	private String value;
 	
-	private MeterTypes type;
-	private PlugIn plugin;
-	
-	public PortOption(String title, String port) {
+	public PortOption(String title, String value) {
 		this.title = title;
-		this.port = port;
-	}
-	
-	public PortOption(PlugIn plugin, String title, String port) {
-		this.title = title;
-		this.plugin = plugin;
-		this.port = port;
-	}
-	
-	public void setMeterType(MeterTypes type) {
-		this.type = type;
-	}
-	
-	public PlugIn getPlugIn() {
-		return plugin;
-	}
-	
-	public void setPlugin(PlugIn plugin) {
-		this.plugin = plugin;
-	}
-	
-	public MeterTypes getMeterType() {
-		return type;
+		this.value = value;
 	}
 	
 	public String getTitle() {
 		return title;
 	}
 	
-	public String getPort() {
-		return port;
+	public String getValue() {
+		return value;
 	}
 	
 	@Override
