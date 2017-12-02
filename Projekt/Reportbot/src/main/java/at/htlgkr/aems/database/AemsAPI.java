@@ -125,7 +125,7 @@ public class AemsAPI {
     // rows could be inserted multiple times. On insert, the database will have
     // to check if an entry like this (same meterId and timestamp) already
     // exists. If so, do not insert this row.
-    throw new NotImplementedException("Not supported yet!");
+    throw new NotImplementedException("API must be implemented first!");
   }
   
 

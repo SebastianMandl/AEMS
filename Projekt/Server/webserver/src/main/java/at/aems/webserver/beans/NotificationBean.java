@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
@@ -41,11 +44,14 @@ public class NotificationBean implements Serializable {
     public NotificationBean() {
     }
 
-    // Will be called every time a new page loads.
-    @PostConstruct
     public void init() {
+        System.out.println(" ------ " + FacesContext.getCurrentInstance().getViewRoot().getViewId());
         if (needsUpdate()) {
-            updateNotifications();
+            new Thread() {
+                public void run() {
+                    updateNotifications();
+                }
+            }.start();
             lastUpdate = System.currentTimeMillis();
         }
     }
@@ -68,6 +74,12 @@ public class NotificationBean implements Serializable {
     }
 
     private void updateNotifications() {
+        try {
+            // TODO: Make this ASYNC
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.notifications = new ArrayList<>();
         
         Map<String, Object> postParameters = new HashMap<>();

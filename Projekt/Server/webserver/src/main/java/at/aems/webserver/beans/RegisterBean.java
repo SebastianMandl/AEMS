@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedBean;
  */
 @ManagedBean(name="register")
 public class RegisterBean {
+    
     private String username;
     private String password;
     private String email;

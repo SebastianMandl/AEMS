@@ -62,6 +62,8 @@ public class FileDownloader implements Runnable {
     try {
       HtmlPage loginPage = client.getPage(BASE_URL + LOGIN_URL);
       HtmlPage meterPage = login(loginPage);
+      
+      Main.logger.log(LogType.DEBUG, "Logged in as user %0%", user.getUsername());
 
       int buttonCount; // How many files can be downloaded on this page?
       int detailsCount;

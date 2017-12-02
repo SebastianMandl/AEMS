@@ -10,6 +10,7 @@ package at.aems.webserver.data.registration;
  * @author Niklas
  */
 public class RegistrationData {
+    
     private String username;
     private String password;
     private String email;
