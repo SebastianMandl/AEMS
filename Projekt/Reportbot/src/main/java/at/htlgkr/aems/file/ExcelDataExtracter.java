@@ -60,12 +60,14 @@ public class ExcelDataExtracter implements Runnable {
       ExcelFileReader reader = new ExcelFileReader(excelFile);
       String meterId = FilenameUtils.removeExtension(excelFile.getName());
       MeterValue row;
+      Main.logger.log(LogType.DEBUG, "Reading excel file of user %0%", this.user.getUsername());
       while((row = reader.read()) != null) {
           row.setId(meterId);
           if(row.isValid()) {
             AemsAPI.insertMeterData(row);
           }
       }
+      Main.logger.log(LogType.DEBUG, "Excel file of user %0% was read!", this.user.getUsername());
       
     }
     try {

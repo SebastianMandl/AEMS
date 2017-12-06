@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private ChartViewTab tab2;
     private ChartViewTab tab3;
 
+    private int counter = 0;
+
     private static MainActivity instance;
 
     @Override
@@ -57,17 +59,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(counter ==0){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+        }
+
+
 
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
         tab3 = new App_Tab_3();
 
-        //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //      setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -160,7 +163,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
-
+        if(id == R.id.action_showNotifications){
+            Intent intent = new Intent(this, AllNotifications.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -90,7 +90,6 @@ public class AemsAPI {
             paramBuilder.append(e.getKey()).append("=").append(e.getValue());
             first = false;
         }
-        System.out.println("DATA: " + paramBuilder.toString());
         byte[] postData = paramBuilder.toString().getBytes(StandardCharsets.UTF_8);
         return postData;
     }

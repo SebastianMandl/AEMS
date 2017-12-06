@@ -3,26 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
-
-import javax.faces.bean.ManagedBean;
+package at.aems.webserver.data.registration;
 
 /**
  *
  * @author Niklas
  */
-@ManagedBean(name="register")
-public class RegisterBean {
+public class RegistrationData {
     
     private String username;
     private String password;
     private String email;
-    private String plz;
+    private int plz;
     
-    public RegisterBean() {
-        
-    }
+    public RegistrationData() { }
 
+    public RegistrationData(String username, String password, String email, int plz) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.plz = plz;
+    }
+    
     public String getUsername() {
         return username;
     }
@@ -47,17 +49,12 @@ public class RegisterBean {
         this.email = email;
     }
 
-    public String getPlz() {
+    public int getPlz() {
         return plz;
     }
 
-    public void setPlz(String plz) {
+    public void setPlz(int plz) {
         this.plz = plz;
-    }
-    
-    public String doRegister() {
-        
-        return "register-done";
     }
     
     

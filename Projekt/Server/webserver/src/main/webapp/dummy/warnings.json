@@ -2,14 +2,14 @@
     {
         "id": 193045,
         "notification": {
-            "name": "I bims 1 INFO LUGGI",
+            "name": "Strominfo: Verbrauch um 20 Prozent zu hoch!",
             "type": 0
         }
     },
         {
         "id": 93045,
         "notification": {
-            "name": "I bims 1 WARNING LUGGI",
+            "name": "Meine_Warnung: Starke Differenzen im Verbrauch!",
             "type": 1
         }
     }

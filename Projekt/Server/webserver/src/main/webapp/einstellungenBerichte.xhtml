@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -34,7 +35,7 @@
         </c:if>
         
          <c:if test="#{user.loggedIn}">
-        
+        <f:event type="preRenderView" listener="#{notificationBean.init}" />
 
         <article class="einstellungen">
 
