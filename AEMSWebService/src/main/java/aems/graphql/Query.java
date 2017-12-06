@@ -48,7 +48,9 @@ public class Query extends GraphQLObjectType {
     private static final GraphQLFieldDefinition METER_DATA = 
             Query.getRootFieldDefinition("meter_data", AEMSDatabase.METERDATA, MeterData.getInstance(), 
                     getArgumentList(
-                            new Argument("meter", AEMSDatabase.MeterData.METER, Argument.LIKE)));
+                            new Argument("meter", AEMSDatabase.MeterData.METER, Argument.LIKE),
+                            new Argument("start", AEMSDatabase.WeatherData.TIMESTAMP, Argument.GTE),
+                            new Argument("end", AEMSDatabase.WeatherData.TIMESTAMP, Argument.LTE)));
     
     private static final GraphQLFieldDefinition STATISTIC_METERS = 
             Query.getRootFieldDefinition("statistic_meters", AEMSDatabase.STATISTIC_METERS, StatisticMeter.getInstance());
