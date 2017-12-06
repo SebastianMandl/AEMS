@@ -62,7 +62,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     }
     
     public String doLogout() {
-        userBean.setUserId(0);
+        userBean.setUserId(-1);
         userBean.setUsername(null);
         userBean.setPassword(null);
         return "index";
