@@ -14,25 +14,55 @@ import android.support.v4.app.TaskStackBuilder;
 
 public class BootReceiver extends BroadcastReceiver {
 
+    NotificationCompat.Builder builder = null;
+    private int notificationID = 0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+
+        boolean warning = true;
+        boolean notification = true;
+
+        builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.logo_icon);
-        builder.setContentTitle("Warnung");
-        builder.setContentText("Stromzähler 1 braucht 90% zu viel Strom");
 
-        Intent in = new Intent(context, AllNotifications.class);
+        if(warning){
+            builder.setContentTitle("Warnung");
+            builder.setContentText("Kontrollieren Sie Ihre Verbrauchswerte!");
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            notificationID ++;
+            loadNotification();
+        }
+
+        if (notification)
+        {
+            builder.setContentTitle("Benachrichtigung");
+            builder.setContentText("Es gibt Abweichungen Ihrer Verbrauchswerte");
+
+            notificationID ++;
+            loadNotification();
+
+        }
+
+    }
+
+    private void loadNotification() {
+
+        Intent in = new Intent(builder.mContext, AllNotifications.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(builder.mContext);
         stackBuilder.addParentStack(AllNotifications.class);
         stackBuilder.addNextIntent(in);
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(notificationID, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
+        NotificationManager manager = (NotificationManager) builder.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(notificationID, builder.build());
 
     }
 }

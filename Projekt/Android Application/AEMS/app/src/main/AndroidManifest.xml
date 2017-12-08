@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AllNotifications">
+        <activity android:name=".AllNotifications"
+            android:theme="@style/AppTheme" >
             <intent-filter>
                 <action android:name="second_filter" />
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +32,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
         </receiver>
-        <activity android:name=".Notification">
+        <activity android:name=".Notification"
+            android:theme="@style/AppTheme" >
             <intent-filter>
                 <action android:name="second_filter" />
                 <action android:name="android.intent.action.MAIN" />
