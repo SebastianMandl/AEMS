@@ -1,9 +1,12 @@
 package com.example.knoll.aems;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.Bitmap;
@@ -115,15 +118,27 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            String url = MediaStore.Images.Media.insertImage(getContentResolver(), image, filename, "Hello");
-            if(url != null){
-                canSaveImage = true;
+            if (hasStoragePermission()) {
+                String url = MediaStore.Images.Media.insertImage(getContentResolver(), image, filename, "Hello");
+                if(url != null){
+                    canSaveImage = true;
+                }
+                else if(url == null) {
+                    canSaveImage = false;
+                }
+            } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            12);
             }
-            else if(url == null) {
-                canSaveImage = false;
-            }
+
         }
         doGenerateNotification(canSaveImage, filename);
+    }
+
+    private boolean hasStoragePermission() {
+        return ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void doGenerateNotification(boolean canSaveImage, String filename) {
