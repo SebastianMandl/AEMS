@@ -12,7 +12,7 @@
                 <h:link outcome="index" class="navbar-brand titleFormat"><img class="titleImage" src="images/logo_schrift_admin.png" alt="Logo"/></h:link>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <c:if test="#{user.loggedIn}">
+            <c:if test="#{userBean.loggedIn}">
             <div class="collapse navbar-collapse" id="topFixedNavbar1">
 
                 <ul class="nav navbar-nav navbar-right">
@@ -26,11 +26,15 @@
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
                         <ul class="dropdown-menu">                            
                             
+                            <h:form>
+                                <!--
                             <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>      
+                            <li role="separator" class="divider"></li> -->
+                            <li> <h:commandLink action="#{loginBean.doLogout()}" value="Logout" class="logoutLink"></h:commandLink></li>
+                            <!--
                             <li role="separator" class="divider"></li>
-                            <li> <a href="#" onclick="functionLogout()">Logout</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>
+                            <li class="comment-register-login"> <a href="#" data-toggle="modal" data-target="#register-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Register</a></li>-->
+                            </h:form>
                             
                         </ul>
                     </li>

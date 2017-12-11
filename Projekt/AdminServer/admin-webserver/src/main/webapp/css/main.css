@@ -67,6 +67,14 @@
     line-height: 200%;
 }
 
+.logoutLink {
+    margin: 10px;
+    color: #333;
+    padding: 3px 20px;
+    line-height: 1.42857143;
+    text-decoration: none;
+}
+
 .table-title{
     font-size: 1.2em;
     line-height: 200%;
