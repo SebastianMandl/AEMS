@@ -54,7 +54,7 @@ public class UserBean implements Serializable {
     }
 
     public boolean isLoggedIn() {
-        return userId != 0;
+        return userId != -1;
     }
 
     public String getAuthenticationString() {
