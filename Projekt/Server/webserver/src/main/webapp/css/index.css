@@ -1,6 +1,6 @@
 .statistics {
 	margin-top: 4em;
-	width: 95%;
+        margin-left: 25%;
 }
 
 .statistikElement {
@@ -23,6 +23,10 @@
 
 @media screen and (min-width:1200px) and (max-width:1400px)
 {	
+.statistics {
+	margin-top: 4em;
+        margin-left: 20%;
+}
 .statistic-container {
 	width: 750px;
 	margin-bottom: 5%;
@@ -38,8 +42,12 @@
 
 @media screen and (min-width:760px) and (max-width:1200px)
 {	
+.statistics {
+        margin-top: 4em;
+        margin-left: 3%;
+}
 .statistic-container {
-	width: 700px;
+	width: 650px;
 	margin-bottom: 5%;
 	display: inline-block;
 }
@@ -62,7 +70,11 @@
 }
 
 @media screen and (max-width:760px)
-{	
+{
+    .statistics {
+        margin-top: 4em;
+        margin-left: 0%;
+}
 .statistic-container {
 	width: 450px;
 	margin-bottom: 7%;
