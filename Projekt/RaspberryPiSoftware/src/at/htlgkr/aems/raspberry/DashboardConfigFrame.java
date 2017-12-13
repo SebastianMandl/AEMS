@@ -62,11 +62,11 @@ public class DashboardConfigFrame {
 	private static volatile boolean shouldBlockExecution = true;
 	private static BufferedImage image;
 	
-	private static final int INDEX_AUTOMATIC = 0;
-	private static final int INDEX_GAS_METER = 1;
-	private static final int INDEX_SENSOR = 2;
-	private static final int INDEX_ELECTRICITY_METER = 3;
-	private static final int INDEX_WATER_METER = 4;
+	//private static final int INDEX_AUTOMATIC = 0;
+	private static final int INDEX_GAS_METER = 0;
+	private static final int INDEX_SENSOR = 1;
+	private static final int INDEX_ELECTRICITY_METER = 2;
+	private static final int INDEX_WATER_METER = 3;
 	
 	public static void doInterface() {
 		JFrame frame = new JFrame(BASE_TITLE);
@@ -94,7 +94,7 @@ public class DashboardConfigFrame {
 				g.fillRect(0, 30, getWidth(), getHeight());
 				g.drawImage(image, 10, 35, image.getWidth() / 2, image.getHeight() / 2, null);
 				
-				g.setColor(DetailConfigFrame.SEPARATOR_COLOR);
+				g.setColor(DetailMeterConfigFrame.SEPARATOR_COLOR);
 				g.setFont(FONT.deriveFont(Font.BOLD, 30));
 				
 				g.drawString("       Konfigurationstool", image.getWidth() / 2 + 50, image.getHeight() / 2 + 35);
@@ -131,24 +131,57 @@ public class DashboardConfigFrame {
 					String definitiveString = builder.toString();
 					Logger.log(LogType.INFO, "Read %d bytes from \"%s\"", definitiveString.getBytes().length, configFile.getAbsolutePath());
 					
-					JSONArray root = new JSONArray(definitiveString);
+					JSONObject root = new JSONObject(definitiveString);
+					JSONArray meters = root.getJSONArray("meters");
+					int totalImports = 0;
 					int i = 0;
-					for(; i < root.length(); i++) {
-						JSONObject obj = root.getJSONObject(i);
+					for(; i < meters.length(); i++) {
+						JSONObject obj = meters.getJSONObject(i);
 						String meterId = obj.getString("meterId");
 						String port = obj.getString("port");
 						String pluginName = obj.getString("plugin");
 						
 						PlugIn _plugin = PlugInManager.getPluginByName(pluginName);
-						PortOption _option = new PortOption(_plugin, meterId, port);
+						PortOption _option = new PortOption(_plugin, meterId, port, false);
 						_option.setMeterType(_plugin.getSetting().getMeterType().getType());
-						DetailConfigFrame.CONFIGURATIONS.put(port, _option);
-						DetailConfigFrame.doInterface(_option, true);
+						DetailMeterConfigFrame.CONFIGURATIONS.put(port, _option);
+						DetailMeterConfigFrame.doInterface(_option, true);
+						
+						int index = -1;
+						if(_plugin.getSetting().getMeterType().getType().equals(MeterTypes.ELECTRICITY)) {
+							index = INDEX_ELECTRICITY_METER;
+						} else if (_plugin.getSetting().getMeterType().getType().equals(MeterTypes.WATER)) {
+							index = INDEX_WATER_METER;
+						} else if (_plugin.getSetting().getMeterType().getType().equals(MeterTypes.GAS)) {
+							index = INDEX_GAS_METER;
+						}
+						
+						COMBOBOXES.get(port).setSelectedIndex(index);
 						
 						PlugInManager.setPluginForMeter(meterId, port, _plugin);
 					}
 					
-					Logger.log(LogType.INFO, "Imported %d port configurations", i);
+					totalImports += i;
+					
+					JSONArray sensors = root.getJSONArray("sensors");
+					i = 0;
+					for(; i < sensors.length(); i++) {
+						JSONObject obj = sensors.getJSONObject(i);
+						String sensorName = obj.getString("sensorName");
+						String port = obj.getString("port");
+						String pluginName = obj.getString("plugin");
+						
+						PlugIn _plugin = PlugInManager.getPluginByName(pluginName);
+						PortOption _option = new PortOption(_plugin, sensorName, port, true);
+						DetailSensorConfigFrame.CONFIGURATIONS.put(port, _option);
+						DetailSensorConfigFrame.doInterface(_option, true);
+						COMBOBOXES.get(port).setSelectedIndex(INDEX_SENSOR);
+						PlugInManager.setPluginForSensor(sensorName, port, _plugin);
+					}
+					
+					totalImports += i;
+					
+					Logger.log(LogType.INFO, "Imported %d port configurations", totalImports);
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(frame, "Konfigurationsdatei konnte nicht gelesen werden!", "Fehler", JOptionPane.OK_OPTION);
 					Logger.log(LogType.ERROR, "Configuration could not be imported! %s", e.getMessage());
@@ -171,18 +204,32 @@ public class DashboardConfigFrame {
 				try {
 					configFile.createNewFile();
 					StringBuilder builder = new StringBuilder();
-					builder.append("[\n");
+					builder.append("{\n");
+					builder.append("\tmeters : [\n");
 					BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
-					for(String key : DetailConfigFrame.CONFIGURATIONS.keySet()) {
-						PortOption option = DetailConfigFrame.CONFIGURATIONS.get(key);
+					for(String key : DetailMeterConfigFrame.CONFIGURATIONS.keySet()) {
+						PortOption option = DetailMeterConfigFrame.CONFIGURATIONS.get(key);
 						String plugInName = option.getPlugIn().getName();
 						String port = option.getPort();
-						builder.append("\t{ ").append("meterId : \"").append(option.getPlugIn().getSetting().getMeterId()).append("\", ");
+						builder.append("\t\t{ ").append("meterId : \"").append(option.getPlugIn().getSetting().getMeterId()).append("\", ");
 						builder.append("plugin : \"").append(plugInName).append("\", ");
 						builder.append("port : \"").append(port).append("\" },\n");
 					}
-					builder.setLength(builder.length() - 2);
-					builder.append("\n]");
+					if(DetailMeterConfigFrame.CONFIGURATIONS.size() != 0)
+						builder.setLength(builder.length() - 2);
+					builder.append("\n\t],\n");
+					builder.append("\tsensors : [\n");
+					for(String key : DetailSensorConfigFrame.CONFIGURATIONS.keySet()) {
+						PortOption option = DetailSensorConfigFrame.CONFIGURATIONS.get(key);
+						String plugInName = option.getPlugIn().getName();
+						String port = option.getPort();
+						builder.append("\t\t{ ").append("sensorName : \"").append(option.getTitle()).append("\", ");
+						builder.append("plugin : \"").append(plugInName).append("\", ");
+						builder.append("port : \"").append(port).append("\" },\n");
+					}
+					if(DetailSensorConfigFrame.CONFIGURATIONS.size() != 0)
+						builder.setLength(builder.length() - 2);
+					builder.append("\n\t]\n}");
 					
 					String definitiveString = builder.toString();
 					Logger.log(LogType.INFO, "Exported %d bytes to \"%s%s%s\"", definitiveString.getBytes().length, dir.getAbsolutePath(), File.separator, fileName);
@@ -247,13 +294,13 @@ public class DashboardConfigFrame {
 				container.add(field);
 				
 				JComboBox<PortOption> comboBox = new JComboBox<>();
-				comboBox.addItem(new PortOption("Automatisch", ttyUSBPort));
+				//comboBox.addItem(new PortOption("Automatisch", ttyUSBPort));
 				comboBox.addItem(new PortOption("Gaszähler", ttyUSBPort));
 				comboBox.addItem(new PortOption("Sensor", ttyUSBPort));
 				comboBox.addItem(new PortOption("Stromzähler", ttyUSBPort));
 				comboBox.addItem(new PortOption("Wasserzähler", ttyUSBPort));
 				comboBox.setFont(FONT);
-				comboBox.setSelectedIndex(3);
+				comboBox.setSelectedIndex(2);
 				container.add(comboBox);
 				
 				COMBOBOXES.put(ttyUSBPort, comboBox);
@@ -266,24 +313,26 @@ public class DashboardConfigFrame {
 						case INDEX_ELECTRICITY_METER:
 							PortOption option = (PortOption)comboBox.getSelectedItem();
 							option.setMeterType(MeterTypes.ELECTRICITY);
-							DetailConfigFrame.doInterface(option);
+							DetailMeterConfigFrame.doInterface(option);
 							break;
 						case INDEX_GAS_METER:
 							option = (PortOption)comboBox.getSelectedItem();
 							option.setMeterType(MeterTypes.GAS);
-							DetailConfigFrame.doInterface(option);
+							DetailMeterConfigFrame.doInterface(option);
 							break;
 						case INDEX_WATER_METER:
 							option = (PortOption)comboBox.getSelectedItem();
 							option.setMeterType(MeterTypes.WATER);
-							DetailConfigFrame.doInterface(option);
+							DetailMeterConfigFrame.doInterface(option);
 							break;
 							
 						case INDEX_SENSOR:
+							option = (PortOption)comboBox.getSelectedItem();
+							DetailSensorConfigFrame.doInterface(option);
 							break;
 							
-						case INDEX_AUTOMATIC:
-							break;
+//						case INDEX_AUTOMATIC:
+//							break;
 					}
 				});
 				
@@ -348,8 +397,12 @@ public class DashboardConfigFrame {
 		configure.setPreferredSize(new Dimension(200, 25));
 	
 		configure.addActionListener(x -> {
-			frame.dispose(); // exchange with loading screen introduction
+			frame.dispose(); // exchange with loading screen introduction ?
 			PlugInManager.runAllPlugins();
+//			frame.setContentPane(consoleView);
+//			ConsoleView.readFromConsole();
+//			System.out.println("test");
+//			frame.repaint();
 		});
 		
 		configurePanel.add(configure);
@@ -371,5 +424,7 @@ public class DashboardConfigFrame {
 	
 		while(shouldBlockExecution);
 	}	
+	
+	//private static JPanel consoleView = ConsoleView.generateView();
 	
 }

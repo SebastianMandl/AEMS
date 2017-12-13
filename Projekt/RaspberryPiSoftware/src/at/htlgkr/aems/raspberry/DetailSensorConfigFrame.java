@@ -23,13 +23,12 @@ import javax.swing.border.EmptyBorder;
 import at.htlgkr.aems.plugins.PlugIn;
 import at.htlgkr.aems.raspberry.plugins.PlugInManager;
 
-public class DetailConfigFrame {
-
+public class DetailSensorConfigFrame {
 	public static final Color SEPARATOR_COLOR = new Color(0, 180, 50);
 	private static final Font FONT = new Font("Arial", Font.PLAIN, 16);
 	private static final int WINDOW_WIDTH = 600;
 	
-	private static JComponent meterId = null;
+	private static JComponent nameInputField = null;
 	
 	public static final HashMap<String, PortOption> CONFIGURATIONS = new HashMap<>();
 	
@@ -69,10 +68,10 @@ public class DetailConfigFrame {
 		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
 		body.setBackground(Color.WHITE);
 		
-		body.add((meterId = GUIUtils.createInput("Zählernummer:", FONT, false, new Dimension(WINDOW_WIDTH, 35), new Dimension(400, 25))));
+		body.add((nameInputField = GUIUtils.createInput("Name:", FONT, false, new Dimension(WINDOW_WIDTH, 35), new Dimension(400, 25))));
 		
 		if(config != null && config.getTitle() != null) {
-			((JTextField) meterId.getComponents()[1]).setText(config.getTitle());
+			((JTextField) nameInputField.getComponents()[1]).setText(config.getTitle());
 		}
 		
 		JPanel container = new JPanel();
@@ -89,7 +88,7 @@ public class DetailConfigFrame {
 		pluginList.setPreferredSize(new Dimension(400, 25));
 		
 		int selectedIndex = 0;
-		for(PlugIn plugin : PlugInManager.getPluginsForType(option.getMeterType())) {
+		for(PlugIn plugin : PlugInManager.getPluginsForSensors()) {
 			pluginList.addItem(plugin);
 			
 			if(config != null && config.getPlugIn() != null && config.getPlugIn().getName().equals(plugin.getName())) {
@@ -127,7 +126,7 @@ public class DetailConfigFrame {
 		resetConfiguration.setFont(FONT);
 		resetConfiguration.setPreferredSize(new Dimension(150, 25));
 		resetConfiguration.addActionListener(x -> {
-			JTextField field = ((JTextField) meterId.getComponents()[1]);
+			JTextField field = ((JTextField) nameInputField.getComponents()[1]);
 			CONFIGURATIONS.remove(option.getPort());
 			PlugInManager.unsetPluginForMeter(field.getText());
 			field.setText("");
@@ -148,16 +147,18 @@ public class DetailConfigFrame {
 		confirm.setFont(FONT.deriveFont(Font.BOLD));
 		confirm.setPreferredSize(new Dimension(150, 25));
 		confirm.addActionListener(x -> {
-			String mID = ((JTextField) meterId.getComponents()[1]).getText();
+			String name = ((JTextField) nameInputField.getComponents()[1]).getText();
 			
-			if(mID == null || mID.isEmpty()) {
-				JOptionPane.showMessageDialog(frame, "Zählernummer wurde nicht angegeben!", "Fehler", JOptionPane.OK_OPTION);
+			if(name == null || name.isEmpty()) {
+				JOptionPane.showMessageDialog(frame, "Einheit wurde nicht angegeben!", "Fehler", JOptionPane.OK_OPTION);
 				return;
 			}
 			
 			
-			PortOption _option = new PortOption((PlugIn) pluginList.getSelectedItem(), mID, option.getPort());
-			_option.setPlugin(PlugInManager.setPluginForMeter(mID, option.getPort(), (PlugIn) pluginList.getSelectedItem()));
+			PortOption _option = new PortOption((PlugIn) pluginList.getSelectedItem(), name, option.getPort(), true);
+			_option.setPlugin(PlugInManager.setPluginForSensor(name, option.getPort(), (PlugIn) pluginList.getSelectedItem()));
+			_option.getPlugIn().getSetting().isSensor(true);
+			_option.getPlugIn().getSetting().setSensorUnit(((PlugIn) pluginList.getSelectedItem()).getSetting().getSensorUnit());
 			CONFIGURATIONS.put(option.getPort(), _option);
 			
 			if(DashboardConfigFrame.PORT_LABELS.containsKey(option.getPort())) {
@@ -185,5 +186,4 @@ public class DetailConfigFrame {
 		}
 		
 	}
-	
 }

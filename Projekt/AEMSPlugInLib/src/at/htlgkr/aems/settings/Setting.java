@@ -1,23 +1,43 @@
 package at.htlgkr.aems.settings;
 
-import java.util.ArrayList;
-
 public class Setting implements Cloneable {
 	
 	private String meterId;
 	private MeterType meterType;
-	private ArrayList<Position> positions;
+	
+	private boolean isSensor;
+	private String sensorUnit;
 	
 	private ScriptFile file;
 	
 	private String port;
-	private long millisUntilRepetition;
+	private long millisUntilRepetition = 15 * 1000 * 60; // 15 minutes as we store the values in the database in a 15 minutes period;
 	
-	private Setting(MeterType meter, ArrayList<Position> positions, ScriptFile file) {
+	private Setting(MeterType meter, ScriptFile file) {
 		this.meterType = meter;
-		this.positions = positions;
-		millisUntilRepetition = 15 * 1000 * 60; // 15 minutes as we store the values in the database in a 15 minutes period
 		setScriptFile(file);
+	}
+	
+	private Setting(String sensorUnit, ScriptFile file) {
+		this.isSensor = true;
+		this.sensorUnit = sensorUnit;
+		setScriptFile(file);
+	}
+	
+	public boolean isSensor() {
+		return isSensor;
+	}
+	
+	public void isSensor(boolean isSensor) {
+		this.isSensor = isSensor;
+	}
+	
+	public void setSensorUnit(String sensorUnit) {
+		this.sensorUnit = sensorUnit;
+	}
+	
+	public String getSensorUnit() {
+		return sensorUnit;
 	}
 	
 	public void setMeterId(String id) {
@@ -60,25 +80,17 @@ public class Setting implements Cloneable {
 		return port;
 	}
 	
-	public Position[] getPositions() {
-		return positions.toArray(new Position[positions.size()]);
+	public static Setting getSetting(MeterTypes type, ScriptFile file) {
+		return new Setting(new MeterType(type), file);
 	}
 	
-	public static Setting getSetting(MeterTypes type, ScriptFile file, Position... positions) {
-		ArrayList<Position> list = new ArrayList<>(positions.length);
-		for(Position pos : positions) {
-			list.add(pos);
-		}
-		return new Setting(new MeterType(type), list, file);
+	public static Setting getSetting(String sensorUnit, ScriptFile file) {
+		return new Setting(sensorUnit, file);
 	}
 	
 	@Override
 	public Setting clone() {
-		ArrayList<Position> pos = new ArrayList<>(positions.size());
-		for(Position position : positions) {
-			pos.add(position);
-		}
-		Setting setting = new Setting(meterType, pos, file);
+		Setting setting = new Setting(meterType, file);
 		setting.setMeterId(meterId);
 		setting.setMillisUntilRepetition(millisUntilRepetition);
 		setting.setPort(port);
