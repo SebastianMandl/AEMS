@@ -55,6 +55,52 @@
 	margin-top: -5em;
 }
 
+.welcome{
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 3%;
+}
+
+.impressum{
+    font-size: 1.2em;
+    line-height: 200%;
+}
+
+.logoutLink {
+    margin: 10px;
+    color: #333;
+    padding: 3px 20px;
+    line-height: 1.42857143;
+    text-decoration: none;
+}
+
+.table-title{
+    font-size: 1.2em;
+    line-height: 200%;
+    padding-right: 5%;
+    font-weight: bolder;
+}
+
+.table-text{
+    font-size: 1.2em;
+    line-height: 200%;
+}
+
+.footerFormat{
+    background-color: #fff;
+}
+
+@media (max-width: 1800px){
+.welcome{
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+}
+
+
 
 @media (max-width: 767px){
 	.navbar-header .navbar-brand.titleFormat .titleImage {

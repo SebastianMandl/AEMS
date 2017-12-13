@@ -1,13 +1,15 @@
 package com.example.knoll.aems;
 
+import android.Manifest;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
+import android.content.pm.PackageManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.icu.util.Output;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -15,61 +17,45 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.CombinedChart;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-     // Referenzen in der MainActivity auf die einzelnen Tabs
 
     private ChartViewTab tab1;
     private ChartViewTab tab2;
     private ChartViewTab tab3;
 
-    private int counter = 0;
-
-    private static MainActivity instance;
+    private int notificationID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(counter ==0){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        }
-
-
 
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
         tab3 = new App_Tab_3();
-
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -99,10 +85,8 @@ public class MainActivity extends AppCompatActivity {
                         downloadStatistic(tab3);
                         break;
                 }
-
             }
         });
-
     }
 
 
@@ -112,14 +96,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private void downloadStatistic(ChartViewTab tab) {
         boolean saveToSd = false;
-
+        boolean canSaveImage = false;
         Chart chart = tab.getChart();
         Bitmap image = chart.getChartBitmap();
         String filename = tab.getStatisticTitle();
+        File filePath = null;
 
         if(saveToSd) {
             ActivityCompat.requestPermissions(this, new String[] {android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            File filePath = new File(Environment.getExternalStorageDirectory(), "/Charts/");
+            filePath = new File(Environment.getExternalStorageDirectory(), "/AEMS/");
             filePath.mkdirs();
 
             File imageFile = new File(filePath, filename + ".jpg");
@@ -133,16 +118,50 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            String url = MediaStore.Images.Media.insertImage(getContentResolver(), image, filename, "Hello");
-            if(url == null) {
-                makeToast("Speichern fehlgeschlagen!");
+            if (hasStoragePermission()) {
+                String url = MediaStore.Images.Media.insertImage(getContentResolver(), image, filename, "Hello");
+                if(url != null){
+                    canSaveImage = true;
+                }
+                else if(url == null) {
+                    canSaveImage = false;
+                }
+            } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            12);
             }
+
         }
+        doGenerateNotification(canSaveImage, filename);
     }
 
-    private void makeToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    private boolean hasStoragePermission() {
+        return ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
+
+    private void doGenerateNotification(boolean canSaveImage, String filename) {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.logo_icon);
+
+        if (canSaveImage){
+            builder.setContentTitle("Speichern erfolgreich");
+            builder.setContentText("\"" + filename + "\" wurde erfolgreich gespeichert");
+            notificationID ++;
+        }
+        else
+        {
+            builder.setContentTitle("Speichern fehlgeschlagen");
+            builder.setContentText("\"" + filename + "\" konnte nicht gespeichert werden");
+            notificationID ++;
+        }
+
+        NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(notificationID, builder.build());
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

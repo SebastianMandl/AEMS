@@ -119,15 +119,12 @@
                         <h4>Benachrichtigung oder Warnung</h4>
 
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Benachrichtigungstyp<span class="caret" /></button>
-
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
                             <ul class="dropdown-menu">
-
                                 <li role="presentation"><a href="#">Benachrichtigung</a></li>
-
-                                <li role="presentation"><a href="#">Warnung</a></li>
+                                <li role="presentation"><a href="#">Warnung</a></li>                  
                             </ul>
-                        </div>
+                        </div>                   
 
                         <h4>Zählertyp</h4>
 
@@ -248,27 +245,7 @@
 
                         <h4>Wie hoch darf die Abweichung sein?</h4>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Abweichung<span class="caret" /></button>
-
-                            <ul class="dropdown-menu">
-
-                                <li role="presentation"><a href="#">10%</a></li>
-
-                                <li role="presentation"><a href="#">20%</a></li>
-
-                                <li role="presentation"><a href="#">30%</a></li>     
-
-                                <li role="presentation"><a href="#">40%</a></li>
-
-                                <li role="presentation"><a href="#">50%</a></li>
-
-                                <li role="presentation"><a href="#">70%</a></li>
-
-                                <li role="presentation"><a href="#">100%</a></li>
-                            </ul>
-                        </div>
-
+                        <input name="variance" type="number" min="1" max="100" value="50">%</input>
 
 
 
@@ -276,13 +253,9 @@
                     <input id="newDate" type="date" class="btn-block"/>
                     <input id="addDate" type="button" class="btn btn-default btn-sm" value="Datum hinzufügen" /> <br /> <br />
 
-                    <ul id="dateList" style="list-style-type:none;">
-                        <li>18.10.1998</li>
-                        <li>20.11.2013</li>
-                        <li>19.08.2018</li>
-
-                    </ul>
-                    <input id="newWarning" type="button" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
+                    <ul id="dateList" style="list-style-type:none;"></ul>
+                    
+                    <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
   
                     
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -501,6 +474,7 @@
     <script src="js/bootstrap.js"></script>
     <script src="js/mobile-functions.js"></script>
     <script src="js/einstellungenWarnungen.js"></script>
+    <script src="js/warningModal.js"></script>
     <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
     <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
     <script language="javascript" type="text/javascript" src="js/notify.js"></script>

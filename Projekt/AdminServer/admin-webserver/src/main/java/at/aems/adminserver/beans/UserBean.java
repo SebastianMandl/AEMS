@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.adminserver.beans;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,13 +16,13 @@ import javax.faces.context.FacesContext;
 
 /**
  *
- * @author Niklas
+ * @author Niggi
  */
-@ManagedBean(name = "user")
+@ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
 
-    private int userId = 0;
+    private int userId = -1;
     private String username;
     private String password;
 

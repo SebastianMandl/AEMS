@@ -1,158 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AEMS - Advanced Energy Monitoring System</title>
-    
-	<link href="css/bootstrap.css" rel="stylesheet">
-	<link href="css/main.css" rel="stylesheet" type="text/css">
-	<link href="css/administration.css" rel="stylesheet" type="text/css">
-	<link href="css/login-modal.css" rel="stylesheet" type="text/css">
-	
-	
-  </head>
-  <body style="padding-top: 70px">
-    
-    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top navbarMainFormat">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-          <a class="navbar-brand titleFormat" href="index.html"><img class="titleImage" src="images/logo_schrift_admin.png" alt="Nix"></a></div>
-          
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="topFixedNavbar1">
-         
-   
-          <ul class="nav navbar-nav navbar-right">
-            
-            <!-- Menü Administration -->
-          	<li class="navBarItems"><a href="administration.html">Administration</a></li>
-          	<li class="navBarItems"><a href="zustaendigkeit.html">Zuständigkeit</a></li>            
-            
-            <!-- Menü Login, Logout und Registrieren -->
-             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li> <a href="#" data-toggle="modal" data-target="#login-modal" data-backdrop="false" data-dismiss="modal" class="navBarItems">Login</a></li>         
-                <li role="separator" class="divider"></li>
-                <li onClick="functionLogout();"> <a href="#" class="navBarItems">Logout</a></li>
-              </ul>
-            </li>
-                      
-          </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-      </div>
-      <!-- /.container-fluid -->
-  </nav>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>AEMS - Advanced Energy Monitoring System</title>
+
+        <link href="css/bootstrap.css" rel="stylesheet" />
+        <link href="css/main.css" rel="stylesheet" type="text/css" />
+        <link href="css/administration.css" rel="stylesheet" type="text/css" />
+        <link href="css/login-modal.css" rel="stylesheet" type="text/css" />
 
 
-  <!-- Seiteninhalt -->
-  <article class="content">
-  
-  	<button class="btn btn-default"data-toggle="modal" data-target="#newZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal">Zuständigkeitsbereich hinzufügen</button>
-  	
-		<h2 class="h2-admin_config">Zuständigkeitsbereiche</h2>
-	 	<div class="list-group" data-toggle="modal" data-target="#editOrDeleteZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal"> 
-	  	  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
-		  </a>
-		  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">0001 Grieskirchen</h4>
-		  </a>
-		  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">0002 Eferding</h4>
-		  </a>
-		  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">0003 Gaspoltshofen</h4>
-		  </a>
-		</div>
-  </article>
-  
-  <footer class="modal-footer footerFormat">&copy; Ein Dienst der Energiegenossenschaft Eferding</footer>
-  
-  
- 
- 
- 	<!-- Login Modal -->
- 	<div class="modal fade" id="login-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  		<div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Login to Your Account</h1><br>
-				  <form>
-					<input type="text" id="username" name="user" placeholder="Username" required>
-					<input type="password" id="password" name="pass" placeholder="Password" required>
-					<input type="submit" name="login" class="login loginmodal-submit" value="Login" onClick="loginButtonClicked();">
-					<a href="#" name="forgotPassword" data-dismiss="modal" aria-hidden="true" >Passwort vergessen</a>
-					<a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
-				  </form>				
-				</div>
-			</div>
-		  </div>  
- 	
- 
- 
- <!-- New Zuständigkeit Modal -->
- 	<div class="modal fade" id="newZustaendigkeit-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  		<div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Neuen Zuständigkeitsbereich anlegen</h1><br>
-				  <form>
-					<h4>Postleitzahl</h4>
-					<input type="text" name="user" placeholder="0000" required>
-					<h4>Ort</h4>
-					<input type="text" name="user" placeholder="Hinterdupfing" required>
-					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Zuständigkeit erstellen">
-					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
-				  </form>				
-				</div>
-			</div>
-		  </div>  
-		  
-		  
-		  
-		  <!-- Edit Zuständigkeit Modal -->
- 	<div class="modal fade" id="editZustaendigkeit-modal" role="dialog" aria-hidden="false" aria-labelledby="myModalLabel">
-    	  		<div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Zuständigkeitsbereich bearbeiten</h1><br>
-				  <form>
-					<h4>Postleitzahl</h4>
-					<input type="text" name="user" placeholder="0000" required>
-					<h4>Ort</h4>
-					<input type="text" name="user" placeholder="Hinterdupfing" required>
-					<input onClick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Zuständigkeit bearbeiten">
-					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
-				  </form>				
-				</div>
-			</div>
-		  </div>  
- 
- 
- <!-- editOrDeleteZuständigkeit-modal -->
- 	<div class="modal fade" id="editOrDeleteZustaendigkeit-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  		<div class="modal-dialog">
-				<div class="loginmodal-container">
-			  	<h1>Gewählten Zuständigkeitsbereich...</h1><br>
-				  <form>
-		    		<button type="submit" class="btn btn-default btn-editOrDelete" data-toggle="modal" data-target="#editZustaendigkeit-modal" data-dismiss="modal" aria-hidden="true">Bearbeiten</button>
-		    		<button type="submit" class="btn btn-default btn-editOrDelete"  data-dismiss="modal" aria-hidden="true">Löschen</button>
-					<a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true" >Close</a>
-				  </form>				
-				</div>
-			</div>
-		  </div>  
-		 
-		 
- 
-  <script src="js/jquery-1.11.3.min.js"></script>
-  <script src="js/bootstrap.js"></script>
-  <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
-  <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
-  <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+    </head>
 
-	 
-</body>
-</html>
+    <body style="padding-top: 70px;">
+
+         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
+        
+        <!-- Seiteninhalt -->
+        <article class="content">
+
+            <button class="btn btn-default" data-toggle="modal" data-target="#newZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal">Zust�ndigkeitsbereich hinzuf�gen</button>
+
+
+            <h2 class="h2-admin_config">Zust�ndigkeitsbereiche</h2>
+
+            <div class="list-group" data-toggle="modal" data-target="#editOrDeleteZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal"> 
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
+                </a>
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">0001 Grieskirchen</h4>
+                </a>
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">0002 Eferding</h4>
+                </a>
+                <a href="#" class="list-group-item ">
+
+                    <h4 class="list-group-item-heading">0003 Gaspoltshofen</h4>
+                </a>
+            </div>
+        </article>
+
+        <ui:include src="/templates/footer.xhtml"></ui:include>
+
+
+        <!-- New Zust�ndigkeit Modal -->
+               <ui:include src="/templates/newResponsibilityModal.xhtml"></ui:include>       
+
+        <!-- Edit Zust�ndigkeit Modal -->
+               <ui:include src="/templates/editResponsibilityModal.xhtml"></ui:include>
+
+        <!-- editOrDeleteZust�ndigkeit-modal -->
+               <ui:include src="/templates/editOrDeleteResponsibilityModal.xhtml"></ui:include>
+      
+
+        <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+
+    </body></html>

@@ -3,23 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.adminserver.beans;
 
-import at.aems.webserver.AemsAPI;
-import java.io.IOException;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /**
- * This managed bean class is designated to serve as the login interface by calling
- * the #doLogin() method.
- * @author Niklas
+ *
+ * @author Niggi
  */
 @ManagedBean(name="login")
 @RequestScoped
@@ -27,7 +21,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     private String username;
     private String password;
     
-    @ManagedProperty(value = "#{user}")
+    @ManagedProperty(value = "#{userBean}")
     private UserBean userBean;
     
     public LoginBean() {
@@ -50,7 +44,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     }
     
     public String doLogin() {
-        int userId = AemsAPI.getUserId(username, password);
+        int userId = 123; // TODO: Get userID from API!
         if(userId != -1) {
             userBean.setUserId(userId);
             userBean.setUsername(username);
