@@ -42,13 +42,7 @@
                 <h2 class="statistics-h2">Statistiken der Startseite:</h2>
 
                 <div id="homepageList" class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <!--
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Stromstatistik 1</h4>
-
-                        <p class="list-group-item-text">Monatlich</p>
-                    </a> -->
+                    <!-- Ajax -->
                 </div>
 
 
@@ -70,8 +64,9 @@
 
         </c:if>
 
-        <ui:include src="/templates/footer.xhtml"></ui:include>
 
+        <!-- Footer -->
+        <ui:include src="/templates/footer.xhtml"></ui:include>
 
         <!-- Login Modal -->
         <ui:include src="/templates/login-modal.xhtml"></ui:include>
@@ -79,182 +74,32 @@
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>	  	
 
-
-
         <!-- Indexpage Statistics Modal -->
-
-        <div class="modal fade" id="indexpageStatistics-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-
-            <div class="modal-dialog">
-
-                <div class="loginmodal-container">
-
-                    <h1>Gewählte Statistik...</h1><br />
-                    <form>
-                        <button class="btn btn-default btn-addStatisticToIndexpage">Von Startseite entfernen</button>
-                        <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>				
-                </div>
-            </div>
-        </div>  
+        <ui:include src="/templates/indexpageStatistic-modal.xhtml"></ui:include>   
 
         <!-- Android-App Statistics Modal -->
-
-        <div class="modal fade" id="androidAppStatistics-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-
-            <div class="modal-dialog">
-
-                <div class="loginmodal-container">
-
-                    <h1>Gewählte Statistik...</h1><br />
-                    <form>
-                        <button class="btn btn-default btn-addStatisticToIndexpage">Aus Android-App entfernen</button>
-                        <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>				
-                </div>
-            </div>
-        </div>  
-
-
-
+        <ui:include src="/templates/androidStatistic-modal.xhtml"></ui:include>
 
         <!-- Configured Statistics Modal -->
-
-        <div class="modal fade" id="configuredStatistics-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-
-            <div class="modal-dialog">
-
-                <div class="loginmodal-container">
-
-                    <h1>Gewählte Statistik...</h1><br />
-                    <form>
-                        <button class="btn btn-default btn-addStatisticToIndexpage">Zu Startseite hinzufßgen</button>
-                        <button class="btn btn-default btn-addStatisticToIndexpage">Zu Android-App hinzufßgen</button>
-                        <button class="btn btn-default configuredStatisticButtons" data-toggle="modal" data-target="#editIndexpageStatistic-modal" data-backdrop="false" data-dismiss="modal">Bearbeiten</button>
-                        <button class="btn btn-default">Löschen</button>
-                        <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>				
-                </div>
-            </div>
-        </div>  
+        <ui:include src="/templates/configuredStatistic-modal.xhtml"></ui:include>    
 
         <!-- New Statistic Modal -->
-        
-        <ui:include src="/templates/new-statistic-modal.xhtml"></ui:include>
+        <ui:include src="/templates/newStatistic-modal.xhtml"></ui:include>
 
-          <!-- New Indexpage Statistic Modal Ende -->
-
-
-
-        <!-- Edit Indexpage Statistic Modal -->
-
-        <div class="modal fade" id="editIndexpageStatistic-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-
-            <div class="modal-dialog">
-
-                <div class="loginmodal-container">
-
-                    <h1>Statistik bearbeiten</h1><br />
-                    <h:form>
-
-                        <h4>Statistikname</h4>
-                        <h:inputText a:required="" a:placeholder="Meine Statistik" value="#{statistic.name}"/>
-                        <!--   <input type="text" name="user" placeholder="Meine Statistik" required="" /> -->
-                        <h4>Zählertyp</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <!-- WILL BE LOADED WITH AJAX
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
-                                    </div>
-                                </li>
-                                -->
-                            </ul>
-                        </div>
-
-                        <h4>Verwendete Zähler</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <!-- AJAX JOB :)
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-                                -->
-                            </ul>
-                        </div>
-
-
-                        <h4>Zeitraum</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
-
-                            <ul class="dropdown-menu">
-
-                                <li role="presentation"><a href="#">Tag</a></li>
-
-                                <li role="presentation"><a href="#">Woche</a></li>
-
-                                <li role="presentation"><a href="#">Monat</a></li>     
-
-                                <li role="presentation"><a href="#">Jahr</a></li>
-                            </ul>
-                        </div>
-
-                        <h4>Anomalien berücksichtigen</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Außentemperatur</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Jahreszeit</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <h4>Anmerkung</h4>
-                        <input type="text" />
-                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik bearbeiten" />
-                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </h:form>			
-                </div>
-            </div>
-        </div>  <!-- Edit Indexpage Statistic Modal Ende -->
-
-
+        <!-- Edit Statistic Modal -->
+        <ui:include src="/templates/editStatistic-modal.xhtml"></ui:include>
 
         <script src="js/basic.js"></script>
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/mobile-functions.js"></script>
-        
+
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>     
         <script language="javascript" type="text/javascript" src="js/statistics/new.js"></script>
-     <!--   <script language="javascript" type="text/javascript" src="js/statistics/einstellungenStatistiken.js"></script> -->
+        <!--   <script language="javascript" type="text/javascript" src="js/statistics/einstellungenStatistiken.js"></script> -->
 
 
-
-    </body></html>
+    </body>
+</html>

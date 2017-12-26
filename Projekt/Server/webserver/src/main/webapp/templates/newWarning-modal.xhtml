@@ -1,0 +1,169 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+   <div class="modal fade" id="newWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Benachrichtigung erstellen</h1><br />
+                    <h:form>
+
+                        <h4>Bezeichnung</h4>
+                        <input type="text" name="user" placeholder="Meine Warnung" required="" />
+
+                        <h4>Benachrichtigungstyp</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
+                            <ul class="dropdown-menu">
+                                <li role="presentation"><a href="#">Benachrichtigung</a></li>
+                                <li role="presentation"><a href="#">Warnung</a></li>                  
+                            </ul>
+                        </div>                   
+
+                        <h4>Zählertyp</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Strom</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wasser</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gas</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärme</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Verwendete Zähler</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />AT368746482374</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />AT368746482374</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />AT368746482374</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />AT368746482374</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Ausnahme für bestimmte Tage:</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Montag</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Dienstag</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Mittwoch</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Donnerstag</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Freitag</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Samstag</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Sonntag</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Wie hoch darf die Abweichung sein?</h4>
+
+                        <input name="variance" type="number" min="1" max="100" value="50">%</input>
+
+
+
+                    <h4>Ausnahme für bestimmtes Datum</h4>
+                    <input id="newDate" type="date" class="btn-block"/>
+                    <input id="addDate" type="button" class="btn btn-default btn-sm" value="Datum hinzufügen" /> <br /> <br />
+
+                    <ul id="dateList" style="list-style-type:none;"></ul>
+                    
+                    <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
+  
+                    
+                    <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                </h:form>			
+
+            </div>
+        </div>
+   </div>
+</ui:composition>
+

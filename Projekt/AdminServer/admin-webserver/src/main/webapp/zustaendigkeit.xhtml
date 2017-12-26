@@ -22,55 +22,27 @@
 
     </head>
 
-    <body style="padding-top: 70px;">
+    <body style="padding-top: 3%;">
 
          <ui:include src="/templates/navbar-top.xhtml"></ui:include>
         
         <!-- Seiteninhalt -->
         <article class="content">
 
-            <button class="btn btn-default" data-toggle="modal" data-target="#newZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal">Zuständigkeitsbereich hinzufügen</button>
-
-
-            <h2 class="h2-admin_config">Zuständigkeitsbereiche</h2>
-
-            <div class="list-group" data-toggle="modal" data-target="#editOrDeleteZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal"> 
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">0001 Grieskirchen</h4>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">0002 Eferding</h4>
-                </a>
-                <a href="#" class="list-group-item ">
-
-                    <h4 class="list-group-item-heading">0003 Gaspoltshofen</h4>
-                </a>
-            </div>
-        </article>
-
-        <ui:include src="/templates/footer.xhtml"></ui:include>
-
-
-        <!-- New Zuständigkeit Modal -->
-               <ui:include src="/templates/newResponsibilityModal.xhtml"></ui:include>       
-
-        <!-- Edit Zuständigkeit Modal -->
-               <ui:include src="/templates/editResponsibilityModal.xhtml"></ui:include>
-
-        <!-- editOrDeleteZuständigkeit-modal -->
-               <ui:include src="/templates/editOrDeleteResponsibilityModal.xhtml"></ui:include>
-      
-
-        <script src="js/jquery-1.11.3.min.js"></script>
-        <script src="js/bootstrap.js"></script>
-        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
-        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
-        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
-
-    </body></html>
+          <button class="btn btn-default"data-toggle="modal" data-target="#newZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal">Zuständigkeitsbereich hinzufügen</button>
+  	
+		<h2 class="h2-admin_config">Zuständigkeitsbereiche</h2>
+	 	<div class="list-group" data-toggle="modal" data-target="#editOrDeleteZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal"> 
+	  	  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">0001 Grieskirchen</h4>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">0002 Eferding</h4>
+		  </a>
+		  <a href="#" class="list-group-item ">
+		  	<h4 class="list-group-item-heading">0003 Gaspoltshofen</h4>
+		  </a>
+		</div>
