@@ -12,20 +12,21 @@
                 <div class="loginmodal-container">
 
                     <h1>Benachrichtigung erstellen</h1><br />
-                    <h:form>
+                    <h:form id="newWarningForm">
 
                         <h4>Bezeichnung</h4>
-                        <input type="text" name="user" placeholder="Meine Warnung" required="" />
+                        <h:inputText value="#{newWarning.name}"></h:inputText>
 
                         <h4>Benachrichtigungstyp</h4>
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu" id="warningTypes">
                                 <li role="presentation"><a href="#">Benachrichtigung</a></li>
                                 <li role="presentation"><a href="#">Warnung</a></li>                  
                             </ul>
-                        </div>                   
+                        </div>
+                        <h:inputHidden id="_warningType" value="#{newWarning.type}"></h:inputHidden>
 
                         <h4>Zählertyp</h4>
 
@@ -65,11 +66,11 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
+                            <ul id="meterList" class="dropdown-menu zaehler_format">
 
                                 <li role="presentation">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
+                                        <label><input type="checkbox" value="AT368746482374" />AT368746482374</label>
                                     </div>
                                 </li>
 
@@ -92,13 +93,15 @@
                                 </li>
                             </ul>
                         </div>
+                        
+                        <h:inputHidden id="_warningMeters" value="#{newWarning.meters}"></h:inputHidden>
 
                         <h4>Ausnahme für bestimmte Tage:</h4>
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
+                            <ul id="meterDays" class="dropdown-menu zaehler_format">
 
                                 <li role="presentation">
                                     <div class="checkbox">
@@ -143,24 +146,30 @@
                                 </li>
                             </ul>
                         </div>
+                        
+                        <h:inputHidden id="_warningDays" value="#{newWarning.exceptionDays}"></h:inputHidden>
 
                         <h4>Wie hoch darf die Abweichung sein?</h4>
 
-                        <input name="variance" type="number" min="1" max="100" value="50">%</input>
-
+                        <input name="variance" id="variance" type="number" min="1" max="100" value="50">%</input>
+                        <h:inputHidden id="_warningVariance" value="#{newWarning.variance}"></h:inputHidden>
 
 
                     <h4>Ausnahme für bestimmtes Datum</h4>
                     <input id="newDate" type="date" class="btn-block"/>
                     <input id="addDate" type="button" class="btn btn-default btn-sm" value="Datum hinzufügen" /> <br /> <br />
 
-                    <ul id="dateList" style="list-style-type:none;"></ul>
+                    <ul id="dateList" style="list-style-type:none;">
+                        
+                    </ul>
+                    <h:inputHidden id="_warningDates" value="#{newWarning.exceptionDates}"></h:inputHidden>
                     
-                    <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung erstellen" />
+                    <h:commandButton onclick="getVars()" id="submitWarning" action="#{newWarning.doAddWarning()}" class="login loginmodal-submit submitFormat" value="Warnung erstellen"></h:commandButton>
+                    <!--<input onclick="" id="submitWarning" type="submit" name="createReport"  /> -->
   
                     
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                </h:form>			
+                </h:form>	 		
 
             </div>
         </div>

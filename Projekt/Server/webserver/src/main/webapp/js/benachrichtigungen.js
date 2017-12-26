@@ -12,8 +12,45 @@ $(document).ready(function () {
        } else {
            displayNotifications();
        }
-    });
+    }); 
 });
+
+function getVars() {
+        document.getElementById("newWarningForm:_warningType").value = "BENACHRICHTIGUNG";
+        document.getElementById("newWarningForm:_warningMeters").value = getWarningMeters();
+        document.getElementById("newWarningForm:_warningDays").value = getWarningDays();
+        document.getElementById("newWarningForm:_warningVariance").value = $("#variance").val();
+        document.getElementById("newWarningForm:_warningDates").value = getWarningDates();
+}
+
+function getWarningMeters() {
+    var str = "";
+    $("#meterList input:checked").each(function(index, element) {
+        str += $(element).val();
+        str += ";";
+    });
+    return str;
+}
+
+function getWarningDays() {
+    var str = "";
+    $("#meterDays input:checked").each(function(index, element) {
+        str += $(element).val();
+        str += ";";
+    });
+    return str;
+}
+
+function getWarningDates() {
+    var str = "";
+    $("#dateList li").each(function(index, element) {
+        str += $(element).attr("id");
+        str += ";";
+    });
+    return str;
+}
+
+
 
 function getNotifications() {
     var userId = 1;
