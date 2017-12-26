@@ -1,0 +1,48 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <div class="modal fade" id="editAdmin-modal" role="dialog" aria-hidden="false" aria-labelledby="myModalLabel">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Administrator bearbeiten</h1><br />
+                    <form>
+
+                        <h4>Name</h4>
+                        <input type="text" name="user" placeholder="Max Mustermann" required="" />
+
+                        <h4>E-Mail</h4>
+                        <input type="text" name="email" placeholder="E-Mail" required="" />
+
+                        <h4>Benutzername</h4>
+                        <input type="text" name="user" placeholder="Benutzername" required="" />
+
+                        <h4>Berechtigungen</h4>
+
+                        <p>
+                            <label>
+                                <input type="radio" name="RadioGroupAdmin" value="admin" id="RadioGroupIsAdmin" />
+                                Administrator</label>
+                            <br />
+                            <label>
+                                <input type="radio" name="RadioGroupAdmin" value="subAdmin" id="RadioGroupIsSubAdmin" />
+                                Sub-Administrator</label>
+                            <br />
+                        </p>
+
+                        <h4>Anmerkung:</h4>
+                        <input type="text" name="anmerkung" />
+                        <input type="submit" name="admin" class="login loginmodal-submit btn-admin_position" value="Administrator bearbeiten" />
+                        <a href="#" class="loginModalClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </form>				
+                </div>
+            </div>
+        </div>  
+</ui:composition>
+

@@ -11,19 +11,41 @@ public class PortOption {
 	private MeterTypes type;
 	private PlugIn plugin;
 	
+	private boolean isSensor;
+	private String sensorUnit;
+	
 	public PortOption(String title, String port) {
 		this.title = title;
 		this.port = port;
 	}
 	
-	public PortOption(PlugIn plugin, String title, String port) {
+	// title is either the meter id or the sensor unit
+	public PortOption(PlugIn plugin, String title, String port, boolean isSensor) {
 		this.title = title;
 		this.plugin = plugin;
 		this.port = port;
+		this.isSensor = isSensor;
+		this.sensorUnit = title;
+	}
+	
+	public boolean isSensor() {
+		return isSensor;
+	}
+	
+	public String getSensorUnit() {
+		return sensorUnit;
 	}
 	
 	public void setMeterType(MeterTypes type) {
 		this.type = type;
+	}
+	
+	public void setSensorUnit(String unit) {
+		this.sensorUnit = unit;
+	}
+	
+	public void isSensor(boolean isSensor) {
+		this.isSensor = isSensor;
 	}
 	
 	public PlugIn getPlugIn() {

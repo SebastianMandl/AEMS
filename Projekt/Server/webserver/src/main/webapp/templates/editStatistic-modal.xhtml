@@ -1,0 +1,103 @@
+<ui:composition
+     xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+   <div class="modal fade" id="editIndexpageStatistic-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Statistik bearbeiten</h1><br />
+                    <h:form>
+
+                        <h4>Statistikname</h4>
+                        <h:inputText maxlength="64" pt:placeholder="Meine Statistik" pt:required="required" value="#{statistic.name}"/>
+                        
+                        <h4>Zählertyp</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <!-- WILL BE LOADED WITH AJAX
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Strom</label>
+                                    </div>
+                                </li>
+                                -->
+                            </ul>
+                        </div>
+
+                        <h4>Verwendete Zähler</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <!-- AJAX JOB :)
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />AT368746482374</label>
+                                    </div>
+                                </li>
+                                -->
+                            </ul>
+                        </div>
+
+
+                        <h4>Zeitraum</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
+
+                            <ul class="dropdown-menu">
+
+                                <li role="presentation"><a href="#">Tag</a></li>
+
+                                <li role="presentation"><a href="#">Woche</a></li>
+
+                                <li role="presentation"><a href="#">Monat</a></li>     
+
+                                <li role="presentation"><a href="#">Jahr</a></li>
+                            </ul>
+                        </div>
+
+                        <h4>Anomalien berücksichtigen</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Jahreszeit</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Anmerkung</h4>
+                        <input type="text" />
+                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik bearbeiten" />
+                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </h:form>			
+                </div>
+            </div>
+        </div>
+</ui:composition>
+

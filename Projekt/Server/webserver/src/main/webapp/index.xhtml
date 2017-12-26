@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
     <head>
         <meta charset="utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
@@ -20,9 +19,9 @@ and open the template in the editor.
         <link href="css/main.css" rel="stylesheet" type="text/css"/>
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
         <link href="css/login-modal.css" rel="stylesheet" type="text/css"/>
-
-
     </head>
+    
+    
     <body style="padding-top: 70px">
         <f:event type="preRenderView" listener="#{notificationBean.init}" />
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
@@ -62,6 +61,8 @@ and open the template in the editor.
             </article>
         </c:if>
 
+        
+        <!-- Footer -->
         <ui:include src="/templates/footer.xhtml"></ui:include>
 
         <!-- Login Modal -->

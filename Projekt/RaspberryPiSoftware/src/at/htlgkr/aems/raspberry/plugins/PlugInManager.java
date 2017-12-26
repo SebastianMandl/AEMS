@@ -10,13 +10,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import at.htlgkr.aems.plugins.PlugIn;
-import at.htlgkr.aems.raspberry.meter.Meter;
+import at.htlgkr.aems.raspberry.meter.InputDevice;
 import at.htlgkr.aems.settings.MeterTypes;
 
 public class PlugInManager {
 
 	public static final ArrayList<PlugIn> PLUGINS_PREFABS = new ArrayList<>();
-	public static final HashMap<String, Meter> METERS = new HashMap<>();
+	public static final HashMap<String, InputDevice> METERS = new HashMap<>();
+	public static final HashMap<String, InputDevice> SENSORS = new HashMap<>();
 	
 	public static final String DIRECTORY = "plugins";
 	
@@ -34,9 +35,21 @@ public class PlugInManager {
 	public static PlugIn setPluginForMeter(String meterId, String port, PlugIn plugin) {
 		PlugIn _plugin = plugin.clone();
 		if(METERS.containsKey(meterId)) {
-			METERS.get(meterId).reinitialize(meterId, port, _plugin);
+			METERS.remove(meterId);
+			METERS.put(meterId, new InputDevice(meterId, port, _plugin));
 		} else {
-			METERS.put(meterId, new Meter(meterId, port, _plugin));
+			METERS.put(meterId, new InputDevice(meterId, port, _plugin));
+		}
+		return _plugin;
+	}
+	
+	public static PlugIn setPluginForSensor(String sensorName, String port, PlugIn plugin) {
+		PlugIn _plugin = plugin.clone();
+		if(SENSORS.containsKey(sensorName)) {
+			SENSORS.remove(sensorName);
+			SENSORS.put(sensorName, new InputDevice(sensorName, port, _plugin));
+		} else {
+			SENSORS.put(sensorName, new InputDevice(sensorName, port, _plugin));
 		}
 		return _plugin;
 	}
@@ -45,17 +58,33 @@ public class PlugInManager {
 		for(String key : METERS.keySet()) {
 			METERS.get(key).getReader().start();
 		}
+		
+		for(String key : SENSORS.keySet()) {
+			SENSORS.get(key).getReader().start();
+		}
 	}
 	
 	public static void stopAllPlugins() {
 		for(String key : METERS.keySet()) {
 			METERS.get(key).getReader().stop();
 		}
+		
+		for(String key : SENSORS.keySet()) {
+			SENSORS.get(key).getReader().stop();
+		}
 	}
 	
 	public static PlugIn[] getPluginsForType(MeterTypes type) {
 		return PLUGINS_PREFABS.stream().filter(x -> {
+			if(x.getSetting().isSensor())
+				return false;
 			return x.getSetting().getMeterType().getType().equals(type);
+		}).toArray(size -> new PlugIn[size]);
+	}
+	
+	public static PlugIn[] getPluginsForSensors() {
+		return PLUGINS_PREFABS.stream().filter(x -> {
+			return x.getSetting().isSensor(); // do not check for unit equality since units can be specified as a string and hence can be arbitrary
 		}).toArray(size -> new PlugIn[size]);
 	}
 	

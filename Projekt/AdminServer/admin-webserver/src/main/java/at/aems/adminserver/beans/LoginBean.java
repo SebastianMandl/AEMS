@@ -15,7 +15,7 @@ import javax.faces.context.FacesContext;
  *
  * @author Niggi
  */
-@ManagedBean
+@ManagedBean(name="login")
 @RequestScoped
 public class LoginBean implements Serializable { // Serializeable to allow application to run across multiple server nodes
     public static final int LOGGED_OUT_USER_ID = -1;
