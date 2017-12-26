@@ -8,6 +8,7 @@ package at.aems.webserver.beans;
 import at.aems.webserver.data.statistic.NewStatisticData;
 import at.aems.webserver.data.statistic.Period;
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -73,6 +74,10 @@ public class NewStatisticBean implements Serializable {
 
     public void setAnnotation(String annotation) {
         this.data.setAnnotation(annotation);
+    }
+    
+    public void setDates(List<String>dates) {
+        
     }
 
     public Period[] getPeriods() {

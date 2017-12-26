@@ -7,6 +7,7 @@ package at.aems.webserver.data.statistic;
 
 import at.aems.webserver.data.AemsApiData;
 import at.aems.webserver.data.ApiAction;
+import java.util.List;
 
 /**
  *
@@ -16,6 +17,7 @@ public class NewStatisticData extends AemsApiData {
     
     private String statisticName;
     private String[] meters;
+    private List<String> dates;
     private Period period;
     private String annotation;
     

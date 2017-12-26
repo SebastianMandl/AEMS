@@ -109,7 +109,7 @@ public class Main {
     // Max users is used to limit the amount of threads active at once
     int maxUsers = config.getInt(BotConfiguration.MAX_USERS, 50);
     int size = usersToHandle.size();
-    int toIndex = size >= maxUsers ? maxUsers : size;    
+    int toIndex = size >= maxUsers ? maxUsers : size;
     
     List<AemsUser> users = new ArrayList<AemsUser>(usersToHandle.subList(0, toIndex)); 
     
