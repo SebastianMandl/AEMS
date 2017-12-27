@@ -18,10 +18,10 @@ public class NewWarningData extends AemsApiData {
     
     private String name = "";
     private WarningType type = WarningType.BENACHRICHTIGUNG;
-    private List<String> meterIds = new ArrayList<String>();
+    private List<String> meterIds = new ArrayList<>();
     private int variance = 0;
-    private List<String> exceptionDays = new ArrayList<String>(); 
-    private List<String> exceptionDates = new ArrayList<String>();
+    private List<String> exceptionDays = new ArrayList<>(); 
+    private List<String> exceptionDates = new ArrayList<>();
     
     public NewWarningData(int userId, String authString) {
         super(userId, authString, ApiAction.CREATE_NOTIFICATION);

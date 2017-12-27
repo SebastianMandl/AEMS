@@ -2,6 +2,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     
@@ -12,10 +13,10 @@
                 <div class="loginmodal-container">
 
                     <h1>Neuen Bericht erstellen</h1><br />
-                    <form>
+                    <h:form id="newReport">
 
                         <h4>Berichtname</h4>
-                        <input type="text" name="user" placeholder="Mein Bericht" required="" />
+                        <h:inputText value="#{newReportBean.name}" p:placeholder="Mein Bericht"></h:inputText>
 
 
                         <h4>Zählertyp</h4>
@@ -70,30 +71,14 @@
                                     </div>
                                 </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gasstatistik 1</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wärmemengenstatistik 3</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gasstatistik 2</label>
-                                    </div>
-                                </li>
+                                
                             </ul>
+                            <h:inputHidden id="_reportStatistics" value="#{newReportBean.statisticIds}"></h:inputHidden>
                         </div>
 
 
-
+<!--                    ANOMALIEN SIND TEIL DER STATISTIKEN, NICHT DER REPORTS! 
                         <h4>Anomalien berücksichtigen</h4>
-
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
 
@@ -111,7 +96,7 @@
                                     </div>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
 
                         <h4>Werte mit Vorperiode vergleichen</h4>
 
@@ -132,10 +117,10 @@
                         </div>
 
                         <h4>Anmerkung</h4>
-                        <input type="text" />
+                        <h:inputText value="#{newReportBean.annotation}" p:placeholder="Anmerkung (Optional)"></h:inputText>
                         <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht erstellen" />
                         <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>			
+                    </h:form>		
                 </div>
             </div>
         </div>

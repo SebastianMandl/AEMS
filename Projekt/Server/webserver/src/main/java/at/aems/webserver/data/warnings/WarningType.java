@@ -5,10 +5,17 @@
  */
 package at.aems.webserver.data.warnings;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  *
  * @author Niggi
  */
 public enum WarningType {
-    BENACHRICHTIGUNG, WARNUNG;
+    
+    @SerializedName("0")
+    BENACHRICHTIGUNG, 
+    
+    @SerializedName("1")
+    WARNUNG;
 }
