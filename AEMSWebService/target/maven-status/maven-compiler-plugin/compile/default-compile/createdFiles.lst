@@ -36,7 +36,7 @@ aems\graphql\Query$2.class
 aems\graphql\Statistic.class
 aems\database\AEMSDatabase$Periods.class
 aems\graphql\NotificationException.class
-aems\GraphQLCondition.class
+aems\graphql\utils\GraphQLCondition.class
 aems\graphql\MeterType$1.class
 aems\graphql\Meter$6.class
 aems\graphql\StatisticTime$6.class
@@ -73,6 +73,7 @@ aems\graphql\Statistic$1.class
 aems\graphql\Meter$1.class
 aems\graphql\StatisticMeter$1.class
 aems\database\AEMSDatabase$Meters.class
+aems\AAA.class
 aems\database\AEMSDatabase$Users.class
 aems\graphql\Report$1.class
 aems\logger\Logger.class

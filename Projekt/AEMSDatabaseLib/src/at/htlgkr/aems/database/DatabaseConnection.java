@@ -76,7 +76,7 @@ public class DatabaseConnection {
 		p.setProperty("password", password);
 		
 		connectionHandle = DriverManager.getConnection("jdbc:postgresql://localhost:5432/AEMSData", p);
-		connectionHandle.setAutoCommit(false);
+		connectionHandle.setAutoCommit(true);
 		statementHandle = connectionHandle.createStatement();
 	}
 	

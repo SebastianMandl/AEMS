@@ -5,6 +5,8 @@ CREATE EXTENSION pgagent;
 
 -- setting up pljava -----------------------------------------------------------------
 
+sources from git: git clone https://github.com/tada/pljava.git
+
 https://tada.github.io/pljava/install/install.html -- installation
 https://github.com/tada/pljava/wiki/SQL-functions -- functions
 

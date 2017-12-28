@@ -1,6 +1,6 @@
 package aems.graphql;
 
-import aems.GraphQLCondition;
+import aems.graphql.utils.GraphQLCondition;
 import aems.database.AEMSDatabase;
 import graphql.Scalars;
 import graphql.schema.DataFetcher;

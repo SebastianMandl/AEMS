@@ -41,6 +41,22 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/AEMSUtil.jar</systemPath>
         </dependency>
+        
+        <dependency>
+            <groupId>AEMSDatabaseLib</groupId>
+            <artifactId>AEMSDatabaseLib</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/AEMSDatabaseLib.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>AEMSGraphQL</groupId>
+            <artifactId>AEMSGraphQL</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/AEMSGraphQL.jar</systemPath>
+        </dependency>
 
         <dependency>
                 <groupId>org.postgresql</groupId>

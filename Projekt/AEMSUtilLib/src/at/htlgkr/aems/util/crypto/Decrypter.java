@@ -1,5 +1,6 @@
 package at.htlgkr.aems.util.crypto;
 
+import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -40,4 +41,7 @@ public class Decrypter {
 		return decrypted;
 	}
 	
+	public static byte[] requestDecryption(BigDecimal key, byte[] encrypted) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
+		return requestDecryption(key.toString().getBytes(), encrypted);
+	}
 }
