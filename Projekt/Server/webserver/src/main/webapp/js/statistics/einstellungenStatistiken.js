@@ -1,14 +1,9 @@
-const BASE_URL = "http://localhost:8080/webserver/";
-$(document).ready(function() {
-     $.post("http://localhost:8080/webserver/dummy/statistics.json", populateStatisticLists, "json");
-});
-
 function populateStatisticLists(data) {
     var homepageDiv = $("#homepageList");
     var androidDiv = $("#androidList");
     var allDiv = $("#allList");
     
-    $.get(BASE_URL + "/templates/statistic-entry.html", function(html) {
+    $.get("http://localhost:8080/webserver/templates/statistic-entry.html", function(html) {
         for(var item of data) {
             var template = $(html);
             template.find(".list-group-item-heading").text(item.statistic_name);

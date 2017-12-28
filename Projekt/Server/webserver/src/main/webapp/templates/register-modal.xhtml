@@ -2,16 +2,17 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <div class="modal fade" id="register-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="loginmodal-container">
                 <h1>Registrieren Sie Ihr Konto</h1><br/>
                 <h:form>
-                    <input type="text" name="user" value="#{register.username}" placeholder="Ihr netzonline Username" required="required"/>
-                    <input type="password" name="pass" value="#{register.password}" placeholder="Ihr netzonline Passwort" required="required"/>
-                    <input type="text" name="email" value="#{register.email}" placeholder="E-Mail" required="required"/>
-                    <input type="text" name="plz" value="#{register.plz}" placeholder="Postleitzahl" required="required"/>
+                    <h:inputText value="#{register.username}" p:placeholder="Ihr netzonline Username" p:required="required"></h:inputText>
+                    <h:inputText value="#{register.password}" p:placeholder="Ihr netzonline Passwort" p:required="required"></h:inputText>
+                    <h:inputText value="#{register.email}" p:placeholder="Ihre E-Mail" p:required="required"></h:inputText>
+                    <h:inputText value="#{register.plz}" p:placeholder="Ihre Postleitzahl" p:required="required"></h:inputText>
                     <input type="checkbox" name="termsofuse" id="termsofuse" required="required"/> 
                     <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="nutzungsbedingungen" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
                     <h:commandButton class="login loginmodal-submit" action="#{register.doRegister()}" value="Register"/>
@@ -19,6 +20,6 @@
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                 </h:form>			
             </div>
-        </div>
+        </div> 
     </div>
 </ui:composition>
