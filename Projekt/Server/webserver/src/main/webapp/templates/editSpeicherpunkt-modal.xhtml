@@ -1,0 +1,50 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+   <div class="modal fade" id="editReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Speicherpunkt bearbeiten</h1><br />
+                    <form>
+
+                        <h4>Bezeichnung</h4>
+                        <input type="text" name="user" placeholder="Mein Zähler" required="" />
+
+
+                        <h4>Zählertyp</h4>
+                        <input type="text" name="user" placeholder="Kompetenzzähler" required="" />
+
+
+                        <h4>Einheit</h4>
+                        <input type="text" name="user" placeholder="kWh" required="" />	
+
+
+                        <h4>Standort</h4>
+                        <input type="text" placeholder="HTL EG-32" />
+
+
+                        <h4>Erstelldatum</h4>
+                        <input type="date" />
+
+
+                        <h4>Leseintervall in Minuten</h4>
+                        <input type="number" placeholder="15" />
+
+
+                        <h4>Anmerkung</h4>
+                        <input type="text" placeholder="Probezähler" />
+                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Speicherpunkt bearbeiten" />
+                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </form>			
+                </div>
+            </div>
+        </div>  
+</ui:composition>
+

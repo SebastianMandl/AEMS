@@ -1,0 +1,144 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+ 
+      <div class="modal fade" id="editReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+
+            <div class="modal-dialog">
+
+                <div class="loginmodal-container">
+
+                    <h1>Bericht bearbeiten</h1><br />
+                    <form>
+
+                        <h4>Berichtname</h4>
+                        <input type="text" name="user" placeholder="Mein Bericht" required="" />
+
+                        <h4>Zählertyp</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Strom</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wasser</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gas</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärme</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <h4>Zeitraum</h4>
+                        <h:selectOneMenu class="form-control" id="periodSelection" value="#{newStatistic.period}">
+                            <f:selectItems value="#{newStatistic.getPeriodValues()}"/> <!-- gehört noch für editReport gemacht -->
+                        </h:selectOneMenu> 
+
+
+                        <h4>Zu verwendende Statistiken</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistiken<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Stromstatistik 1</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gasstatistik 1</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Wärmemengenstatistik 3</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Gasstatistik 2</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+
+                        <h4>Anomalien berücksichtigen</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Jahreszeit</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h4>Werte mit Vorperiode vergleichen</h4>
+
+                        <div id="RadioButtonsVorperiode">
+                            <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeYes" />
+                            <label for="RadioVorperiodeYes">Ja</label>
+                            <input type="radio" name="radioButtonsVorperiode" id="radioVorperiodeNo" />
+                            <label for="RadioVorperiodeNo">Nein</label>
+                        </div>
+
+                        <h4>Bericht automatisch generieren</h4>
+
+                        <div id="RadioButtonsAutomaticGenerating">
+                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateYes" />
+                            <label for="RadioGenerateAutomaticallyYes">Ja</label>
+                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo" />
+                            <label for="RadioGenerateAutomaticallyNo">Nein</label>
+                        </div>
+
+                        <h4>Anmerkung</h4>
+                        <input type="text" />
+                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht bearbeiten" />
+                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                    </form>			
+                </div>
+            </div>
+        </div>
+</ui:composition>
+

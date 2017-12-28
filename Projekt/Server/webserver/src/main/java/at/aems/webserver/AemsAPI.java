@@ -14,7 +14,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -110,6 +113,18 @@ public class AemsAPI {
             // ignore
         }
         return null;
+    }
+    
+    public static List<String> asStringList(String s) {
+        String[] arr = s.split(";");
+        List<String> res = new ArrayList<>(Arrays.asList(arr));
+        if(res.isEmpty())
+            return res;
+        String last = res.get(res.size() - 1);
+        if(last == null || last.length() == 0){
+            res.remove(last);
+        }
+        return res;
     }
 
 }

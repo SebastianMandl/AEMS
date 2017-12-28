@@ -18,7 +18,6 @@
                         <h:inputText maxlength="64" pt:placeholder="Meine Statistik" pt:required="required" value="#{newStatistic.name}"></h:inputText>
 
                         <h4>Zählertyp</h4>
-
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
 
@@ -60,6 +59,26 @@
                         </h:selectOneMenu>
 
 
+                        <h4>Anomalien berücksichtigen</h4>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
+
+                            <ul class="dropdown-menu zaehler_format">
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Außentemperatur</label>
+                                    </div>
+                                </li>
+
+                                <li role="presentation">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" />Jahreszeit</label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
 
                         <h4>Anmerkung</h4>
                         

@@ -22,7 +22,7 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class UserBean implements Serializable {
 
-    private int userId = 0;
+    private int userId = -1;
     private String username;
     private String password;
 
