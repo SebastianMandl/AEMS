@@ -1,6 +1,6 @@
 package aems.graphql;
 
-import aems.GraphQLCondition;
+import aems.graphql.utils.GraphQLCondition;
 import aems.DatabaseConnectionManager;
 import aems.database.AEMSDatabase;
 import aems.database.DatabaseConnection;

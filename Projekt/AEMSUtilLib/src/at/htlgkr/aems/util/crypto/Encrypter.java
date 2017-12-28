@@ -1,5 +1,6 @@
 package at.htlgkr.aems.util.crypto;
 
+import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +40,10 @@ public class Encrypter {
 		cipher.init(Cipher.ENCRYPT_MODE, keyBytes);
 		byte[] encrypted = cipher.doFinal(raw);
 		return encrypted;
+	}
+	
+	public static byte[] requestEncryption(BigDecimal key, byte[] raw) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException{
+		return requestEncryption(key.toString().getBytes(), raw);
 	}
 	
 }

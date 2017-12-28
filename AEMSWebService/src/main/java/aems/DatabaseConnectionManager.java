@@ -12,8 +12,8 @@ import java.util.logging.Logger;
  */
 public class DatabaseConnectionManager {
     
-    private static final String USERNAME = "aems";
-    private static final String PASSWORD = "pwd";
+    private static final String USERNAME = "postgres";
+    private static final String PASSWORD = "postgres";
     
     // cache the database connection
     private static DatabaseConnection connection;
