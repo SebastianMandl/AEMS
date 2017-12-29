@@ -161,29 +161,29 @@ public class DiffieHellmanProcedure {
 		ServerSocket server = new ServerSocket(9950);
 		Socket socket = server.accept();
 		
-		if(BLOCKED_INET_ADDRESSES.containsKey(socket.getInetAddress())) {
-			Long blockedTime = BLOCKED_INET_ADDRESSES.get(socket.getInetAddress());
-			if(System.currentTimeMillis() - blockedTime >= (1_000 * 60)) {
-				BLOCKED_INET_ADDRESSES.remove(socket.getInetAddress());
-				ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 0);
-			} else {
-				server.close();
-				socket.close();
-				return null;
-			}
-		}
-		
-		if(ACCESSES_PER_ADDRESS_PER_MINUTE.containsKey(socket.getInetAddress())) {
-			int accessCount = ACCESSES_PER_ADDRESS_PER_MINUTE.get(socket.getInetAddress());
-			if(accessCount + 1 > TOTAL_ACCESSES_PER_ADDRESS_PER_MINUTE) {
-				BLOCKED_INET_ADDRESSES.put(socket.getInetAddress(), System.currentTimeMillis());
-				socket.close();
-				server.close();
-				return null;
-			}
-		} else {
-			ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 1);
-		}
+//		if(BLOCKED_INET_ADDRESSES.containsKey(socket.getInetAddress())) {
+//			Long blockedTime = BLOCKED_INET_ADDRESSES.get(socket.getInetAddress());
+//			if(System.currentTimeMillis() - blockedTime >= (1_000 * 60)) {
+//				BLOCKED_INET_ADDRESSES.remove(socket.getInetAddress());
+//				ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 0);
+//			} else {
+//				server.close();
+//				socket.close();
+//				return null;
+//			}
+//		}
+//		
+//		if(ACCESSES_PER_ADDRESS_PER_MINUTE.containsKey(socket.getInetAddress())) {
+//			int accessCount = ACCESSES_PER_ADDRESS_PER_MINUTE.get(socket.getInetAddress());
+//			if(accessCount + 1 > TOTAL_ACCESSES_PER_ADDRESS_PER_MINUTE) {
+//				BLOCKED_INET_ADDRESSES.put(socket.getInetAddress(), System.currentTimeMillis());
+//				socket.close();
+//				server.close();
+//				return null;
+//			}
+//		} else {
+//			ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 1);
+//		}
 		
 		try(BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 			

@@ -20,25 +20,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "AAA", urlPatterns = {"/AAA/*"})
 public class AAA extends HttpServlet {
-
-    private byte[] key;
     
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    key = DiffieHellmanProcedure.receiveKeyInfos();
-                    return;
-                } catch (IOException ex) {
-                    Logger.getLogger(AAA.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }).start();
-        
-        while(key == null);
-        AESKeyManager.addKey(req.getRemoteAddr(), key);
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        byte[] key = DiffieHellmanProcedure.receiveKeyInfos();
+        AESKeyManager.addKey(req.getLocalAddr(), key);
     }
     
 }
