@@ -86,7 +86,7 @@ public class NewStatisticBean implements Serializable {
 
     public String doCreate() {
         /* Call API - JSON Body = data.toJson() */
-        return "statistiken";
+        return "einstellungenStatistiken";
     }
 
 }

@@ -16,7 +16,7 @@ $(document).ready(function () {
 });
 
 function getVars() {
-        document.getElementById("newWarningForm:_warningType").value = "BENACHRICHTIGUNG";
+        document.getElementById("newWarningForm:_warningType").value = "0";
         document.getElementById("newWarningForm:_warningMeters").value = getWarningMeters();
         document.getElementById("newWarningForm:_warningDays").value = getWarningDays();
         document.getElementById("newWarningForm:_warningVariance").value = $("#variance").val();

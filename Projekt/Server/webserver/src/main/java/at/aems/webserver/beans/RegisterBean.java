@@ -5,6 +5,10 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.webserver.AemsAPI;
+import at.aems.webserver.data.ApiAction;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javax.faces.bean.ManagedBean;
 
 /**
@@ -56,6 +60,22 @@ public class RegisterBean {
     }
     
     public String doRegister() {
+        
+        JsonObject obj = new JsonObject();
+        JsonObject data = new JsonObject();
+        
+        data.addProperty("username", this.username);
+        data.addProperty("password", this.password);
+        data.addProperty("email", this.email);
+        data.addProperty("plz", this.plz);
+        
+        obj.addProperty("action", "REGISTER");
+        obj.add("data", data);
+        
+        String jsonString = new Gson().toJson(obj);
+        
+        AemsAPI.doPost(jsonString);
+        System.out.println(jsonString);
         
         return "register-done";
     }

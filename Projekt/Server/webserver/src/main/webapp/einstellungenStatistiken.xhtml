@@ -42,7 +42,7 @@
                 <h2 class="statistics-h2">Statistiken der Startseite:</h2>
 
                 <div id="homepageList" class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <!-- Ajax -->
+                    
                 </div>
 
 
@@ -63,6 +63,10 @@
             </article>
 
         </c:if>
+        
+
+        <!-- To fix last statistic getting covered up by footer: -->
+        <div style="margin-top: 10%"></div>
 
 
         <!-- Footer -->
@@ -98,7 +102,12 @@
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>     
         <script language="javascript" type="text/javascript" src="js/statistics/new.js"></script>
-        <!--   <script language="javascript" type="text/javascript" src="js/statistics/einstellungenStatistiken.js"></script> -->
+        <script language="javascript" type="text/javascript" src="js/statistics/einstellungenStatistiken.js"></script>
+
+        <script>
+            var jsonData = JSON.parse(`#{statisticBean.json}`);
+            populateStatisticLists(jsonData); 
+        </script>
 
 
     </body>

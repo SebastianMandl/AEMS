@@ -5,6 +5,11 @@
  */
 package at.aems.webserver;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonStructure;
 
@@ -39,7 +43,30 @@ public class AemsAPI {
 
     public static int getUserId(String username, String password) {
         return 3;
+    }
+    
+    public static JsonElement doPost(String body) {
+        try {
+            HttpURLConnection conn;
+            URL url = new URL(API_URL);
+            conn = (HttpURLConnection) url.openConnection();
+            
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Length", Integer.toString(body.length()));
+            conn.setDoOutput(true);
+            conn.getOutputStream().write(body.getBytes("UTF-8"));
+            
+            conn.connect();
+            
+            String result = readResult(conn);
 
+            return new JsonParser().parse(result);
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static JsonStructure call(String t, Map<String, Object> params) {
