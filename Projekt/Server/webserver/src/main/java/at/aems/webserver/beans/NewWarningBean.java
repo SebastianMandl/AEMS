@@ -5,10 +5,11 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsInsertAction;
 import at.aems.webserver.AemsAPI;
-import at.aems.webserver.data.AemsAction;
-import com.google.gson.JsonObject;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -22,11 +23,14 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class NewWarningBean implements Serializable {
     
-    private AemsAction notificationData;
-    private AemsAction notificationMeterData;
-    private AemsAction notificationExceptionData;
+    private String name;
+    private int type;
+    private List<String> meterIds = new ArrayList<>();
+    private List<String> exceptionDates = new ArrayList<>();
+    private List<String> exceptionDays = new ArrayList<>();
+    private int variance;
     
-    private static final String TABLE = "Notifications";
+    private AemsInsertAction action;
     
     @ManagedProperty(value = "#{user}")
     private UserBean userBean;
@@ -35,63 +39,58 @@ public class NewWarningBean implements Serializable {
     
     @PostConstruct
     public void init() {
-        notificationData = new AemsAction(userBean.getUserId(), userBean.getAuthenticationString(), "INSERT");
-        notificationMeterData = new AemsAction(userBean.getUserId(), userBean.getAuthenticationString(), "INSERT");
-        notificationExceptionData = new AemsAction(userBean.getUserId(), userBean.getAuthenticationString(), "INSERT");
-        
-        notificationData.addTable(TABLE);
-        notificationMeterData.addTable("NotificationMeters");
-        notificationExceptionData.addTable("NotificationExceptions");
-    }
-
-    public String getName() {
-        return (String) notificationData.getTable(TABLE).get("name");
+        action = new AemsInsertAction(userBean.getUserId(), userBean.getAuthenticationString());
+        action.setTable("Notifications");
+        action.beginWrite();
     }
 
     public void setName(String name) {
-        notificationData.getTable(TABLE).put("name", name); 
+        this.name = name;
+    }
+    
+    public String getName() {
+        return name;
     }
 
-    public String getType() {
-        return (String) notificationData.getTable(TABLE).get("type");
+    public void setType(int type) {
+        action.write("type", type);
     }
-
-    public void setType(String type) {
-        notificationData.getTable(TABLE).put("type", type);
-    }
-
-    public String getMeters() {
-        return null;
-    }
-
+    
     public void setMeters(String meters) {
-        
+        this.meterIds = AemsAPI.asStringList(meters);
     }
-
-    public String getExceptionDays() {
-        return null;
+    
+    public String getMeters() {
+        return String.join(";", meterIds);
+    }
+    
+    public int getType() {
+        return type;
     }
 
     public void setExceptionDays(String exceptionDays) {
-        
+        this.exceptionDays = AemsAPI.asStringList(exceptionDays);
     }
-
-    public String getExceptionDates() {
-        return null;
+    
+    public String getExceptionDays() {
+        return String.join(";", exceptionDays);
     }
 
     public void setExceptionDates(String exceptionDates) {
-        
+        this.exceptionDates = AemsAPI.asStringList(exceptionDates);
+    }
+    
+    public String getExceptionDates() {
+        return String.join(";", exceptionDates);
     }
 
-    public String getVariance() {
-        return null;
+    public void setVariance(int variance) {
+        this.variance = variance;
     }
-
-    public void setVariance(String variance) {
-        
+    
+    public int getVariance() {
+        return variance;
     }
-
 
     public UserBean getUserBean() {
         return userBean;
@@ -102,13 +101,22 @@ public class NewWarningBean implements Serializable {
     }
     
     
+    
+    
     public String doAddWarning() {
-        notificationData.getTable(TABLE).put("user", userBean.getUserId());
         
-        JsonObject response = AemsAPI.doPost(notificationData.toJson()).getAsJsonObject();
-        int notificationId = response.get("id").getAsInt();
+        AemsInsertAction action = new AemsInsertAction(userBean.getUserId(), userBean.getAuthenticationString());
+        action.setTable("Notifications");
+        action.beginWrite();
+       
+        action.write("name", name);
+        action.write("type", type);
+        action.write("variance", variance);
         
-        System.out.print(notificationData.toJson());
+        action.endWrite();
+        
+        System.out.print(action.toJson());
+        
         return "warnungen";
     }
     

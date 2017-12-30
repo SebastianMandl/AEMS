@@ -5,7 +5,6 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.webserver.data.statistic.NewStatisticData;
 import at.aems.webserver.data.statistic.Period;
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +20,6 @@ import javax.faces.model.SelectItem;
 @ManagedBean(name = "newStatistic")
 public class NewStatisticBean implements Serializable {
 
-    private NewStatisticData data;
     private Period periods;
 
     @ManagedProperty(value = "#{user}")
@@ -32,7 +30,7 @@ public class NewStatisticBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        data = new NewStatisticData(userBean.getUserId(), userBean.getAuthenticationString());
+        
     }
 
     public SelectItem[] getPeriodValues() {
@@ -53,31 +51,31 @@ public class NewStatisticBean implements Serializable {
     }
 
     public String getName() {
-        return data.getStatisticName();
+        return null;
     }
 
     public void setName(String name) {
-        data.setStatisticName(name);
+        
     }
 
     public Period getPeriod() {
-        return data.getPeriod();
+        return null;
     }
 
     public void setPeriod(Period period) {
-        this.data.setPeriod(period);
+       
     }
 
     public String getAnnotation() {
-        return data.getAnnotation();
+        return null;
     }
 
     public void setAnnotation(String annotation) {
-        this.data.setAnnotation(annotation);
+       
     }
     
     public void setDates(List<String>dates) {
-        
+       
     }
 
     public Period[] getPeriods() {

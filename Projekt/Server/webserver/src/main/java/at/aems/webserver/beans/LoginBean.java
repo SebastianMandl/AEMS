@@ -31,6 +31,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     private UserBean userBean;
     
     public LoginBean() {
+        
     }
 
     public String getUsername() {

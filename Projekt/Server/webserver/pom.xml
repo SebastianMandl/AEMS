@@ -39,6 +39,11 @@
             <artifactId>rewrite-config-prettyfaces</artifactId>
             <version>3.4.1.Final</version>
         </dependency>
+        <dependency>
+            <groupId>at.aems</groupId>
+            <artifactId>api-lib</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

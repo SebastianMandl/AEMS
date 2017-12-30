@@ -6,7 +6,6 @@
 package at.aems.webserver.beans;
 
 import at.aems.webserver.AemsAPI;
-import at.aems.webserver.data.ApiAction;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javax.faces.bean.ManagedBean;
