@@ -5,16 +5,17 @@ import at.htlgkr.aems.database.DatabaseConnection;
 import at.htlgkr.aems.database.DatabaseConnectionManager;
 import at.htlgkr.aems.database.ResultSet;
 import at.htlgkr.aems.util.crypto.Decrypter;
+import at.htlgkr.aems.util.crypto.Encrypter;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -39,15 +40,20 @@ public class RestInf extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {        
-        String query = checkRequest(req, resp)[0];
-
+        String[] request = checkRequest(req, resp);
+        String query = request[0];
+        
         GraphQLSchema schema = new GraphQLSchema(Query.getInstance());
         GraphQL ql = GraphQL.newGraphQL(schema).build();
         ExecutionResult result = ql.execute(query);
 
         PrintWriter writer = resp.getWriter();
         try {
-            writer.write(result.getData().toString());
+            String data = result.getData().toString();
+            if(request[3].equals("AES")) {
+                data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])), data.getBytes()));
+            }
+            writer.write(data);
         } catch(Exception e) {
             writer.write("{\"error\":\"no data was returned!\"}");
         }
@@ -244,10 +250,12 @@ public class RestInf extends HttpServlet {
         if(encryption.equals("AES")) {
             BigDecimal key = AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(userId));
             try {
-                data = new String(Decrypter.requestDecryption(key, data.getBytes("UTF-8")), "UTF-8");
-            } catch (UnsupportedEncodingException | InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException ex) {
+                data = new String(Decrypter.requestDecryption(key, Base64.getUrlDecoder().decode(data)));
+            } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
                 Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if(encryption.equals("SSL")) {
+            data = new String(Base64.getUrlDecoder().decode(data));
         }
         
         return new String[]{ data, action, userId, encryption };
