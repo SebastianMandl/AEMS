@@ -47,6 +47,9 @@ public class AESKeyManager {
             String username = set.getString(0, 0);
             
             BigDecimal key = KEYS.get("0:0:0:0:0:0:0:1");
+            
+            //String password = DatabaseConnectionManager.getDatabaseConnection().callFunction("aems", "get_user_password", String.class, new Object[]{ username });
+            
             return KeyUtils.salt(key, username, "pwd"); // for pwd make a function call ; out of commission due to non functioning pljava in postgres.
         } catch (SQLException ex) {
             Logger.getLogger(AESKeyManager.class.getName()).log(Level.SEVERE, null, ex);

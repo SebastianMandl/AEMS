@@ -40,7 +40,7 @@ public class ResultSet implements Iterable<Object[]> {
 		return getObject(row, col).toString();
 	}
 	
-	public float getInteger(int row, int col) throws NumberFormatException {
+	public int getInteger(int row, int col) throws NumberFormatException {
 		return Integer.parseInt(getString(row, col));
 	}
 	

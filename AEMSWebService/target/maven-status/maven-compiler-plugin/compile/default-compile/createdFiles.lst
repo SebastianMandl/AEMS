@@ -5,7 +5,6 @@ aems\DatabaseConnectionManager.class
 aems\graphql\MeterData$2.class
 aems\graphql\User$1$1.class
 aems\graphql\Meter$4.class
-aems\AAA$1.class
 aems\AESKeyManager.class
 aems\graphql\Period$1.class
 aems\database\AEMSDatabase$MeterData.class
