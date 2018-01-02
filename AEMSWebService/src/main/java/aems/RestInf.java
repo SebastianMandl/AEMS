@@ -1,9 +1,9 @@
 package aems;
 
+import aems.database.AEMSDatabase;
+import aems.database.DatabaseConnection;
+import aems.database.ResultSet;
 import aems.graphql.Query;
-import at.htlgkr.aems.database.DatabaseConnection;
-import at.htlgkr.aems.database.DatabaseConnectionManager;
-import at.htlgkr.aems.database.ResultSet;
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
 import graphql.ExecutionResult;
@@ -13,9 +13,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -38,10 +42,89 @@ public class RestInf extends HttpServlet {
     
     // furthermore implement update and put
     
+    private static final String ACTION_LOGIN = "LOGIN";
+    private static final String ENCRYPTION_AES = "AES";
+    private static final String ENCRYPTION_SSL = "SSL";
+    
+    private void doLogin(String query, String encryption, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JSONObject root = new JSONObject(query);
+        String username = root.getString("usr");
+        String authStr = root.getString("auth_str");
+        String salt = root.getString("salt");
+
+        DatabaseConnection con = DatabaseConnectionManager.getDatabaseConnection();
+        String password;
+        try {
+            password = con.callFunction("aems", "get_user_password", String.class, new Object[]{ username });
+        } catch (SQLException ex) {
+            Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
+            // username does not exist
+            resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+            resp.getWriter().flush();
+            return;
+        }
+        // certainty that the username exists
+        try {
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+            byte[] hash = sha256.digest((username + "" + password).getBytes());
+            byte[] x = authStr.getBytes();
+            // apply salt here
+            if(!Arrays.equals(hash, authStr.getBytes())) {
+                resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+
+        //certainty that the credentials are valid
+
+        ArrayList<String[]> projection = new ArrayList<>();
+        projection.add(new String[]{ AEMSDatabase.Users.ID });
+        HashMap<String, String> selection = new HashMap<>();
+        selection.put(AEMSDatabase.Users.USERNAME, username);
+        try {
+            ResultSet set = con.select("aems", AEMSDatabase.USERS, projection, selection);
+            int userId = set.getInteger(0, 0);
+            
+            String response = "{ id : " + userId + " }";
+            response = getEncryptedResponse(response, encryption, userId, req, resp);
+            
+            resp.getWriter().write(response);
+            resp.getWriter().flush();
+        } catch (SQLException ex) {
+            resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+            resp.getWriter().flush();
+        }
+    }
+    
+    private String getEncryptedResponse(String response, String encryption, int userId, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if(encryption.equals(ENCRYPTION_AES)) {
+            try {
+                response = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(AESKeyManager.getSaltedKey(req.getRemoteAddr(), userId), response.getBytes()));
+                return response;
+            } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+                Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
+                resp.getWriter().write("{\"error\":\"no key was priorly established!\"}");
+                resp.getWriter().flush();
+                return null;
+            }
+        }
+        return response;
+    }
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {        
         String[] request = checkRequest(req, resp);
         String query = request[0];
+        String action = request[1];
+        String ecryption = request[3];
+        
+        // establish exception for login request
+        if(action.equals(ACTION_LOGIN)) {
+            doLogin(query, ecryption, req, resp);
+            return;
+        }
         
         GraphQLSchema schema = new GraphQLSchema(Query.getInstance());
         GraphQL ql = GraphQL.newGraphQL(schema).build();
@@ -50,14 +133,14 @@ public class RestInf extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         try {
             String data = result.getData().toString();
-            if(request[3].equals("AES")) {
+            if(ecryption.equals(ENCRYPTION_AES)) {
                 data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])), data.getBytes()));
             }
             writer.write(data);
-        } catch(Exception e) {
-            writer.write("{\"error\":\"no data was returned!\"}");
+        } catch(NumberFormatException | InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+            Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, e);
+            writer.write("{ error :\"no data was returned!\"}");
         }
-        writer.write("\r\n");
         writer.flush();
         
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -193,7 +276,10 @@ public class RestInf extends HttpServlet {
             
             String stm = "SELECT id FROM aems.\"" + tableName + "\" ORDER BY \"id\" DESC";
             ResultSet set = con.customSelect(stm);
-            resp.getWriter().write("{ id : \"" + set.getString(0, 0) + "\" }");
+            String response = "{ id : \"" + set.getString(0, 0) + "\" }";
+            response = getEncryptedResponse(response, results[3], Integer.parseInt(results[2]), req, resp);
+            
+            resp.getWriter().write(response);
             resp.getWriter().flush();
             
         } catch (SQLException ex) {
