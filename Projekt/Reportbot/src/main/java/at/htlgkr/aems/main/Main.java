@@ -130,6 +130,13 @@ public class Main {
     }
   }
   
+  public static void setComplete(ExcelDataExtracter extracter) {
+	  extracters.remove(extracter);
+	  if(extracters.isEmpty()) {
+		  AemsAPI.commitMeterData();
+	  }
+  }
+  
   private static List<AemsUser> getUsers() {
     return AemsAPI.getAemsUsers();
   }
