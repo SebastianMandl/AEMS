@@ -116,6 +116,10 @@ public class RestInf extends HttpServlet {
                 username = set.getString(0, 0);
             }
             
+            // apply additional login logic here : session establishment, ...
+            
+            SessionManager.SESSION_TO_IDS.put(req.getRemoteAddr(), username);
+            
             String response = "{ id : " + username + " }";
             response = getEncryptedResponse(response, encryption, username, req, resp);
             
@@ -158,20 +162,24 @@ public class RestInf extends HttpServlet {
                 doLogin(query, ecryption, req, resp);
                 break;
             case ACTION_QUERY:
-                GraphQLSchema schema = new GraphQLSchema(Query.getInstance());
+                //GraphQLSchema schema = new GraphQLSchema(Query.getInstance(SessionManager.SESSION_TO_IDS.get(req.getRemoteAddr())));
+                GraphQLSchema schema = new GraphQLSchema(Query.getInstance("185"));
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
-                ExecutionResult result = ql.execute(query);
                 PrintWriter writer = resp.getWriter();
+                ExecutionResult result = ql.execute(query);
+
                 try {
                     String data = result.getData().toString();
                     if(ecryption.equals(ENCRYPTION_AES)) {
                         data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(NUMBER_PATTERN.matcher(request[2]).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), request[2]), data.getBytes()));
                     }
                     writer.write(data);
-                } catch(NumberFormatException | InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
-                    Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, e);
+                    writer.flush();
+                } catch(NullPointerException | NumberFormatException | InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+                    //Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, e);
                     writer.write("{ error :\"no data was returned!\"}");
-                }   writer.flush();
+                    writer.flush();
+                }   
                 resp.setStatus(HttpServletResponse.SC_OK);
                 break;
             default:
@@ -351,8 +359,8 @@ public class RestInf extends HttpServlet {
     private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
     
     private String[] checkRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        final int TIMEOUT = 10_000; // 10 seconds
-//        long lastTime = System.currentTimeMillis();
+        final int TIMEOUT = 10_000; // 10 seconds
+        long lastTime = System.currentTimeMillis();
         
         String data = req.getParameter("data");
         String action = req.getParameter("action").toUpperCase();
@@ -360,17 +368,17 @@ public class RestInf extends HttpServlet {
         String authStr = req.getParameter("auth_str");
         String encryption = req.getParameter("encryption").toUpperCase();
         
-//        while(data == null || action == null || encryption == null || userId == null) {
-//            if(System.currentTimeMillis() - lastTime >= TIMEOUT) {
-//                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not all request parameters could be received completely within time!");
-//                return null;
-//            }
-//            
-//            data = req.getParameter("data");
-//            action = req.getParameter("action").toUpperCase();
-//            userId = req.getParameter("user_id");
-//            encryption = req.getParameter("encryption").toUpperCase();
-//        }
+        while(data == null || action == null || encryption == null || user == null) {
+            if(System.currentTimeMillis() - lastTime >= TIMEOUT) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not all request parameters could be received completely within time!");
+                return null;
+            }
+            
+            data = req.getParameter("data");
+            action = req.getParameter("action").toUpperCase();
+            user = req.getParameter("user");
+            encryption = req.getParameter("encryption").toUpperCase();
+        }
         
         if(encryption.equals(ENCRYPTION_AES)) {
             BigDecimal key = NUMBER_PATTERN.matcher(user).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(user)) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), user);

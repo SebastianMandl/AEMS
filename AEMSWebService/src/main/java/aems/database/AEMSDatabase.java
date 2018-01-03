@@ -1,5 +1,8 @@
 package aems.database;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class represents the structure of the AEMS Database.
  * The values beeing hold by each enumeration are representative for the column names.
@@ -142,6 +145,16 @@ public class AEMSDatabase {
             public static final String PERIOD = "period";
             public static final String INITIAL_OCCURRENCE = "initial_occurrence";
             public static final String LAST_OCCURRENCE = "last_occurrence";
+        }
+        
+        public static boolean doesTablePossessColumn(String tableName, String columnName) {
+            try {                
+                Class<?> clazz = Class.forName("aems.database.AEMSDatabase$" + tableName, true, AEMSDatabase.class.getClassLoader());
+                clazz.getDeclaredField(columnName.toUpperCase());
+                return true;
+            } catch (ClassNotFoundException | NoSuchFieldException | SecurityException ex) {
+                return false;
+            }
         }
 	
 }

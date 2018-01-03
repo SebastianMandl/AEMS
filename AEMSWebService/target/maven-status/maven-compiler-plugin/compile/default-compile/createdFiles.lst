@@ -49,6 +49,7 @@ at\htlgkr\aems\util\crypto\Decrypter.class
 aems\graphql\StatisticMeter$2.class
 aems\graphql\MeterData$4.class
 aems\graphql\Statistic$3.class
+aems\SessionManager.class
 aems\logger\Logger$LogType.class
 aems\graphql\User$1.class
 aems\database\AEMSDatabase.class

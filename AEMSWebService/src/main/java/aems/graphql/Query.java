@@ -4,8 +4,10 @@ import aems.graphql.utils.GraphQLCondition;
 import aems.DatabaseConnectionManager;
 import aems.database.AEMSDatabase;
 import aems.database.DatabaseConnection;
+import aems.database.ResultSet;
 import aems.graphql.utils.Argument;
 import graphql.Scalars;
+import graphql.ShouldNotHappenException;
 import graphql.language.Field;
 import graphql.language.Selection;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -94,8 +97,10 @@ public class Query extends GraphQLObjectType {
     private Query(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
     }
+    
+    private String authorizationId = null;
 
-    public static Query getInstance() {  
+    public static Query getInstance(String authorizationId) {  
         if(instance != null)
             return instance;
         
@@ -116,6 +121,7 @@ public class Query extends GraphQLObjectType {
         defs.add(ARCHIVED_METER_NOTIFICATIONS);
         
         instance = new Query("query", "", defs, new ArrayList<GraphQLOutputType>());
+        instance.authorizationId = authorizationId;
         return instance;
     }
     
@@ -199,14 +205,98 @@ public class Query extends GraphQLObjectType {
                     list.add(root.toString());
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
             }
                           
             return list;
     }  
     
+    // user table get queried
+    // path: user_id
+    private static boolean checkAuthority1Level(JSONObject obj) {
+        if(!obj.getString("id").equals(instance.authorizationId))
+            return false;
+        return true;
+    }
+    
+    // any table comprising the column "user" gets queried
+    // path: user -> user_id
+    private static boolean checkAuthority2Level(JSONObject obj, String table) {
+        ArrayList<String[]> projection = new ArrayList<>();
+        projection.add(new String[]{ "user" });
+        HashMap<String, String> selection = new HashMap<>();
+        selection.put("id", obj.getString("id"));
+        try {
+            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
+            if(!set.getString(0, 0).equals(instance.authorizationId))
+                return false;
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    // any table comprising the column "meter" gets queried
+    // path: meter -> user -> user_id
+    private static boolean checkAuthority3Level(JSONObject obj, String table) {
+        ArrayList<String[]> projection = new ArrayList<>();
+        projection.add(new String[]{ "meter" });
+        HashMap<String, String> selection = new HashMap<>();
+        selection.put("id", obj.getString("id"));
+        
+        try {
+            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
+            projection.clear();
+            projection.add(new String[]{ "user" });
+            selection.clear();
+            selection.put("id", set.getString(0,0)/* = intermediate table id*/);
+            
+            set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.METERS, projection, selection);
+            
+            if(!set.getString(0, 0).equals(instance.authorizationId))
+                return false;
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    private static boolean tryParse(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+    
     public static String execQuery(JSONObject obj, String table, String column, GraphQLCondition... conditions) {
         if(obj.has("id")) {
+            boolean authorized = false;
+            switch (table) {
+                // authorization check ; is this action permitted by the given authenticated user
+                case AEMSDatabase.USERS:
+                    // check if id concides with the current authenticated id at ip address
+                    authorized = checkAuthority1Level(obj); // here is the mistake hidden
+                    break;
+                case AEMSDatabase.METERS:
+                    authorized = checkAuthority2Level(obj, AEMSDatabase.METERS);
+                    break;
+                default:
+                    if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
+                        authorized = checkAuthority2Level(obj, table);
+                    } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
+                        authorized = checkAuthority3Level(obj, table);
+                    }
+                    break;
+            }
+            
+            if(!authorized) {
+                throw new graphql.GraphQLException("Insufficient authorization!");
+            }
+            
             for(GraphQLCondition condition : conditions) {
                 if(condition.matches(obj.getString("id")))
                     return condition.exec();
