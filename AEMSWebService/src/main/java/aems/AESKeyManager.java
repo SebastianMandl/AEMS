@@ -38,13 +38,32 @@ public class AESKeyManager {
         KEYS.put(address, new BigDecimal(new String(key)));
     }
     
-    public static BigDecimal getSaltedKey(String address, int userId) {
+    public static BigDecimal getSaltedKey(String address, String username) {
+        SELECTION.clear();
+        SELECTION.put(AEMSDatabase.Users.USERNAME, username);
+        ArrayList<String[]> projection = new ArrayList<>(); // can be created at a local scope since this method is only run at login
+        projection.add(new String[]{ AEMSDatabase.Users.ID });
         try {
-            SELECTION.clear();
-            SELECTION.put(AEMSDatabase.Users.ID, String.valueOf(userId));
-            
-            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.USERS, PROJECTION, SELECTION);
-            String username = set.getString(0, 0);
+            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.USERS, projection, SELECTION);
+            return getSaltedKey(address, set.getInteger(0, 0), username);
+        } catch (SQLException ex) {
+            Logger.getLogger(AESKeyManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public static BigDecimal getSaltedKey(String address, int userId) {
+        return getSaltedKey(address, userId, null);
+    }
+    
+    public static BigDecimal getSaltedKey(String address, int userId, String username) {
+        try {
+            if(username == null) {
+                SELECTION.clear();
+                SELECTION.put(AEMSDatabase.Users.ID, String.valueOf(userId));
+
+                ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.USERS, PROJECTION, SELECTION);
+                username = set.getString(0, 0);
+            }
             
             BigDecimal key = KEYS.get("0:0:0:0:0:0:0:1");
             

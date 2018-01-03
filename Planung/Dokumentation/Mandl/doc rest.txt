@@ -141,3 +141,38 @@ Die dafür benötigte Funktionalität ist in der Klasse at.htlgkr.aems.util.key.
 		String msg = new String(raw);
 		...
 
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Encoding von dem Parameter "data":
+	o Base64 (Java ... Base64.getUrlEncoder() oder Base64.getUrlDecoder())
+
+Actions:
+	o INSERT
+	o UPDATE
+	o DELETE
+	o QUERY
+	o LOGIN
+
+Parameter für AES:
+	o encryption
+	o user #id oder username
+	o data
+	o action
+
+Parameter für SSL:
+	o encryption
+	o user #id oder username
+	o data
+	o action
+	o auth_str # sha256(username + password)
+
+Anmerkung SSL:
+	Der Parameter "user" ist entweder die Id oder der Username -> mit dieser Information werden aus der Datenbank die "richtigen" Benutzerdaten
+	geholt, welche dann gehasht werden sha256(username + password) und anschließend mit dem vom Client gesendendeten "auth_str" verglichen werden.
+	Stimmen diese überein wird von einer positiven Anmeldung ausgegangen.
+
+Anmerkung AES:
+	Bei AES Verschlüsselung ist der "auth_str" nicht notwendig, da die Daten mit dem gesalteten AES-Key aus Random-Key * hash(username) * hash(password) an den
+	Server versendet werden. Der Server kann die Daten nur entschlüsseln (und somit ausführen), wenn die angegebenen Benutzerdaten jenen in der Datenbank entsprechen.
+	Dannach werden die Daten mit den Benutzerdaten aus der Datenbank verschlüsselt und zurück an den Client gesendet. Nur jener, welcher den Random-Teil des Schlüssels,
+	Benutzername und Passwort kennt, kann die Daten auch wieder entschlüsseln aus verwerten.
