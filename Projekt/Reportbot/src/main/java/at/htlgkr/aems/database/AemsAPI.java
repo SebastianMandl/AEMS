@@ -24,20 +24,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import at.aems.apilib.AemsInsertAction;
 import at.htlgkr.aems.database.AemsMeter.MeterType;
 import at.htlgkr.aems.main.Main;
 import at.htlgkr.aems.util.Logger.LogType;
+import at.htlgkr.aems.util.crypto.Encrypter;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 
 /**
  * This class is specifically designed to access and write data regarding
@@ -54,17 +66,21 @@ public class AemsAPI {
     initialize();
   }
   
+  private static final String API_URL = "https://api.aems.at";
   private static List<AemsUser> userList;
   private static Map<AemsLocation, Double> temperatureMap;
+  
+  private static AemsInsertAction insertMeters;
   /**
    * This methods initializes this class by populating the {@link #userList}.
    */
   private static void initialize() {
     userList = new ArrayList<AemsUser>();
     temperatureMap = new HashMap<AemsLocation, Double>();
+    insertMeters = new AemsInsertAction(new at.aems.apilib.AemsUser(0, "The", "Admin"));
     
     try {
-      URL url = new URL("https://google.at"); // Just a placeholder for now
+      URL url = new URL(API_URL); // Just a placeholder for now
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       
       if(connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -120,12 +136,31 @@ public class AemsAPI {
     
   }
   
-  public static void insertMeterData(MeterValue meter) {
+  public static void insertMeterData(MeterValue value) {
     //IMPORTANT: Due to the way this is programmed it is possible that
     // rows could be inserted multiple times. On insert, the database will have
     // to check if an entry like this (same meterId and timestamp) already
     // exists. If so, do not insert this row.
-    throw new NotImplementedException("API must be implemented first!");
+    insertMeters.write("meter", value.getId());
+    insertMeters.write("timestamp", value.getDate());
+    insertMeters.write("measured_value", value.getValue());
+    insertMeters.write("unit", "kWh");
+    insertMeters.endWrite();
+  }
+  
+  public static void commitMeterData() {
+	  /*
+	  try {
+		  String json = insertMeters.toJson();
+		  DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName(API_URL), 9950));
+		  byte[] clientKey = DiffieHellmanProcedure.confirmKey();
+		  byte[] encryptedData = Encrypter.requestEncryption(clientKey, json.getBytes(StandardCharsets.UTF_8));
+		  at.aems.apilib.AemsAPI.call(API_URL, "PUT", new String(encryptedData, "UTF-8"));
+	  } catch(Exception e) {
+		  Main.logger.log(LogType.ERROR, e);
+	  } */
+	 
+	  insertMeters.call(API_URL);
   }
   
 
