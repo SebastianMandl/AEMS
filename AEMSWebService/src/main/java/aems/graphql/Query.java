@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -214,14 +215,22 @@ public class Query extends GraphQLObjectType {
     // user table get queried
     // path: user_id
     private static boolean checkAuthority1Level(JSONObject obj) {
-        if(!obj.getString("id").equals(instance.authorizationId))
-            return false;
+        if(instance.parentTableName != null && instance.parentTableName.equals(AEMSDatabase.METERS)) {
+            return checkAuthority2Level(obj, instance.parentTableName);
+        }else {
+            if(!obj.getString("id").equals(instance.authorizationId))
+                return false;
+        }
         return true;
     }
     
     // any table comprising the column "user" gets queried
     // path: user -> user_id
     private static boolean checkAuthority2Level(JSONObject obj, String table) {
+        if(obj.has("user")) {
+            return obj.getString("user").equals(instance.authorizationId);
+        }
+        
         ArrayList<String[]> projection = new ArrayList<>();
         projection.add(new String[]{ "user" });
         HashMap<String, String> selection = new HashMap<>();
@@ -263,39 +272,29 @@ public class Query extends GraphQLObjectType {
         return false;
     }
     
-    private static boolean tryParse(String value) {
-        try {
-            Integer.parseInt(value);
-            return true;
-        } catch(Exception e) {
-            return false;
-        }
-    }
+    private String parentTableName;
     
     public static String execQuery(JSONObject obj, String table, String column, GraphQLCondition... conditions) {
-        if(obj.has("id")) {
-            boolean authorized = false;
-            switch (table) {
-                // authorization check ; is this action permitted by the given authenticated user
-                case AEMSDatabase.USERS:
-                    // check if id concides with the current authenticated id at ip address
-                    authorized = checkAuthority1Level(obj); // here is the mistake hidden
-                    break;
-                case AEMSDatabase.METERS:
-                    authorized = checkAuthority2Level(obj, AEMSDatabase.METERS);
-                    break;
-                default:
-                    if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
-                        authorized = checkAuthority2Level(obj, table);
-                    } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
-                        authorized = checkAuthority3Level(obj, table);
-                    }
-                    break;
-            }
-            
-            if(!authorized) {
-                throw new graphql.GraphQLException("Insufficient authorization!");
-            }
+        if(!table.equals(AEMSDatabase.USERS))
+            instance.parentTableName = table;
+                    
+        boolean authorized = false;
+        
+        if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
+            authorized = checkAuthority2Level(obj, table);
+        } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
+            authorized = checkAuthority3Level(obj, table);
+        } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
+            authorized = checkAuthority1Level(obj);
+        } else {
+            authorized = true;
+        }
+        
+        if(!authorized) {
+            throw new graphql.GraphQLException("Insufficient authorization!");
+        }
+        
+        if(obj.has("id")) {            
             
             for(GraphQLCondition condition : conditions) {
                 if(condition.matches(obj.getString("id")))

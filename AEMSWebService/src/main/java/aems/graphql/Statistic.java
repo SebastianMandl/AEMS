@@ -28,7 +28,7 @@ public class Statistic extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("id") ? obj.getInt("id") : Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.ID));
+            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.ID));
         }
     }).build();
     
@@ -36,7 +36,7 @@ public class Statistic extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("name") ? obj.getString("name") : Query.execQuery(obj, AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.NAME);
+            return Query.execQuery(obj, AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.NAME);
         }
     }).build();
     

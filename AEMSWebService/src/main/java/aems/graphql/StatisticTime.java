@@ -28,7 +28,7 @@ public class StatisticTime extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("id") ? obj.getInt("id") : Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.ID));
+            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.ID));
         }
     }).build();
     
@@ -36,7 +36,7 @@ public class StatisticTime extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("period_value_1") ? obj.getInt("period_value_1") : Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.PERIOD_VALUE_1));
+            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.PERIOD_VALUE_1));
         }
     }).build();
     
@@ -44,7 +44,7 @@ public class StatisticTime extends GraphQLObjectType {
         @Override
         public Integer get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("period_value_2") ? obj.getInt("period_value_2") : Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.PERIOD_VALUE_2));
+            return Integer.valueOf(Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.PERIOD_VALUE_2));
         }
     }).build();
     
@@ -52,7 +52,7 @@ public class StatisticTime extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("from_date") ? obj.getString("from_date") : Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.FROM_DATE);
+            return Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.FROM_DATE);
         }
     }).build();
     
@@ -60,7 +60,7 @@ public class StatisticTime extends GraphQLObjectType {
         @Override
         public String get(DataFetchingEnvironment environment) {
             JSONObject obj = new JSONObject(environment.getSource().toString());
-            return obj.has("to_date") ? obj.getString("to_date") : Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.TO_DATE);
+            return Query.execQuery(obj, AEMSDatabase.STATISTIC_TIMES, AEMSDatabase.StatisticTimes.TO_DATE);
         }
     }).build();
     
