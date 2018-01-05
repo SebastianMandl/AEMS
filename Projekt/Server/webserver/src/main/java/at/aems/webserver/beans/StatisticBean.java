@@ -5,7 +5,7 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.webserver.AemsAPI;
+import at.aems.webserver.AemsUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import javax.annotation.PostConstruct;

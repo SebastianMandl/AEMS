@@ -13,12 +13,35 @@ $(document).ready(function () {
            displayNotifications();
        }
     }); 
+    
+    $("#meterTypesList input").on("click", function() {
+        let dis = $(this);
+        if(!dis.prop("checked")) {
+            dis.prop("checked", true);
+        } 
+        $("#meterTypesList input").each(function(index, element) {
+            if($(this).val() !== dis.val()) {
+                $(this).prop("checked", false);
+            }
+        });
+        
+        let type = dis.val();
+        $("#meterList input").each(function(index, element) {
+           if($(this).attr("data-type") === type) {
+               $(this).parent().show();
+           } else {
+               $(this).parent().hide();
+               $(this).prop("checked", false);
+           }
+        });
+    });
+    $("#meterTypesList input").eq(0).click(); 
 });
 
 function getVars() {
-        document.getElementById("newWarningForm:_warningType").value = "0";
+        document.getElementById("newWarningForm:_warningType").value = $("#warningType").find(":selected").val();
         document.getElementById("newWarningForm:_warningMeters").value = getWarningMeters();
-        document.getElementById("newWarningForm:_warningDays").value = getWarningDays();
+        document.getElementById("newWarningForm:_warningDays").value = getWarningDays();  
         document.getElementById("newWarningForm:_warningVariance").value = $("#variance").val();
         document.getElementById("newWarningForm:_warningDates").value = getWarningDates();
 }

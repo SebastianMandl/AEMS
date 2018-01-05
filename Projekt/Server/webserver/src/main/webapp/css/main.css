@@ -94,6 +94,10 @@
     line-height: 200%;
 }
 
+.spacer {
+    margin-bottom: 100px; 
+}
+
 
 /* Fix for ugly logout link due to h:form */
 .logoutLink {

@@ -5,7 +5,7 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.webserver.AemsAPI;
+import at.aems.webserver.AemsUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javax.faces.bean.ManagedBean;
@@ -73,7 +73,7 @@ public class RegisterBean {
         
         String jsonString = new Gson().toJson(obj);
         
-        AemsAPI.doPost(jsonString);
+        AemsUtils.doPost(jsonString);
         System.out.println(jsonString);
         
         return "register-done";

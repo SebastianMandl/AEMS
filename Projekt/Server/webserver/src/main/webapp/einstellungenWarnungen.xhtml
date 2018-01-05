@@ -30,7 +30,7 @@
         <c:if test="#{!user.loggedIn}">
             <ui:include src="/templates/welcome.xhtml"></ui:include>
         </c:if>
-
+        <h1>#{user.userId}</h1>
         <c:if test="#{user.loggedIn}">
             <f:event type="preRenderView" listener="#{notificationBean.init}" />
             <!-- Seiteninhalt -->
@@ -88,6 +88,8 @@
             </article>
 
         </c:if>
+        
+        <div class="spacer"></div>
 
 
         <!-- Footer -->

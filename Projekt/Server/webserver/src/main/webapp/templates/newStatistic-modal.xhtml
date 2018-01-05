@@ -13,7 +13,7 @@
 
                     <h1>Neue Statistik erstellen</h1><br />
                     
-                    <h:form>
+                    <h:form id="newStatistic">
                         <h4>Statistikname</h4>
                         <h:inputText maxlength="64" pt:placeholder="Meine Statistik" pt:required="required" value="#{newStatistic.name}"></h:inputText>
 
@@ -23,13 +23,13 @@
 
                             <ul id="meterType" class="dropdown-menu zaehler_format">
 
-                                <!--
+                                <c:forEach items="#{userMeterBean.meterTypes}" var="type">
                                 <li role="presentation">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
+                                        <label><input type="checkbox" value="#{type}" />#{type}</label>
                                     </div>
                                 </li>
-                                -->
+                                </c:forEach>
 
                             </ul>
                         </div>
@@ -41,22 +41,26 @@
 
                             <ul id="meters" class="dropdown-menu zaehler_format">
 
-                                <!--
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-                                -->
-
+                                <c:forEach items="#{userMeterBean.meters.entrySet()}" var="meter">
+                                    <li role="presentation">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" data-type="#{meter.value}" value="#{meter.key}" />#{meter.key}</label>
+                                        </div>
+                                    </li>
+                                </c:forEach>
                             </ul>
                         </div>
+                        <h:inputHidden id="_meters"  value="#{newStatistic.meters}"></h:inputHidden>
 
 
                         <h4>Zeitraum</h4>
-                        <h:selectOneMenu class="form-control" id="periodSelection" value="#{newStatistic.period}">
-                            <f:selectItems value="#{newStatistic.getPeriodValues()}"/>
-                        </h:selectOneMenu>
+                        <select id="period" class="form-control">
+                            <option value="0">Täglich</option>
+                            <option value="1">Wöchentlich</option>
+                            <option value="2">Monatlich</option>
+                            <option value="3">Jährlich</option>
+                        </select>
+                        <h:inputHidden id="_period" value="#{newStatistic.period}"></h:inputHidden>
 
 
                         <h4>Anomalien berücksichtigen</h4>
@@ -83,7 +87,7 @@
                         <h4>Anmerkung</h4>
                         
                         <h:inputText value="#{newStatistic.annotation}" pt:placeholder="Optionale Anmerkung" maxlength="500"></h:inputText>
-                        <h:commandButton action="#{newStatistic.doCreate}" value="Statistik erstellen" class="login loginmodal-submit submitFormat" style="width: 100%"/>
+                        <h:commandButton action="#{newStatistic.doCreate}" onclick="setVars()" value="Statistik erstellen" class="login loginmodal-submit submitFormat" style="width: 100%"/>
                         <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                     </h:form>			
                 </div>

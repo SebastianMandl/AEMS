@@ -5,8 +5,13 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsInsertAction;
+import at.aems.apilib.AemsUser;
+import at.aems.apilib.crypto.EncryptionType;
+import at.aems.webserver.AemsUtils;
 import at.aems.webserver.data.statistic.Period;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -21,6 +26,13 @@ import javax.faces.model.SelectItem;
 public class NewStatisticBean implements Serializable {
 
     private Period periods;
+    
+    private String name;
+    private List<String> meters = new ArrayList<>();
+    private int period;
+    
+    private String annotation;
+    
 
     @ManagedProperty(value = "#{user}")
     private UserBean userBean;
@@ -45,44 +57,68 @@ public class NewStatisticBean implements Serializable {
     public void setUserBean(UserBean bean) {
         this.userBean = bean;
     }
+    
+    public String getMeters() {
+        return String.join(";", meters);
+    }
+    
+    public void setMeters(String meters) {
+        this.meters = AemsUtils.asStringList(meters);
+    }
 
     public UserBean getUserBean() {
         return userBean;
     }
 
     public String getName() {
-        return null;
+        return name;
     }
 
     public void setName(String name) {
-        
+        this.name = name;
     }
 
-    public Period getPeriod() {
-        return null;
+    public int getPeriod() {
+        return period;
     }
 
-    public void setPeriod(Period period) {
-       
+    public void setPeriod(int period) {
+       this.period = period;
     }
 
     public String getAnnotation() {
-        return null;
+        return annotation;
     }
 
     public void setAnnotation(String annotation) {
-       
-    }
-    
-    public void setDates(List<String>dates) {
-       
-    }
-
-    public Period[] getPeriods() {
-        return Period.values();
+       this.annotation = annotation;
     }
 
     public String doCreate() {
+        AemsUser user = new AemsUser(userBean.getUserId(), userBean.getUsername(), userBean.getPassword());
+        AemsInsertAction insert = new AemsInsertAction(user, EncryptionType.SSL);
+        insert.setTable("Statistics");
+        insert.beginWrite();
+        insert.write("user", user.getUserId());
+        insert.write("name", name);
+        insert.write("period", period);
+        insert.write("annotation", annotation);
+        insert.endWrite();
+        
+        System.out.print(insert.toJsonObject());
+        
+        int statisticId = 10;
+        
+        AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);
+        insertMeters.setTable("SatatisticMeters");
+        insertMeters.beginWrite();
+        for(String m : meters) {
+            insertMeters.write("statistic", statisticId);
+            insertMeters.write("meter", m);
+            insertMeters.endWrite();
+        }
+         
+        System.out.print(insertMeters.toJsonObject());
         /* Call API - JSON Body = data.toJson() */
         return "einstellungenStatistiken";
     }

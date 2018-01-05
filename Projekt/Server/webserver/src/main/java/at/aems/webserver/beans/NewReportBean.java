@@ -5,7 +5,7 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.webserver.AemsAPI;
+import at.aems.webserver.AemsUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;

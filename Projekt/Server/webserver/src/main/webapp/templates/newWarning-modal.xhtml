@@ -2,6 +2,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
@@ -19,13 +20,11 @@
 
                         <h4>Benachrichtigungstyp</h4>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
-                            <ul class="dropdown-menu" id="warningTypes">
-                                <li role="presentation"><a href="#">Benachrichtigung</a></li>
-                                <li role="presentation"><a href="#">Warnung</a></li>                  
-                            </ul>
-                        </div>
+                        <select id="warningType" class="form-control"> 
+                            <option value="0">Benachrichtigung</option>
+                            <option value="1">Warnung</option>
+                        </select>
+
                         <h:inputHidden id="_warningType" value="#{newWarning.type}"></h:inputHidden>
 
                         <h4>Zählertyp</h4>
@@ -33,31 +32,16 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
+                            <ul id="meterTypesList" class="dropdown-menu zaehler_format">
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wasser</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gas</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wärme</label>
-                                    </div>
-                                </li>
+                                <c:forEach items="#{userMeterBean.meterTypes}" var="item">
+                                    <li role="presentation">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="#{item}" />#{item}</label>
+                                        </div>
+                                    </li>
+                                </c:forEach>
+                               
                             </ul>
                         </div>
 
@@ -68,29 +52,13 @@
 
                             <ul id="meterList" class="dropdown-menu zaehler_format">
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="AT368746482374" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
+                                <c:forEach items="#{userMeterBean.meters.entrySet()}" var="entry">
+                                    <li role="presentation">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" data-type="#{entry.value}" value="#{entry.key}" />#{entry.key}</label>
+                                        </div>
+                                    </li>
+                                </c:forEach>
                             </ul>
                         </div>
                         

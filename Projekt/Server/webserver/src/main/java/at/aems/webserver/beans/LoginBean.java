@@ -5,7 +5,7 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.webserver.AemsAPI;
+import at.aems.webserver.AemsUtils;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
@@ -51,7 +51,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     }
     
     public String doLogin() {
-        int userId = AemsAPI.getUserId(username, password);
+        int userId = AemsUtils.getUserId(username, password);
         if(userId != -1) {
             userBean.setUserId(userId);
             userBean.setUsername(username);

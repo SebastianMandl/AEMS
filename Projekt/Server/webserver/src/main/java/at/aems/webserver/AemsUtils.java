@@ -21,6 +21,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ import javax.json.JsonStructure;
  *
  * @author Niklas
  */
-public class AemsAPI {
+public class AemsUtils {
 
     public static final String API_URL = "http://localhost:8080/webserver/dummy/";
 
@@ -103,9 +104,9 @@ public class AemsAPI {
             return result;
 
         } catch (MalformedURLException ex) {
-            Logger.getLogger(AemsAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AemsUtils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(AemsAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AemsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -152,6 +153,18 @@ public class AemsAPI {
             res.remove(last);
         }
         return res;
+    }
+    
+    public static String decodeBase64(String encoded) {
+        return new String(Base64.getUrlDecoder().decode(encoded.getBytes()));
+    }
+    
+    public static int getResponseId(String json) {
+        JsonObject ob = new JsonParser().parse(json).getAsJsonObject();
+        if(ob.has("id")) {
+            return ob.get("id").getAsInt();
+        }
+        return -1;
     }
 
 }
