@@ -155,6 +155,15 @@ public class AemsUtils {
         return res;
     }
     
+    public static List<Integer> asIntList(String s) {
+        List<String> strings = asStringList(s);
+        List<Integer> ints = new ArrayList<>();
+        for(String str : strings) {
+            ints.add(Integer.parseInt(str));
+        }
+        return ints;
+    }
+    
     public static String decodeBase64(String encoded) {
         return new String(Base64.getUrlDecoder().decode(encoded.getBytes()));
     }

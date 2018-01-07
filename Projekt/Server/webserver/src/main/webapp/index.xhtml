@@ -29,7 +29,6 @@
         <c:if test="#{!user.loggedIn}">
             <ui:include src="/templates/welcome.xhtml"></ui:include>
         </c:if>
-        <h1>#{user.userId}</h1> 
         <!-- Seiteninhalt -->
         <c:if test="#{user.loggedIn}">
             <article class="statistics">
