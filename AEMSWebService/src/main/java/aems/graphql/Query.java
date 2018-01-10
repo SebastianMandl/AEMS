@@ -29,6 +29,7 @@ import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.json.JSONObject;
 
 /**
@@ -212,11 +213,16 @@ public class Query extends GraphQLObjectType {
             return list;
     }  
     
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("^\\d+$");
+    
     // user table get queried
     // path: user_id
     private static boolean checkAuthority1Level(JSONObject obj) {
-        if(instance.parentTableName != null && instance.parentTableName.equals(AEMSDatabase.METERS)) {
-            return checkAuthority2Level(obj, instance.parentTableName);
+        if(instance.parentTableName != null) {
+            if(NUMBER_PATTERN.matcher(obj.getString("id")).find())
+                return obj.getString("id").equals(instance.authorizationId);
+            else
+                return checkAuthority3Level(obj.put("meter", obj.getString("id")), AEMSDatabase.METERS);
         }else {
             if(!obj.getString("id").equals(instance.authorizationId))
                 return false;
@@ -250,18 +256,23 @@ public class Query extends GraphQLObjectType {
     // path: meter -> user -> user_id
     private static boolean checkAuthority3Level(JSONObject obj, String table) {
         ArrayList<String[]> projection = new ArrayList<>();
-        projection.add(new String[]{ "meter" });
         HashMap<String, String> selection = new HashMap<>();
-        selection.put("id", obj.getString("id"));
-        
+        String meterId = obj.getString("meter");
         try {
-            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
+            
+            if(!obj.has("meter")) {
+                projection.add(new String[]{ "meter" });
+                selection.put("id", obj.getString("id"));
+
+                ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
+                meterId = set.getString(0,0);
+            }
             projection.clear();
             projection.add(new String[]{ "user" });
             selection.clear();
-            selection.put("id", set.getString(0,0)/* = intermediate table id*/);
+            selection.put("id", meterId/* = intermediate table id*/);
             
-            set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.METERS, projection, selection);
+            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.METERS, projection, selection);
             
             if(!set.getString(0, 0).equals(instance.authorizationId))
                 return false;

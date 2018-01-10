@@ -39,6 +39,7 @@ aems\graphql\Meter.class
 aems\graphql\Query$2.class
 aems\graphql\Statistic.class
 aems\database\AEMSDatabase$Periods.class
+aems\IPtoID.class
 aems\graphql\NotificationException.class
 aems\graphql\utils\GraphQLCondition.class
 aems\graphql\MeterType$1.class
@@ -49,7 +50,6 @@ at\htlgkr\aems\util\crypto\Decrypter.class
 aems\graphql\StatisticMeter$2.class
 aems\graphql\MeterData$4.class
 aems\graphql\Statistic$3.class
-aems\SessionManager.class
 aems\logger\Logger$LogType.class
 aems\graphql\User$1.class
 aems\database\AEMSDatabase.class
@@ -61,6 +61,7 @@ at\htlgkr\aems\util\crypto\KeyUtils.class
 aems\graphql\MeterData$1.class
 aems\graphql\NotificationMeter.class
 aems\graphql\Report.class
+aems\RestInf$1.class
 aems\database\ResultSet.class
 aems\graphql\Meter$5.class
 aems\graphql\StatisticTime$5.class

@@ -16,12 +16,15 @@ public class Main {
 		Uploader uploader = null;
 		PlugIn p = null;
 		for(PlugIn plugin : PlugInManager.PLUGINS_PREFABS) {
-			plugin.getSetting().setPort("/dev/ttyUSB0");
-			new Reader(plugin);
-			uploader = new AEMSUploader(plugin);
-			p = plugin;
+			if(!plugin.getSetting().isSensor()) {
+				plugin.getSetting().setPort("/dev/ttyUSB0");
+				plugin.getSetting().setMeterId("AT00000000000000000003333");
+				new Reader(plugin);
+				uploader = new AEMSUploader(plugin);
+				p = plugin;
+			}
 		}
-		uploader.upload(new UploadPackage().addData(new TableData("WeatherData").addData("meter", p.getSetting().getMeterId()).addData("temperature", "15.02").addData("id", "6")), new Authentication("admin", "admin"));
+		uploader.upload(new UploadPackage().addData(new TableData("WeatherData").addData("meter", p.getSetting().getMeterId()).addData("temperature", "15.02").addData("id", "6")), new Authentication("x", "pwd", Authentication.Encryption.AES));
 	}
 	
 }
