@@ -4,19 +4,28 @@ $(document).ready(function () {
     const STATISTIC_NAME_LIMIT = 64;
     const STATISTIC_ANNOTATION_LIMIT = 255;
 
-    $("#createStatistic").on("click", function () {
-        $("#meterType").empty();
-        let userId = $("#uId").val();
-        let userData = {"userId": userId};
+    $("#meterType input").on("click", function() {
+        let dis = $(this);
+        if(!dis.prop("checked")) {
+            dis.prop("checked", true);
+        } 
+        $("#meterType input").each(function(index, element) {
+            if($(this).val() !== dis.val()) {
+                $(this).prop("checked", false);
+            }
+        });
         
-        var q = `{\n
-            meters(user_id: ${userId}) {\n
-                id\n
-                metertype\n
-            }\n
-        }`;
-        $.post("http://localhost:8080/webserver/dummy/meters.json", userData, addMeterTypes, "json");
+        let type = dis.val();
+        $("#meters input").each(function(index, element) {
+           if($(this).attr("data-type") === type) {
+               $(this).parent().show();
+           } else {
+               $(this).parent().hide();
+               $(this).prop("checked", false);
+           }
+        });
     });
+    $("#meterType input").eq(0).click(); 
 
     $("#submitNewStatistic").on("click", function () {
 
@@ -57,6 +66,7 @@ $(document).ready(function () {
     }
 
     function addMeterTypes(data) {
+        /*
         _meterData = data;
         let types = [];
         let typeList = $("#meterType");
@@ -65,7 +75,7 @@ $(document).ready(function () {
                 types.push(meter.type);
                 appendElement(typeList, meter.type);
             }
-        }
+        } */
     }
 
 
@@ -92,6 +102,7 @@ $(document).ready(function () {
     }
 
     function addMeters(type) {
+        /*
         for (let meter of _meterData) {
             if (meter.type === type) {
                 let li = $("<li role='presentation'></li>");
@@ -105,6 +116,20 @@ $(document).ready(function () {
                 li.append(div);
                 $("#meters").append(li);
             }
-        }
+        } */
     }
 });
+
+    function setVars() {
+        document.getElementById("newStatistic:_meters").value = getMeters();
+        document.getElementById("newStatistic:_period").value = $("#period").find(":selected").val();
+    }
+    
+    function getMeters() {
+        var str = "";
+        $("#meters input:checked").each(function(index, element) {
+            str += $(element).val();
+            str += ";";
+        });
+        return str;
+    }

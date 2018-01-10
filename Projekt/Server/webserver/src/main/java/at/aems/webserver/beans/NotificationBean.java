@@ -5,7 +5,7 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.webserver.AemsAPI;
+import at.aems.webserver.AemsUtils;
 import at.aems.webserver.data.notifications.NotificationType;
 import at.aems.webserver.data.notifications.SimpleNotificationData;
 import com.google.gson.Gson;
@@ -85,7 +85,7 @@ public class NotificationBean implements Serializable {
         Map<String, Object> postParameters = new HashMap<>();
         postParameters.put("query", getNotificationQueryString());
         
-        JsonArray notificationArray = (JsonArray) AemsAPI.call("warnings.json", postParameters);
+        JsonArray notificationArray = (JsonArray) AemsUtils.call("warnings.json", postParameters);
         
         for(int i = 0; i < notificationArray.size(); i++) {
             JsonObject currentObject = notificationArray.getJsonObject(i);

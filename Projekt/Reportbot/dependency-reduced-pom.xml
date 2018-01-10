@@ -4,7 +4,7 @@
   <groupId>at.dahtlgkr</groupId>
   <artifactId>aemsbot</artifactId>
   <name>AEMS Report Bot</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <build>
     <plugins>
       <plugin>

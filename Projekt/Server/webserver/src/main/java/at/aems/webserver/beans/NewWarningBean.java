@@ -5,22 +5,26 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
-import at.aems.webserver.AemsAPI;
+import at.aems.apilib.AemsUser;
+import at.aems.apilib.crypto.EncryptionType;
+import at.aems.webserver.AemsUtils;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
  
 /**
  *
  * @author Niklas
  */
 @ManagedBean(name="newWarning")
-@SessionScoped
 public class NewWarningBean implements Serializable {
     
     private String name;
@@ -35,13 +39,14 @@ public class NewWarningBean implements Serializable {
     @ManagedProperty(value = "#{user}")
     private UserBean userBean;
     
+    private AemsUser user;
+    
     public NewWarningBean() {}
     
     @PostConstruct
     public void init() {
-        action = new AemsInsertAction(userBean.getUserId(), userBean.getAuthenticationString());
-        action.setTable("Notifications");
-        action.beginWrite();
+        user = new AemsUser(userBean.getUserId(), userBean.getUsername(), userBean.getPassword());
+        action = new AemsInsertAction(user, EncryptionType.SSL);
     }
 
     public void setName(String name) {
@@ -53,11 +58,11 @@ public class NewWarningBean implements Serializable {
     }
 
     public void setType(int type) {
-        action.write("type", type);
+        this.type = type;
     }
     
     public void setMeters(String meters) {
-        this.meterIds = AemsAPI.asStringList(meters);
+        this.meterIds = AemsUtils.asStringList(meters);
     }
     
     public String getMeters() {
@@ -69,7 +74,7 @@ public class NewWarningBean implements Serializable {
     }
 
     public void setExceptionDays(String exceptionDays) {
-        this.exceptionDays = AemsAPI.asStringList(exceptionDays);
+        this.exceptionDays = AemsUtils.asStringList(exceptionDays);
     }
     
     public String getExceptionDays() {
@@ -77,7 +82,7 @@ public class NewWarningBean implements Serializable {
     }
 
     public void setExceptionDates(String exceptionDates) {
-        this.exceptionDates = AemsAPI.asStringList(exceptionDates);
+        this.exceptionDates = AemsUtils.asStringList(exceptionDates);
     }
     
     public String getExceptionDates() {
@@ -104,20 +109,61 @@ public class NewWarningBean implements Serializable {
     
     
     public String doAddWarning() {
-        
-        AemsInsertAction action = new AemsInsertAction(userBean.getUserId(), userBean.getAuthenticationString());
-        action.setTable("Notifications");
-        action.beginWrite();
-       
-        action.write("name", name);
-        action.write("type", type);
-        action.write("variance", variance);
-        
-        action.endWrite();
-        
-        System.out.print(action.toJson());
-        
-        return "warnungen";
+        try {
+            AemsInsertAction insertNoti = new AemsInsertAction(user, EncryptionType.SSL);
+            insertNoti.setTable("Notifications");
+            insertNoti.beginWrite();
+            insertNoti.write("user", user.getUserId());
+            insertNoti.write("name", name);
+            insertNoti.write("type", type);
+            insertNoti.write("min_positive_deviation", variance);
+            insertNoti.write("min_negative_deviation", variance);
+            insertNoti.endWrite();
+            
+            System.out.println(insertNoti.toJsonObject().toString());
+            
+            AemsAPI.setUrl("http://api.aems.at"); 
+            
+            //String response = AemsUtils.decodeBase64(AemsAPI.call(insertNoti, null));
+            int notificationId = 10;//AemsUtils.getResponseId(response);
+            
+            AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);
+            insertMeters.setTable("NotificationMeters");
+            for(String meter : this.meterIds) {
+                insertMeters.write("meter", meter);
+                insertMeters.write("notification", notificationId);
+                insertMeters.endWrite();
+            }
+            System.out.println(insertMeters.toJsonObject().toString());
+            AemsAPI.call(insertMeters, null);
+            
+            
+            AemsInsertAction insertExceptions = new AemsInsertAction(user, EncryptionType.SSL);
+            insertExceptions.setTable("NotificationExceptions");
+            insertExceptions.beginWrite();
+            for(String day : exceptionDays) {
+                insertExceptions.write("notification", notificationId);
+                insertExceptions.write("week_day", Integer.valueOf(day));
+                insertExceptions.write("min_positive_deviation", 90);
+                insertExceptions.write("min_negative_deviation", 90);
+                insertExceptions.endWrite();
+            }
+            for(String date : exceptionDates) {
+                insertExceptions.write("notification", notificationId);
+                insertExceptions.write("exception_date", Integer.valueOf(date));
+                insertExceptions.write("min_positive_deviation", 90);
+                insertExceptions.write("min_negative_deviation", 90);
+                insertExceptions.endWrite();
+            }
+            
+            AemsAPI.call(insertExceptions, null);
+            System.out.print(insertNoti.toJson(null));
+            
+
+        } catch (IOException ex) {
+            Logger.getLogger(NewWarningBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "einstellungenWarnungen";
     }
     
 }

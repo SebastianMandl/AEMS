@@ -24,38 +24,25 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wasser</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gas</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wärme</label>
-                                    </div>
-                                </li>
+                            <ul id="categories" class="dropdown-menu zaehler_format">
+                                <c:forEach items="#{userStatisticsBean.categories}" var="category">
+                                    <li role="presentation">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="#{category}" />#{category}</label>
+                                        </div>
+                                    </li>
+                                </c:forEach>
                             </ul>
                         </div>
 
                           <h4>Zeitraum</h4>
-                        <h:selectOneMenu class="form-control" id="periodSelectione" value="#{newStatistic.period}">
-                            <f:selectItems value="#{newStatistic.getPeriodValues()}"/> <!-- gehört noch für newReport gemacht -->
-                        </h:selectOneMenu> 
+                          <select id="period" class="form-control">
+                              <option value="0">Täglich</option>
+                              <option value="1">Wöchentlich</option>
+                              <option value="2">Monatlich</option>
+                              <option value="3">Jährlich</option>
+                          </select>
+                          <h:inputHidden id="_period" value="#{newReportBean.timePeriod}"></h:inputHidden>
 
 
                         <h4>Zu verwendende Statistiken</h4>
@@ -63,14 +50,15 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Statistiken<span class="caret" /></button>
 
-                            <ul class="dropdown-menu zaehler_format">
+                            <ul id="statistics" class="dropdown-menu zaehler_format">
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Stromstatistik 1</label>
-                                    </div>
-                                </li>
-
+                                <c:forEach items="#{userStatisticsBean.statistics.entrySet()}" var="entry">
+                                    <li role="presentation">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" value="#{entry.key}" data-type="#{entry.value.type}" />#{entry.value.name}</label>
+                                        </div>
+                                    </li>
+                                </c:forEach>
                                 
                             </ul>
                             <h:inputHidden id="_reportStatistics" value="#{newReportBean.statisticIds}"></h:inputHidden>
@@ -117,10 +105,11 @@
                             <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo" />
                             <label for="RadioGenerateAutomaticallyNo">Nein</label>
                         </div>
+                        <h:inputHidden id="_autoGenerate" value="#{newReportBean.autoGenerate}"></h:inputHidden>
 
                         <h4>Anmerkung</h4>
                         <h:inputText value="#{newReportBean.annotation}" p:placeholder="Anmerkung (Optional)"></h:inputText>
-                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Bericht erstellen" />
+                        <h:commandButton action="#{newReportBean.doCreate()}" onclick="setVars()" class="login loginmodal-submit submitFormat" value="Bericht erstellen"></h:commandButton>
                         <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                     </h:form>		
                 </div>

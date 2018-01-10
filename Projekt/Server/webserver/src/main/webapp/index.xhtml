@@ -6,7 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="Content-Type" content="text/html"/>
@@ -20,8 +20,8 @@
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
         <link href="css/login-modal.css" rel="stylesheet" type="text/css"/>
     </head>
-    
-    
+
+
     <body style="padding-top: 70px">
         <f:event type="preRenderView" listener="#{notificationBean.init}" />
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
@@ -29,39 +29,27 @@
         <c:if test="#{!user.loggedIn}">
             <ui:include src="/templates/welcome.xhtml"></ui:include>
         </c:if>
-
         <!-- Seiteninhalt -->
         <c:if test="#{user.loggedIn}">
             <article class="statistics">
 
 
                 <ul class="listStyle">
-                    <li class="statistikElement">
-                        <div class="statistic-container">
-                            <h2 id="Titel 1" class="stat-title">Titel 1</h2> 
-                            <canvas id="statistic_1" width="600" height="400"></canvas>
-                            <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
-                        </div>
-                    </li>
-                    <li class="statistikElement">
-                        <div class="statistic-container">
-                            <h2 id="Titel 2" class="stat-title">Titel 2</h2> 
-                            <canvas id="statistic_2" width="600" height="400"></canvas>
-                            <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
-                        </div>
-                    </li>
-                    <li class="statistikElement">
-                        <div class="statistic-container">
-                            <h2 id="Titel 9000" class="stat-title">Titel 9000</h2> 
-                            <canvas id="statistic_3" width="600" height="400"></canvas>
-                            <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
-                        </div>
-                    </li>
+
+                    <c:forEach items="#{statisticDisplayBean.statistics}" var="statistic">
+                        <li class="statistikElement">
+                            <div class="statistic-container">
+                                <h2 class="stat-title">#{statistic.name}</h2> 
+                                <canvas id="#{statistic.id}" width="600" height="400"></canvas>
+                                <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
+                            </div>
+                        </li>
+                    </c:forEach>
                 </ul>
             </article>
         </c:if>
 
-        
+
         <!-- Footer -->
         <ui:include src="/templates/footer.xhtml"></ui:include>
 
@@ -71,20 +59,22 @@
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
-        
+
         <script src="js/basic.js"></script>
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/mobile-functions.js"></script>
-        
+
         <script>
             var notifs = #{notificationBean.nofificationsAsJson};
-            notifications = $.map(notifs, function(el) { return el});
+            notifications = $.map(notifs, function (el) {
+                return el
+            });
         </script>
-        
+
         <script src="js/lib/noty.min.js"></script>
         <link href="js/lib/noty.css" rel="stylesheet"></link>
-        
+
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>
@@ -99,6 +89,13 @@
         <script type="text/javascript" src="js/statistics/lib/png_support/png.js"></script>
         <script type="text/javascript" src="js/statistics/lib/plugins/addimage.js"></script>
         <script type="text/javascript" src="js/statistics/lib/plugins/png_support.js"></script>
+
+        <c:forEach items="#{statisticDisplayBean.statistics}" var="item">
+            <script>
+            var json = JSON.parse('#{item.toJson()}');
+            showChart(json.id, json.labels, json.electricityValues, json.previousValues, json.anomalyValues);
+            </script>
+        </c:forEach>
 
     </body>
 </html>

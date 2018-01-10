@@ -45,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import at.aems.apilib.AemsInsertAction;
+import at.aems.apilib.crypto.EncryptionType;
 import at.htlgkr.aems.database.AemsMeter.MeterType;
 import at.htlgkr.aems.main.Main;
 import at.htlgkr.aems.util.Logger.LogType;
@@ -77,10 +78,10 @@ public class AemsAPI {
   private static void initialize() {
     userList = new ArrayList<AemsUser>();
     temperatureMap = new HashMap<AemsLocation, Double>();
-    insertMeters = new AemsInsertAction(new at.aems.apilib.AemsUser(0, "The", "Admin"));
+    insertMeters = new AemsInsertAction(null, EncryptionType.SSL);
     
     try {
-      URL url = new URL(API_URL); // Just a placeholder for now
+      URL url = new URL("https://google.at"); // Just a placeholder for now
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       
       if(connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -115,7 +116,7 @@ public class AemsAPI {
       }
     } catch(Exception e) {
       Main.logger.log(LogType.WARN, "Error when initializing users list in AemsAPI! See log for details");
-      e.printStackTrace(Main.logger.getPrinter());
+      Main.logger.log(LogType.WARN, e);
       e.printStackTrace();
     }
   }
@@ -160,7 +161,6 @@ public class AemsAPI {
 		  Main.logger.log(LogType.ERROR, e);
 	  } */
 	 
-	  insertMeters.call(API_URL);
   }
   
 
