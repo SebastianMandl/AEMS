@@ -9,6 +9,7 @@ import at.htlgkr.aems.util.crypto.Encrypter;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -20,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -96,7 +99,7 @@ public class RestInf extends HttpServlet {
     
     private void doLogin(String query, String encryption, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         JSONObject root = new JSONObject(query);
-        String username = root.getString("usr");
+        String username = root.getString("user");
         String authStr = root.getString("auth_str");
         String salt = root.getString("salt");
         
@@ -116,9 +119,7 @@ public class RestInf extends HttpServlet {
                 username = set.getString(0, 0);
             }
             
-            // apply additional login logic here : session establishment, ...
-            
-            SessionManager.SESSION_TO_IDS.put(req.getRemoteAddr(), username);
+            IPtoID.registerIPtoIDMapping(req.getRemoteAddr(), username);
             
             String response = "{ id : " + username + " }";
             response = getEncryptedResponse(response, encryption, username, req, resp);
@@ -162,8 +163,8 @@ public class RestInf extends HttpServlet {
                 doLogin(query, ecryption, req, resp);
                 break;
             case ACTION_QUERY:
-                //GraphQLSchema schema = new GraphQLSchema(Query.getInstance(SessionManager.SESSION_TO_IDS.get(req.getRemoteAddr())));
-                GraphQLSchema schema = new GraphQLSchema(Query.getInstance("185"));
+                GraphQLSchema schema = new GraphQLSchema(Query.getInstance(IPtoID.convertIPToId(req.getRemoteAddr())));
+                //GraphQLSchema schema = new GraphQLSchema(Query.getInstance("185"));
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
                 PrintWriter writer = resp.getWriter();
                 ExecutionResult result = ql.execute(query);
@@ -277,16 +278,16 @@ public class RestInf extends HttpServlet {
                         if(action.equals(ACTION_UPDATE)) {
                             SQL.append(column).append("=").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replace("\\s", "") + "'" : entryObj.get(column)).append(",");
                         } else if(action.equals(ACTION_INSERT)) {
-//                            if(COLUMN_BUFFER.length() == 0) {
-//                                COLUMN_BUFFER.append(column).append(",");
-//                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
-//                            } else {
-//                                COLUMN_BUFFER.append(column).append(",");
-//                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
-//                            }
-                            
-                            COLUMN_BUFFER.append(column).append(",");
+                            if(COLUMN_BUFFER.length() == 0) {
+                                COLUMN_BUFFER.append(column).append(",");
                                 SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
+                            } else {
+                                COLUMN_BUFFER.append(column).append(",");
+                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
+                            }
+                            
+//                            COLUMN_BUFFER.append(column).append(",");
+//                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
                         }
                     }
                     
@@ -356,32 +357,49 @@ public class RestInf extends HttpServlet {
         return finalName.toString();
     }
     
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+");
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("^\\d+$");
     
     private String[] checkRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final int TIMEOUT = 10_000; // 10 seconds
         long lastTime = System.currentTimeMillis();
         
-        String data = req.getParameter("data");
-        String action = req.getParameter("action").toUpperCase();
-        String user = req.getParameter("user");
-        String authStr = req.getParameter("auth_str");
-        String encryption = req.getParameter("encryption").toUpperCase();
+        String data = req.getParameter("data"); // string
+        String action = req.getParameter("action").toUpperCase(); // string
+        String user = req.getParameter("user"); // int oder string
+        String authStr = req.getParameter("auth_str"); // string
+        String encryption = req.getParameter("encryption").toUpperCase(); // string
+//        
+//        while(data == null || action == null || encryption == null || user == null) {
+//            if(System.currentTimeMillis() - lastTime >= TIMEOUT) {
+//                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not all request parameters could be received completely within time!");
+//                return null;
+//            }
+//            
+//            data = req.getParameter("data");
+//            action = req.getParameter("action").toUpperCase();
+//            user = req.getParameter("user");
+//            encryption = req.getParameter("encryption").toUpperCase();
+//        }
         
-        while(data == null || action == null || encryption == null || user == null) {
-            if(System.currentTimeMillis() - lastTime >= TIMEOUT) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not all request parameters could be received completely within time!");
-                return null;
+        final StringBuilder JSON = new StringBuilder();
+        req.getReader().lines().forEach(new Consumer<String>() {
+            @Override
+            public void accept(String s) {
+                JSON.append(s);
             }
-            
-            data = req.getParameter("data");
-            action = req.getParameter("action").toUpperCase();
-            user = req.getParameter("user");
-            encryption = req.getParameter("encryption").toUpperCase();
+        });
+        JSONObject json = new JSONObject(JSON);
+        if(json.keySet().size() > 0) {
+            data = data == null ? json.getString("data") : data;
+            action = action == null ? json.getString("action") : action;
+            user = user == null ? json.getString("user") : user;
+            authStr = authStr == null ? json.getString("auth_str") : authStr;
+            encryption = encryption == null ? json.getString("encryption") : encryption;
         }
         
         if(encryption.equals(ENCRYPTION_AES)) {
             BigDecimal key = NUMBER_PATTERN.matcher(user).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(user)) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), user);
+            IPtoID.registerIPtoIDMapping(req.getRemoteAddr(), user);
             try {
                 data = new String(Decrypter.requestDecryption(key, Base64.getUrlDecoder().decode(data)));
             } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
@@ -389,14 +407,17 @@ public class RestInf extends HttpServlet {
             }
         } else if(encryption.equals(ENCRYPTION_SSL)) {
             
-            if(authStr == null) {
+            if(authStr == null && !action.equals(ACTION_LOGIN)) {
+                // if the action is LOGIN that this parameter is included within the DATA field.
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("Parameters missing!");
                 resp.getWriter().flush();
                 return null;
             }
             
-            if(!isHashEqual(user, authStr, resp)) {
+            if(!isHashEqual(user, authStr, resp) && !action.equals(ACTION_LOGIN)) { // if the action is not the LOGIN action proceed
+                // reason for that being that if this is a LOGIN packet the credentials will be check later on in the process anyway.
+                // at this point the credentials cannot be checked since they are contained within the DATA field.
                 resp.getWriter().write("Invalid credentials!");
                 resp.getWriter().flush();
                 return null;

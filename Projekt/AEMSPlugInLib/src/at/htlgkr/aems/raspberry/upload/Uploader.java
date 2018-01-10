@@ -4,7 +4,7 @@ import at.htlgkr.aems.plugins.PlugIn;
 
 public abstract class Uploader {
 
-	private PlugIn plugin;
+	protected PlugIn plugin;
 	
 	public Uploader(PlugIn plugin) {
 		this.plugin = plugin;
