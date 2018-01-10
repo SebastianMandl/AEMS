@@ -41,29 +41,66 @@
 
                 <h2 class="statistics-h2">Statistiken der Startseite:</h2>
 
-                <div id="homepageList" class="list-group statisticsList" data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    
+                <div id="homepageList" class="list-group statisticsList"> 
+                    <c:forEach items="#{statisticBean.startpageStatistics}" var="item">
+                        <a href="#" class="list-group-item " data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal">
+                            <h4 class="list-group-item-heading">#{item.name}</h4>
+                            <p class="list-group-item-text">#{item.annotation}</p>
+                        </a>
+                    </c:forEach>
+                    <c:if test="#{statisticBean.startpageStatistics.isEmpty()}">
+                        <p class="no-statistics">
+                            Derzeit werden keine Statistiken auf der Startseite angezeigt.
+                            Wählen Sie bei "Alle Statistiken" eine Statistik aus, die Sie zur
+                            Startseite hinzufügen möchten.
+                        </p>
+                    </c:if>
                 </div>
+
+
 
 
 
                 <h2 class="statistics-h2">Android-App Statistiken:</h2>
 
-                <div id="androidList" class="list-group statisticsList" data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <!-- Ajax -->
+                <div id="androidList" class="list-group statisticsList"> 
+                    <c:forEach items="#{statisticBean.androidStatistics}" var="item">
+                        <a href="#" class="list-group-item " data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal">
+                            <h4 class="list-group-item-heading">#{item.name}</h4>
+                            <p class="list-group-item-text">#{item.annotation}</p>
+                        </a>
+                    </c:forEach>
+                    <c:if test="#{statisticBean.androidStatistics.isEmpty()}">
+                        <p class="no-statistics">
+                            Derzeit werden keine Statistiken in der Android-App angezeigt.
+                            Wählen Sie bei "Alle Statistiken" eine Statistik aus, die Sie zur
+                            App hinzufügen möchten.
+                        </p>
+                    </c:if>
                 </div>
 
 
 
                 <h2 class="statistics-h2">Alle Statistiken</h2>
 
-                <div id="allList" class="list-group statisticsList" data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <!-- Ajax -->
+                <div id="allList" class="list-group statisticsList"> 
+                    <c:forEach items="#{statisticBean.statistics}" var="item">
+                        <a href="#" class="list-group-item " data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal">
+                            <h4 class="list-group-item-heading">#{item.name}</h4>
+                            <p class="list-group-item-text">#{item.annotation}</p>
+                        </a>
+                    </c:forEach>
+                    <c:if test="#{statisticBean.statistics.isEmpty()}">
+                        <p class="no-statistics">
+                            Sie haben noch keine Statistiken angelegt.
+                            <a data-toggle="modal" data-target="#newStatistic-modal" data-backdrop="false" data-dismiss="modal">Statistik anlegen!</a>
+                        </p>
+                    </c:if>
                 </div>
             </article>
 
         </c:if>
-        
+
 
         <!-- To fix last statistic getting covered up by footer: -->
         <div style="margin-top: 10%"></div>
@@ -103,11 +140,6 @@
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>     
         <script language="javascript" type="text/javascript" src="js/statistics/new.js"></script>
         <script language="javascript" type="text/javascript" src="js/statistics/einstellungenStatistiken.js"></script>
-
-        <script>
-            var jsonData = JSON.parse(`#{statisticBean.json}`);
-            populateStatisticLists(jsonData); 
-        </script>
 
 
     </body>

@@ -41,6 +41,7 @@ public class StatisticDisplayBean {
         monthStatistic.setPreviousValues(randomInts(c.get(Calendar.WEEK_OF_MONTH)));
         Map<String, List<Integer>> data = new HashMap<>();
         data.put("Temperatur", Arrays.asList(30, 25, 22, 18));
+        data.put("Lichtstärke", Arrays.asList(50, 100, 20, 18));
         monthStatistic.setAnomalyValues(data);
         
 
