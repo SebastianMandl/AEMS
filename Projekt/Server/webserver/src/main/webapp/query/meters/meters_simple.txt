@@ -1,0 +1,9 @@
+query GetMetersSimple(id: #USER_ID#) {
+    Meters {
+        id
+        metertype {
+            id
+            display_name
+        }
+    }
+}

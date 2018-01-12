@@ -1,0 +1,19 @@
+query GetCreatedStatistics {
+    Statistics(user: #USER_ID#) {
+        id
+        name
+        period {
+            id
+            name
+        }
+        StatisticMeters {
+            meter {
+                id
+                metertype {
+                    id
+                    display_name
+                }
+            }
+        }
+    }
+}

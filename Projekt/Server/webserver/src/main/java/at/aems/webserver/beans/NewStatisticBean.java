@@ -30,6 +30,7 @@ public class NewStatisticBean implements Serializable {
     private String name;
     private List<String> meters = new ArrayList<>();
     private int period;
+    private boolean compare;
     
     private String annotation;
     
@@ -94,6 +95,14 @@ public class NewStatisticBean implements Serializable {
        this.annotation = annotation;
     }
 
+    public boolean isCompare() {
+        return compare;
+    }
+
+    public void setCompare(boolean compare) {
+        this.compare = compare;
+    }
+
     public String doCreate() {
         AemsUser user = new AemsUser(userBean.getUserId(), userBean.getUsername(), userBean.getPassword());
         AemsInsertAction insert = new AemsInsertAction(user, EncryptionType.SSL);
@@ -103,6 +112,7 @@ public class NewStatisticBean implements Serializable {
         insert.write("name", name);
         insert.write("period", period);
         insert.write("annotation", annotation);
+        insert.write("period_compare", compare);
         insert.endWrite();
         
         System.out.print(insert.toJsonObject());

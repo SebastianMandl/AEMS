@@ -123,6 +123,7 @@ $(document).ready(function () {
     function setVars() {
         document.getElementById("newStatistic:_meters").value = getMeters();
         document.getElementById("newStatistic:_period").value = $("#period").find(":selected").val();
+        document.getElementById("newStatistic:_compare").value = $("#radioVorperiodeYes").is(":checked");
     }
     
     function getMeters() {
