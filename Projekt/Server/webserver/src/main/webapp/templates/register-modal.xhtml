@@ -10,8 +10,8 @@
                 <h1>Registrieren Sie Ihr Konto</h1><br/>
                 <h:form>
                     <h:inputText value="#{register.username}" p:placeholder="Ihr netzonline Username" p:required="required"></h:inputText>
-                    <h:inputText value="#{register.password}" p:placeholder="Ihr netzonline Passwort" p:required="required"></h:inputText>
-                    <h:inputText value="#{register.email}" p:placeholder="Ihre E-Mail" p:required="required"></h:inputText>
+                    <h:inputSecret value="#{register.password}" p:placeholder="Ihr netzonline Passwort" p:required="required"></h:inputSecret>
+                    <h:inputText value="#{register.email}" p:placeholder="Ihre E-Mail" p:required="required" title="Die E-Mail wird nur zur Kontaktaufnahme verwendet"></h:inputText>
                     <h:inputText value="#{register.plz}" p:placeholder="Ihre Postleitzahl" p:required="required"></h:inputText>
                     <input type="checkbox" name="termsofuse" id="termsofuse" required="required"/> 
                     <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="nutzungsbedingungen" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
@@ -22,4 +22,5 @@
             </div>
         </div> 
     </div>
+    
 </ui:composition>
