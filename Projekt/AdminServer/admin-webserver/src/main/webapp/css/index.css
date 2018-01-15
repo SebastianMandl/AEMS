@@ -20,3 +20,7 @@
 	width: 100%;
 	margin-bottom: 1em;
 }
+
+#deny-div {
+    display: none;
+}

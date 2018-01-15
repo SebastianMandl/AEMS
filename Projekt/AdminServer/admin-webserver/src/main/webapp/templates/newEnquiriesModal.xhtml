@@ -14,7 +14,11 @@
                     <h1 id="selectedEnquiry">Gewählten AEMS - Benutzer...</h1><br />
                     <form>
                         <button type="submit" class="btn btn-default btn-kickUser" data-dismiss="modal" aria-hidden="true">Annehmen</button>
-                        <button type="submit" class="btn btn-default btn-kickUser" data-dismiss="modal" aria-hidden="true">Verweigern</button>
+                        <button id="deny-enquiry" class="btn btn-default btn-kickUser" aria-hidden="true">Verweigern</button>
+                        <div id="deny-div">
+                            <textarea id="deny-reason" class="form-control" rows="5" placeholder="Warum wird die Anmeldung verweigert?"></textarea>
+                            <button class="btn btn-default btn-kickUser">Verweigerung bestätigen</button>
+                        </div>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
                     </form>				
                 </div>

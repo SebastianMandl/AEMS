@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
  *
  * @author Niggi
  */
+
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
@@ -82,7 +83,7 @@ public class UserBean implements Serializable {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("index.xthml");
             }
         } catch (IOException e) {
-
+            
         }
     }
 
