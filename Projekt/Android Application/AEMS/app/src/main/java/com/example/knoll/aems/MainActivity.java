@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +37,8 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
@@ -50,8 +53,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Delete Logininformation
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+        boolean rememberLogin = sharedPreferences.getBoolean("REMEMBERLOGIN", true);
+        String email = sharedPreferences.getString("EMAIL", null);
+        String password = sharedPreferences.getString("PASSWORD", null);
+
+        if (!rememberLogin || email == null || password == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+        }
+
 
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
@@ -179,6 +191,11 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout){
+            //Delete Logininformation
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+            sharedPreferences.edit().clear();
+            sharedPreferences.edit().commit();
+
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }

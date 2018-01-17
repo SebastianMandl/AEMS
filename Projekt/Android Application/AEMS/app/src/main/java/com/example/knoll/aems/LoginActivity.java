@@ -5,6 +5,8 @@ package com.example.knoll.aems;
  */
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,21 +14,24 @@ import android.util.Log;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Random;
-
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsLoginAction;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsUser;
+import at.aems.apilib.crypto.Decrypter;
+import at.aems.apilib.crypto.EncryptionType;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+    private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
+    SharedPreferences sharedPreferences;
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -37,6 +42,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+       /* sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+        String user = sharedPreferences.getString("EMAIL", null);
+        String passw = sharedPreferences.getString("PASSWORD", null);
+        Boolean rememberMe = sharedPreferences.getBoolean("REMEMBERLOGIN", true);
+
+        if (rememberMe && user != null && passw != null){
+            onLoginSuccess();
+        }*/
+
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -49,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login() {
         Log.d(TAG, "Login");
+
 
         if (!validate()) {
             onLoginFailed();
@@ -63,66 +79,41 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authentifizierung...");
         progressDialog.show();
 
-        String username = _inputUsername.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _inputUsername.getText().toString();
+        final String password = _passwordText.getText().toString();
+        final boolean boolLogin = true;
 
-        byte[] salt = generateSalt();
-        String hash = doMakeHash(username, password, salt);
+        //Login to API
+/*
+        AemsUser user = new AemsUser(0, email, password);
+        AemsQueryAction action = new AemsQueryAction(user, EncryptionType.AES);
+        action.setQuery("authentication-query");
+        String json = action.toJson(sharedSecretKey);
 
-        String saltStrg = new String(salt, StandardCharsets.UTF_8);
+        AemsAPI.setUrl("https://api.aems.at");
+        String response = AemsAPI.call(action, sharedSecretKey);
+        String decryptor = Decrypter.requestDecryption(sharedSecretKey, response.getBytes());
 
-
+        AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
+        loginAction.setUsername(email);
+        loginAction.setPassword(password);
+*/
 
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
+                        if(boolLogin){
+                            onLoginSuccess(email, password);
+                        }
+                        else{
+                            onLoginFailed();
+                        }
                         progressDialog.dismiss();
                     }
                 }, 2000);
     }
-
-    private byte[] generateSalt() {
-        //Generate Salt
-        Random value = new SecureRandom();
-        byte[] salt = new byte[32];
-        value.nextBytes(salt);
-
-        return salt;
-    }
-
-    private String doMakeHash(String username, String password, byte[] salt) {
-
-        MessageDigest md = null;
-
-        String hashString = username + password + salt;
-        String generatedHash = null;
-
-        //Make Hash out of username, password and salt
-        try {
-            md = MessageDigest.getInstance("SHA-512");
-
-            md.update(hashString.getBytes());
-
-            byte[] bytes = md.digest();
-
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < bytes.length; i++){
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 64).substring(1));
-            }
-
-            generatedHash = sb.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return generatedHash;
-    }
-
 
 
     @Override
@@ -131,14 +122,43 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
+    public void onLoginSuccess(String email, String password) {
         _loginButton.setEnabled(true);
+
+        //Save Logindata in SharedPreference
+        sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+        String user = sharedPreferences.getString("EMAIL", null);
+        String passw = sharedPreferences.getString("PASSWORD", null);
+
+
+        if(user == null && passw == null){
+            CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
+            if(checkBoxRememberMe.isChecked()){
+                sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+                sharedPreferences.edit().putString("EMAIL", email);
+                sharedPreferences.edit().putString("PASSWORD", password);
+                sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true);
+                sharedPreferences.edit().commit();
+
+                user = sharedPreferences.getString("EMAIL", "");
+                passw = sharedPreferences.getString("PASSWORD", "");
+                System.out.println("---------------------------------------------" + email + "-----" + password + "------------------------------------------------");
+                System.out.println("---------------------------------------------" + user + "-----" + passw + "----------------------------------------------------");
+
+            }
+
+        }
+
         finish();
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login fehlgeschlagen", Toast.LENGTH_LONG).show();
+    /*public void onLoginSuccess() {
+        _loginButton.setEnabled(true);
+        finish();
+    }*/
 
+    public void onLoginFailed() {
+        Toast.makeText(getBaseContext(), "Login fehlgeschlagen - Überprüfen Sie Ihre Logindaten", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }
 
@@ -147,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String user = _inputUsername.getText().toString();
         String password = _passwordText.getText().toString();
+
 
         if (user.isEmpty()) {
             _inputUsername.setError("Geben Sie einen Benutzernamen ein");

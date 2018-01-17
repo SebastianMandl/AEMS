@@ -20,26 +20,13 @@
             android:contentDescription=""
             />
 
-        <!--  Email Label -->
-        <!-- <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"> -->
+
             <EditText android:id="@+id/input_username"
                 android:layout_width="match_parent"
                 android:textColor="@color/monsoon"
                 android:layout_height="wrap_content"
                 android:hint="Benutzername" />
-       <!-- </android.support.design.widget.TextInputLayout> -->
 
-        <!--  Password Label -->
-
-       <!-- <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"> -->
         <EditText
             android:id="@+id/input_password"
             android:layout_width="match_parent"
@@ -47,8 +34,14 @@
             android:hint="Passwort"
             android:inputType="textPassword"
             android:textColor="@color/monsoon" />
-    <!--    </android.support.design.widget.TextInputLayout> -->
 
+
+        <CheckBox
+            android:id="@+id/checkBoxRememberLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Anmeldedaten merken"
+            android:textColor="@color/monsoon"/>
 
         <Button
             android:id="@+id/btn_login"

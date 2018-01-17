@@ -53,6 +53,25 @@
         android:text="Warnung"
         android:textColor="@color/red"/>
 
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="20dp"
+        android:text="Zählernummer"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewZaehlerNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="5dp"
+        android:text="AT5784 32487589 3874599" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
