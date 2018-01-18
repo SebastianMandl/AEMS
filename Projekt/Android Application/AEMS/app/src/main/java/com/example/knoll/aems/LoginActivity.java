@@ -135,10 +135,9 @@ public class LoginActivity extends AppCompatActivity {
             CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
             if(checkBoxRememberMe.isChecked()){
                 sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-                sharedPreferences.edit().putString("EMAIL", email);
-                sharedPreferences.edit().putString("PASSWORD", password);
-                sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true);
-                sharedPreferences.edit().commit();
+                sharedPreferences.edit().putString("EMAIL", email).commit();
+                sharedPreferences.edit().putString("PASSWORD", password).commit();
+                sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true).commit();
 
                 user = sharedPreferences.getString("EMAIL", "");
                 passw = sharedPreferences.getString("PASSWORD", "");
