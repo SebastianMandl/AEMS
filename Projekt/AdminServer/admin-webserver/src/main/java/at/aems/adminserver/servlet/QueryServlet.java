@@ -37,7 +37,7 @@ public class QueryServlet extends HttpServlet {
         UserBean bean = (UserBean) request.getSession().getAttribute("userBean");
         
         try (PrintWriter out = response.getWriter()) {
-            if(bean == null) {
+            if(bean == null || !bean.isLoggedIn()) {
                 out.println(jsonError("No session available"));
                 return;
             }

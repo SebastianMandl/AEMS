@@ -41,7 +41,7 @@ public class StatisticBean {
         s.setAndroid(true);
         s.setMeters(Arrays.asList("AT0001", "AT0002"));
         s.setPeriod(Period.DAILY);
-        //allStatistics.add(s);
+        allStatistics.add(s);
     }
 
     public List<StatisticMeta> getStatistics() {

@@ -22,66 +22,84 @@
 
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
 
-        <!-- Seiteninhalt -->
-        <article class="content">
-         <button class="btn btn-default" data-toggle="modal" data-target="#newAdmin-modal" data-backdrop="false" data-dismiss="modal">Aministrator hinzufügen</button>
+        <c:if test="#{userBean.admin}">
+            <!-- Seiteninhalt -->
+            <article class="content">
+                <button class="btn btn-default" data-toggle="modal" data-target="#newAdmin-modal" data-backdrop="false" data-dismiss="modal">Aministrator hinzufügen</button>
 
-            <h2 class="h2-admin_config">Administratoren</h2>
-            <div class="list-group" data-toggle="modal" data-target="#editOrDeleteAdmin-modal" data-backdrop="false" data-dismiss="modal"> 
-                <a href="#" class="admin list-group-item">
-                    <h4 class="list-group-item-heading">Max Mustermann</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-                <a href="#" class="admin list-group-item ">
-                    <h4 class="list-group-item-heading">Lukas Knoll</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-                <a href="#" class="admin list-group-item ">
-                    <h4 class="list-group-item-heading">Niklas Graf</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-                <a href="#" class="admin list-group-item ">
-                    <h4 class="list-group-item-heading">Sebastian Mandl</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-            </div>
-            <h2 class="h2-admin_config">Sub - Administratoren</h2>
-            <div class="list-group" data-toggle="modal" data-target="#editOrDeleteAdmin-modal" data-backdrop="false" data-dismiss="modal"> 
-                <a href="#" class="admin list-group-item ">
-                    <h4 class="list-group-item-heading">Josef Doppelbauer</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-                <a href="#" class="admin list-group-item ">
-                    <h4 class="list-group-item-heading">Andreas Baumgartner</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-                <a href="#" class="admin list-group-item ">
-                    <h4 class="list-group-item-heading">Verena Moser</h4>
-                    <p class="list-group-item-text">Zusatzinfo</p>
-                </a>
-            </div>
-            
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            
-        </article>
+                <h2 class="h2-admin_config">Administratoren</h2>
+                <div class="list-group" data-toggle="modal" data-target="#editOrDeleteAdmin-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <a href="#" class="admin list-group-item">
+                        <h4 class="list-group-item-heading">Max Mustermann</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                    <a href="#" class="admin list-group-item ">
+                        <h4 class="list-group-item-heading">Lukas Knoll</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                    <a href="#" class="admin list-group-item ">
+                        <h4 class="list-group-item-heading">Niklas Graf</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                    <a href="#" class="admin list-group-item ">
+                        <h4 class="list-group-item-heading">Sebastian Mandl</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                </div>
+                <h2 class="h2-admin_config">Sub - Administratoren</h2>
+                <div class="list-group" data-toggle="modal" data-target="#editOrDeleteAdmin-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <a href="#" class="admin list-group-item ">
+                        <h4 class="list-group-item-heading">Josef Doppelbauer</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                    <a href="#" class="admin list-group-item ">
+                        <h4 class="list-group-item-heading">Andreas Baumgartner</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                    <a href="#" class="admin list-group-item ">
+                        <h4 class="list-group-item-heading">Verena Moser</h4>
+                        <p class="list-group-item-text">Zusatzinfo</p>
+                    </a>
+                </div>
+
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
+            </article>
+        </c:if>
+
+        <c:if test="#{!userBean.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+            <ui:include src="/templates/login-modal.xhtml"></ui:include>
+        </c:if>
+        <c:if test="#{userBean.loggedIn and !userBean.admin}">
+            <article class="content">
+                <h1>Sie sind nicht dazu berechtigt, diese Seite einzusehen!</h1>
+                <h4>Falls Sie glauben, dass es sich hierbei um einen Fehler handelt, kontaktieren
+                    Sie einen Administrator.
+                </h4>
+            </article>
+        </c:if>
+
+
 
         <!-- Footer -->
         <ui:include src="/templates/footer.xhtml"></ui:include>
 
 
-        <!-- New Admin Modal -->
-        <ui:include src="/templates/newAdminModal.xhtml"></ui:include>            
+        <c:if test="#{userBean.admin}">
+            <!-- New Admin Modal -->
+            <ui:include src="/templates/newAdminModal.xhtml"></ui:include>            
 
-        <!-- Edit Admin Modal -->
-        <ui:include src="/templates/editAdminModal.xhtml"></ui:include>
+            <!-- Edit Admin Modal -->
+            <ui:include src="/templates/editAdminModal.xhtml"></ui:include>
 
-        <!-- editOrDeleteAdmin-modal -->
-        <ui:include src="/templates/editOrDeleteAdminModal.xhtml"></ui:include>     
-
+            <!-- editOrDeleteAdmin-modal -->
+            <ui:include src="/templates/editOrDeleteAdminModal.xhtml"></ui:include>     
+        </c:if>
 
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
@@ -89,6 +107,12 @@
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>
         <script language="javascript" type="text/javascript" src="js/administration.js"></script> 
+
+        <c:if test="#{notifyBean.hasMessage()}">
+            <script>
+                $.notify("#{notifyBean.message}", "info");
+            </script>
+        </c:if>
 
     </body>
 </html>

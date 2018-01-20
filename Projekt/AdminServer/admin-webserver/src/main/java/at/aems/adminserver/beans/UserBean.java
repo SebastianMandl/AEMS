@@ -5,11 +5,13 @@
  */
 package at.aems.adminserver.beans;
 
+import at.aems.adminserver.UserRole;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -26,8 +28,14 @@ public class UserBean implements Serializable {
     private int userId = -1;
     private String username;
     private String password;
+    private UserRole role;
 
     public UserBean() {
+    }
+    
+    @PostConstruct
+    public void init() {
+        role = UserRole.ADMIN;
     }
 
     public int getUserId() {
@@ -54,8 +62,24 @@ public class UserBean implements Serializable {
         this.password = password;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
     public boolean isLoggedIn() {
         return userId != -1;
+    }
+    
+    public boolean isAdmin() {
+        return isLoggedIn() && role == UserRole.ADMIN;
+    }
+    
+    public boolean isSubAdmin() {
+        return isLoggedIn() && (role == UserRole.ADMIN || role == UserRole.SUB_ADMIN);
     }
 
     public String getAuthenticationString() {

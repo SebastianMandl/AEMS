@@ -1,4 +1,4 @@
-query GetMetersSimple(id: #USER_ID#) {
+query GetMetersSimple(user: #USER_ID#) {
     Meters {
         id
         metertype {

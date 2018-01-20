@@ -24,3 +24,22 @@
 #deny-div {
     display: none;
 }
+
+#selectedEnquiryEmail {
+    text-align: center;
+}
+
+#search-btn {
+    display: inline;
+    margin-right: 10px;
+}
+
+.user-search {
+    width: 30%;
+}
+
+@media (max-width: 800px){
+.user-search {
+    width: 60%;
+}
+}

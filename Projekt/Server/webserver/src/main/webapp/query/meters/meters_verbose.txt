@@ -1,4 +1,4 @@
-query GetMetersVerbose(id: #USER_ID#) {
+query GetMetersVerbose(user: #USER_ID#) {
     Meters {
         id
         city

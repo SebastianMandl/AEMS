@@ -5,6 +5,7 @@
  */
 package at.aems.adminserver.beans;
 
+import at.aems.adminserver.UserRole;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -50,6 +51,11 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
             userBean.setUserId(userId);
             userBean.setUsername(username);
             userBean.setPassword(password);
+            if(username.equals("admin")) {
+                userBean.setRole(UserRole.ADMIN);
+            } else {
+                userBean.setRole(UserRole.SUB_ADMIN);
+            }
         }
         FacesContext context = FacesContext.getCurrentInstance();
         String viewId = context.getViewRoot().getViewId();

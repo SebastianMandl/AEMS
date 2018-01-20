@@ -12,12 +12,12 @@
                 <div class="loginmodal-container">
 
                     <h1 id="selectedAdmin">Gewählten Administrator...</h1><br />
-                    <form>
-                        <button type="submit" class="btn btn-default btn-editOrDelete" data-toggle="modal" data-target="#editAdmin-modal" data-dismiss="modal" aria-hidden="true">Bearbeiten</button>
-                        <button type="submit" class="btn btn-default btn-editOrDelete" data-dismiss="modal" aria-hidden="true">Passwort zurücksetzen</button>
-                        <button type="submit" class="btn btn-default btn-editOrDelete" data-dismiss="modal" aria-hidden="true">Löschen</button>
+                    <h:form id="deleteAdmin">
+                        <h:inputHidden id="_user" value="#{deleteAdminBean.username}"></h:inputHidden>
+                        <h:commandLink action="#{deleteAdminBean.doDelete()}" styleClass="btn btn-default"><span class="glyphicon glyphicon-trash"></span> Löschen</h:commandLink>
+                        <br/>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>				
+                    </h:form>				
                 </div>
             </div>
         </div>  

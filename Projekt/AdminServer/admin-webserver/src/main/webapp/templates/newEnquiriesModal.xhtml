@@ -11,16 +11,20 @@
 
                 <div class="loginmodal-container">
 
-                    <h1 id="selectedEnquiry">Gewählten AEMS - Benutzer...</h1><br />
-                    <form>
-                        <button type="submit" class="btn btn-default btn-kickUser" data-dismiss="modal" aria-hidden="true">Annehmen</button>
-                        <button id="deny-enquiry" class="btn btn-default btn-kickUser" aria-hidden="true">Verweigern</button>
+                    <h1 id="selectedEnquiry">Gewählten AEMS - Benutzer...</h1>
+                    <h5 id="selectedEnquiryEmail">x.x@x.x</h5><br/>
+                    <h:form id="enquiry-form">
+                        <h:inputHidden id="_email" value="#{handleEnquiryBean.email}"></h:inputHidden>
+                        <h:inputHidden id="_denyMessage" value="#{handleEnquiryBean.denyMessage}"></h:inputHidden>
+                        <h:commandButton id="accept-enquiry" action="#{handleEnquiryBean.doAccept()}" value="Annehmen" class="btn btn-default btn-kickUser"></h:commandButton>
+                        
+                        <input type="button" id="deny-enquiry" class="btn btn-default btn-kickUser" value="Verweigern"></input>
                         <div id="deny-div">
                             <textarea id="deny-reason" class="form-control" rows="5" placeholder="Warum wird die Anmeldung verweigert?"></textarea>
-                            <button class="btn btn-default btn-kickUser">Verweigerung bestätigen</button>
+                            <h:commandButton id="deny-confirm" action="#{handleEnquiryBean.doDeny()}" value="Verweigerung bestätigen"></h:commandButton>
                         </div>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>				
+                    </h:form>				
                 </div>
             </div>
         </div>  

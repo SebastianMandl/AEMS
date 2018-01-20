@@ -24,50 +24,58 @@
 
     <body style="padding-top: 3%;">
 
-         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
-        
-        <!-- Seiteninhalt -->
-        <article class="content">
+        <ui:include src="/templates/navbar-top.xhtml"></ui:include>
 
-       <button class="btn btn-default" data-toggle="modal" data-target="#newResponsibility-modal" data-backdrop="false" data-dismiss="modal">Zuständigkeitsbereich hinzufügen</button>
-  	
-		<h2 class="h2-admin_config">Zuständigkeitsbereiche</h2>
-	 	<div class="list-group" data-toggle="modal" data-target="#editOrDeleteResponsibility-modal" data-backdrop="false" data-dismiss="modal"> 
-	  	  <a href="#" class="responsibility list-group-item">
-		  	<h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
-		  </a>
-		  <a href="#" class="responsibility list-group-item ">
-		  	<h4 class="list-group-item-heading">0001 Grieskirchen</h4>
-		  </a>
-		  <a href="#" class="responsibility list-group-item ">
-		  	<h4 class="list-group-item-heading">0002 Eferding</h4>
-		  </a>
-		  <a href="#" class="responsibility list-group-item ">
-		  	<h4 class="list-group-item-heading">4673 Gaspoltshofen</h4>
-		  </a>
-		</div>
-                
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-                
-        </article>
-        
-         <!-- Footer -->
+        <c:if test="#{!userBean.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+            <ui:include src="/templates/login-modal.xhtml"></ui:include>
+        </c:if>
+
+        <c:if test="#{userBean.loggedIn}">
+            <!-- Seiteninhalt -->
+            <article class="content">
+
+                <button class="btn btn-default" data-toggle="modal" data-target="#newResponsibility-modal" data-backdrop="false" data-dismiss="modal">Zuständigkeitsbereich hinzufügen</button>
+
+                <h2 class="h2-admin_config">Meine Zuständigkeitsbereiche</h2>
+                <div class="list-group" data-toggle="modal" data-target="#editOrDeleteResponsibility-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <a href="#" class="responsibility list-group-item">
+                        <h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
+                    </a>
+                    <a href="#" class="responsibility list-group-item ">
+                        <h4 class="list-group-item-heading">0001 Grieskirchen</h4>
+                    </a>
+                    <a href="#" class="responsibility list-group-item ">
+                        <h4 class="list-group-item-heading">0002 Eferding</h4>
+                    </a>
+                    <a href="#" class="responsibility list-group-item ">
+                        <h4 class="list-group-item-heading">4673 Gaspoltshofen</h4>
+                    </a>
+                </div>
+
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
+            </article>
+        </c:if>
+
+
+
+        <!-- Footer -->
         <ui:include src="/templates/footer.xhtml"></ui:include>
 
 
-        <!-- New Responsibility Modal -->
-        <ui:include src="/templates/newResponsibilityModal.xhtml"></ui:include>            
-
-        <!-- Edit Responsibility Modal -->
-        <ui:include src="/templates/editResponsibilityModal.xhtml"></ui:include>
-
-        <!-- editOrDeleteResponsibility-modal -->
-        <ui:include src="/templates/editOrDeleteResponsibilityModal.xhtml"></ui:include>     
-
+        <c:if test="#{userBean.loggedIn}">
+            <!-- New Responsibility Modal -->
+            <ui:include src="/templates/newResponsibilityModal.xhtml"></ui:include>            
+            <!-- Edit Responsibility Modal -->
+            <ui:include src="/templates/editResponsibilityModal.xhtml"></ui:include>
+            <!-- editOrDeleteResponsibility-modal -->
+            <ui:include src="/templates/editOrDeleteResponsibilityModal.xhtml"></ui:include>     
+        </c:if>
 
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
@@ -75,6 +83,6 @@
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>
         <script language="javascript" type="text/javascript" src="js/zustaendigkeit.js"></script>
-        
+
     </body>
 </html>

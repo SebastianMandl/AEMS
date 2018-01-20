@@ -91,6 +91,10 @@
     background-color: #fff;
 }
 
+.spacer {
+    margin-top: 10%;
+}
+
 @media (max-width: 1800px){
 .welcome{
     width: 80%;

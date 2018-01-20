@@ -6,6 +6,8 @@
 package at.aems.webserver.data.statistic;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -20,7 +22,7 @@ public enum Period {
     WEEKLY(1, "Woche", new String[]{"Montag", "Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"}),  //
     
     @SerializedName("2")
-    MONTHLY(2, "Monat", new String[]{"Woche 1", "Woche 2", "Woche 3", "Woche 4", "Woche 5"}), //
+    MONTHLY(2, "Monat", new String[]{"getweeklabels"}),
     
     @SerializedName("3")
     YEARLY(3, "Jahr", new String[]{"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
@@ -51,10 +53,27 @@ public enum Period {
     }
     
     public String getLabel() {
+       
         return label;
     }
     
     public String[] getLabels() {
+        if(this == Period.MONTHLY) {
+            return getWeekLabels();
+        }
         return labels;
     }
+    
+    private static String[] getWeekLabels() {
+        GregorianCalendar c = new GregorianCalendar();
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        String[]arr = new String[5];
+        int startWeek = c.get(Calendar.WEEK_OF_YEAR);
+        for(int i = 0; i < arr.length; i++) {
+            String s = startWeek < 10 ? "0" + startWeek : "" + startWeek;
+            arr[i] = "KW " + s;
+            startWeek++;
+        }
+        return arr;
+    } 
 }
