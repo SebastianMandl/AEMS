@@ -23,6 +23,8 @@ import com.github.mikephil.charting.data.LineData;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aems.apilib.AemsAPI;
+
 /**
  * Created by knoll on 26.08.2017.
  */
@@ -81,10 +83,7 @@ public class App_Tab_1 extends ChartViewTab {
         BarData barData = new BarData(dataSet);
         chart.setData(barData);
         chart.invalidate();
-    }
 
-    public String eineBeispielMethode() {
-        return "Dies ist ein Beispiel";
     }
 
 
