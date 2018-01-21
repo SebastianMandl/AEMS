@@ -91,6 +91,7 @@ public class AEMSUploader extends Uploader {
 			//exertLogin(authentication);
 			authentication.setId("185");
 			exchangeKey(authentication);
+			isLoggedIn = true;
 		}
 		
 		StringBuilder query = new StringBuilder();

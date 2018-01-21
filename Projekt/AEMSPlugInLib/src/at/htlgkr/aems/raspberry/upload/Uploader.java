@@ -5,6 +5,7 @@ import at.htlgkr.aems.plugins.PlugIn;
 public abstract class Uploader {
 
 	protected PlugIn plugin;
+	protected Authentication authentication;
 	
 	public Uploader(PlugIn plugin) {
 		this.plugin = plugin;
@@ -14,8 +15,17 @@ public abstract class Uploader {
 		return plugin;
 	}
 	
+	
+	public void setPlugIn(PlugIn plugin) {
+		this.plugin = plugin;
+	}
+	
+	public void setAuthentication(Authentication authentication) {
+		this.authentication = authentication;
+	}
+	
 	public void upload(UploadPackage _package) {
-		upload(_package, null);
+		upload(_package, authentication);
 	}
 	
 	/**

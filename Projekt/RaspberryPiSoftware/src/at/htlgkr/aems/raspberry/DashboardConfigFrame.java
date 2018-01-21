@@ -27,6 +27,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -47,6 +48,8 @@ import at.htlgkr.aems.logger.Logger;
 import at.htlgkr.aems.logger.Logger.LogType;
 import at.htlgkr.aems.plugins.PlugIn;
 import at.htlgkr.aems.raspberry.plugins.PlugInManager;
+import at.htlgkr.aems.raspberry.upload.Authentication;
+import at.htlgkr.aems.raspberry.upload.Authentication.Encryption;
 import at.htlgkr.aems.settings.MeterTypes;
 
 public class DashboardConfigFrame {
@@ -386,8 +389,10 @@ public class DashboardConfigFrame {
 		credentials.add(seperator);
 		credentials.setBackground(Color.WHITE);
 
-		credentials.add(GUIUtils.createInput("Benutzername:", FONT, false));
-		credentials.add(GUIUtils.createInput("Passwort:", FONT, true));
+		final JComponent usernameComponent = GUIUtils.createInput("Benutzername:", FONT, false);
+		credentials.add(usernameComponent);
+		final JComponent passwordComponent = GUIUtils.createInput("Passwort:", FONT, true);
+		credentials.add(passwordComponent);
 		
 		JPanel configurePanel = new JPanel();
 		configurePanel.setBackground(Color.WHITE);
@@ -398,6 +403,10 @@ public class DashboardConfigFrame {
 	
 		configure.addActionListener(x -> {
 			frame.dispose(); // exchange with loading screen introduction ?
+			String username = ((JTextField) usernameComponent.getComponent(1)).getText();
+			String password = ((JTextField) passwordComponent.getComponent(1)).getText();
+			System.out.println("usr: " + username + " ; pwd: " + password);
+			PlugInManager.setAuthentication(new Authentication(username, password, Encryption.AES));
 			PlugInManager.runAllPlugins();
 //			frame.setContentPane(consoleView);
 //			ConsoleView.readFromConsole();
