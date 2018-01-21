@@ -21,7 +21,7 @@ public class App_Tab_3 extends ChartViewTab {
 
     @Override
     public void onCreateChart(Chart chart) {
-        // Dis not implemento yeto
+
     }
 
     @Override

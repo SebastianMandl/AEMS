@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html" 
@@ -24,25 +24,64 @@
 
     <body style="padding-top: 3%;">
 
-         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
-        
-        <!-- Seiteninhalt -->
-        <article class="content">
+        <ui:include src="/templates/navbar-top.xhtml"></ui:include>
 
-          <button class="btn btn-default"data-toggle="modal" data-target="#newZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal">Zuständigkeitsbereich hinzufügen</button>
-  	
-		<h2 class="h2-admin_config">Zuständigkeitsbereiche</h2>
-	 	<div class="list-group" data-toggle="modal" data-target="#editOrDeleteZustaendigkeit-modal" data-backdrop="false" data-dismiss="modal"> 
-	  	  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">4633 Kematen am Innbach</h4>
-		  </a>
-		  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">0001 Grieskirchen</h4>
-		  </a>
-		  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">0002 Eferding</h4>
-		  </a>
-		  <a href="#" class="list-group-item ">
-		  	<h4 class="list-group-item-heading">0003 Gaspoltshofen</h4>
-		  </a>
-		</div>
+        <c:if test="#{!userBean.loggedIn}">
+            <ui:include src="/templates/welcome.xhtml"></ui:include>
+            <ui:include src="/templates/login-modal.xhtml"></ui:include>
+        </c:if>
+
+        <c:if test="#{userBean.loggedIn}">
+            <!-- Seiteninhalt -->
+            <article class="content">
+
+                <button class="btn btn-default" data-toggle="modal" data-target="#newResponsibility-modal" data-backdrop="false" data-dismiss="modal">ZustÃ¤ndigkeitsbereich hinzufÃ¼gen</button>
+
+                <h2 class="h2-admin_config">Meine ZustÃ¤ndigkeitsbereiche</h2>
+                <div class="list-group" data-toggle="modal" data-target="#editOrDeleteResponsibility-modal" data-backdrop="false" data-dismiss="modal"> 
+                    <c:forEach items="#{responsibilityBean.responsibilities}" var="item">
+                        <a href="#" class="responsibility list-group-item">
+                            <h4 class="list-group-item-heading">#{item.postalCode} #{item.name}</h4>
+                        </a>
+                    </c:forEach>
+                </div>
+
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
+            </article>
+        </c:if>
+
+
+
+        <!-- Footer -->
+        <ui:include src="/templates/footer.xhtml"></ui:include>
+
+
+        <c:if test="#{userBean.loggedIn}">
+            <!-- New Responsibility Modal -->
+            <ui:include src="/templates/newResponsibilityModal.xhtml"></ui:include>            
+            <!-- Edit Responsibility Modal -->
+            <ui:include src="/templates/editResponsibilityModal.xhtml"></ui:include>
+            <!-- editOrDeleteResponsibility-modal -->
+            <ui:include src="/templates/editOrDeleteResponsibilityModal.xhtml"></ui:include>     
+        </c:if>
+
+        <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
+        <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
+        <script language="javascript" type="text/javascript" src="js/notify.js"></script>
+        <script language="javascript" type="text/javascript" src="js/zustaendigkeit.js"></script>
+
+
+        <c:if test="#{notifyBean.hasMessage()}">
+            <script>
+                $.notify("#{notifyBean.message}", "info");
+            </script>
+        </c:if>
+    </body>
+</html>

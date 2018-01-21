@@ -41,53 +41,31 @@
                 <h2 class="h2-warnungen">Benachrichtigungen</h2>
 
                 <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <a href="#" class="list-group-item ">
 
-                        <h4 class="list-group-item-heading">Benachrichtigung Strom 1</h4>
+                    <c:forEach items="#{userWarningsBean.notifications}" var="item">
+                        <a href="#" class="list-group-item ">
+                            <h4 class="list-group-item-heading">#{item.name}</h4>
+                            <p class="list-group-item-text">Some text</p>
+                        </a>
+                    </c:forEach>
 
-                        <p class="list-group-item-text">Fixwert</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Benachrichtigung Strom 2</h4>
-
-                        <p class="list-group-item-text">Fixwert</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Benachrichtigung Gas 1</h4>
-
-                        <p class="list-group-item-text">%-tuell</p>
-                    </a>
                 </div>
 
 
                 <h2 class="h2-warnungen">Warnungen</h2>
 
                 <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Warnung Strom 1</h4>
-
-                        <p class="list-group-item-text">Fixwert</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Warnung Strom 2</h4>
-
-                        <p class="list-group-item-text">Fixwert</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Warnung Gas 1</h4>
-
-                        <p class="list-group-item-text">%-tuell</p>
-                    </a>
+                    <c:forEach items="#{userWarningsBean.warnings}" var="item">
+                        <a href="#" class="list-group-item ">
+                            <h4 class="list-group-item-heading">#{item.name}</h4>
+                            <p class="list-group-item-text">Some text</p>
+                        </a>
+                    </c:forEach>
                 </div>
             </article>
 
         </c:if>
-        
+
         <div class="spacer"></div>
 
 

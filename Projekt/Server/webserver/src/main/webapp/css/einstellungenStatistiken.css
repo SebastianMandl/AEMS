@@ -32,3 +32,7 @@ form .btn-group .dropdown-menu.zaehler_format {
 	width: 100%;
 	margin-bottom: 1em;
 }
+
+.no-statistics {
+    color: gray;
+}

@@ -39,7 +39,7 @@
                     <c:forEach items="#{statisticDisplayBean.statistics}" var="statistic">
                         <li class="statistikElement">
                             <div class="statistic-container">
-                                <h2 class="stat-title">#{statistic.name}</h2> 
+                                <h2 id="h_#{statistic.name}" class="stat-title">#{statistic.name}</h2> 
                                 <canvas id="#{statistic.id}" width="600" height="400"></canvas>
                                 <button class="btn btn-default download-pdf"><span class="glyphicon glyphicon-download-alt"></span> PDF Herunterladen</button>
                             </div>

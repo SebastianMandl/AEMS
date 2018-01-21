@@ -47,6 +47,7 @@ function showChart(canvasId, labels, actualValues, previousValues, anomalies) {
     
     var highestAnomaly = getPeekValue(anomalies, Math.max);
     var lowestAnomaly = getPeekValue(anomalies, Math.min);
+    var averageAnomaly = getAvg(anomalies);
 
     var mixedChart = new Chart(ctx, {
         type: 'bar',
@@ -67,13 +68,13 @@ function showChart(canvasId, labels, actualValues, previousValues, anomalies) {
                                 return value + " kWh";
                             }
                         }
-                    }, {
+                    }, { 
                         id: 'secondary',
                         type: 'linear',
                         position: 'right',
                         ticks: {
-                            max: highestAnomaly, //highestTemperature + 10,
-                            min: lowestAnomaly,
+                            max: highestAnomaly + averageAnomaly, //highestTemperature + 10,
+                            min: lowestAnomaly - averageAnomaly,
                             callback: function (value, index, values) {
                                 return ""; //value + " Celsius";
                             }
@@ -93,6 +94,17 @@ function getPeekValue(anomalies, compareFunc) {
         array.push(...anomalies[key]);
     }
     return compareFunc.apply(Math, array);
+}
+
+function getAvg(anomalies) {
+    var keys = Object.keys(anomalies);
+    var array = [];
+    for(var key of keys) {
+        array.push(...anomalies[key]);
+    }
+    var sum = 0;
+    array.forEach(x => sum += x);
+    return sum / array.length;
 }
 
 function getAnomalieDataset(anomalies) {

@@ -18,12 +18,14 @@
                 <ul class="nav navbar-nav navbar-right">
 
                     <!-- Menüs -->
+                    <c:if test="#{userBean.admin}">
                     <li class="navBarItems"><h:link outcome="administration">Administration</h:link></li>
+                    </c:if>
                     <li class="navBarItems"><h:link outcome="zustaendigkeit">Zuständigkeitsbereich</h:link></li>
 
 
                     <!-- Menü Logout -->
-                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> #{user.username}<span class="caret"></span></a>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> #{userBean.username}<span class="caret"></span></a>
                         <ul class="dropdown-menu">                            
                             <h:form>                            
                             <li> <h:commandLink action="#{login.doLogout()}" value="Logout" class="logoutLink"></h:commandLink></li>                         
@@ -32,8 +34,8 @@
                     </li>
 
                     <!-- Benachrichtigungsicon -->
-                    <li onclick="functionNotifications();"><img class="notificationIcon" src="images/notification.png"/>
-                        <span id="notificationCounter" class="notification-counter"></span>   
+                    <li onclick="functionNotifications(#{enquiriesBean.enquiries.size()});"><img class="notificationIcon" src="images/notification.png"/>
+                        <span id="notificationCounter" class="notification-counter">#{enquiriesBean.enquiries.size()}</span>   
                     </li>
 
                 </ul>

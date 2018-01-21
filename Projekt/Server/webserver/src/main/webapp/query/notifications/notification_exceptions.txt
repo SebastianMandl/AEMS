@@ -1,0 +1,11 @@
+query GetNotificationExceptions {
+    NotificationExceptions(notification: #NOTIFICATION_ID#) {
+        id
+        min_positive_deviation
+        max_positive_deviation
+        period {
+            id
+            name
+        }
+    }
+}

@@ -33,17 +33,16 @@ public class StatisticDisplayBean {
         statistics = new ArrayList<>();
         GregorianCalendar c = new GregorianCalendar();
         DisplayedStatistic yearStatistic = new DisplayedStatistic(123, "Jahresstatistik", Period.YEARLY);
-        yearStatistic.setElectricityValues(randomInts(c.get(Calendar.MONTH) + 1));
-        yearStatistic.setPreviousValues(randomInts(c.get(Calendar.MONTH) + 1));
+        yearStatistic.setElectricityValues(randomInts(c.get(Calendar.MONTH) + 4));
+        yearStatistic.setPreviousValues(randomInts(c.get(Calendar.MONTH) + 4));
        
         DisplayedStatistic monthStatistic = new DisplayedStatistic(234, "Monatsstatistik", Period.MONTHLY);
         monthStatistic.setElectricityValues(randomInts(c.get(Calendar.WEEK_OF_MONTH)));
         monthStatistic.setPreviousValues(randomInts(c.get(Calendar.WEEK_OF_MONTH)));
         Map<String, List<Integer>> data = new HashMap<>();
-        data.put("Temperatur", Arrays.asList(30, 25, 22, 18));
+        data.put("Temperatur", Arrays.asList(15, 30, 15, 35));
+        //data.put("Lichtstärke", Arrays.asList(50, 100, 20, 18));
         monthStatistic.setAnomalyValues(data);
-        
-
         
         DisplayedStatistic weeklyStatistic = new DisplayedStatistic(456, "Wochenstatistik", Period.WEEKLY);
         weeklyStatistic.setElectricityValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1));
@@ -51,8 +50,8 @@ public class StatisticDisplayBean {
         
         DisplayedStatistic dailyStatistic = new DisplayedStatistic(678, "Tagesstatistik", Period.DAILY);
         
-        dailyStatistic.setElectricityValues(randomInts(c.get(Calendar.HOUR_OF_DAY))); 
-        dailyStatistic.setPreviousValues(randomInts(c.get(Calendar.HOUR_OF_DAY)));
+        dailyStatistic.setElectricityValues(randomInts(c.get(Calendar.HOUR_OF_DAY) / 6)); 
+        dailyStatistic.setPreviousValues(randomInts(c.get(Calendar.HOUR_OF_DAY) / 6));
         
         statistics.add(yearStatistic);
         statistics.add(monthStatistic);

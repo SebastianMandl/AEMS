@@ -6,8 +6,17 @@
 package at.aems.webserver.beans;
 
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.data.statistic.Anomaly;
+import at.aems.webserver.data.statistic.Period;
+import at.aems.webserver.data.statistic.StatisticMeta;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
@@ -17,37 +26,56 @@ import javax.faces.bean.ManagedBean;
  */
 @ManagedBean
 public class StatisticBean {
-    
-    private String jsonString;
-    
+
+    private List<StatisticMeta> allStatistics = new ArrayList<>();
+
     public StatisticBean() {
-        
+
     }
-    
+
     @PostConstruct
     public void init() {
-        //JsonArray statistics = AemsAPI.doPost("query").getAsJsonArray();
-        jsonString = "[\n" +
-"    {\n" +
-"        \"statistic_id\": 123,\n" +
-"        \"statistic_name\": \"Strom 1\",\n" +
-"        \"annotation\": \"Stromstatistik für Gebäude XYZ (AT1234 und AT9284)\",\n" +
-"        \"display_home\": true,\n" +
-"        \"display_android\": false,\n" +
-"        \"meters\": []   \n" +
-"    },\n" +
-"    {\n" +
-"        \"statistic_id\": 1234,\n" +
-"        \"statistic_name\": \"Gas 3\",\n" +
-"        \"annotation\": \"Statistik sämtlicher Gaszähler der Region XYZ\",\n" +
-"        \"display_home\": false,\n" +
-"        \"display_android\": true,\n" +
-"        \"meters\": []   \n" +
-"    }\n" +
-"]";
+        StatisticMeta s = new StatisticMeta(100, "Meins Statistik!");
+        s.setAnnotation("Hallo");
+        s.setAnomalies(Arrays.asList(new Anomaly(10, "Temperatur", "Celsius")));
+        s.setAndroid(true);
+        s.setMeters(Arrays.asList("AT0001", "AT0002"));
+        s.setPeriod(Period.DAILY);
+        allStatistics.add(s);
     }
-    
-    public String getJson() {
-        return jsonString;
+
+    public List<StatisticMeta> getStatistics() {
+        return allStatistics;
     }
+
+    public void setStatistics(List<StatisticMeta> statistics) {
+        this.allStatistics = statistics;
+    }
+
+    public List<StatisticMeta> getAndroidStatistics() {
+        final List<StatisticMeta> result = new ArrayList<>();
+        allStatistics.forEach(new Consumer<StatisticMeta>() {
+            @Override
+            public void accept(StatisticMeta t) {
+                if (t.isAndroid()) {
+                    result.add(t);
+                }
+            }
+        });
+        return result;
+    }
+
+    public List<StatisticMeta> getStartpageStatistics() {
+        final List<StatisticMeta> result = new ArrayList<>();
+        allStatistics.forEach(new Consumer<StatisticMeta>() {
+            @Override
+            public void accept(StatisticMeta t) {
+                if (t.isStartpage()) {
+                    result.add(t);
+                }
+            }
+        });
+        return result;
+    }
+
 }

@@ -35,4 +35,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/MPAndroidChart-v3.0.1.jar')
     compile files('libs/aems-access.jar')
+    compile 'at.aems:api-lib:1.3'
 }

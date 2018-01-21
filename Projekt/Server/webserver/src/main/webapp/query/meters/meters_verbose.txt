@@ -1,0 +1,12 @@
+query GetMetersVerbose(user: #USER_ID#) {
+    Meters {
+        id
+        city
+        latitude
+        longitude
+        metertype {
+            id
+            display_name
+        }
+    }
+}
