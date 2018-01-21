@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Niggi
  */
-public class Enquiry {
+public class Enquiry implements Comparable<Enquiry>{
     private String email;
     private String username;
     private boolean useNetzonline;
@@ -81,6 +81,16 @@ public class Enquiry {
         }
         
         return niceString;
+    }
+
+    @Override
+    public int compareTo(Enquiry o) {
+        Timestamp t1 = this.getSignupTime();
+        Timestamp t2 = o.getSignupTime();
+        if(t1 == null || t2 == null) {
+            return 0;
+        }
+        return t1.before(t2) ? 1 : -1;
     }
     
     

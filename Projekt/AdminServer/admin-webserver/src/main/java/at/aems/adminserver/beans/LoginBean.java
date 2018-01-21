@@ -66,6 +66,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
         userBean.setUserId(LOGGED_OUT_USER_ID);
         userBean.setUsername(null);
         userBean.setPassword(null);
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index";
     }
 

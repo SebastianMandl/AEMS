@@ -20,21 +20,16 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class AcceptedUsersBean {
+public class AcceptedUsersBean extends AbstractDisplayBean {
 
     private List<AcceptedUser> users = new ArrayList<>();
-    
-    @ManagedProperty(value="#{userBean}")
+
+    @ManagedProperty(value = "#{userBean}")
     private UserBean userBean;
-    
+
     public AcceptedUsersBean() {
     }
-    
-    @PostConstruct
-    public void init() {
-        AcceptedUser u = new AcceptedUser(123, "Josef", "doppelbauer@gmx.net");
-        users.add(u);
-    }
+
 
     public List<AcceptedUser> getUsers() {
         return users;
@@ -51,7 +46,12 @@ public class AcceptedUsersBean {
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
     }
-    
-    
-    
+
+    @Override
+    public void update() {
+        System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
+                AcceptedUser u = new AcceptedUser(123, "Josef", "doppelbauer@gmx.net");
+        users.add(u);
+    }
+
 }

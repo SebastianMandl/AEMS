@@ -7,6 +7,7 @@ $(document).ready(function () {
 
     $("#new-admin-form\\:username").on("change", function () {
         let username = $(this).val();
+        
         if (username === "some") {
             $("#new-admin-form\\:add-admin").removeAttr("disabled");
             $("#new-admin-form\\:add-admin").removeClass("loginmodal-disabled");

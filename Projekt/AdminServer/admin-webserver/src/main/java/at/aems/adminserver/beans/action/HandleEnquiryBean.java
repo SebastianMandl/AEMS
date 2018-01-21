@@ -5,6 +5,7 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.beans.display.EnquiriesBean;
 import at.aems.adminserver.beans.display.NotifyBean;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -39,14 +40,17 @@ public class HandleEnquiryBean extends AbstractActionBean {
     
     public String doAccept() {
         notify.setMessage("Benutzer " + email + " wurde Zugriff gewährt!");
+        callUpdateOn("enquiriesBean");
         return "index";
     }
     
     public String doDeny() {
         System.out.println(email + " denied: " + denyMessage);
         notify.setMessage("Dem Benutzer mit der Adresse " + email + " wurde der Zugriff verweigert");
+        callUpdateOn("enquiriesBean");
         return "index";
     }
+
     
     
 }

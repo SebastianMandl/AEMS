@@ -1,7 +1,10 @@
 $(document).ready(function() { 
    $(".responsibility").on("click", function() {
        let responsibility = $(this).find("h4").text();
+       let code = responsibility.substring(0, responsibility.indexOf(" "));
+       
       $("#selectedResponsibility").text(responsibility); 
+      $("#eod-resp\\:_plz").val(code);
    });
    
    $("#edit-responsibility").on("click", function() {
@@ -10,7 +13,7 @@ $(document).ready(function() {
        let code = text.substring(0, text.indexOf(" "));
        let name = text.substring(text.indexOf(" ") + 1, text.length);
        
-       $("#edit-postalcode").val(code);
-       $("#edit-placename").val(name);
+       $("#edit-resp\\:edit-postalcode").val(code);
+       $("#edit-resp\\:edit-placename").val(name);
    });
 });

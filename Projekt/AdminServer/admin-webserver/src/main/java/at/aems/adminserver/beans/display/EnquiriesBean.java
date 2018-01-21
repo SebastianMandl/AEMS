@@ -9,6 +9,7 @@ import at.aems.adminserver.beans.UserBean;
 import at.aems.adminserver.data.users.Enquiry;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -21,7 +22,7 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class EnquiriesBean {
+public class EnquiriesBean extends AbstractDisplayBean {
     
     private List<Enquiry> enquiries = new ArrayList<>();
     
@@ -29,18 +30,6 @@ public class EnquiriesBean {
     private UserBean userBean;
 
     public EnquiriesBean() {
-    }
-    
-    
-    @PostConstruct
-    public void init() {
-        Enquiry e = new Enquiry("graf@graf.graf", "Graf", true, new Timestamp(System.currentTimeMillis() - 1500000));
-        Enquiry e2 = new Enquiry("knoll@knolli.k", "Knolli", true, new Timestamp(System.currentTimeMillis() - 1500000000));
-        Enquiry e3 = new Enquiry("mandl@mandl.m", "Mandl", true, new Timestamp(System.currentTimeMillis() - 150000000000L));
-
-        enquiries.add(e);
-        enquiries.add(e2);
-        enquiries.add(e3);
     }
 
     public List<Enquiry> getEnquiries() {
@@ -57,6 +46,20 @@ public class EnquiriesBean {
 
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
+    }
+
+    @Override
+    public void update() {
+        System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
+        Enquiry e = new Enquiry("graf@graf.graf", "Graf", true, new Timestamp(System.currentTimeMillis() - 1500000));
+        Enquiry e2 = new Enquiry("knoll@knolli.k", "Knolli", true, new Timestamp(System.currentTimeMillis() - 1500000000));
+        Enquiry e3 = new Enquiry("mandl@mandl.m", "Mandl", true, new Timestamp(System.currentTimeMillis() - 150000000000L));
+
+        enquiries.add(e);
+        enquiries.add(e2);
+        enquiries.add(e3);
+        
+        Collections.sort(enquiries);
     }
     
     
