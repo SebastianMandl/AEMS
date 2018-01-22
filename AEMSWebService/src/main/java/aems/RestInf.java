@@ -155,12 +155,18 @@ public class RestInf extends HttpServlet {
         
         String query = request[0];
         String action = request[1];
-        String ecryption = request[3];
+        String encryption = request[3];
+        String user = request[2];
         
         // establish exception for login request
         switch (action) {
             case ACTION_LOGIN:
-                doLogin(query, ecryption, req, resp);
+                if(encryption.equals(ENCRYPTION_SSL))
+                    doLogin(query, encryption, req, resp);
+                else if(encryption.equals(ENCRYPTION_AES)) { // in case of AES-encryption just return the id of the user that was already established
+                    resp.getWriter().write(getEncryptedResponse("{ id : \"" + IPtoID.convertIPToId(req.getRemoteAddr()) + "\" }", encryption, user, req, resp));
+                    resp.getWriter().flush();
+                }
                 break;
             case ACTION_QUERY:
                 GraphQLSchema schema = new GraphQLSchema(Query.getInstance(IPtoID.convertIPToId(req.getRemoteAddr())));
@@ -171,7 +177,7 @@ public class RestInf extends HttpServlet {
 
                 try {
                     String data = result.getData().toString();
-                    if(ecryption.equals(ENCRYPTION_AES)) {
+                    if(encryption.equals(ENCRYPTION_AES)) {
                         data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(NUMBER_PATTERN.matcher(request[2]).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), request[2]), data.getBytes()));
                     }
                     writer.write(data);
@@ -391,7 +397,6 @@ public class RestInf extends HttpServlet {
         
         if(encryption.equals(ENCRYPTION_AES)) {
             BigDecimal key = NUMBER_PATTERN.matcher(user).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(user)) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), user);
-            IPtoID.registerIPtoIDMapping(req.getRemoteAddr(), user);
             try {
                 data = new String(Decrypter.requestDecryption(key, Base64.getUrlDecoder().decode(data)));
             } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {

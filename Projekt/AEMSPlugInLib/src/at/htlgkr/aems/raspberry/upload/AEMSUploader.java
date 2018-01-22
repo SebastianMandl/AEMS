@@ -16,9 +16,12 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.json.JSONObject;
+
 import at.htlgkr.aems.logger.Logger;
 import at.htlgkr.aems.logger.Logger.LogType;
 import at.htlgkr.aems.plugins.PlugIn;
+import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
 import at.htlgkr.aems.util.crypto.KeyUtils;
 import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
@@ -42,13 +45,9 @@ public class AEMSUploader extends Uploader {
 	 */
 	private void exertLogin(Authentication authentication) {
 		try {
-			StringBuilder builder = new StringBuilder();
-			builder.append("{ user : \"").append(authentication.getUsername())
-				.append("\", auth_str : \"").append("fill in auth_str HERE").append("\", salt : \"")
-				.append("fill in salt HERE").append("\" }");
-			String data = builder.toString();
+			String data = "";
 			
-			HttpURLConnection con = (HttpURLConnection) new URL(SERVER_ADDRESS + "/AEMSWebService/RestInf?encryption=SSL&user=" + authentication.getId() + "&action=LOGIN&data=" + Base64.getUrlEncoder().encodeToString(data.getBytes())).openConnection();
+			HttpURLConnection con = (HttpURLConnection) new URL(SERVER_ADDRESS + "/AEMSWebService/RestInf?encryption=AES&user=" + authentication.getUsername() + "&action=LOGIN&data=" + Base64.getUrlEncoder().encodeToString(data.getBytes())).openConnection();
 			con.setRequestMethod("POST");
 			con.setDoInput(true);
 			if(con.getResponseCode() != 200) {
@@ -58,9 +57,17 @@ public class AEMSUploader extends Uploader {
 					Logger.log(LogType.ERROR, line);
 				}
 			} else {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				StringBuilder builder = new StringBuilder();
+				for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+					builder.append(line);
+				}
+				JSONObject root = new JSONObject(new String(Decrypter.requestDecryption(key, Base64.getUrlDecoder().decode(builder.toString().getBytes()))));
+				authentication.setId(root.getString("id"));
+				
 				Logger.log(LogType.INFO, "uploaded data for super.plugin \"%s\"!", super.plugin.getName());
 			}
-		} catch (IOException e) {
+		} catch (IOException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
 			e.printStackTrace();
 		}
 		isLoggedIn = true;
@@ -88,9 +95,8 @@ public class AEMSUploader extends Uploader {
 	@Override
 	public void upload(UploadPackage _package, Authentication authentication) {
 		if(!isLoggedIn) {
-			//exertLogin(authentication);
-			authentication.setId("185");
 			exchangeKey(authentication);
+			exertLogin(authentication);
 			isLoggedIn = true;
 		}
 		

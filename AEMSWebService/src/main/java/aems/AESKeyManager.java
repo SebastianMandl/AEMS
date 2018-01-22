@@ -65,6 +65,8 @@ public class AESKeyManager {
                 username = set.getString(0, 0);
             }
             
+            IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
+            
             BigDecimal key = KEYS.get("0:0:0:0:0:0:0:1");
             
             //String password = DatabaseConnectionManager.getDatabaseConnection().callFunction("aems", "get_user_password", String.class, new Object[]{ username });
