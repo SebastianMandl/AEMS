@@ -278,25 +278,17 @@ public class RestInf extends HttpServlet {
                         if(action.equals(ACTION_UPDATE)) {
                             SQL.append(column).append("=").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replace("\\s", "") + "'" : entryObj.get(column)).append(",");
                         } else if(action.equals(ACTION_INSERT)) {
-                            if(COLUMN_BUFFER.length() == 0) {
-                                COLUMN_BUFFER.append(column).append(",");
-                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
-                            } else {
-                                COLUMN_BUFFER.append(column).append(",");
-                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
-                            }
-                            
-//                            COLUMN_BUFFER.append(column).append(",");
-//                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
+                            COLUMN_BUFFER.append(column).append(",");
+                            SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
                         }
                     }
-                    
-                    SQL.setLength(SQL.length() - 1);
-                    
-                    if(COLUMN_BUFFER.length() > 0) // column buffer is not empty
-                        COLUMN_BUFFER.setLength(COLUMN_BUFFER.length() - 1);
+                   
                 }
-            }        
+            }    
+            SQL.setLength(SQL.length() - 1);
+                                
+            if(COLUMN_BUFFER.length() > 0) // column buffer is not empty
+                COLUMN_BUFFER.setLength(COLUMN_BUFFER.length() - 1);
         }
         
         if(action.equals(ACTION_UPDATE) || action.equals(ACTION_DELETE)) {

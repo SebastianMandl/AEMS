@@ -32,7 +32,7 @@ public abstract class PlugIn implements Cloneable {
 	 * InputStream of the file which is currently read from
 	 * @return
 	 */
-	public abstract boolean readCyclic(InputStream inputStream);
+	public abstract boolean readCyclic(PlugIn plugin, InputStream inputStream);
 	
 	public String getName() {
 		return name;
@@ -53,8 +53,8 @@ public abstract class PlugIn implements Cloneable {
 		PlugIn plugin = new PlugIn(name, setting.clone()) {
 			
 			@Override
-			public boolean readCyclic(InputStream inputStream) {
-				return _this.readCyclic(inputStream);
+			public boolean readCyclic(PlugIn plugin, InputStream inputStream) {
+				return _this.readCyclic(plugin, inputStream);
 			}
 		};
 		plugin.setUploader(uploader);

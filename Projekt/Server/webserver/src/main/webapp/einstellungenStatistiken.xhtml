@@ -17,7 +17,6 @@
 
         <link href="css/bootstrap.css" rel="stylesheet" />
         <link href="css/main.css" rel="stylesheet" type="text/css" />
-        <link href="css/einstellungen.css" rel="stylesheet" type="text/css" />
         <link href="css/login-modal.css" rel="stylesheet" type="text/css" />
         <link href="css/einstellungenStatistiken.css" rel="stylesheet" type="text/css" />
     </head>
@@ -85,9 +84,15 @@
 
                 <div id="allList" class="list-group statisticsList"> 
                     <c:forEach items="#{statisticBean.statistics}" var="item">
-                        <a href="#" class="list-group-item " data-toggle="modal" data-target="#configuredStatistics-modal" data-backdrop="false" data-dismiss="modal">
+                        <a href="#" class="list-group-item ">
                             <h4 class="list-group-item-heading">#{item.name}</h4>
                             <p class="list-group-item-text">#{item.annotation}</p>
+                            <div class="btn-glyph">
+                            <button class="btn btn-default" title="Statistik bearbeiten"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button class="btn btn-default" title="Statistik löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button class="btn btn-default" title="Statistik zu Android-App hinzufügen"><span class="glyphicon glyphicon-phone"></span></button>
+                            <button class="btn btn-default" title="Statistik zu Startseite hinzufügen"><span class="glyphicon glyphicon-home"></span></button>      
+                            </div>
                         </a>
                     </c:forEach>
                     <c:if test="#{statisticBean.statistics.isEmpty()}">
