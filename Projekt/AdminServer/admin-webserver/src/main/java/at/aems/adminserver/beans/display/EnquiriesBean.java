@@ -50,6 +50,7 @@ public class EnquiriesBean extends AbstractDisplayBean {
 
     @Override
     public void update() {
+        enquiries.clear();
         System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
         Enquiry e = new Enquiry("graf@graf.graf", "Graf", true, new Timestamp(System.currentTimeMillis() - 1500000));
         Enquiry e2 = new Enquiry("knoll@knolli.k", "Knolli", true, new Timestamp(System.currentTimeMillis() - 1500000000));

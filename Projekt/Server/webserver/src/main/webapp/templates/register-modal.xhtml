@@ -13,6 +13,12 @@
                     <h:inputSecret value="#{register.password}" p:placeholder="Ihr netzonline Passwort" p:required="required"></h:inputSecret>
                     <h:inputText value="#{register.email}" p:placeholder="Ihre E-Mail" p:required="required" title="Die E-Mail wird nur zur Kontaktaufnahme verwendet"></h:inputText>
                     <h:inputText value="#{register.plz}" p:placeholder="Ihre Postleitzahl" p:required="required"></h:inputText>
+
+                    <h:selectBooleanCheckbox p:id="netz" value="#{register.netzonline}" p:checked=""></h:selectBooleanCheckbox>
+                    <label for="netz" class="termsOfUse-position" data-toggle="tooltip" data-placement="bottom" title="Wenn Sie dieser Option zustimmen dann müssen die eingegebenen Daten mit Ihren Anmeldedaten von Netzonline übereinstimmen">
+                        Ich habe einen Netz-online Account
+                    </label>
+                    <br/>
                     <input type="checkbox" name="termsofuse" id="termsofuse" required="required"/> 
                     <label class="termsOfUse-position" for="termsofuse">Ich bin mit den <a href="nutzungsbedingungen" target="_blank">Nutzungsbedingungen</a> einverstanden.</label>
                     <h:commandButton class="login loginmodal-submit" action="#{register.doRegister()}" value="Register"/>
