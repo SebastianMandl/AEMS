@@ -36,3 +36,8 @@ form .btn-group .dropdown-menu.zaehler_format {
 .no-statistics {
     color: gray;
 }
+
+.btn-glyph{
+    margin-top: -2.8em;
+    float: right;
+}
