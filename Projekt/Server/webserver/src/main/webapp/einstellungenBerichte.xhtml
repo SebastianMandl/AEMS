@@ -43,57 +43,36 @@
 
 
                 <h2 class="h2-downloads">Konfigurierte Berichte:</h2>
-
-                <div class="list-group reportList" id="reportList" data-toggle="modal" data-target="#configuredReport-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <a href="#" class="list-group-item" rname="Strombericht 1">
-
+                <div class="list-group reportList" id="reportList"> 
+                    <div class="list-group-item ">
                         <h4 class="list-group-item-heading">Strombericht 1</h4>
-
                         <p class="list-group-item-text">Monatlich, automatisch generiert</p>
-                    </a>
-                    <a href="#" class="list-group-item" rname="Strombericht 2">
-
-                        <h4 class="list-group-item-heading">Strombericht 2</h4>
-
-                        <p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
-                    </a>
-                    <a href="#" class="list-group-item" rname="Gasbericht 1">
-
-                        <h4 class="list-group-item-heading">Gasbericht 1</h4>
-
-                        <p class="list-group-item-text">Täglich, automatisch generiert</p>
-                    </a>
+                        <div class="btn-glyph">
+                            <button class="btn btn-default" title="Bericht bearbeiten" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button class="btn btn-default" title="Bericht löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
+                    </div>
                 </div>
 
 
                 <h2 class="h2-downloads">Downloads:</h2>
 
                 <div class="list-group reportList"> 
-                    <a href="#" class="list-group-item ">
 
+                    <div class="list-group-item ">
                         <h4 class="list-group-item-heading">Monatsbericht Strom August 2017</h4>
-
                         <p class="list-group-item-text">Monatlich, automatisch generiert</p>
-                    </a>
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Jahresbericht Strom 2017</h4>
-
-                        <p class="list-group-item-text">Wöchentlich, nicht automatisch generiert</p>
-                    </a>
-
-                    <a href="#" class="list-group-item ">
-
-                        <h4 class="list-group-item-heading">Wochenbericht Gas Kalenderwoche 3 2017 </h4>
-
-                        <p class="list-group-item-text">Täglich, automatisch generiert</p>
-                    </a>
+                        <div class="btn-glyph">
+                            <button class="btn btn-default" title="Bericht herunterladen"><span class="glyphicon glyphicon-download"></span></button>
+                            <button class="btn btn-default" title="Bericht verwerfen"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
+                    </div>           
                 </div>
             </article>
 
         </c:if>
-        
-                
+
+
         <div style="margin-top: 5%"></div>
 
 
@@ -105,9 +84,6 @@
 
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>
-        
-        <!-- Configured Report Modal -->
-        <ui:include src="/templates/configuredReport-modal.xhtml"></ui:include>
 
         <!-- New Report Modal -->
         <ui:include src="/templates/newReport-modal.xhtml"></ui:include>
@@ -115,7 +91,7 @@
         <!-- Edit Report Modal -->
         <ui:include src="/templates/editReport-modal.xhtml"></ui:include>
 
-        
+
 
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>

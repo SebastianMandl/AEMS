@@ -25,3 +25,9 @@ form .btn-group .dropdown-menu.zaehler_format {
 .loginmodal-container form .loginModalClose.configuredWarningClose {
 	padding-top: 40px;
 }
+
+.btn-glyph{
+    margin-top: -2.8em;
+    float: right;
+}
+

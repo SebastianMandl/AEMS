@@ -42,10 +42,13 @@
 
                 <div id="homepageList" class="list-group statisticsList"> 
                     <c:forEach items="#{statisticBean.startpageStatistics}" var="item">
-                        <a href="#" class="list-group-item " data-toggle="modal" data-target="#indexpageStatistics-modal" data-backdrop="false" data-dismiss="modal">
+                        <div class="list-group-item ">
                             <h4 class="list-group-item-heading">#{item.name}</h4>
                             <p class="list-group-item-text">#{item.annotation}</p>
-                        </a>
+                            <div class="btn-glyph">
+                                <button class="btn btn-default" title="Statistik aus Startseite entfernen"><span class="glyphicon glyphicon-ban-circle"></span></button>
+                            </div>
+                        </div>
                     </c:forEach>
                     <c:if test="#{statisticBean.startpageStatistics.isEmpty()}">
                         <p class="no-statistics">
@@ -63,11 +66,14 @@
                 <h2 class="statistics-h2">Android-App Statistiken:</h2>
 
                 <div id="androidList" class="list-group statisticsList"> 
-                    <c:forEach items="#{statisticBean.androidStatistics}" var="item">
-                        <a href="#" class="list-group-item " data-toggle="modal" data-target="#androidAppStatistics-modal" data-backdrop="false" data-dismiss="modal">
+                    <c:forEach items="#{statisticBean.androidStatistics}" var="item">   
+                        <div class="list-group-item ">
                             <h4 class="list-group-item-heading">#{item.name}</h4>
                             <p class="list-group-item-text">#{item.annotation}</p>
-                        </a>
+                            <div class="btn-glyph">
+                                <button class="btn btn-default" title="Statistik aus App entfernen"><span class="glyphicon glyphicon-ban-circle"></span></button>
+                            </div>
+                        </div>
                     </c:forEach>
                     <c:if test="#{statisticBean.androidStatistics.isEmpty()}">
                         <p class="no-statistics">
@@ -84,16 +90,16 @@
 
                 <div id="allList" class="list-group statisticsList"> 
                     <c:forEach items="#{statisticBean.statistics}" var="item">
-                        <a href="#" class="list-group-item ">
+                        <div class="list-group-item ">
                             <h4 class="list-group-item-heading">#{item.name}</h4>
                             <p class="list-group-item-text">#{item.annotation}</p>
                             <div class="btn-glyph">
-                            <button class="btn btn-default" title="Statistik bearbeiten"><span class="glyphicon glyphicon-pencil"></span></button>
-                            <button class="btn btn-default" title="Statistik löschen"><span class="glyphicon glyphicon-trash"></span></button>
-                            <button class="btn btn-default" title="Statistik zu Android-App hinzufügen"><span class="glyphicon glyphicon-phone"></span></button>
-                            <button class="btn btn-default" title="Statistik zu Startseite hinzufügen"><span class="glyphicon glyphicon-home"></span></button>      
+                                <button class="btn btn-default" title="Statistik bearbeiten" data-toggle="modal" data-target="#editStatistic-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                                <button class="btn btn-default" title="Statistik zu Android-App hinzufügen"><span class="glyphicon glyphicon-phone"></span></button>
+                                <button class="btn btn-default" title="Statistik zu Startseite hinzufügen"><span class="glyphicon glyphicon-home"></span></button>
+                                <button class="btn btn-default" title="Statistik löschen"><span class="glyphicon glyphicon-trash"></span></button>
                             </div>
-                        </a>
+                        </div>
                     </c:forEach>
                     <c:if test="#{statisticBean.statistics.isEmpty()}">
                         <p class="no-statistics">
@@ -119,15 +125,6 @@
 
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>	  	
-
-        <!-- Indexpage Statistics Modal -->
-        <ui:include src="/templates/indexpageStatistic-modal.xhtml"></ui:include>   
-
-        <!-- Android-App Statistics Modal -->
-        <ui:include src="/templates/androidStatistic-modal.xhtml"></ui:include>
-
-        <!-- Configured Statistics Modal -->
-        <ui:include src="/templates/configuredStatistic-modal.xhtml"></ui:include>    
 
         <!-- New Statistic Modal -->
         <ui:include src="/templates/newStatistic-modal.xhtml"></ui:include>
