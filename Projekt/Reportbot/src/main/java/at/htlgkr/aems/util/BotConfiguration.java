@@ -37,6 +37,7 @@ public class BotConfiguration {
   private File configFile;
   private Properties props;
   
+  public static final String API_URL = "aems-api-url";
   public static final String FILE_STORAGE = "xls-storage";
   public static final String LOGFILE_STORAGE = "logs-folder";
   public static final String LOGGING_ENABLED = "logging-enabled";
@@ -44,6 +45,9 @@ public class BotConfiguration {
   public static final String MAX_RETRIES = "max-retries";
   public static final String API_KEY = "openweahermap-apikey";
   public static final String LOG_LEVEL = "log-level";
+  public static final String SUPER_USER_ID = "super-id";
+  public static final String SUPER_USER_NAME = "super-name";
+  public static final String SUPER_USER_PWD = "super-pwd";
   
   public BotConfiguration() {
     this.configFile = new File("bot.properties");
@@ -60,6 +64,7 @@ public class BotConfiguration {
       this.props.load(stream);
       
       if(props.isEmpty()) {
+        this.props.setProperty(BotConfiguration.API_URL, "http://localhost/graphql");
         this.props.setProperty(BotConfiguration.FILE_STORAGE, "Exceldateien");
         this.props.setProperty(BotConfiguration.MAX_RETRIES, "1");
         this.props.setProperty(BotConfiguration.MAX_USERS, "50");
@@ -67,6 +72,9 @@ public class BotConfiguration {
         this.props.setProperty(BotConfiguration.LOGGING_ENABLED, "true");
         this.props.setProperty(BotConfiguration.API_KEY, "API-KEY-HERE");
         this.props.setProperty(BotConfiguration.LOG_LEVEL, Logger.DEFAULT_LOG_TYPE.name());
+        this.props.setProperty(BotConfiguration.SUPER_USER_ID, "0");
+        this.props.setProperty(BotConfiguration.SUPER_USER_NAME, "superuser");
+        this.props.setProperty(BotConfiguration.SUPER_USER_PWD, "password of superuser");
         
         FileWriter writer = new FileWriter(configFile);
         this.props.store(writer, "AEMS Bot Konfigurationsdatei");
