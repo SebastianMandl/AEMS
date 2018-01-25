@@ -48,7 +48,9 @@ public class Query extends GraphQLObjectType {
     private static final GraphQLFieldDefinition METERS = 
             Query.getRootFieldDefinition("meters", AEMSDatabase.METERS, Meter.getInstance(), 
                     getArgumentList(
-                            new Argument("id", AEMSDatabase.Meters.ID, Argument.LIKE)));
+                            new Argument("id", AEMSDatabase.Meters.ID, Argument.LIKE),
+                            new Argument("user", AEMSDatabase.Meters.USER, Argument.EQUAL),
+                            new Argument("is_sensor", AEMSDatabase.Meters.IS_SENSOR, Argument.EQUAL)));
     
     private static final GraphQLFieldDefinition METER_DATA = 
             Query.getRootFieldDefinition("meter_data", AEMSDatabase.METERDATA, MeterData.getInstance(), 
@@ -164,11 +166,11 @@ public class Query extends GraphQLObjectType {
                 if(argumentValue.equals("*")) // ignore ; default value ; everything shell be queried
                     continue;
                 
-                customWhere.append(arg.column);
+                customWhere.append("a.\"").append(arg.column).append("\"");
                 
                 switch (arg.comparison) {
                     case Argument.EQUAL:
-                        customWhere.append("=");
+                        customWhere.append(" = ");
                         break;
                     case Argument.LIKE:
                         customWhere.append(" LIKE ");
