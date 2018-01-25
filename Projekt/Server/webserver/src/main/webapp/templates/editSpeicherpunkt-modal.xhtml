@@ -5,46 +5,79 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
-   <div class="modal fade" id="editReport-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal fade" id="editSpeicherpunkt-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 
-            <div class="modal-dialog">
+        <div class="modal-dialog">
 
-                <div class="loginmodal-container">
+            <div class="loginmodal-container">
 
-                    <h1>Speicherpunkt bearbeiten</h1><br />
-                    <form>
-
-                        <h4>Bezeichnung</h4>
-                        <input type="text" name="user" placeholder="Mein Zähler" required="" />
-
-
-                        <h4>Zählertyp</h4>
-                        <input type="text" name="user" placeholder="Kompetenzzähler" required="" />
+                <h1>Speicherpunkt bearbeiten</h1><br />
+                <form>
+                    <h4>Bezeichnung</h4>
+                    <input type="text" name="user" placeholder="Mein Zähler" required="" />
 
 
-                        <h4>Einheit</h4>
-                        <input type="text" name="user" placeholder="kWh" required="" />	
+                    <h4>Zählertyp</h4>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+
+                        <ul class="dropdown-menu zaehler_format">
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Strom</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Wasser</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Gas</label>
+                                </div>
+                            </li>
+
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Wärme</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
 
 
-                        <h4>Standort</h4>
-                        <input type="text" placeholder="HTL EG-32" />
+                    <h4>Neuer Zählertyp</h4>
+                    <input type="text" placeholder="Kompetenzzähler" />	
 
 
-                        <h4>Erstelldatum</h4>
-                        <input type="date" />
+                    <h4>Einheit</h4>
+                    <input type="text" name="user" placeholder="kWh" required="" />	
 
 
-                        <h4>Leseintervall in Minuten</h4>
-                        <input type="number" placeholder="15" />
+                    <h4>Standort</h4>
+                    <input type="text" placeholder="HTL EG-32" />
 
 
-                        <h4>Anmerkung</h4>
-                        <input type="text" placeholder="Probezähler" />
-                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Speicherpunkt bearbeiten" />
-                        <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
-                    </form>			
-                </div>
+                    <h4>Erstelldatum</h4>
+                    <input type="date" />
+
+
+                    <h4>Leseintervall in Minuten</h4>
+                    <input type="number" placeholder="15" />
+
+
+                    <h4>Anmerkung</h4>
+                    <input type="text" placeholder="Probezähler" />
+                    <input onclick="" type="submit" name="createSpeicherpunkt" class="login loginmodal-submit submitFormat" value="Speicherpunkt bearbeiten" />
+                    <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
+                </form>			
             </div>
-        </div>  
+        </div>
+    </div>  
 </ui:composition>
 

@@ -31,7 +31,9 @@ import butterknife.Bind;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
+    private static final String PREFERENCE_KEY_SESSION = "AemsLoginPreferenceKeySession";
     SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferencesSession;
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -42,15 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
-       /* sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        String user = sharedPreferences.getString("EMAIL", null);
-        String passw = sharedPreferences.getString("PASSWORD", null);
-        Boolean rememberMe = sharedPreferences.getBoolean("REMEMBERLOGIN", true);
-
-        if (rememberMe && user != null && passw != null){
-            onLoginSuccess();
-        }*/
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -133,11 +126,14 @@ public class LoginActivity extends AppCompatActivity {
 
         if(user == null && passw == null){
             CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
+
+
             if(checkBoxRememberMe.isChecked()){
                 sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
                 sharedPreferences.edit().putString("EMAIL", email).commit();
                 sharedPreferences.edit().putString("PASSWORD", password).commit();
                 sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true).commit();
+
 
                 user = sharedPreferences.getString("EMAIL", "");
                 passw = sharedPreferences.getString("PASSWORD", "");
