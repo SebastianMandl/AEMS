@@ -40,13 +40,16 @@
 
                 <h2 class="h2-warnungen">Benachrichtigungen</h2>
 
-                <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
-
+                <div class="list-group warningList"> 
                     <c:forEach items="#{userWarningsBean.notifications}" var="item">
-                        <a href="#" class="list-group-item ">
+                         <div class="list-group-item ">
                             <h4 class="list-group-item-heading">#{item.name}</h4>
                             <p class="list-group-item-text">Some text</p>
-                        </a>
+                            <div class="btn-glyph">
+                                <button class="btn btn-default" title="Benachrichtigung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                                <button class="btn btn-default" title="Benachrichtigung löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                            </div>
+                         </div>
                     </c:forEach>
 
                 </div>
@@ -56,10 +59,14 @@
 
                 <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
                     <c:forEach items="#{userWarningsBean.warnings}" var="item">
-                        <a href="#" class="list-group-item ">
+                      <div class="list-group-item ">
                             <h4 class="list-group-item-heading">#{item.name}</h4>
                             <p class="list-group-item-text">Some text</p>
-                        </a>
+                            <div class="btn-glyph">
+                                <button class="btn btn-default" title="Warnung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                                <button class="btn btn-default" title="Warnung löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                            </div>
+                      </div>
                     </c:forEach>
                 </div>
             </article>
@@ -78,15 +85,11 @@
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
-
         <!-- New Warning Modal -->
         <ui:include src="/templates/newWarning-modal.xhtml"></ui:include>
 
         <!-- Edit Warning Modal -->
         <ui:include src="/templates/editWarning-modal.xhtml"></ui:include>
-
-        <!-- Configured Warning Modal -->
-        <ui:include src="/templates/configuredWarning-modal.xhtml"></ui:include>
 
 
         <script src="js/jquery-1.11.3.min.js"></script>

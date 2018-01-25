@@ -8,12 +8,18 @@ package at.aems.webserver.beans;
 import at.aems.webserver.AemsUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
  * @author Niklas
  */
+@ViewScoped
 @ManagedBean(name="register")
 public class RegisterBean {
     
@@ -21,6 +27,9 @@ public class RegisterBean {
     private String password;
     private String email;
     private String plz;
+    private boolean netzonline;
+    
+    private boolean isRegistering;
     
     public RegisterBean() {
         
@@ -57,8 +66,29 @@ public class RegisterBean {
     public void setPlz(String plz) {
         this.plz = plz;
     }
+
+    public boolean isNetzonline() {
+        return netzonline;
+    }
+
+    public void setNetzonline(boolean netzonline) {
+        this.netzonline = netzonline;
+    }
+
+    public boolean isRegistering() {
+        return isRegistering;
+    }
+    
     
     public String doRegister() {
+        
+        if(isRegistering) {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home");
+            } catch(IOException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
         
         JsonObject obj = new JsonObject();
         JsonObject data = new JsonObject();
@@ -76,7 +106,9 @@ public class RegisterBean {
         AemsUtils.doPost(jsonString);
         System.out.println(jsonString);
         
-        return "register-done";
+        isRegistering = true;
+        
+        return "home";
     }
     
     

@@ -112,8 +112,8 @@ public class AemsLocation {
    * @return The location, as an AemsLocation
    */
   public static AemsLocation fromJsonObject(JSONObject location) {
-    if(location.get("name") != JSONObject.NULL) {
-      return new AemsLocation(location.getString("name"));
+    if(location.get("city") != JSONObject.NULL) {
+      return new AemsLocation(location.getString("city"));
     }
     double lat = location.getDouble("lat");
     double lng = location.getDouble("long");

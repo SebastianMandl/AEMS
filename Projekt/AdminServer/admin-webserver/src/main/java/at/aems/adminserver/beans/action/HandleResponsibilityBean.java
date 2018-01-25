@@ -54,7 +54,7 @@ public class HandleResponsibilityBean extends AbstractActionBean {
     }
     
     public String doDelete() {
-        notify.setMessage("Zuständigkeitsbereich " + postalCode + " wurde gelöscht!");
+        notify.setMessage("Zuständigkeitsbereich wurde gelöscht!");
         return "zustaendigkeit";
     }
     

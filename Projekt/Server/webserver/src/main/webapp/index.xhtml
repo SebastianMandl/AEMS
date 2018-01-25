@@ -59,7 +59,7 @@
         <!-- Register Modal -->
         <ui:include src="/templates/register-modal.xhtml"></ui:include>
 
-
+        <script src="js/lib/tether.min.js"></script>
         <script src="js/basic.js"></script>
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
@@ -96,6 +96,14 @@
             showChart(json.id, json.labels, json.electricityValues, json.previousValues, json.anomalyValues);
             </script>
         </c:forEach>
+        
+        <script>
+            
+            $(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+})
+            
+        </script>
 
     </body>
 </html>

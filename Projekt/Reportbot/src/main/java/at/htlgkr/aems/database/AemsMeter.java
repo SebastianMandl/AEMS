@@ -26,6 +26,7 @@ public class AemsMeter {
   
   /**
    * This enumeration specifies the type of an AEMS meter.
+   * @deprecated Meter types have their own db table
    * @author Niklas
    */
   public enum MeterType {
@@ -33,10 +34,10 @@ public class AemsMeter {
   }
   
   private String id;
-  private MeterType type;
+  private Integer type;
   private AemsLocation location;
   
-  public AemsMeter(String id, MeterType type, AemsLocation location) {
+  public AemsMeter(String id, Integer type, AemsLocation location) {
     this.id = id;
     this.type = type;
     this.location = location;
@@ -54,11 +55,11 @@ public class AemsMeter {
     this.id = id;
   }
 
-  public MeterType getType() {
+  public Integer getType() {
     return type;
   }
 
-  public void setType(MeterType type) {
+  public void setType(Integer type) {
     this.type = type;
   }
 

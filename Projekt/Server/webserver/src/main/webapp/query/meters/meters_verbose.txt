@@ -1,5 +1,5 @@
-query GetMetersVerbose(user: #USER_ID#) {
-    Meters {
+query GetMetersVerbose {
+    Meters(user: #USER_ID#) {
         id
         city
         latitude

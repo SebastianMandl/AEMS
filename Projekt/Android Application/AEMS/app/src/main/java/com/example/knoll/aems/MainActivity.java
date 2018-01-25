@@ -38,6 +38,9 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
+    private static final String PREFERENCE_KEY_SESSION = "AemsLoginPreferenceKeySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferencesSession;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -54,12 +57,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Delete Logininformation
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
         boolean rememberLogin = sharedPreferences.getBoolean("REMEMBERLOGIN", true);
         String email = sharedPreferences.getString("EMAIL", null);
         String password = sharedPreferences.getString("PASSWORD", null);
 
-        if (!rememberLogin || email == null || password == null){
+        sharedPreferencesSession = getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
+        boolean sessionLogin = sharedPreferencesSession.getBoolean("Session", true);
+        System.out.println("---------------------------------------------" + sessionLogin + "------------------------------------------------");
+
+
+        if (!sessionLogin ){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -99,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    protected void onDestroy(){
+        super.onDestroy();
+        sharedPreferencesSession = this.getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
+        SharedPreferences.Editor editorSession = sharedPreferencesSession.edit();
+        editorSession.clear();
+        editorSession.commit();
+        finish();
     }
 
 
@@ -190,10 +207,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_logout){
             //Delete Logininformation
-            SharedPreferences sharedPrefs = this.getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPrefs.edit();
+            sharedPreferences = this.getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.commit();
+
+            sharedPreferencesSession = this.getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
+            SharedPreferences.Editor editorSession = sharedPreferencesSession.edit();
+            editorSession.clear();
+            editorSession.commit();
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
