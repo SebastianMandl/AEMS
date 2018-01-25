@@ -42,6 +42,7 @@ public class AEMSDatabase {
             public static final String CITY = "city";
             public static final String LATITUDE = "latitude";
             public static final String LONGITUDE = "longitude";
+            public static final String IS_SENSOR = "is_sensor";
 	}
 	
 	public class MeterTypes {

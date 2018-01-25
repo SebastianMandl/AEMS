@@ -5,6 +5,8 @@ CREATE EXTENSION pgagent;
 
 -- setting up pljava -----------------------------------------------------------------
 
+https://stackoverflow.com/questions/6633609/problem-in-installing-pljava-on-windows
+
 sources from git: git clone https://github.com/tada/pljava.git
 
 https://tada.github.io/pljava/install/install.html -- installation
