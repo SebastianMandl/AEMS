@@ -79,7 +79,7 @@ public class AemsAPI {
         temperatureMap = new HashMap<AemsLocation, Double>();
         insertMeters = new AemsInsertAction(superUser, EncryptionType.SSL);
         at.aems.apilib.AemsAPI.setUrl(API_URL);
-        try {            
+        try {
             AemsBotAction bot = new AemsBotAction(superUser, EncryptionType.SSL);
             String response = at.aems.apilib.AemsAPI.call(bot, new byte[16]);
             String rawData = new String(Base64.getUrlDecoder().decode(response.getBytes()));
