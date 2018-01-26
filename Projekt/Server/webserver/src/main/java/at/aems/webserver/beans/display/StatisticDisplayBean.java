@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.display;
 
 import at.aems.webserver.data.statistic.DisplayedStatistic;
 import at.aems.webserver.data.statistic.Period;

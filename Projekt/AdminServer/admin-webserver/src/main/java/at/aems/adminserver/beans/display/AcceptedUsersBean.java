@@ -6,7 +6,7 @@
 package at.aems.adminserver.beans.display;
 
 import at.aems.adminserver.beans.UserBean;
-import at.aems.adminserver.data.users.AcceptedUser;
+import at.aems.adminserver.data.users.DisplayedUser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -22,7 +22,7 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class AcceptedUsersBean extends AbstractDisplayBean {
 
-    private List<AcceptedUser> users = new ArrayList<>();
+    private List<DisplayedUser> users = new ArrayList<>();
 
     @ManagedProperty(value = "#{userBean}")
     private UserBean userBean;
@@ -31,11 +31,11 @@ public class AcceptedUsersBean extends AbstractDisplayBean {
     }
 
 
-    public List<AcceptedUser> getUsers() {
+    public List<DisplayedUser> getUsers() {
         return users;
     }
 
-    public void setUsers(List<AcceptedUser> users) {
+    public void setUsers(List<DisplayedUser> users) {
         this.users = users;
     }
 
@@ -50,7 +50,7 @@ public class AcceptedUsersBean extends AbstractDisplayBean {
     @Override
     public void update() {
         System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
-                AcceptedUser u = new AcceptedUser(123, "Josef", "doppelbauer@gmx.net");
+                DisplayedUser u = new DisplayedUser(123, "Josef", "doppelbauer@gmx.net");
         users.add(u);
     }
 

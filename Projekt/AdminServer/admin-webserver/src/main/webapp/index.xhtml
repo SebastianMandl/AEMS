@@ -55,7 +55,7 @@
 
                 <div id="user-list" style="margin-bottom: 5em;" class="list-group warningList" data-toggle="modal" data-target="#aemsUsers-modal" data-backdrop="false" data-dismiss="modal"> 
                     <c:forEach items="#{acceptedUsersBean.users}" var="user">
-                        <a href="#" class="user-entry list-group-item" data-id="#{user.id}">		  	
+                        <a href="#" class="user-entry list-group-item" data-mail="#{user.email}">		  	
                             <h4 class="list-group-item-heading">#{user.username}</h4>		  	
                             <p class="list-group-item-text">#{user.email}</p>
                         </a>

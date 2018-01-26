@@ -5,9 +5,13 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.UserRole;
 import at.aems.adminserver.beans.display.AbstractDisplayBean;
 import at.aems.adminserver.beans.display.EnquiriesBean;
 import at.aems.adminserver.beans.display.NotifyBean;
+import at.aems.apilib.AemsDeleteAction;
+import at.aems.apilib.AemsUpdateAction;
+import at.aems.apilib.crypto.EncryptionType;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 
@@ -33,6 +37,12 @@ public class DeleteAdminBean extends AbstractActionBean {
     
     public String doDelete() {
         notify.setMessage("Admin wurde gelöscht.");
+        AemsUpdateAction delete = new AemsUpdateAction(userBean.getAemsUser(), EncryptionType.SSL);
+        delete.setTable("Users");
+        delete.setIdColumn("username", username);
+        delete.write("role", UserRole.MEMBER.getId());
+        callUpdateOn("adminDisplayBean");
+        
         return "administration";
     }
      

@@ -6,6 +6,8 @@
 package at.aems.adminserver.servlet;
 
 import at.aems.adminserver.beans.UserBean;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.crypto.EncryptionType;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
@@ -46,6 +48,7 @@ public class QueryServlet extends HttpServlet {
                 out.println(jsonError("No query was supplied."));
                 return; 
             }
+            AemsQueryAction queryAction = new AemsQueryAction(bean.getAemsUser(), EncryptionType.SSL);
             // Echo back query
             out.print("{\"q\": \"" + query + "\"}");
         }

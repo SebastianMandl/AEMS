@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.display;
 
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.beans.UserBean;
 import at.aems.webserver.data.notifications.NotificationType;
 import at.aems.webserver.data.notifications.SimpleNotificationData;
 import com.google.gson.Gson;

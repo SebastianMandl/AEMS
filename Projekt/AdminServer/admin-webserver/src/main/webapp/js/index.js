@@ -7,6 +7,7 @@ $(document).ready(function () {
         $("#selectedEnquiry").text(text);
         $("#selectedEnquiryEmail").text(email);
         $("#enquiry-form\\:_email").val(email);
+        $("#kick-user\\:_email").val(email);
         
         $("#deny-div").hide(); 
     });

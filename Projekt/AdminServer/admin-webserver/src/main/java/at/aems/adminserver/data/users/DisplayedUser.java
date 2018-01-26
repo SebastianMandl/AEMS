@@ -9,15 +9,15 @@ package at.aems.adminserver.data.users;
  *
  * @author Niggi
  */
-public class AcceptedUser {
+public class DisplayedUser {
     private Integer id;
     private String username;
     private String email;
 
-    public AcceptedUser() {
+    public DisplayedUser() {
     }
 
-    public AcceptedUser(Integer id, String username, String email) {
+    public DisplayedUser(Integer id, String username, String email) {
         this.id = id;
         this.username = username;
         this.email = email;

@@ -6,19 +6,7 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
-    <c:if test="#{register.isRegistering()}">
-        <div class="welcome">
-            <h1>Vielen Dank für Ihre Anfrage!</h1>
-            <p>Wir werden Ihnen eine Bestätigungs E-Mail an die angegebene Adresse senden:</p>
-            <p>#{register.email}</p>
-            <p>
-                Bitte folgen Sie dem Bestätigungs-Link, welchen Sie in dieser E-Mail finden werden.
-                Sobald Sie Ihre E-Mail bestätigt haben, wird sich ein Administrator Ihre Anfrage
-                persönlich ansehen. Dieser entscheidet dann, ob Ihre Anfrage angenommen werden kann.
-                Sobald Ihre Anfrage behandelt wurde, erhalten Sie noch eine E-Mail.
-            </p>
-        </div>
-    </c:if>
+
 
     <c:if test="#{!register.isRegistering()}">
         <div class="welcome">

@@ -1,7 +1,7 @@
 package at.htlgkr.aems.util;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileFilter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -20,11 +20,10 @@ public class LogFileCleaner {
 
     public void clean() {
         Main.logger.log(LogType.DEBUG, "LogFileCleaner will clean logs older than " + days + " day(s)");
-        File[] files = logFolder.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                // 24-01-2018_13-27-00.log
+        File[] files = logFolder.listFiles(new FileFilter() {
+            public boolean accept(File file) {
                 GregorianCalendar then = new GregorianCalendar();
-                then.setTimeInMillis(dir.lastModified());
+                then.setTimeInMillis(file.lastModified());
                 GregorianCalendar now = new GregorianCalendar();
                 then.add(Calendar.DAY_OF_MONTH, days);
                 return then.before(now);

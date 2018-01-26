@@ -10,8 +10,9 @@
                 <div class="loginmodal-container">
 
                     <h1 id="selectedUser">Gewählten AEMS - Benutzer...</h1><br />
-                    <h:form>
-                        <button type="submit" class="btn btn-default btn-kickUser" data-dismiss="modal" aria-hidden="true">Nutzungsrechte entziehen</button>
+                    <h:form id="kick-user">
+                        <h:inputHidden id="_email" value="#{killUserBean.email}"></h:inputHidden>
+                        <h:commandButton action="#{killUserBean.doRevoke()}" class="btn btn-default btn-kickUser" value="Nutzungsrechte entziehen"></h:commandButton>
                         <a href="#" class="loginModalClose configuredStatisticClose" name="close" data-dismiss="modal" aria-hidden="true">Close</a>
                     </h:form>				
                 </div>
