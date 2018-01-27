@@ -6,6 +6,7 @@ import aems.database.ResultSet;
 import aems.graphql.Query;
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
+import at.htlgkr.aems.util.crypto.KeyUtils;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -51,6 +52,7 @@ public class RestInf extends HttpServlet {
     private static final String ACTION_UPDATE = "UPDATE";
     private static final String ACTION_DELETE = "DELETE";
     private static final String ACTION_QUERY = "QUERY";
+    private static final String ACTION_BOT = "BOT";
     private static final String ENCRYPTION_AES = "AES";
     private static final String ENCRYPTION_SSL = "SSL";
     
@@ -160,6 +162,19 @@ public class RestInf extends HttpServlet {
         
         // establish exception for login request
         switch (action) {
+            case ACTION_BOT:
+            {
+                try {
+                    BigDecimal key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.exertProcedure(DatabaseConnectionManager.getDatabaseConnection()))), "master", "test");
+                    String json = new String(DatabaseConnectionManager.getDatabaseConnection().callFunction("get_user_infos", byte[].class));
+                    json = new String(Decrypter.requestDecryption(key, json.getBytes()));
+                    resp.getWriter().write(Base64.getUrlEncoder().encodeToString(json.getBytes()));
+                    resp.getWriter().flush();
+                    return;
+                } catch (SQLException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+                    Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             case ACTION_LOGIN:
                 if(encryption.equals(ENCRYPTION_SSL))
                     doLogin(query, encryption, req, resp);

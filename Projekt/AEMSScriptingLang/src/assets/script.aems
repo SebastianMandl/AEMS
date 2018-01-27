@@ -1,0 +1,5 @@
+$x := $today + $week - $day
+
+
+# the following produces a list as a result
+$y := $value of period from $today - $week - 1 until $today + $month
