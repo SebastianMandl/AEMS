@@ -9,19 +9,29 @@ import at.aems.webserver.AemsUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
  * @author Niklas
  */
-@ViewScoped
 @ManagedBean(name="register")
-public class RegisterBean {
+public class RegisterBean extends AbstractBean {
     
     private String username;
     private String password;
@@ -81,12 +91,19 @@ public class RegisterBean {
     
     
     public String doRegister() {
-        
         if(isRegistering) {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home");
             } catch(IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+        
+        if(netzonline) {
+            boolean passwordOk = checkPassword();
+            if(!passwordOk) {
+                notify.setMessage("Username und/oder Passwort stimmen nicht überein!");
+                return "home";
             }
         }
         
@@ -109,6 +126,26 @@ public class RegisterBean {
         isRegistering = true;
         
         return "home";
+    }
+
+    private boolean checkPassword() {
+        
+        HttpClient client = HttpClients.createMinimal();
+        HttpPost post = new HttpPost("https://netz-online.netzgmbh.at/eServiceWeb/j_security_check");
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("j_username", username));
+        params.add(new BasicNameValuePair("j_password", password));
+        try {
+            post.setEntity(new UrlEncodedFormEntity(params));
+            HttpResponse response = client.execute(post);
+            
+            // timeout means that it worked
+            return response.getStatusLine().getStatusCode() == HttpStatus.SC_REQUEST_TIMEOUT;
+        } catch (Exception ex) {
+            Logger.getLogger(RegisterBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
     }
     
     

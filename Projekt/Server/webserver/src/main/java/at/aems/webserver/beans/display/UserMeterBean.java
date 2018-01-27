@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.display;
 
+import at.aems.webserver.beans.UserBean;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.HashMap;

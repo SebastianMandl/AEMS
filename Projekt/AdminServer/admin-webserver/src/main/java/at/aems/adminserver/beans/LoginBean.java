@@ -6,6 +6,9 @@
 package at.aems.adminserver.beans;
 
 import at.aems.adminserver.UserRole;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsLoginAction;
+import at.aems.apilib.crypto.EncryptionType;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -46,7 +49,11 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     }
     
     public String doLogin() {
-        int userId = 123; // TODO: Get userID from API!
+        AemsAPI.setUrl("https://google.at");
+        AemsLoginAction login = new AemsLoginAction(EncryptionType.SSL);
+        login.setUsername(username);
+        login.setPassword(password);
+        int userId = 123; 
         if(userId != -1) {
             userBean.setUserId(userId);
             userBean.setUsername(username);

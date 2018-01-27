@@ -6,6 +6,7 @@
 package at.aems.adminserver.beans;
 
 import at.aems.adminserver.UserRole;
+import at.aems.apilib.AemsUser;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -80,6 +81,10 @@ public class UserBean implements Serializable {
     
     public boolean isSubAdmin() {
         return isLoggedIn() && (role == UserRole.ADMIN || role == UserRole.SUB_ADMIN);
+    }
+    
+    public AemsUser getAemsUser() {
+        return new AemsUser(this.getUserId(), getUsername(), getPassword());
     }
 
     public String getAuthenticationString() {

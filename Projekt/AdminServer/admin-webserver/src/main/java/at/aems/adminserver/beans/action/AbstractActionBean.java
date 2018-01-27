@@ -5,6 +5,7 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.beans.UserBean;
 import at.aems.adminserver.beans.display.AbstractDisplayBean;
 import at.aems.adminserver.beans.display.NotifyBean;
 import javax.faces.bean.ManagedBean;
@@ -21,6 +22,9 @@ public abstract class AbstractActionBean {
 
     @ManagedProperty(value = "#{notifyBean}")
     protected NotifyBean notify;
+    
+    @ManagedProperty(value="#{userBean}")
+    protected UserBean userBean;
 
     public AbstractActionBean() {
     }
@@ -32,6 +36,15 @@ public abstract class AbstractActionBean {
     public void setNotify(NotifyBean notify) {
         this.notify = notify;
     }
+
+    public UserBean getUserBean() {
+        return userBean;
+    }
+
+    public void setUserBean(UserBean userBean) {
+        this.userBean = userBean;
+    }
+
     
     public void callUpdateOn(String managedBeanName) {
         getDisplayBean(managedBeanName).update();

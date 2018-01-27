@@ -96,14 +96,19 @@
             showChart(json.id, json.labels, json.electricityValues, json.previousValues, json.anomalyValues);
             </script>
         </c:forEach>
-        
+
         <script>
-            
+
             $(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-})
-            
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+
         </script>
 
+        <c:if test="#{notifyBean.hasMessage()}">
+            <script>
+                $.notify("#{notifyBean.message}", "info");
+            </script>
+        </c:if>
     </body>
 </html>

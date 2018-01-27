@@ -40,35 +40,43 @@
 
                 <h2 class="h2-warnungen">Benachrichtigungen</h2>
 
-                <div class="list-group warningList"> 
-                    <c:forEach items="#{userWarningsBean.notifications}" var="item">
-                         <div class="list-group-item ">
-                            <h4 class="list-group-item-heading">#{item.name}</h4>
-                            <p class="list-group-item-text">Some text</p>
-                            <div class="btn-glyph">
-                                <button class="btn btn-default" title="Benachrichtigung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
-                                <button class="btn btn-default" title="Benachrichtigung löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                <h:form>
+                    <div class="list-group warningList"> 
+                        <c:forEach items="#{userWarningsBean.notifications}" var="item">
+                            <div class="list-group-item ">
+                                <h4 class="list-group-item-heading">#{item.name}</h4>
+                                <p class="list-group-item-text">Some text</p>
+                                <div class="btn-glyph">
+                                    <button class="btn btn-default" title="Benachrichtigung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+
+                                    <h:commandLink action="#{warningActionBean.doDelete(item.id)}">
+                                        <button class="btn btn-default" title="Benachrichtigung löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </h:commandLink>
+                                </div>
                             </div>
-                         </div>
-                    </c:forEach>
+                        </c:forEach>
 
-                </div>
-
+                    </div>
+                </h:form>
 
                 <h2 class="h2-warnungen">Warnungen</h2>
 
-                <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
-                    <c:forEach items="#{userWarningsBean.warnings}" var="item">
-                      <div class="list-group-item ">
-                            <h4 class="list-group-item-heading">#{item.name}</h4>
-                            <p class="list-group-item-text">Some text</p>
-                            <div class="btn-glyph">
-                                <button class="btn btn-default" title="Warnung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
-                                <button class="btn btn-default" title="Warnung löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                <h:form>
+                    <div class="list-group warningList" data-toggle="modal" data-target="#configuredWarning-modal" data-backdrop="false" data-dismiss="modal"> 
+                        <c:forEach items="#{userWarningsBean.warnings}" var="item">
+                            <div class="list-group-item ">
+                                <h4 class="list-group-item-heading">#{item.name}</h4>
+                                <p class="list-group-item-text">Some text</p>
+                                <div class="btn-glyph">
+                                    <button class="btn btn-default" title="Warnung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                                    <h:commandLink action="#{warningActionBean.doDelete(item.id)}">
+                                        <button class="btn btn-default" title="Warnung löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </h:commandLink>
+                                </div>
                             </div>
-                      </div>
-                    </c:forEach>
-                </div>
+                        </c:forEach>
+                    </div>
+                </h:form>
             </article>
 
         </c:if>
@@ -102,5 +110,11 @@
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>
 
     </body>
+
+    <c:if test="#{notifyBean.hasMessage()}">
+        <script>
+            $.notify("#{notifyBean.message}", "info");
+        </script>
+    </c:if>
 
 </html>

@@ -7,12 +7,14 @@ package at.aems.adminserver.beans.display;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Niggi
  */
 @ManagedBean
+@SessionScoped
 public abstract class AbstractDisplayBean {
 
     public AbstractDisplayBean() {

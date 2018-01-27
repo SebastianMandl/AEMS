@@ -29,6 +29,7 @@ import at.htlgkr.aems.database.AemsUser;
 import at.htlgkr.aems.file.ExcelDataExtracter;
 import at.htlgkr.aems.file.FileDownloader;
 import at.htlgkr.aems.util.BotConfiguration;
+import at.htlgkr.aems.util.LogFileCleaner;
 import at.htlgkr.aems.util.Logger;
 import at.htlgkr.aems.util.Logger.LogType;
 import at.htlgkr.aems.weather.TemperatureGetter;
@@ -88,8 +89,12 @@ public class Main {
       updateTemperatures();
       return;
     }
+    
     logger.log(LogType.INFO, "Starting AEMS-ReportBot at %0%", 
         new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date()));
+    
+    new LogFileCleaner(30).clean();
+    
     usersToHandle = getUsers();
     populateDownloaders();
   }
@@ -152,7 +157,6 @@ public class Main {
       if(usersToHandle.isEmpty()) {
         readExcelFiles();
       } else {
-        // Populate the next set of downloaders
         populateDownloaders();
       }
     }
@@ -177,7 +181,6 @@ public class Main {
     } else {
       // Downloader has failed
       logger.log(LogType.INFO, "StatusCodeException for User %0%. File collection has failed", downloader.getUser().getUsername());
-
       if (downloaders.isEmpty()) {
         if(usersToHandle.isEmpty()) {
           readExcelFiles();

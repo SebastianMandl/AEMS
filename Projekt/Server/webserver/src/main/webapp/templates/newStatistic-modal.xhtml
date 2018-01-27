@@ -22,7 +22,6 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
 
                             <ul id="meterType" class="dropdown-menu zaehler_format">
-
                                 <c:forEach items="#{userMeterBean.meterTypes}" var="type">
                                 <li role="presentation">
                                     <div class="checkbox">
@@ -40,7 +39,7 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
 
                             <ul id="meters" class="dropdown-menu zaehler_format">
-
+ 
                                 <c:forEach items="#{userMeterBean.meters.entrySet()}" var="meter">
                                     <li role="presentation">
                                         <div class="checkbox">
