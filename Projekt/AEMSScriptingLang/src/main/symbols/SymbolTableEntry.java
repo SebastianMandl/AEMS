@@ -26,8 +26,12 @@ public class SymbolTableEntry {
 		return this.type;
 	}
 	
-	public Object getValue() {
-		return this.value;
+	@SuppressWarnings("unchecked")
+	public <T> T getValue(Class<T> clazz) {
+		if(clazz == this.value.getClass()) {
+			return (T) this.value;
+		}
+		return null;
 	}
 	
 	public void setValue(Object value) {

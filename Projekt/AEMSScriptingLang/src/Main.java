@@ -3,6 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import main.logger.Logger;
 import main.parser.Parser;
 import main.tokens.Token;
 import main.tokens.TokenTypes;
@@ -16,6 +17,9 @@ public class Main {
 			if(!x.startsWith("#"))
 				builder.append(x).append("\n");
 		});
+		
+		Logger.setDebugMode(false);
+		
 		Tokenizer tokenizer = new Tokenizer(builder.toString());
 		Token token = null;
 		System.out.println("start of script\n");

@@ -16,14 +16,14 @@ public class SymbolTable {
 		
 		addSymbol(new SymbolTableEntry("today", DataTypes.DATE, new Date()));
 		
-		addSymbol(new SymbolTableEntry("day", DataTypes.NUMBER, 1));
-		addSymbol(new SymbolTableEntry("week", DataTypes.NUMBER, 7));
-		addSymbol(new SymbolTableEntry("month", DataTypes.NUMBER, 31));
-		addSymbol(new SymbolTableEntry("year", DataTypes.NUMBER, 365));
+		addSymbol(new SymbolTableEntry("day", DataTypes.NUMBER, 1f));
+		addSymbol(new SymbolTableEntry("week", DataTypes.NUMBER, 7f));
+		addSymbol(new SymbolTableEntry("month", DataTypes.NUMBER, 31f));
+		addSymbol(new SymbolTableEntry("year", DataTypes.NUMBER, 365f));
 		
 		String[] days = new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
 		for(int i = 0; i < days.length; i++) {
-			addSymbol(new SymbolTableEntry(days[i], DataTypes.NUMBER, i + 1));
+			addSymbol(new SymbolTableEntry(days[i], DataTypes.NUMBER, (float) (i + 1)));
 		}
 	}
 	
@@ -39,6 +39,10 @@ public class SymbolTable {
 	
 	public static void updateSymbol(String name, Object value) {
 		SYMBOLS.get(name).setValue(value);
+	}
+
+	public static void eraseSymbol(String name) {
+		SYMBOLS.remove(name);
 	}
 	
 }

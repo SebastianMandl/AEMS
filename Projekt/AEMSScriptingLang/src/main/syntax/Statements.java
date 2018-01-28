@@ -23,6 +23,9 @@ public class Statements {
 	}
 	
 	public static boolean is(Object[] stm, Token[] input) {
+		if(input.length < stm.length)
+			return false;
+		
 		int stmIndex = 0;
 		for(int i = 0; i < input.length; i++, stmIndex++) {
 			Token token = input[i];

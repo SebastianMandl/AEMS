@@ -3,6 +3,8 @@ package main.tokens;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import main.logger.Logger;
+
 public class Tokenizer {
 
 	private static final Pattern DIGIT = Pattern.compile("\\d");
@@ -112,6 +114,8 @@ public class Tokenizer {
 				break;
 			case '\n':
 				type = TokenTypes.NEW_LINE;
+				if(!peek)
+					Logger.incrementLineNumber();
 				break;
 			case '\t':
 				type = TokenTypes.TAB;

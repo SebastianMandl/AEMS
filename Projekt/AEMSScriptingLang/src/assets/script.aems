@@ -1,4 +1,4 @@
-$x := $today + $week - $day
+$x := 10 / 2 + $today + 8 * 3 + 8
 
 
 # the following produces a list as a result

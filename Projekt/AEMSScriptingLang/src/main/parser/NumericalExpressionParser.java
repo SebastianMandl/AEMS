@@ -1,10 +1,12 @@
 package main.parser;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import main.lang.DataTypes;
+import main.logger.Logger;
 import main.symbols.SymbolTable;
 import main.symbols.SymbolTableEntry;
 import main.tokens.Token;
@@ -13,207 +15,255 @@ import main.tokens.TokenTypes;
 public class NumericalExpressionParser {
 
 	private static final GregorianCalendar CALENDAR = new GregorianCalendar();
-	
+
 	private Token[] input;
 	private int index;
-	private DataTypes resultType;
 	private Object result;
 	
-	private Token temp;
-	
+	private ArrayList<String> ALLOCATED_VAR_NAMES = new ArrayList<>();
+
 	public NumericalExpressionParser(Token[] tokens) {
 		this.input = tokens;
 		this.index = 0;
-		evaluate();
+		
+		Token token = evaluate();
+		if(token.getType().is(TokenTypes.VARIABLE)) {
+			SymbolTableEntry var = SymbolTable.getSymbol(token.getRawToken());
+			result = var.getValue(Date.class);
+		} else {
+			result = Float.parseFloat(token.getRawToken());
+		}
+		
+		for(String name : ALLOCATED_VAR_NAMES) {
+			SymbolTable.eraseSymbol(name);
+		}
 	}
-	
-	public DataTypes getResultType() {
-		return this.resultType;
-	}
-	
+
 	public Object getResult() {
 		return result;
 	}
 	
-	private Token consume(TokenTypes type, boolean peek) {
+	public Token next() {
+		return input[index++];
+	}
+	
+	public boolean next(TokenTypes type) {
 		if(index >= input.length)
-			return null;
+			return false;
 		
-		Token token = input[index];
-		if(token.getType().is(type)) {
-			if(!peek) {
-				this.index++;
+		if(type.is(input[index].getType())) {
+			index++;
+			return true;
+		}
+		return false;
+	}
+	
+	private Token evaluate() {
+		Token f = product();
+		for(;;) {
+			if(next(TokenTypes.PLUS))
+				f = add(f);
+			else if(next(TokenTypes.MINUS))
+				f = sub(f);
+			else
+				return f;
+		}
+	}
+	
+	public Token product() {
+		Token result = factor();
+		for(;;) {
+			if(next(TokenTypes.MUL))
+				result = mul(result);
+			else if (next(TokenTypes.DIV))
+				result = div(result);
+			else
+				return result;
+		}
+	}
+	
+	public Token factor() {
+		if(next(TokenTypes.OPEN_PARENTHESE)) {
+			evaluate();
+			next(TokenTypes.CLOSED_PARENTHESE);
+		}
+		return next();
+	}
+	
+	private interface Callable<T> {
+		
+		public Token call(@SuppressWarnings("unchecked") T... args);
+		
+	}
+	
+	private Token performOperation(Token x, Token f, Callable<Float> nn, Callable<Integer> vn, Callable<Integer> vv) {
+		String tempVarName = String.valueOf(System.nanoTime());
+		
+		if(x.getType().is(TokenTypes.NUMBER) && f.getType().is(TokenTypes.NUMBER)) { // both are numbers
+			return nn.call(Float.parseFloat(x.getRawToken()), Float.parseFloat(f.getRawToken()));
+		} else if(x.getType().is(TokenTypes.VARIABLE)) { // left side is a variable
+			SymbolTableEntry var = SymbolTable.getSymbol(x.getRawToken());
+			if(var.getType().is(DataTypes.DATE)) {
+				CALENDAR.setTime(var.getValue(Date.class));
+				if(f.getType().is(TokenTypes.NUMBER)) {
+					vn.call((int) Float.parseFloat(f.getRawToken()));
+				} else if(f.getType().is(TokenTypes.VARIABLE)) {
+					var = SymbolTable.getSymbol(f.getRawToken());
+					if(var.getType().is(DataTypes.NUMBER)) {
+						vv.call(var.getValue(Float.class).intValue());
+					} else {
+						Logger.logError("invalid operation!!! types cannot be added together");
+					}
+				}
+				
+				Logger.logDebug("created temp variable %s", tempVarName);
+				ALLOCATED_VAR_NAMES.add(tempVarName);
+				SymbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
+				return new Token(TokenTypes.VARIABLE, tempVarName);
 			}
-			return token;
+		} else if(f.getType().is(TokenTypes.VARIABLE)) { // right side is a variable
+			SymbolTableEntry var = SymbolTable.getSymbol(f.getRawToken());
+			if(var.getType().is(DataTypes.DATE)) {
+				CALENDAR.setTime(var.getValue(Date.class));
+				if(x.getType().is(TokenTypes.NUMBER)) {
+					vn.call((int) Float.parseFloat(x.getRawToken()));
+				} else if(x.getType().is(TokenTypes.VARIABLE)) {
+					var = SymbolTable.getSymbol(x.getRawToken());
+					if(var.getType().is(DataTypes.NUMBER)) {
+						vv.call(var.getValue(Float.class).intValue());
+					} else {
+						Logger.logError("invalid operation!!! types cannot be added together");
+					}
+				}
+				
+				Logger.logDebug("created temp variable %s", tempVarName);
+				ALLOCATED_VAR_NAMES.add(tempVarName);
+				SymbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
+				return new Token(TokenTypes.VARIABLE, tempVarName);
+			}
 		}
 		return null;
 	}
 	
-	private Token consume(boolean peek) {
-		if(index >= input.length)
-			return null;
+	public Token add(Token x) {
+		Token f = product();
 		
-		Token token = input[index];
-		if(!peek) {
-			this.index++;
-		}
-		return token;
+		return performOperation(x, f, new Callable<Float>() {
+
+			@Override
+			public Token call(Float... args) {
+				return new Token(TokenTypes.NUMBER, String.valueOf(args[0] + args[1]));
+			}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				CALENDAR.add(Calendar.DAY_OF_MONTH, args[0]);
+				return null;
+			}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				CALENDAR.add(Calendar.DAY_OF_MONTH, args[0]);
+				return null;
+			}
+			
+		});
 	}
 	
-	public void evaluate() {
-		term();
-		for(;;) {
-			if(consume(TokenTypes.PLUS, false) != null)
-				add();
-			if(consume(TokenTypes.MINUS, false) != null)
-				sub();
-			else
-				break;
-		}
-	}
-	
-	public void term() {
-		factor();
-		for(;;) {
-			if(consume(TokenTypes.MUL, false) != null)
-				mul(consume(false));
-			else
-				break;
-		}
-	}
-	
-	public void factor() {
-		if(index == input.length)
-			return;
+	public Token sub(Token x) {
+		Token f = product();
 		
-//		if(consume(TokenTypes.OPEN_PARENTHESE, false) != null) {
-//			evaluate();
-//			consume(TokenTypes.CLOSED_PARENTHESE, false);
-//		}
+		return performOperation(x, f, new Callable<Float>() {
+
+			@Override
+			public Token call(Float... args) {
+				return new Token(TokenTypes.NUMBER, String.valueOf(args[0] - args[1]));
+			}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				CALENDAR.add(Calendar.DAY_OF_MONTH, -args[0]);
+				return null;
+			}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				CALENDAR.add(Calendar.DAY_OF_MONTH, -args[0]);
+				return null;
+			}
+			
+		});
+	}
+	
+	public Token mul(Token x) {
+		Token f = factor();
+		return performOperation(x, f, new Callable<Float>() {
+
+			@Override
+			public Token call(Float... args) {
+				return new Token(TokenTypes.NUMBER, String.valueOf(args[0] * args[1]));
+			}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				//CALENDAR.add(Calendar.DAY_OF_MONTH, args[0]);
+				Logger.logError("types cannot be multiplied!!!");
+				return null;
+			}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				//CALENDAR.add(Calendar.DAY_OF_MONTH, args[0]);
+				Logger.logError("types cannot be multiplied!!!");
+				return null;
+			}
+			
+		});
+	}
+	
+	public Token div(Token x) {
+		Token f = factor();
 		
-		//System.out.println(index + " : " + consume(true));
-		Token token = consume(TokenTypes.NUMBER, false);
-		if(token == null) {
-			token = consume(TokenTypes.VARIABLE, false);
-			if(token == null) {
-				throw new RuntimeException("unsupported data type in numerical expression!!! xxx");
-			} else {
-				SymbolTableEntry var = SymbolTable.getSymbol(token.getRawToken());
-				if(var.getType().is(DataTypes.NUMBER)) {
-					if(resultType == null)
-						resultType = DataTypes.NUMBER;
-				} else if(var.getType().is(DataTypes.DATE)) {
-					if(resultType == null)
-						resultType = DataTypes.DATE;
-				} else {
-					throw new RuntimeException("unsupported data type of variable in numerical expression!!!");
-				}
-				
-				if(result == null)
-					result = var.getValue();
-				else {
-					temp = token; // intermediate solution
-				}
+		return performOperation(x, f, new Callable<Float>() {
+
+			@Override
+			public Token call(Float... args) {
+				if(args[1] == 0)
+					Logger.logError("division by zero is not defined!");
+				return new Token(TokenTypes.NUMBER, String.valueOf(args[0] / args[1]));
 			}
-		} else {
-			if(result == null)
-				result = Float.parseFloat(token.getRawToken());
-			else {
-				temp = token; // intermediate solution
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				//CALENDAR.add(Calendar.DAY_OF_MONTH, args[0]);
+				Logger.logError("types cannot be divided!!!");
+				return null;
 			}
-			if(resultType == null)
-				resultType = DataTypes.NUMBER;
-		}
+			
+		}, new Callable<Integer>() {
+
+			@Override
+			public Token call(Integer... args) {
+				//CALENDAR.add(Calendar.DAY_OF_MONTH, args[0]);
+				Logger.logError("types cannot be divided!!!");
+				return null;
+			}
+			
+		});
 	}
-	
-	public void add() {
-		term();
-		System.out.println("add");
-		if(temp.getType().is(TokenTypes.NUMBER)) {
-			if(resultType.is(DataTypes.DATE)) {
-				CALENDAR.setTime((Date) result);
-				CALENDAR.add(Calendar.DAY_OF_MONTH, Integer.parseInt(temp.getRawToken()));
-				result = CALENDAR.getTime();
-			} else if(resultType.is(DataTypes.NUMBER)) {
-				result = ((Float) result).floatValue() + Float.parseFloat(temp.getRawToken());
-			}
-		} else if(temp.getType().is(TokenTypes.VARIABLE)) {
-			SymbolTableEntry var = SymbolTable.getSymbol(temp.getRawToken());
-			if(var.getType().is(DataTypes.DATE)) {
-				throw new RuntimeException("adding dates is not supported!");
-			} else if(var.getType().is(DataTypes.NUMBER)) {
-				if(resultType.is(DataTypes.DATE)) {
-					CALENDAR.setTime((Date) result);
-					CALENDAR.add(Calendar.DAY_OF_MONTH, (Integer) var.getValue());
-					result = CALENDAR.getTime();
-				} else if(resultType.is(DataTypes.NUMBER)) {
-					result = ((Float) result).floatValue() + (Float) var.getValue();
-				}
-			} else {
-				throw new RuntimeException("the variable is not numerical!");
-			}
-		}
-		
-		temp = null;
-	}
-	
-	public void sub() {
-		term();
-		System.out.println("sub");
-		if(temp.getType().is(TokenTypes.NUMBER)) {
-			if(resultType.is(DataTypes.DATE)) {
-				CALENDAR.setTime((Date) result);
-				CALENDAR.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(temp.getRawToken()));
-				result = CALENDAR.getTime();
-			} else if(resultType.is(DataTypes.NUMBER)) {
-				result = ((Float) result).floatValue() - Float.parseFloat(temp.getRawToken());
-			}
-		} else if(temp.getType().is(TokenTypes.VARIABLE)) {
-			SymbolTableEntry var = SymbolTable.getSymbol(temp.getRawToken());
-			if(var.getType().is(DataTypes.DATE)) {
-				throw new RuntimeException("adding dates is not supported!");
-			} else if(var.getType().is(DataTypes.NUMBER)) {
-				if(resultType.is(DataTypes.DATE)) {
-					CALENDAR.setTime((Date) result);
-					CALENDAR.add(Calendar.DAY_OF_MONTH, -(Integer) var.getValue());
-					result = CALENDAR.getTime();
-				} else if(resultType.is(DataTypes.NUMBER)) {
-					result = ((Float) result).floatValue() - (Float) var.getValue();
-				}
-			} else {
-				throw new RuntimeException("the variable is not numerical!");
-			}
-		}
-		
-		temp = null;
-	}
-	
-	public void mul(Token token) {
-		System.out.println("mul");
-		if(token.getType().is(TokenTypes.NUMBER)) {
-			if((resultType.is(DataTypes.DATE))) {
-				if(temp.getType().is(TokenTypes.NUMBER)) {
-					result = (Float.parseFloat(temp.getRawToken()) * Float.parseFloat(token.getRawToken()));
-				} else {
-					throw new RuntimeException("invalid operation!!! date cannot be subject to multiplication!!!");
-				}
-			} else if(resultType.is(DataTypes.NUMBER)) {
-				result = (Float.parseFloat(temp.getRawToken()) * Float.parseFloat(token.getRawToken()));
-			}
-		} else if(token.getType().is(TokenTypes.VARIABLE)) {
-			SymbolTableEntry var = SymbolTable.getSymbol(token.getRawToken());
-			if(var.getType().is(DataTypes.DATE)) {
-				throw new RuntimeException("invalid operation!!! date cannot be subject to multiplication!!!");
-			} else if(var.getType().is(DataTypes.NUMBER)) {
-				if(resultType.is(DataTypes.DATE)) {
-					throw new RuntimeException("invalid operation!!! date cannot be subject to multiplication!!!");
-				} else if(resultType.is(DataTypes.NUMBER)) {
-					result = (Float.parseFloat(temp.getRawToken()) * Float.parseFloat(token.getRawToken()));
-				}
-			} else {
-				throw new RuntimeException("the variable is not numerical!");
-			}
-		}
-	}
-	
+
 }

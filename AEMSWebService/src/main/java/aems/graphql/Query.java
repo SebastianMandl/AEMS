@@ -259,15 +259,17 @@ public class Query extends GraphQLObjectType {
     private static boolean checkAuthority3Level(JSONObject obj, String table) {
         ArrayList<String[]> projection = new ArrayList<>();
         HashMap<String, String> selection = new HashMap<>();
-        String meterId = obj.getString("meter");
+        String meterId = null;
         try {
             
             if(!obj.has("meter")) {
                 projection.add(new String[]{ "meter" });
-                selection.put("id", obj.getString("id"));
+                selection.put("id", obj.get("id").toString());
 
                 ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
                 meterId = set.getString(0,0);
+            } else {
+                meterId = obj.getString("meter");
             }
             projection.clear();
             projection.add(new String[]{ "user" });
