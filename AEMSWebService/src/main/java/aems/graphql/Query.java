@@ -295,14 +295,18 @@ public class Query extends GraphQLObjectType {
                     
         boolean authorized = false;
         
-        if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
-            authorized = checkAuthority2Level(obj, table);
-        } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
-            authorized = checkAuthority3Level(obj, table);
-        } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
-            authorized = checkAuthority1Level(obj);
-        } else {
+        if(instance.authorizationId.equals("215")) {
             authorized = true;
+        } else {
+            if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
+                authorized = checkAuthority2Level(obj, table);
+            } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
+                authorized = checkAuthority3Level(obj, table);
+            } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
+                authorized = checkAuthority1Level(obj);
+            } else {
+                authorized = true;
+            }
         }
         
         if(!authorized) {
