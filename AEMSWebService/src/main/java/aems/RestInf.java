@@ -10,7 +10,6 @@ import at.htlgkr.aems.util.crypto.KeyUtils;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -21,12 +20,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -190,8 +190,13 @@ public class RestInf extends HttpServlet {
                 PrintWriter writer = resp.getWriter();
                 ExecutionResult result = ql.execute(query);
 
+                for(Object o : result.getErrors()) {
+                    System.out.println(o);
+                            
+                }
+                
                 try {
-                    String data = result.getData().toString();
+                    String data = result.getData().toString().replaceAll("=", ":");
                     if(encryption.equals(ENCRYPTION_AES)) {
                         data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(NUMBER_PATTERN.matcher(request[2]).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), request[2]), data.getBytes()));
                     }

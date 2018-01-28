@@ -7,6 +7,7 @@ public class Statements {
 
 	public static final Object[] DEF_VARIABLE = toArray(TokenTypes.VARIABLE, TokenTypes.COLON, TokenTypes.EQUALS, TokenTypes.ANY_END);
 	public static final Object[] PERIODIFY = toArray(TokenTypes.VARIABLE, "of", "period", "from", TokenTypes.ANY_IN_BETWEEN, "until", TokenTypes.ANY_END);
+	public static final Object[] RAISE_NOTICE_SIMPLE = toArray("raise", "notice", "on", TokenTypes.ANY_END);
 	
 	private static Object[] toArray(Object... objects) {
 		return objects;

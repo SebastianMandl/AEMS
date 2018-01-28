@@ -1,0 +1,6 @@
+{
+	meter_data (meter : "%", start : "%", end : "%") {
+		id,
+		measured_value
+	}
+}

@@ -1,5 +1,7 @@
-$x := 10 / 2 + $today + 8 * 3 + 8
+#$x := 10 / 2 + $today + 8 * 3 + 8
 
 
 # the following produces a list as a result
-$y := $value of period from $today - $week - 1 until $today + $month
+$y := $value of period from 2 * $year - $today until $today + $month * 10
+
+raise notice on 1 = 2 and 2 * 2 = 4

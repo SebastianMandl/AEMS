@@ -19,6 +19,7 @@ public class NumericalExpressionParser {
 	private Token[] input;
 	private int index;
 	private Object result;
+	private DataTypes resultType;
 	
 	private ArrayList<String> ALLOCATED_VAR_NAMES = new ArrayList<>();
 
@@ -30,13 +31,19 @@ public class NumericalExpressionParser {
 		if(token.getType().is(TokenTypes.VARIABLE)) {
 			SymbolTableEntry var = SymbolTable.getSymbol(token.getRawToken());
 			result = var.getValue(Date.class);
+			resultType = DataTypes.DATE;
 		} else {
 			result = Float.parseFloat(token.getRawToken());
+			resultType = DataTypes.NUMBER;
 		}
 		
 		for(String name : ALLOCATED_VAR_NAMES) {
 			SymbolTable.eraseSymbol(name);
 		}
+	}
+	
+	public DataTypes getDataType() {
+		return resultType;
 	}
 
 	public Object getResult() {
@@ -120,6 +127,19 @@ public class NumericalExpressionParser {
 				ALLOCATED_VAR_NAMES.add(tempVarName);
 				SymbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
 				return new Token(TokenTypes.VARIABLE, tempVarName);
+			} else if(var.getType().is(DataTypes.NUMBER)) {
+				
+				if(f.getType().is(TokenTypes.NUMBER)) {
+					return nn.call(var.getValue(Float.class), Float.parseFloat(f.getRawToken()));
+				} else if(f.getType().is(TokenTypes.VARIABLE)) {
+					var = SymbolTable.getSymbol(f.getRawToken());
+					if(var.getType().is(DataTypes.NUMBER)) {
+						return nn.call(var.getValue(Float.class), Float.parseFloat(f.getRawToken()));
+					} else {
+						Logger.logError("invalid operation!!! types cannot be added together");
+					}
+				}
+				
 			}
 		} else if(f.getType().is(TokenTypes.VARIABLE)) { // right side is a variable
 			SymbolTableEntry var = SymbolTable.getSymbol(f.getRawToken());
@@ -140,6 +160,19 @@ public class NumericalExpressionParser {
 				ALLOCATED_VAR_NAMES.add(tempVarName);
 				SymbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
 				return new Token(TokenTypes.VARIABLE, tempVarName);
+			} else if(var.getType().is(DataTypes.NUMBER)) {
+				
+				if(x.getType().is(TokenTypes.NUMBER)) {
+					return nn.call(var.getValue(Float.class), Float.parseFloat(x.getRawToken()));
+				} else if(x.getType().is(TokenTypes.VARIABLE)) {
+					var = SymbolTable.getSymbol(x.getRawToken());
+					if(var.getType().is(DataTypes.NUMBER)) {
+						return nn.call(var.getValue(Float.class), Float.parseFloat(x.getRawToken()));
+					} else {
+						Logger.logError("invalid operation!!! types cannot be added together");
+					}
+				}
+				
 			}
 		}
 		return null;
