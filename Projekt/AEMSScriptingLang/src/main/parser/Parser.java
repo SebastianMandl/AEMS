@@ -45,8 +45,8 @@ public class Parser {
 				NumericalExpressionParser from = new NumericalExpressionParser(Arrays.copyOfRange(subExpr, Statements.indexOf("from", subExpr) + 1, Statements.indexOf("until", subExpr)));
 				NumericalExpressionParser to = new NumericalExpressionParser(Arrays.copyOfRange(subExpr, Statements.indexOf("until", subExpr) + 1, subExpr.length));
 				
-				if(!subExpr[0].getRawToken().equals("value"))
-					Logger.logError("only the current meter value can be periodified!!! (var : $value)");
+				if(!subExpr[0].getRawToken().equals("meter"))
+					Logger.logError("only the current meter value can be periodified!!! (var : $meter)");
 				
 				// fetch data from REST-API and store in list
 				SymbolTable.addSymbol(new SymbolTableEntry(input[0].getRawToken(), DataTypes.LIST, fetchConsumptionValues((Date) from.getResult(), (Date) to.getResult())));
@@ -57,12 +57,21 @@ public class Parser {
 			SymbolTable.addSymbol(new SymbolTableEntry(input[0].getRawToken(), DataTypes.NUMBER, parser.getResult()));
 			return;
 		} else if(Statements.is(Statements.RAISE_NOTICE_SIMPLE, input)) {
-			BoolExpressionParser parser = new BoolExpressionParser(Arrays.copyOfRange(input, 3, input.length));
-			System.out.println(parser.getResult());
+			BoolExpressionParser parser = new BoolExpressionParser(Arrays.copyOfRange(input, 4, input.length));
+			
+			if(parser.getResult()) {
+				String notice = input[2].getRawToken();
+				storeNotice(notice);
+			}
+			
 			return;
 		}
 		
 		throw new RuntimeException("stm could not be parsed");
+	}
+	
+	private static void storeNotice(String notice) {
+		Logger.logDebug(notice);
 	}
 	
 	private static ArrayList<Float> fetchConsumptionValues(Date from, Date to) {

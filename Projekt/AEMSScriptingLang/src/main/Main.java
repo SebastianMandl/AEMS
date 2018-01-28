@@ -13,7 +13,7 @@ import main.tokens.Tokenizer;
 
 public class Main {
 
-	public static BigDecimal key = new BigDecimal("1054425163957921");
+	public static BigDecimal key = new BigDecimal("2830710747174256");
 	public static String meterId = "AT00000000000000000003333";
 	
 	public static void main(String[] args) throws IOException {
@@ -28,7 +28,7 @@ public class Main {
 				builder.append(x).append("\n");
 		});
 		
-		Logger.setDebugMode(false);
+		Logger.setDebugMode(true);
 		
 		Tokenizer tokenizer = new Tokenizer(builder.toString());
 		Token token = null;

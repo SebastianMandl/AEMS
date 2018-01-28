@@ -11,7 +11,7 @@ public class SymbolTable {
 	
 	static {
 		// allocate default variables
-		addSymbol(new SymbolTableEntry("value", DataTypes.NUMBER)); // value is assigned through the database
+		addSymbol(new SymbolTableEntry("meter", DataTypes.NUMBER)); // value is assigned through the database
 		addSymbol(new SymbolTableEntry("sensor", DataTypes.NUMBER)); // value is assigned through the database
 		
 		addSymbol(new SymbolTableEntry("today", DataTypes.DATE, new Date()));

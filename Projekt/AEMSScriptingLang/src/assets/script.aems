@@ -1,7 +1,10 @@
-#$x := 10 / 2 + $today + 8 * 3 + 8
+$x := $today + 2
 
 
 # the following produces a list as a result
-$y := $value of period from 2 * $year - $today until $today + $month * 10
+$y := $meter of period from $x until $today + $month * 10
+$sensorPeriod := $sensor of period from $x until $today + $month * 10
 
-raise notice on 1 = 2 and 2 * 2 = 4
+#raise notice "tset is on skjfla dfkasfs" on 1 = 2 or 2 * 2 = 4
+
+raise notice "Zu viel Strom bei hohen Temperaturen" on $sensor < 20 and $sensor > 18 and $meter > 180

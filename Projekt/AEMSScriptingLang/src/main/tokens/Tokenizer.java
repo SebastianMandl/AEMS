@@ -8,7 +8,7 @@ import main.logger.Logger;
 public class Tokenizer {
 
 	private static final Pattern DIGIT = Pattern.compile("\\d");
-	private static final Pattern LETTER = Pattern.compile("[a-z]");
+	private static final Pattern LETTER = Pattern.compile("[a-zA-Z]");
 	
 	private int index;
 	private String input;
@@ -26,17 +26,23 @@ public class Tokenizer {
 			if(token == null) {
 				token = nextVariable();
 				if(token == null) {
-					token = nextToken(false);
+					token = nextString();
+					if(token == null) {
+						token = nextToken(false);
+					}
 				}
 			}
 		}
 		return token;
 	}
 	
-	private void skipSpacesAndTabs() {
+	private int skipSpacesAndTabs() {
+		int result = 0;
 		for(Token token = nextToken(true); token.getType().is(TokenTypes.SPACE) || token.getType().is(TokenTypes.TAB); token = nextToken(true)) {
 			nextToken(false);
+			result++;
 		}
+		return result;
 	}
 	
 	private Token nextVariable() {
@@ -49,6 +55,32 @@ public class Tokenizer {
 			} else {
 				return new Token(TokenTypes.VARIABLE, token.getRawToken());
 			}
+		}
+		return null;
+	}
+	
+	private Token nextString() {
+		if(nextToken(true).getType().is(TokenTypes.DOUBLE_QUOTE)) {
+			nextToken(false);
+			StringBuilder builder = new StringBuilder();
+			for(;;) {
+				if(nextToken(true).getType().is(TokenTypes.DOUBLE_QUOTE)) {
+					nextToken(false);
+					break;
+				}
+				int spacesSkipped = skipSpacesAndTabs();
+				Token word = nextWord();
+				if(word == null)
+					return null; // not a string
+				else {
+					for(int i = 0; i < spacesSkipped; i++) {
+						builder.append(" ");
+					}
+					builder.append(word.getRawToken());
+				}
+			}
+			
+			return new Token(TokenTypes.STRING, builder.toString());
 		}
 		return null;
 	}
