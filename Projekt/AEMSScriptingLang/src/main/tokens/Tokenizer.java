@@ -7,8 +7,8 @@ import main.logger.Logger;
 
 public class Tokenizer {
 
-	private static final Pattern DIGIT = Pattern.compile("\\d");
-	private static final Pattern LETTER = Pattern.compile("[a-zA-Z]");
+	public static final Pattern DIGIT = Pattern.compile("\\d");
+	public static final Pattern LETTER = Pattern.compile("[a-zA-Z]");
 	
 	private int index;
 	private String input;
@@ -69,7 +69,7 @@ public class Tokenizer {
 					break;
 				}
 				int spacesSkipped = skipSpacesAndTabs();
-				Token word = nextWord();
+				Token word = nextStringWord();
 				if(word == null)
 					return null; // not a string
 				else {
@@ -83,6 +83,22 @@ public class Tokenizer {
 			return new Token(TokenTypes.STRING, builder.toString());
 		}
 		return null;
+	}
+	
+	private Token nextStringWord() {
+		StringBuilder builder = new StringBuilder();
+		for(Token token = nextToken(true); 
+			token.getType().is(TokenTypes.LETTER) || token.getType().is(TokenTypes.DOLLAR) || 
+			token.getType().is(TokenTypes.OPENING_CURLY_BRACE) || token.getType().is(TokenTypes.CLOSING_CURLY_BRACE);
+			token = nextToken(true)) {
+			Token temp = nextToken(false);
+			builder.append(temp.getRawToken());
+		}
+		
+		if(builder.toString().length() == 0)
+			return null;
+		
+		return new Token(TokenTypes.WORD, builder.toString());
 	}
 	
 	private Token nextWord() {
@@ -127,10 +143,10 @@ public class Tokenizer {
 				type = TokenTypes.COLON;
 				break;
 			case '(':
-				type = TokenTypes.OPEN_PARENTHESE;
+				type = TokenTypes.OPENING_PARENTHESE;
 				break;
 			case ')':
-				type = TokenTypes.CLOSED_PARENTHESE;
+				type = TokenTypes.CLOSING_PARENTHESE;
 				break;
 			case '-':
 				type = TokenTypes.MINUS;
@@ -166,6 +182,12 @@ public class Tokenizer {
 				break;
 			case '$':
 				type = TokenTypes.DOLLAR;
+				break;
+			case '{':
+				type = TokenTypes.OPENING_CURLY_BRACE;
+				break;
+			case '}':
+				type = TokenTypes.CLOSING_CURLY_BRACE;
 				break;
 			case '.':
 				type = TokenTypes.DECIMAL;

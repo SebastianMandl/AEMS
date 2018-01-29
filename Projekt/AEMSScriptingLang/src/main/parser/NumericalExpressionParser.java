@@ -22,23 +22,31 @@ public class NumericalExpressionParser {
 	private DataTypes resultType;
 	
 	private ArrayList<String> ALLOCATED_VAR_NAMES = new ArrayList<>();
+	
+	private SymbolTable symbolTable;
 
-	public NumericalExpressionParser(Token[] tokens) {
+	public NumericalExpressionParser(Token[] tokens, SymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
 		this.input = tokens;
 		this.index = 0;
 		
 		Token token = evaluate();
 		if(token.getType().is(TokenTypes.VARIABLE)) {
-			SymbolTableEntry var = SymbolTable.getSymbol(token.getRawToken());
-			result = var.getValue(Date.class);
-			resultType = DataTypes.DATE;
+			SymbolTableEntry var = symbolTable.getSymbol(token.getRawToken());
+			if(var.getType().is(DataTypes.DATE)) {
+				result = var.getValue(Date.class);
+				resultType = DataTypes.DATE;
+			} else if(var.getType().is(DataTypes.NUMBER)) {
+				result = var.getValue(Float.class);
+				resultType = DataTypes.NUMBER;
+			}
 		} else {
 			result = Float.parseFloat(token.getRawToken());
 			resultType = DataTypes.NUMBER;
 		}
 		
 		for(String name : ALLOCATED_VAR_NAMES) {
-			SymbolTable.eraseSymbol(name);
+			symbolTable.eraseSymbol(name);
 		}
 	}
 	
@@ -90,9 +98,9 @@ public class NumericalExpressionParser {
 	}
 	
 	public Token factor() {
-		if(next(TokenTypes.OPEN_PARENTHESE)) {
+		if(next(TokenTypes.OPENING_PARENTHESE)) {
 			evaluate();
-			next(TokenTypes.CLOSED_PARENTHESE);
+			next(TokenTypes.CLOSING_PARENTHESE);
 		}
 		return next();
 	}
@@ -109,13 +117,13 @@ public class NumericalExpressionParser {
 		if(x.getType().is(TokenTypes.NUMBER) && f.getType().is(TokenTypes.NUMBER)) { // both are numbers
 			return nn.call(Float.parseFloat(x.getRawToken()), Float.parseFloat(f.getRawToken()));
 		} else if(x.getType().is(TokenTypes.VARIABLE)) { // left side is a variable
-			SymbolTableEntry var = SymbolTable.getSymbol(x.getRawToken());
+			SymbolTableEntry var = symbolTable.getSymbol(x.getRawToken());
 			if(var.getType().is(DataTypes.DATE)) {
 				CALENDAR.setTime(var.getValue(Date.class));
 				if(f.getType().is(TokenTypes.NUMBER)) {
 					vn.call((int) Float.parseFloat(f.getRawToken()));
 				} else if(f.getType().is(TokenTypes.VARIABLE)) {
-					var = SymbolTable.getSymbol(f.getRawToken());
+					var = symbolTable.getSymbol(f.getRawToken());
 					if(var.getType().is(DataTypes.NUMBER)) {
 						vv.call(var.getValue(Float.class).intValue());
 					} else {
@@ -125,14 +133,14 @@ public class NumericalExpressionParser {
 				
 				Logger.logDebug("created temp variable %s", tempVarName);
 				ALLOCATED_VAR_NAMES.add(tempVarName);
-				SymbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
+				symbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
 				return new Token(TokenTypes.VARIABLE, tempVarName);
 			} else if(var.getType().is(DataTypes.NUMBER)) {
 				
 				if(f.getType().is(TokenTypes.NUMBER)) {
 					return nn.call(var.getValue(Float.class), Float.parseFloat(f.getRawToken()));
 				} else if(f.getType().is(TokenTypes.VARIABLE)) {
-					var = SymbolTable.getSymbol(f.getRawToken());
+					var = symbolTable.getSymbol(f.getRawToken());
 					if(var.getType().is(DataTypes.NUMBER)) {
 						return nn.call(var.getValue(Float.class), Float.parseFloat(f.getRawToken()));
 					} else {
@@ -142,13 +150,13 @@ public class NumericalExpressionParser {
 				
 			}
 		} else if(f.getType().is(TokenTypes.VARIABLE)) { // right side is a variable
-			SymbolTableEntry var = SymbolTable.getSymbol(f.getRawToken());
+			SymbolTableEntry var = symbolTable.getSymbol(f.getRawToken());
 			if(var.getType().is(DataTypes.DATE)) {
 				CALENDAR.setTime(var.getValue(Date.class));
 				if(x.getType().is(TokenTypes.NUMBER)) {
 					vn.call((int) Float.parseFloat(x.getRawToken()));
 				} else if(x.getType().is(TokenTypes.VARIABLE)) {
-					var = SymbolTable.getSymbol(x.getRawToken());
+					var = symbolTable.getSymbol(x.getRawToken());
 					if(var.getType().is(DataTypes.NUMBER)) {
 						vv.call(var.getValue(Float.class).intValue());
 					} else {
@@ -158,14 +166,14 @@ public class NumericalExpressionParser {
 				
 				Logger.logDebug("created temp variable %s", tempVarName);
 				ALLOCATED_VAR_NAMES.add(tempVarName);
-				SymbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
+				symbolTable.addSymbol(new SymbolTableEntry(tempVarName, DataTypes.DATE, CALENDAR.getTime()));
 				return new Token(TokenTypes.VARIABLE, tempVarName);
 			} else if(var.getType().is(DataTypes.NUMBER)) {
 				
 				if(x.getType().is(TokenTypes.NUMBER)) {
 					return nn.call(var.getValue(Float.class), Float.parseFloat(x.getRawToken()));
 				} else if(x.getType().is(TokenTypes.VARIABLE)) {
-					var = SymbolTable.getSymbol(x.getRawToken());
+					var = symbolTable.getSymbol(x.getRawToken());
 					if(var.getType().is(DataTypes.NUMBER)) {
 						return nn.call(var.getValue(Float.class), Float.parseFloat(x.getRawToken()));
 					} else {

@@ -1,10 +1,4 @@
-$x := $today + 2
+#$y := $meter of period from $today - $year until $today + $month * 10
+#$avg := $y : avg
 
-
-# the following produces a list as a result
-$y := $meter of period from $x until $today + $month * 10
-$sensorPeriod := $sensor of period from $x until $today + $month * 10
-
-#raise notice "tset is on skjfla dfkasfs" on 1 = 2 or 2 * 2 = 4
-
-raise notice "Zu viel Strom bei hohen Temperaturen" on $sensor < 20 and $sensor > 18 and $meter > 180
+raise notice "Zu viel Strom bei hohen Temperaturen {$meter}" on 1 = 1

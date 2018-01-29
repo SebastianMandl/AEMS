@@ -1,10 +1,14 @@
 package main;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import at.htlgkr.aems.util.crypto.KeyUtils;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 import main.logger.Logger;
 import main.parser.Parser;
 import main.tokens.Token;
@@ -13,8 +17,9 @@ import main.tokens.Tokenizer;
 
 public class Main {
 
-	public static BigDecimal key = new BigDecimal("2830710747174256");
+	public static BigDecimal key = new BigDecimal("4359185713568682");
 	public static String meterId = "AT00000000000000000003333";
+	public static String sensorId = "Sensor 1";
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -31,6 +36,7 @@ public class Main {
 		Logger.setDebugMode(true);
 		
 		Tokenizer tokenizer = new Tokenizer(builder.toString());
+		Parser parser = new Parser();
 		Token token = null;
 		System.out.println("start of script\n");
 		ArrayList<Token> tokens = new ArrayList<>();
@@ -38,7 +44,7 @@ public class Main {
 			if(token.getType().is(TokenTypes.NEW_LINE)) {
 				if(tokens.size() == 0)
 					continue;
-				Parser.parse(tokens.toArray(new Token[tokens.size()]));
+				parser.parse(tokens.toArray(new Token[tokens.size()]));
 				tokens.clear();
 				continue;
 			}

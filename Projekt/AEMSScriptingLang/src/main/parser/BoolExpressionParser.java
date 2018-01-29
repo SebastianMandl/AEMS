@@ -4,19 +4,25 @@ import java.util.ArrayList;
 
 import main.lang.DataTypes;
 import main.logger.Logger;
+import main.symbols.SymbolTable;
+import main.symbols.SymbolTableEntry;
 import main.tokens.Token;
+import main.tokens.TokenTypes;
 
 public class BoolExpressionParser {
 
 	private Token[] input;
 
 	private boolean result;
+	private SymbolTable symbolTable;
 
-	public BoolExpressionParser(Token[] tokens) {
+	public BoolExpressionParser(Token[] tokens, SymbolTable symbolTable) {
 		this.input = tokens;
+		this.symbolTable = symbolTable;
 		evaluate();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void evaluate() {
 		boolean tempResult = false;
 		Token[] tempInput;
@@ -33,36 +39,86 @@ public class BoolExpressionParser {
 					for (;;) {
 						// System.out.println("~~~" + Arrays.toString(input));
 						temp = split(tempInput, "and");
+						
+						if(!tempResult) {
+							tempInput = temp.get(1);
+							continue;
+						}
+						
 						// System.out.println(Arrays.toString(temp.get(0)));
 						ArrayList<Token[]> expr = splitAtComparisonSign(temp.get(0));
-						NumericalExpressionParser leftSide = new NumericalExpressionParser(expr.get(0));
-						NumericalExpressionParser rightSide = new NumericalExpressionParser(expr.get(1));
-						if (!(leftSide.getDataType().is(DataTypes.NUMBER) && rightSide.getDataType().is(DataTypes.NUMBER))) {
+						NumericalExpressionParser leftSide = new NumericalExpressionParser(expr.get(0), symbolTable);
+						NumericalExpressionParser rightSide = new NumericalExpressionParser(expr.get(1), symbolTable);
+						boolean leftSideIsAList = false;
+						ArrayList<Float> values = null;
+						if(leftSide.getResult() == null && expr.get(0).length == 1) {
+							Token token = expr.get(0)[0];
+							if(token.getType().is(TokenTypes.VARIABLE)) {
+								SymbolTableEntry var = symbolTable.getSymbol(token.getRawToken());
+								if(var.getType().is(DataTypes.LIST)) {
+									// left side of the expression is a list
+									leftSideIsAList = true;
+									values = var.getValue(ArrayList.class);
+									if(!rightSide.getDataType().is(DataTypes.NUMBER))
+										Logger.logError("list can only be compared to a numerical expression!");
+								}
+							} else {
+								Logger.logError("left side of expression could not be resolved!");
+							}
+						} else if (!(leftSide.getDataType().is(DataTypes.NUMBER) && rightSide.getDataType().is(DataTypes.NUMBER))) {
 							// one of the both did not resolve to a number
 							Logger.logError("can only compare numbers!!!");
 						}
 	
-						float leftSideValue = (Float) leftSide.getResult();
+						float leftSideValue = leftSideIsAList ? 0f : (Float) leftSide.getResult();
 						float rightSideValue = (Float) rightSide.getResult();
 	
 						switch (getComparisonSign(temp.get(0)).getType()) {
 							case LEFT_ARROW:
-								if (leftSideValue < rightSideValue)
-									tempResult &= true;
-								else
-									tempResult &= false;
+								if(leftSideIsAList) {
+									loop: {
+										for(float f : values) {
+											if(f < rightSideValue) {
+												tempResult &= true;
+												break loop;
+											}
+										}
+										tempResult &= false;
+									}
+								} else {
+									if (leftSideValue < rightSideValue)
+										tempResult &= true;
+									else
+										tempResult &= false;
+								}
 								break;
 							case RIGHT_ARROW:
-								if (leftSideValue > rightSideValue)
-									tempResult &= true;
-								else
-									tempResult &= false;
+								if(leftSideIsAList) {
+									loop: {
+										for(float f : values) {
+											if(f > rightSideValue) {
+												tempResult &= true;
+												break loop;
+											}
+										}
+										tempResult &= false;
+									}
+								} else {
+									if (leftSideValue > rightSideValue)
+										tempResult &= true;
+									else
+										tempResult &= false;
+								}
 								break;
 							case EQUALS:
-								if (leftSideValue == rightSideValue)
-									tempResult &= true;
-								else
-									tempResult &= false;
+								if(leftSideIsAList) {
+									Logger.logError("list cannot be subject to the equal operator!!!");
+								} else {
+									if (leftSideValue == rightSideValue)
+										tempResult &= true;
+									else
+										tempResult &= false;
+								}
 							break;
 						default:
 							break;
@@ -79,7 +135,7 @@ public class BoolExpressionParser {
 					}
 					result |= tempResult;
 				} else {
-					BoolExpressionParser parser = new BoolExpressionParser(temp.get(0));
+					BoolExpressionParser parser = new BoolExpressionParser(temp.get(0), symbolTable);
 					result |= parser.getResult();
 					input = temp.get(1); // advance within or loop
 				}

@@ -34,6 +34,10 @@ public class SymbolTableEntry {
 		return null;
 	}
 	
+	public Object getValue() {
+		return value;
+	}
+	
 	public void setValue(Object value) {
 		this.value = value;
 	}

@@ -4,15 +4,16 @@ import java.util.Date;
 import java.util.HashMap;
 
 import main.lang.DataTypes;
+import main.logger.Logger;
 
 public class SymbolTable {
 
-	private static final HashMap<String, SymbolTableEntry> SYMBOLS = new HashMap<>();
+	private final HashMap<String, SymbolTableEntry> SYMBOLS = new HashMap<>();
 	
-	static {
+	public SymbolTable() {
 		// allocate default variables
-		addSymbol(new SymbolTableEntry("meter", DataTypes.NUMBER)); // value is assigned through the database
-		addSymbol(new SymbolTableEntry("sensor", DataTypes.NUMBER)); // value is assigned through the database
+		addSymbol(new SymbolTableEntry("meter", DataTypes.NUMBER, 180f)); // value is assigned through the database
+		addSymbol(new SymbolTableEntry("sensor", DataTypes.NUMBER, 25f)); // value is assigned through the database
 		
 		addSymbol(new SymbolTableEntry("today", DataTypes.DATE, new Date()));
 		
@@ -27,21 +28,24 @@ public class SymbolTable {
 		}
 	}
 	
-	public static SymbolTableEntry getSymbol(String name) {
-		return SYMBOLS.get(name);
+	public SymbolTableEntry getSymbol(String name) {
+		SymbolTableEntry entry = SYMBOLS.get(name);
+		if(entry == null)
+			Logger.logError("variable \"%s\" does not exists!!!", name);
+		return entry;
 	}
 	
-	public static void addSymbol(SymbolTableEntry entry) {
+	public void addSymbol(SymbolTableEntry entry) {
 		if(SYMBOLS.containsKey(entry.getName()))
 			throw new RuntimeException("symbol \"" + entry.getName() + "\" is already defined!!");
 		SYMBOLS.put(entry.getName(), entry);
 	}
 	
-	public static void updateSymbol(String name, Object value) {
+	public void updateSymbol(String name, Object value) {
 		SYMBOLS.get(name).setValue(value);
 	}
 
-	public static void eraseSymbol(String name) {
+	public void eraseSymbol(String name) {
 		SYMBOLS.remove(name);
 	}
 	
