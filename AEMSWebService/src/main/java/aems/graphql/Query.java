@@ -66,6 +66,12 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("statistics", AEMSDatabase.STATISTICS, Statistic.getInstance(), 
                     getArgumentList(new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL)));
     
+    private static final GraphQLFieldDefinition ANOMALIES = 
+            Query.getRootFieldDefinition("anomalies", AEMSDatabase.ANOMALIES, Anomaly.getInstance());
+    
+    private static final GraphQLFieldDefinition NOTICES = 
+            Query.getRootFieldDefinition("notices", AEMSDatabase.NOTICES, Notices.getInstance());
+    
     private static final GraphQLFieldDefinition STATISTIC_TIMES = 
             Query.getRootFieldDefinition("statistic_times", AEMSDatabase.STATISTIC_TIMES, StatisticTime.getInstance());
     
@@ -123,6 +129,8 @@ public class Query extends GraphQLObjectType {
         defs.add(NOTIFICATION_EXCEPTIONS);
         defs.add(WEATHER_DATA);
         defs.add(ARCHIVED_METER_NOTIFICATIONS);
+        defs.add(NOTICES);
+        defs.add(ANOMALIES);
         
         instance = new Query("query", "", defs, new ArrayList<GraphQLOutputType>());
         instance.authorizationId = authorizationId;
