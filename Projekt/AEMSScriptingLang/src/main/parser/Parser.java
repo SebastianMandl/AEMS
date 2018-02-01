@@ -14,7 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ import main.symbols.SymbolTable;
 import main.symbols.SymbolTableEntry;
 import main.syntax.Statements;
 import main.tokens.Token;
+import main.tokens.TokenTypes;
 import main.tokens.Tokenizer;
 
 public class Parser {
@@ -41,7 +44,7 @@ public class Parser {
 	private SymbolTable symbolTable = new SymbolTable();
 	
 	public void parse(Token[] input) {
-		//System.out.println(Arrays.toString(input));
+		System.out.println(Arrays.toString(input));
 		if(Statements.is(Statements.DEF_VARIABLE, input)) {
 			Logger.logDebug("def stm found");
 			Token[] subExpr = Arrays.copyOfRange(input, 3, input.length);
@@ -90,11 +93,17 @@ public class Parser {
 				NumericalExpressionParser from = new NumericalExpressionParser(Arrays.copyOfRange(subExpr, Statements.indexOf("from", subExpr) + 1, Statements.indexOf("until", subExpr)), symbolTable);
 				NumericalExpressionParser to = new NumericalExpressionParser(Arrays.copyOfRange(subExpr, Statements.indexOf("until", subExpr) + 1, subExpr.length), symbolTable);
 				
-				if(!subExpr[0].getRawToken().equals("meter"))
-					Logger.logError("only the current meter value can be periodified!!! (var : $meter)");
+				if(!subExpr[0].getRawToken().equals("meter") || !subExpr[0].getRawToken().equals("sensor"))
+					Logger.logError("only the current meter or sensor value can be periodified!!! (var : $meter or $sensor)");
+				
+				String id = "";
+				if(subExpr[0].getRawToken().equals("meter"))
+					id = Main.meterId;
+				else if(subExpr[0].getRawToken().equals("sensor"))
+					id = Main.sensorId;
 				
 				// fetch data from REST-API and store in list
-				symbolTable.addSymbol(new SymbolTableEntry(input[0].getRawToken(), DataTypes.LIST, fetchConsumptionValues((Date) from.getResult(), (Date) to.getResult())));
+				symbolTable.addSymbol(new SymbolTableEntry(input[0].getRawToken(), DataTypes.LIST, fetchConsumptionValues(id, (Date) from.getResult(), (Date) to.getResult())));
 				System.out.println(symbolTable.getSymbol(input[0].getRawToken()).getValue(ArrayList.class));
 				return;
 			}
@@ -103,6 +112,69 @@ public class Parser {
 			return;
 		} else if(Statements.is(Statements.RAISE_NOTICE_SIMPLE, input)) {
 			Logger.logDebug("raise notice simple stm found");
+			
+			int index = Statements.indexOf("if", input);
+			if(index != -1) {
+				Token[] ifClause = Arrays.copyOfRange(input, index, input.length);
+				if(Statements.is(Statements.IF_ON, ifClause)) {
+					// if clause
+					Logger.logDebug("if clause ~~~~~~~~~~~ %s", Arrays.toString(ifClause));
+					Token[] days = Arrays.copyOfRange(ifClause, 2, ifClause.length);
+					boolean shouldExecute = false;
+					for(Token day : days) {
+						if(day.getType().is(TokenTypes.VARIABLE)) {
+							SymbolTableEntry var = symbolTable.getSymbol(day.getRawToken());
+							if(var.getType().is(DataTypes.NUMBER)) {
+								if(!isDayOfTheWeek(var.getValue(Float.class).intValue())) {
+									shouldExecute |= false;
+								} else {
+									shouldExecute |= true;
+								}
+							} else {
+								Logger.logError("only variable containing numbers can be used in an if clause!!!");
+							}
+						} else if(day.getType().is(TokenTypes.NUMBER)) {
+							if(!isDayOfTheWeek(Integer.parseInt(day.getRawToken()))) {
+								shouldExecute |= false;
+							} else {
+								shouldExecute |= true;
+							}
+						}
+					}
+					
+					if(!shouldExecute)
+						return; // return as the notice shouldn't be raised if not on this day
+				} else {
+					raiseException();
+				}
+			} else {
+				index = Statements.indexOf("except", input);
+				if(index != -1) {
+					Token[] exceptClause = Arrays.copyOfRange(input, index, input.length);
+					if(Statements.is(Statements.EXCEPTION_ON, exceptClause)) {
+						// except clause
+						Logger.logDebug("except clause ~~~~~~~~~~~ %s", Arrays.toString(exceptClause));
+						Token[] days = Arrays.copyOfRange(exceptClause, 2, exceptClause.length);
+						for(Token day : days) {
+							if(day.getType().is(TokenTypes.VARIABLE)) {
+								SymbolTableEntry var = symbolTable.getSymbol(day.getRawToken());
+								if(var.getType().is(DataTypes.NUMBER)) {
+									if(isDayOfTheWeek(var.getValue(Float.class).intValue()))
+										return; // return as the notice shouldn't be raised if on this day of the week
+								} else {
+									Logger.logError("only variable containing numbers can be used in an except clause!!!");
+								}
+							} else if(day.getType().is(TokenTypes.NUMBER)) {
+								if(isDayOfTheWeek(Integer.parseInt(day.getRawToken())))
+									return; // return as the notice shouldn't be raised if on this day of the week
+							}
+						}
+					} else {
+						raiseException();
+					}
+				}
+			}
+			
 			BoolExpressionParser parser = new BoolExpressionParser(Arrays.copyOfRange(input, 4, input.length), symbolTable);
 			
 			if(parser.getResult()) {
@@ -113,6 +185,17 @@ public class Parser {
 			return;
 		}
 		
+		raiseException();
+	}
+	
+	private static final GregorianCalendar CALENDAR = new GregorianCalendar();
+	
+	private static boolean isDayOfTheWeek(int day) {
+		CALENDAR.setTimeInMillis(System.currentTimeMillis());
+		return CALENDAR.get(Calendar.DAY_OF_WEEK) == day;
+	}
+	
+	private static void raiseException() {
 		throw new RuntimeException("stm could not be parsed");
 	}
 	
@@ -164,7 +247,7 @@ public class Parser {
 		}
 	}
 	
-	private ArrayList<Float> fetchConsumptionValues(Date from, Date to) {
+	private ArrayList<Float> fetchConsumptionValues(String id, Date from, Date to) {
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			StringBuilder data = new StringBuilder();
@@ -174,7 +257,7 @@ public class Parser {
 			int index = -1;
 			int runningIndex = 0;
 			String raw = data.toString();
-			String[] values = new String[] {Main.meterId, format.format(from), format.format(to)};
+			String[] values = new String[] {id, format.format(from), format.format(to)};
 			while((index = raw.indexOf("%")) != -1) {
 				raw = raw.substring(0, index) + values[runningIndex++] + raw.substring(index + 1);
 			}

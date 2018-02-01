@@ -87,9 +87,10 @@ public class Tokenizer {
 	
 	private Token nextStringWord() {
 		StringBuilder builder = new StringBuilder();
-		for(Token token = nextToken(true); token.getType().is(TokenTypes.LETTER) || 
-				token.getType().is(TokenTypes.CLOSING_CURLY_BRACE) || token.getType().is(TokenTypes.OPENING_CURLY_BRACE)
-				|| token.getType().is(TokenTypes.DOLLAR); token = nextToken(true)) {
+		for(Token token = nextToken(true); 
+			token.getType().is(TokenTypes.LETTER) || token.getType().is(TokenTypes.DOLLAR) || 
+			token.getType().is(TokenTypes.OPENING_CURLY_BRACE) || token.getType().is(TokenTypes.CLOSING_CURLY_BRACE);
+			token = nextToken(true)) {
 			Token temp = nextToken(false);
 			builder.append(temp.getRawToken());
 		}
@@ -190,9 +191,6 @@ public class Tokenizer {
 				break;
 			case '.':
 				type = TokenTypes.DECIMAL;
-				break;
-			case ',':
-				type = TokenTypes.COMMA;
 		}
 		
 		if(type == null) {

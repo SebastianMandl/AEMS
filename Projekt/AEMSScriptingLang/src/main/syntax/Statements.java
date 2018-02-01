@@ -9,6 +9,9 @@ public class Statements {
 	public static final Object[] PERIODIFY = toArray(TokenTypes.VARIABLE, "of", "period", "from", TokenTypes.ANY_IN_BETWEEN, "until", TokenTypes.ANY_END);
 	public static final Object[] RAISE_NOTICE_SIMPLE = toArray("raise", "notice", TokenTypes.STRING, "on", TokenTypes.ANY_END);
 	public static final Object[] FUNCTION_APPLICATION = toArray(TokenTypes.VARIABLE, TokenTypes.COLON, TokenTypes.WORD);
+	public static final Object[] EXCEPTION_ON = toArray("except", "on", TokenTypes.ANY_END);
+	public static final Object[] IF_ON = toArray("if", "on", TokenTypes.ANY_END);
+	
 	
 	private static Object[] toArray(Object... objects) {
 		return objects;

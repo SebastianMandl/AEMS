@@ -22,7 +22,7 @@ public class SymbolTable {
 		addSymbol(new SymbolTableEntry("month", DataTypes.NUMBER, 31f));
 		addSymbol(new SymbolTableEntry("year", DataTypes.NUMBER, 365f));
 		
-		String[] days = new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+		String[] days = new String[] {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
 		for(int i = 0; i < days.length; i++) {
 			addSymbol(new SymbolTableEntry(days[i], DataTypes.NUMBER, (float) (i + 1)));
 		}
