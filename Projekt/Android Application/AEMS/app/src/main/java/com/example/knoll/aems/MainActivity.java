@@ -56,18 +56,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Delete Logininformation
-        sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        boolean rememberLogin = sharedPreferences.getBoolean("REMEMBERLOGIN", true);
-        String email = sharedPreferences.getString("EMAIL", null);
-        String password = sharedPreferences.getString("PASSWORD", null);
 
         sharedPreferencesSession = getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
         boolean sessionLogin = sharedPreferencesSession.getBoolean("Session", true);
         System.out.println("---------------------------------------------" + sessionLogin + "------------------------------------------------");
 
+        sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
+        String user = sharedPreferences.getString("EMAIL", null);
+        String passw = sharedPreferences.getString("PASSWORD", null);
 
-        if (!sessionLogin ){
+        if (!sessionLogin || (user == null && passw == null)){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -109,14 +107,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    protected void onDestroy(){
+   /* protected void onDestroy(){
         super.onDestroy();
         sharedPreferencesSession = this.getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
         SharedPreferences.Editor editorSession = sharedPreferencesSession.edit();
         editorSession.clear();
         editorSession.commit();
         finish();
-    }
+    }*/
 
 
     /**
