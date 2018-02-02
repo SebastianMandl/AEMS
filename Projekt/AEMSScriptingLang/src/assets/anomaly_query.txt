@@ -1,0 +1,14 @@
+{
+	anomalies {
+		id,
+		meter {
+			id
+		},
+		sensor {
+			id
+		},
+		script,
+		last_execution,
+		exec_intermediate_time
+	}
+}

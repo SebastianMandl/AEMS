@@ -42,9 +42,33 @@ import main.tokens.Tokenizer;
 public class Parser {
 
 	private SymbolTable symbolTable = new SymbolTable();
+	private String meterId;
+	private String sensorId;
+	
+	public Parser(String meterId, String sensorId) {
+		this.meterId = meterId;
+		this.sensorId = sensorId;
+		
+		try {
+			symbolTable.updateSymbol("meter", fetchConsumptionValues(meterId, new Date(System.currentTimeMillis() - (1000 * 60 * 15)), new Date(System.currentTimeMillis())).get(0));
+		} catch(Exception e) {
+			symbolTable.updateSymbol("meter", -1);
+		}
+		
+		try {
+			symbolTable.updateSymbol("sensor", fetchConsumptionValues(sensorId, new Date(System.currentTimeMillis() - (1000 * 60 * 15)), new Date(System.currentTimeMillis())).get(0));
+		} catch(Exception e) {
+			symbolTable.updateSymbol("sensor", -1);
+		}
+	}
 	
 	public void parse(Token[] input) {
-		System.out.println(Arrays.toString(input));
+		Logger.logDebug("%s", Arrays.toString(input));
+		
+		if(input[0].getType().is(TokenTypes.HASHTAG)) {
+			return; // skip comment
+		}
+		
 		if(Statements.is(Statements.DEF_VARIABLE, input)) {
 			Logger.logDebug("def stm found");
 			Token[] subExpr = Arrays.copyOfRange(input, 3, input.length);
@@ -93,14 +117,14 @@ public class Parser {
 				NumericalExpressionParser from = new NumericalExpressionParser(Arrays.copyOfRange(subExpr, Statements.indexOf("from", subExpr) + 1, Statements.indexOf("until", subExpr)), symbolTable);
 				NumericalExpressionParser to = new NumericalExpressionParser(Arrays.copyOfRange(subExpr, Statements.indexOf("until", subExpr) + 1, subExpr.length), symbolTable);
 				
-				if(!subExpr[0].getRawToken().equals("meter") || !subExpr[0].getRawToken().equals("sensor"))
+				if(!subExpr[0].getRawToken().equals("meter") && !subExpr[0].getRawToken().equals("sensor"))
 					Logger.logError("only the current meter or sensor value can be periodified!!! (var : $meter or $sensor)");
 				
 				String id = "";
 				if(subExpr[0].getRawToken().equals("meter"))
-					id = Main.meterId;
+					id = meterId;
 				else if(subExpr[0].getRawToken().equals("sensor"))
-					id = Main.sensorId;
+					id = sensorId;
 				
 				// fetch data from REST-API and store in list
 				symbolTable.addSymbol(new SymbolTableEntry(input[0].getRawToken(), DataTypes.LIST, fetchConsumptionValues(id, (Date) from.getResult(), (Date) to.getResult())));
@@ -218,8 +242,8 @@ public class Parser {
 		JSONObject root = new JSONObject();
 		// { meter : "", sensor : "", notice : "2 }
 		JSONObject jsonNotice = new JSONObject();
-		jsonNotice.put("meter", Main.meterId);
-		jsonNotice.put("sensor", Main.sensorId);
+		jsonNotice.put("meter", meterId);
+		jsonNotice.put("sensor", sensorId);
 		jsonNotice.put("notice", notice);
 		
 		root.append("notices", jsonNotice);
@@ -228,7 +252,7 @@ public class Parser {
 		//System.out.println(raw);
 		
 		try {
-			HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8084/AEMSWebService/RestInf?encryption=AES&action=INSERT&user=215&data=" + Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(Main.key, raw.getBytes()))).openConnection();
+			HttpURLConnection con = (HttpURLConnection) new URL(Main.REST_ADDRESS + "encryption=AES&action=INSERT&user=215&data=" + Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(Main.key, raw.getBytes()))).openConnection();
 			con.setRequestMethod("PUT");
 			con.setDoOutput(true);
 			con.setDoInput(true);
@@ -262,7 +286,7 @@ public class Parser {
 				raw = raw.substring(0, index) + values[runningIndex++] + raw.substring(index + 1);
 			}
 			
-			HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8084/AEMSWebService/RestInf?encryption=AES&action=QUERY&user=215&data=" + Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(Main.key, raw.getBytes()))).openConnection();
+			HttpURLConnection con = (HttpURLConnection) new URL(Main.REST_ADDRESS + "encryption=AES&action=QUERY&user=215&data=" + Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(Main.key, raw.getBytes()))).openConnection();
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 			con.setDoInput(true);

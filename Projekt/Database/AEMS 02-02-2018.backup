@@ -1,0 +1,1902 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.6
+-- Dumped by pg_dump version 9.6.6
+
+-- Started on 2018-02-02 19:07:24
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 9 (class 2615 OID 16385)
+-- Name: aems; Type: SCHEMA; Schema: -; Owner: aems
+--
+
+CREATE SCHEMA aems;
+
+
+ALTER SCHEMA aems OWNER TO aems;
+
+--
+-- TOC entry 6 (class 2615 OID 16387)
+-- Name: sqlj; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA sqlj;
+
+
+ALTER SCHEMA sqlj OWNER TO postgres;
+
+--
+-- TOC entry 2395 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: SCHEMA sqlj; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA sqlj IS 'Schema for objects pertaining to PL/Java, as specified by "SQL/JRT" part 13 of the SQL standard, Java Routines and Types.';
+
+
+--
+-- TOC entry 1 (class 3079 OID 12387)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2397 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- TOC entry 2 (class 3079 OID 16388)
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- TOC entry 2398 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+SET search_path = aems, pg_catalog;
+
+--
+-- TOC entry 270 (class 1255 OID 16425)
+-- Name: archive_meter_notification(character varying, numeric, boolean, boolean, numeric, numeric, numeric); Type: FUNCTION; Schema: aems; Owner: aems
+--
+
+CREATE FUNCTION archive_meter_notification(param_meter character varying, param_notification numeric, param_positive_deviation boolean, param_negative_deviation boolean, param_positive_deviation_value numeric, param_negative_deviation_value numeric, param_period numeric) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+declare
+
+	notification_record record;
+
+begin
+
+	for notification_record in (select *
+				     from aems."ArchivedMeterNotifications"
+				     where meter = param_meter and notification = param_notification and period = param_period) loop
+
+		if notification_record.positive_deviation = param_positive_deviation and notification_record.negative_deviation = param_negative_deviation
+			and notification_record.positive_deviation_value = param_positive_deviation_value and notification_record.negative_deviation_value = param_negative_deviation_value then
+
+			-- entries are congruent
+			-- merely update last occurrence field
+
+			update aems."ArchivedMeterNotifications"
+			set last_occurrence = now();
+
+			return;
+		end if;
+
+	end loop;
+
+	insert into aems."ArchivedMeterNotifications" (id, meter, notification, positive_deviation, negative_deviation, negative_deviation_value, positive_deviation_value, period, initial_occurrence)
+	values (nextval('aems.amn_seq'), param_meter, param_notification, param_positive_deviation, param_negative_deviation, param_negative_deviation_value, param_positive_deviation_value, param_period, now());
+
+exception
+	when NO_DATA_FOUND then
+		insert into aems."ArchivedMeterNotifications" (id, meter, notification, positive_deviation, negative_deviation, negative_deviation_value, positive_deviation_value, period, initial_occurrence)
+		values (nextval('aems.amn_seq'), param_meter, param_notification, param_positive_deviation, param_negative_deviation, param_negative_deviation_value, param_positive_deviation_value, param_period, now());
+
+end;
+
+
+$$;
+
+
+ALTER FUNCTION aems.archive_meter_notification(param_meter character varying, param_notification numeric, param_positive_deviation boolean, param_negative_deviation boolean, param_positive_deviation_value numeric, param_negative_deviation_value numeric, param_period numeric) OWNER TO aems;
+
+--
+-- TOC entry 271 (class 1255 OID 16426)
+-- Name: check_for_deviation_of_measurements(); Type: FUNCTION; Schema: aems; Owner: aems
+--
+
+CREATE FUNCTION check_for_deviation_of_measurements() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+declare
+
+	min_measured_value aems."MeterData".measured_value%type;
+	max_measured_value aems."MeterData".measured_value%type;
+	avg_measured_value aems."MeterData".measured_value%type;
+	min_negative_deviation aems."Notifications".min_negative_deviation%type;
+	min_positive_deviation aems."Notifications".min_positive_deviation%type;
+
+	negative_deviation_present boolean;
+	positive_deviation_present boolean;
+
+	deviation_period aems."Periods".id%type;
+	
+	meter_row record;
+	notification_exception record;
+	meter_data record;
+	substraction_days decimal(3, 0);
+begin
+
+	for meter_row in (select meter as "id", notification
+			  from aems."NotificationMeters") loop
+
+		deviation_period := -1;
+		negative_deviation_present := false;
+		positive_deviation_present := false;
+
+		select avg(measured_value), min(measured_value), max(measured_value) into avg_measured_value, min_measured_value, max_measured_value
+		from aems."MeterData"
+		where meter = meter_row.id;
+
+		select n."min_negative_deviation", n."min_positive_deviation" into min_negative_deviation, min_positive_deviation
+		from aems."Notifications" n
+		where id = meter_row.notification;
+
+		if min_measured_value < avg_measured_value - (avg_measured_value * (min_negative_deviation / 100.0)) then
+			-- raise notice 'negative deviation detected: %', notification_exception.period;
+			deviation_period := 0;
+			negative_deviation_present := true;
+		end if;
+
+		if max_measured_value > avg_measured_value + (avg_measured_value * (min_positive_deviation / 100.0)) then
+			-- raise notice 'positive deviation detected: %', notification_exception.period;
+			deviation_period := 0;
+			positive_deviation_present := true;
+		end if;
+
+		for notification_exception in (select a.period, a.min_positive_deviation, a.min_negative_deviation
+						from aems."NotificationExceptions" a
+						inner join aems."Notifications" b on (a.notification = b.id)
+						where meter_row.notification = b.id
+						order by a.period desc ) loop
+
+			-- raise notice 'period: %', notification_exception.period;
+
+			if notification_exception.period = 1 then -- daily
+				substraction_days := 1;
+			elsif notification_exception.period = 2 then -- weekly
+				substraction_days := 7;
+			elsif notification_exception.period = 3 then -- monthly
+				substraction_days := 31;
+			elsif notification_exception.period = 4 then -- yearly
+				substraction_days := 365;
+			end if;
+		
+			for meter_data in (select avg(measured_value) as avg, min(measured_value) as min, max(measured_value) as max
+					   from aems."MeterData"
+					   where meter = meter_row.id and "timestamp" between (now()::timestamp - (substraction_days || ' days')::interval) and now()::timestamp) loop
+
+				-- raise notice '%', meter_data;
+
+				negative_deviation_present := meter_data.min < meter_data.avg - (meter_data.avg * (notification_exception.min_negative_deviation / 100.0));
+				positive_deviation_present := meter_data.max > meter_data.avg + (meter_data.avg * (notification_exception.min_positive_deviation / 100.0));
+
+				if negative_deviation_present or positive_deviation_present then
+					
+				end if;
+
+				if negative_deviation_present then
+					-- raise notice 'negative deviation detected: %', notification_exception.period;
+					deviation_period := notification_exception.period;
+					min_measured_value := meter_data.min;
+				end if;
+
+				if positive_deviation_present then
+					-- raise notice 'positive deviation detected: %', notification_exception.period;
+					deviation_period := notification_exception.period;
+					max_measured_value := meter_data.max;
+				end if;
+				
+			end loop;
+
+		end loop;
+
+		-- raise notice 'deviation min: % max: % period: %', min_measured_value, max_measured_value, deviation_period;
+		perform aems."archive_meter_notification"(meter_row.id, meter_row.notification, positive_deviation_present, negative_deviation_present, min_measured_value, max_measured_value, deviation_period);			
+
+	end loop;
+
+end;
+
+$$;
+
+
+ALTER FUNCTION aems.check_for_deviation_of_measurements() OWNER TO aems;
+
+--
+-- TOC entry 273 (class 1255 OID 16427)
+-- Name: delete_user(character varying); Type: FUNCTION; Schema: aems; Owner: aems
+--
+
+CREATE FUNCTION delete_user(p_username character varying) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare
+
+	row_count_before integer;
+	row_count_after integer;
+
+begin
+	
+	select count(*) into row_count_before
+	from aems."Users";
+
+	delete from aems."Users"
+	where username = p_username;
+
+	select count(*) into row_count_after
+	from aems."Users";
+
+	if row_count_before > row_count_after then
+		return true;
+	else
+		return false;
+	end if;
+end;
+$$;
+
+
+ALTER FUNCTION aems.delete_user(p_username character varying) OWNER TO aems;
+
+--
+-- TOC entry 272 (class 1255 OID 16428)
+-- Name: get_transfer_infos(); Type: FUNCTION; Schema: aems; Owner: postgres
+--
+
+CREATE FUNCTION get_transfer_infos() RETURNS character varying
+    LANGUAGE plpgsql
+    AS $$
+declare
+
+	json varchar(200);
+	secret_number decimal(3, 0);
+	mod_number decimal(100, 0);
+	base_number decimal(1000, 0);
+	combination decimal(1000, 0);
+
+begin
+
+	json := '{ ';
+
+	-- generate base factor
+
+	select random() * 9 + 11 into base_number;
+	json := json || 'base:' || base_number;
+
+	-- generate modulus
+
+	select random() * (random() * 81657531897453431354687831513154354546878645513213245) into mod_number;
+	json := json || ', mod:' || mod_number;
+
+	-- generate secret number
+
+	select random() * 9 + 4 into secret_number;
+	select aems.compute(base_number, mod_number, secret_number) into combination;
+
+	json := json || ', combination:' || combination || ' }';
+
+
+	delete from aems."TransferInfos"; -- erase priorly specified data
+	insert into aems."TransferInfos" (id, secret_number, mod_number) -- store the secret and modulus number into "TransferInfos"
+	values (0, secret_number, mod_number);
+
+	-- return info
+	return json;
+end;
+
+$$;
+
+
+ALTER FUNCTION aems.get_transfer_infos() OWNER TO postgres;
+
+--
+-- TOC entry 274 (class 1255 OID 16429)
+-- Name: get_user_infos(); Type: FUNCTION; Schema: aems; Owner: aems
+--
+
+CREATE FUNCTION get_user_infos() RETURNS bytea
+    LANGUAGE plpgsql
+    AS $$
+declare
+	decrypted_password_bytes bytea;
+	aes_key varchar(48);
+	aes_key_bytes bytea;
+	user_password_bytes bytea;
+	decrypted_password varchar(32);
+
+	datafile text default 'key.txt';
+
+	user_record record;
+	user_meter_record record;
+	json varchar(500000) default '';
+
+	transferKey varchar(100);
+	finalKeyNum numeric(100, 0) default 1;
+begin
+
+	aes_key := pg_read_file(datafile, 0, 16);
+	aes_key_bytes := convert_to(aes_key, 'UTF-8');
+
+	json := '[ ';
+	for user_record in (select id, username, "password"
+			    from aems."Users") loop
+	        decrypted_password_bytes := aems.request_decryption(aes_key_bytes, user_record."password");
+		decrypted_password := convert_from(decrypted_password_bytes, 'UTF-8');
+
+		raise notice 'is: %' ,decrypted_password;
+
+		json := json || '{ "id":' || user_record.id || ', "username":"' || user_record."username" || '", "password":"' || decrypted_password || '", "meters":[';
+
+		for user_meter_record in (select m.id, mt.display_name as "metertype", city, latitude, longitude
+					  from aems."Meters" m
+					  inner join aems."MeterTypes" mt on (mt.id = m.metertype)
+					  where "user" = user_record.id) loop
+
+			json := json || '{"id":"' || user_meter_record.id || '", "type":"' || user_meter_record.metertype || '", ';
+			json := json || '"location": {"city":"' || user_meter_record.city || '", "lat":' || user_meter_record.latitude || ', "long":' || user_meter_record.longitude || '}},';
+ 
+		end loop;
+		select substr(json, 0, char_length(json)) into json; -- remove last comma
+		
+		json := json || ']},';
+	end loop;
+
+	raise notice 'json: %' , json;
+	
+	select substr(json, 0, char_length(json)) into json;
+	json := json || ' ]';
+
+	-- convert_to("key", 'UTF-8')
+	select "key" into transferKey
+	from aems."TransferInfos"
+	where id = 0;
+
+	finalKeyNum := aems.salt(aems.hash_code(transferKey), 'master', aems.get_user_password('master'));
+
+	--raise notice 'final key num: %', finalKeyNum;
+
+	select substr(cast(finalKeyNum as varchar), 0, 17) into transferKey; -- key cannot exceed 16 digits
+	select convert_to(transferKey, 'UTF-8') into aes_key_bytes;
+
+	raise notice 'key: %', transferKey;
+
+	delete from aems."DebugInfo";
+	insert into aems."DebugInfo" (pk, "string") values (0, transferKey);
+
+	return aems.request_encryption(aes_key_bytes, convert_to(json, 'UTF-8'));
+end;
+$$;
+
+
+ALTER FUNCTION aems.get_user_infos() OWNER TO aems;
+
+--
+-- TOC entry 275 (class 1255 OID 16430)
+-- Name: get_user_password(character varying); Type: FUNCTION; Schema: aems; Owner: postgres
+--
+
+CREATE FUNCTION get_user_password(param_username character varying) RETURNS character varying
+    LANGUAGE plpgsql
+    AS $_$
+declare
+	decrypted_password_bytes bytea;
+	aes_key varchar(48);
+	aes_key_bytes bytea;
+	decrypted_password varchar(32);
+
+	datafile text default 'key.txt';
+
+	user_pwd bytea;
+	stm varchar(100);
+begin
+
+	aes_key := pg_read_file(datafile, 0, 16);
+	aes_key_bytes := convert_to(aes_key, 'UTF-8');
+
+	execute 'select "password"
+	        from aems."Users"
+	        where username = $1' into user_pwd using param_username;
+
+	decrypted_password_bytes := aems.request_decryption(aes_key_bytes, user_pwd);
+	decrypted_password := convert_from(decrypted_password_bytes, 'UTF-8');
+
+	return decrypted_password;
+end;
+$_$;
+
+
+ALTER FUNCTION aems.get_user_password(param_username character varying) OWNER TO postgres;
+
+--
+-- TOC entry 277 (class 1255 OID 16431)
+-- Name: register_user(character varying, character varying); Type: FUNCTION; Schema: aems; Owner: aems
+--
+
+CREATE FUNCTION register_user(username character varying, clear_text_password character varying) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+declare
+	pass_bytes bytea;
+	decrypted_text varchar(4096);
+	encrypted_pass_bytes bytea;
+	aes_key varchar(48);
+	aes_key_bytes bytea;
+
+	datafile text default 'key.txt';
+
+	row_count_before integer;
+	row_count_after integer;
+begin
+	-- aquire the key from the key file ; preliminarily located within the data directory at serverside
+	-- key file must be relocated in the future!!!
+	aes_key := pg_read_file(datafile, 0, 16);
+
+	pass_bytes := convert_to(clear_text_password, 'UTF-8');
+	aes_key_bytes := convert_to(aes_key, 'UTF-8');
+	encrypted_pass_bytes := aems.request_encryption(aes_key_bytes, pass_bytes);
+
+	select count(*) into row_count_before
+	from aems."Users";
+
+	insert into aems."Users" (id, username, "password")
+	values (nextval('aems.user_seq'), username, encrypted_pass_bytes);
+
+	select count(*) into row_count_after
+	from aems."Users";
+
+	if row_count_before < row_count_after then
+		return true;
+	else
+		return false;
+	end if;
+
+exception
+	when others then
+		return false;	
+end;
+$$;
+
+
+ALTER FUNCTION aems.register_user(username character varying, clear_text_password character varying) OWNER TO aems;
+
+--
+-- TOC entry 276 (class 1255 OID 16432)
+-- Name: verify_transfer_infos(numeric); Type: FUNCTION; Schema: aems; Owner: postgres
+--
+
+CREATE FUNCTION verify_transfer_infos(combination numeric) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+declare
+
+	akey decimal(400, 0);
+	varchar_key varchar(500);
+
+begin
+
+	select aems.compute(combination, mod_number, secret_number) into akey
+	from aems."TransferInfos"
+	where id = 0;
+
+	SELECT CAST(akey AS varchar(500)) into varchar_key;	
+	select substr(varchar_key, 1, 16) into varchar_key;
+	
+
+	update aems."TransferInfos" -- store the key into "TransferInfos"
+	set "key" = varchar_key
+	where id = 0;
+end;
+
+$$;
+
+
+ALTER FUNCTION aems.verify_transfer_infos(combination numeric) OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 41824)
+-- Name: anomaly_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE anomaly_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE anomaly_seq OWNER TO aems;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 217 (class 1259 OID 33620)
+-- Name: Anomalies; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Anomalies" (
+    id numeric(10,0) DEFAULT nextval('anomaly_seq'::regclass) NOT NULL,
+    script character varying(1500),
+    exec_intermediate_time numeric NOT NULL,
+    last_execution timestamp without time zone DEFAULT (now())::timestamp without time zone,
+    meter character varying(150) NOT NULL,
+    sensor character varying(150) NOT NULL,
+    script_errors character varying(500),
+    CONSTRAINT check_exec_intermediate_time CHECK ((exec_intermediate_time >= (15)::numeric)),
+    CONSTRAINT check_exec_intermediate_time_mod CHECK ((mod(exec_intermediate_time, (15)::numeric) = (0)::numeric))
+);
+
+
+ALTER TABLE "Anomalies" OWNER TO aems;
+
+--
+-- TOC entry 2399 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: COLUMN "Anomalies".exec_intermediate_time; Type: COMMENT; Schema: aems; Owner: aems
+--
+
+COMMENT ON COLUMN "Anomalies".exec_intermediate_time IS 'Value respresented in minutes';
+
+
+--
+-- TOC entry 188 (class 1259 OID 16433)
+-- Name: ArchivedMeterNotifications; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "ArchivedMeterNotifications" (
+    id numeric(10,0) NOT NULL,
+    meter character varying(150),
+    notification numeric(10,0),
+    positive_deviation boolean,
+    negative_deviation boolean,
+    positive_deviation_value numeric(7,2),
+    negative_deviation_value numeric(7,2),
+    period numeric(10,0),
+    initial_occurrence timestamp without time zone,
+    last_occurrence timestamp without time zone
+);
+
+
+ALTER TABLE "ArchivedMeterNotifications" OWNER TO aems;
+
+--
+-- TOC entry 189 (class 1259 OID 16436)
+-- Name: DebugInfo; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "DebugInfo" (
+    pk integer NOT NULL,
+    string character varying(1000)
+);
+
+
+ALTER TABLE "DebugInfo" OWNER TO aems;
+
+--
+-- TOC entry 207 (class 1259 OID 16996)
+-- Name: meter_data_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE meter_data_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE meter_data_seq OWNER TO aems;
+
+--
+-- TOC entry 190 (class 1259 OID 16442)
+-- Name: MeterData; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "MeterData" (
+    id numeric(10,0) DEFAULT nextval('meter_data_seq'::regclass) NOT NULL,
+    meter character varying(150),
+    "timestamp" timestamp without time zone NOT NULL,
+    measured_value numeric(7,2) NOT NULL
+);
+
+
+ALTER TABLE "MeterData" OWNER TO aems;
+
+--
+-- TOC entry 191 (class 1259 OID 16445)
+-- Name: MeterTypes; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "MeterTypes" (
+    id numeric(10,0) NOT NULL,
+    display_name character varying(100) NOT NULL
+);
+
+
+ALTER TABLE "MeterTypes" OWNER TO aems;
+
+--
+-- TOC entry 218 (class 1259 OID 33623)
+-- Name: meters_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE meters_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE meters_seq OWNER TO aems;
+
+--
+-- TOC entry 192 (class 1259 OID 16448)
+-- Name: Meters; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Meters" (
+    id character varying(150) DEFAULT nextval('meters_seq'::regclass) NOT NULL,
+    metertype numeric(10,0),
+    "user" numeric(10,0),
+    city character varying(50),
+    latitude numeric(10,4),
+    longitude numeric(10,4),
+    is_sensor boolean DEFAULT false,
+    name character varying(150)
+);
+
+
+ALTER TABLE "Meters" OWNER TO aems;
+
+--
+-- TOC entry 221 (class 1259 OID 41862)
+-- Name: notices_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE notices_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE notices_seq OWNER TO aems;
+
+--
+-- TOC entry 220 (class 1259 OID 41844)
+-- Name: Notices; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Notices" (
+    id numeric(10,0) DEFAULT nextval('notices_seq'::regclass) NOT NULL,
+    meter character varying(150) NOT NULL,
+    sensor character varying(150) NOT NULL,
+    notice character varying(250) NOT NULL
+);
+
+
+ALTER TABLE "Notices" OWNER TO aems;
+
+--
+-- TOC entry 208 (class 1259 OID 16999)
+-- Name: notification_exceptions_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE notification_exceptions_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE notification_exceptions_seq OWNER TO aems;
+
+--
+-- TOC entry 193 (class 1259 OID 16451)
+-- Name: NotificationExceptions; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "NotificationExceptions" (
+    id numeric(10,0) DEFAULT nextval('notification_exceptions_seq'::regclass) NOT NULL,
+    notification numeric(10,0) NOT NULL,
+    period numeric(2,0),
+    min_positive_deviation numeric(3,0),
+    min_negative_deviation numeric(3,0)
+);
+
+
+ALTER TABLE "NotificationExceptions" OWNER TO aems;
+
+--
+-- TOC entry 194 (class 1259 OID 16454)
+-- Name: NotificationMeters; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "NotificationMeters" (
+    meter character varying(150) NOT NULL,
+    notification numeric(10,0) NOT NULL
+);
+
+
+ALTER TABLE "NotificationMeters" OWNER TO aems;
+
+--
+-- TOC entry 209 (class 1259 OID 17002)
+-- Name: notifications_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE notifications_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE notifications_seq OWNER TO aems;
+
+--
+-- TOC entry 195 (class 1259 OID 16457)
+-- Name: Notifications; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Notifications" (
+    id numeric(10,0) DEFAULT nextval('notifications_seq'::regclass) NOT NULL,
+    "user" numeric(10,0) NOT NULL,
+    name character varying(100) NOT NULL,
+    type integer,
+    min_positive_deviation numeric(3,0),
+    min_negative_deviation numeric(3,0)
+);
+
+
+ALTER TABLE "Notifications" OWNER TO aems;
+
+--
+-- TOC entry 210 (class 1259 OID 17006)
+-- Name: periods_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE periods_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE periods_seq OWNER TO aems;
+
+--
+-- TOC entry 196 (class 1259 OID 16460)
+-- Name: Periods; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Periods" (
+    id numeric(10,0) DEFAULT nextval('periods_seq'::regclass) NOT NULL,
+    name character varying(1000)
+);
+
+
+ALTER TABLE "Periods" OWNER TO aems;
+
+--
+-- TOC entry 211 (class 1259 OID 17008)
+-- Name: report_statistics_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE report_statistics_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE report_statistics_seq OWNER TO aems;
+
+--
+-- TOC entry 197 (class 1259 OID 16466)
+-- Name: ReportStatistics; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "ReportStatistics" (
+    report numeric(10,0) DEFAULT nextval('report_statistics_seq'::regclass) NOT NULL,
+    statistic numeric(10,0) NOT NULL
+);
+
+
+ALTER TABLE "ReportStatistics" OWNER TO aems;
+
+--
+-- TOC entry 212 (class 1259 OID 17010)
+-- Name: reports_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE reports_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE reports_seq OWNER TO aems;
+
+--
+-- TOC entry 198 (class 1259 OID 16469)
+-- Name: Reports; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Reports" (
+    id numeric(10,0) DEFAULT nextval('reports_seq'::regclass) NOT NULL,
+    name character varying(100),
+    annotation character varying(2000),
+    from_date date,
+    to_date date,
+    period numeric(10,0),
+    "user" numeric(10,0)
+);
+
+
+ALTER TABLE "Reports" OWNER TO aems;
+
+--
+-- TOC entry 213 (class 1259 OID 17016)
+-- Name: statistic_meters_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE statistic_meters_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE statistic_meters_seq OWNER TO aems;
+
+--
+-- TOC entry 199 (class 1259 OID 16475)
+-- Name: StatisticMeters; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "StatisticMeters" (
+    statistic numeric(10,0) DEFAULT nextval('statistic_meters_seq'::regclass) NOT NULL,
+    meter character varying(150) NOT NULL
+);
+
+
+ALTER TABLE "StatisticMeters" OWNER TO aems;
+
+--
+-- TOC entry 214 (class 1259 OID 17018)
+-- Name: statistic_times_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE statistic_times_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE statistic_times_seq OWNER TO aems;
+
+--
+-- TOC entry 200 (class 1259 OID 16478)
+-- Name: StatisticTimes; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "StatisticTimes" (
+    id numeric(10,0) DEFAULT nextval('statistic_times_seq'::regclass) NOT NULL,
+    statistic numeric(10,0),
+    period numeric(10,0),
+    period_value_1 numeric(3,0),
+    period_value_2 numeric(3,0),
+    from_date date,
+    to_date date
+);
+
+
+ALTER TABLE "StatisticTimes" OWNER TO aems;
+
+--
+-- TOC entry 215 (class 1259 OID 17020)
+-- Name: statistics_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE statistics_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE statistics_seq OWNER TO aems;
+
+--
+-- TOC entry 201 (class 1259 OID 16481)
+-- Name: Statistics; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Statistics" (
+    id numeric(10,0) DEFAULT nextval('statistics_seq'::regclass) NOT NULL,
+    "user" numeric(10,0),
+    name character varying(1000)
+);
+
+
+ALTER TABLE "Statistics" OWNER TO aems;
+
+--
+-- TOC entry 202 (class 1259 OID 16487)
+-- Name: TransferInfos; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "TransferInfos" (
+    id numeric(10,0) NOT NULL,
+    secret_number numeric(3,0) NOT NULL,
+    key character varying(16),
+    mod_number numeric(100,0)
+);
+
+
+ALTER TABLE "TransferInfos" OWNER TO aems;
+
+--
+-- TOC entry 203 (class 1259 OID 16490)
+-- Name: Users; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "Users" (
+    id numeric(10,0) NOT NULL,
+    username character varying(32) NOT NULL,
+    password bytea
+);
+
+
+ALTER TABLE "Users" OWNER TO aems;
+
+--
+-- TOC entry 216 (class 1259 OID 17022)
+-- Name: weather_data_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE weather_data_seq
+    START WITH 100
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE weather_data_seq OWNER TO aems;
+
+--
+-- TOC entry 204 (class 1259 OID 16496)
+-- Name: WeatherData; Type: TABLE; Schema: aems; Owner: aems
+--
+
+CREATE TABLE "WeatherData" (
+    id numeric(10,0) DEFAULT nextval('weather_data_seq'::regclass) NOT NULL,
+    meter character varying(150) NOT NULL,
+    "timestamp" timestamp without time zone,
+    temperature numeric(5,2),
+    humidity numeric(5,2)
+);
+
+
+ALTER TABLE "WeatherData" OWNER TO aems;
+
+--
+-- TOC entry 205 (class 1259 OID 16499)
+-- Name: amn_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE amn_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 5;
+
+
+ALTER TABLE amn_seq OWNER TO aems;
+
+--
+-- TOC entry 206 (class 1259 OID 16501)
+-- Name: user_seq; Type: SEQUENCE; Schema: aems; Owner: aems
+--
+
+CREATE SEQUENCE user_seq
+    START WITH 15
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 5;
+
+
+ALTER TABLE user_seq OWNER TO aems;
+
+--
+-- TOC entry 2383 (class 0 OID 33620)
+-- Dependencies: 217
+-- Data for Name: Anomalies; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Anomalies" (id, script, exec_intermediate_time, last_execution, meter, sensor, script_errors) FROM stdin;
+2	$y := $meter of period from $today - $year until $today + $month * 10	45	2018-02-02 19:04:45	AT00000000000000000003333	Sensor 1	[1] Index: 0, Size: 0
+12	$x := $y	30	2018-02-02 19:04:45	AT00000000000000000003333	Sensor 1	[1] variable y does not exists!!!
+\.
+
+
+--
+-- TOC entry 2354 (class 0 OID 16433)
+-- Dependencies: 188
+-- Data for Name: ArchivedMeterNotifications; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "ArchivedMeterNotifications" (id, meter, notification, positive_deviation, negative_deviation, positive_deviation_value, negative_deviation_value, period, initial_occurrence, last_occurrence) FROM stdin;
+1	AT00000000000000000003333	1	t	t	20.00	90.00	3	2017-10-29 12:07:13.380039	2017-10-29 12:30:00.37612
+2	AT00000000000000000003333	1	t	t	32.25	32.25	3	2017-10-29 12:14:56.008561	2017-10-29 12:30:00.37612
+3	AT00000000000000000003333	1	t	t	75.00	75.00	3	2017-10-29 12:17:50.582652	2017-10-29 12:30:00.37612
+4	AT00000000000000000003333	1	t	t	20.00	180.00	3	2017-10-29 12:19:03.469842	2017-10-29 12:30:00.37612
+5	AT00000000000000000004444	2	t	t	20.00	25.00	0	2017-10-29 12:24:59.417724	2017-10-29 12:30:00.37612
+6	AT00000000000000000004444	2	t	f	20.00	25.00	0	2017-10-29 12:30:00.37612	\N
+\.
+
+
+--
+-- TOC entry 2355 (class 0 OID 16436)
+-- Dependencies: 189
+-- Data for Name: DebugInfo; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "DebugInfo" (pk, string) FROM stdin;
+0	1213515386330739
+\.
+
+
+--
+-- TOC entry 2356 (class 0 OID 16442)
+-- Dependencies: 190
+-- Data for Name: MeterData; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "MeterData" (id, meter, "timestamp", measured_value) FROM stdin;
+1	AT00000000000000000003333	2017-10-15 00:00:00	20.00
+3	AT00000000000000000003333	2016-10-19 00:00:00	10.00
+2	AT00000000000000000003333	2017-10-18 00:00:00	180.00
+4	AT00000000000000000004444	2017-10-28 00:00:00	20.00
+5	AT00000000000000000005555	2017-10-28 00:00:00	25.00
+\.
+
+
+--
+-- TOC entry 2357 (class 0 OID 16445)
+-- Dependencies: 191
+-- Data for Name: MeterTypes; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "MeterTypes" (id, display_name) FROM stdin;
+5	Stromzähler
+6	Gaszähler
+7	Wärmemengenzähler
+8	Wasserzähler
+\.
+
+
+--
+-- TOC entry 2358 (class 0 OID 16448)
+-- Dependencies: 192
+-- Data for Name: Meters; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Meters" (id, metertype, "user", city, latitude, longitude, is_sensor, name) FROM stdin;
+AT00000000000000000003333	5	185	Grieskirchen	50.0000	60.0000	f	\N
+AT00000000000000000004444	5	185	Linz	60.0000	50.0000	f	\N
+AT00000000000000000005555	5	190	Ried	200.0000	30.0000	f	\N
+Sensor 1	\N	185	\N	\N	\N	t	\N
+Sensor 2	\N	190	\N	\N	\N	t	\N
+Test	\N	\N	\N	\N	\N	f	\N
+\.
+
+
+--
+-- TOC entry 2386 (class 0 OID 41844)
+-- Dependencies: 220
+-- Data for Name: Notices; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Notices" (id, meter, sensor, notice) FROM stdin;
+1	AT00000000000000000003333	Sensor 1	Zu viel Strom bei hohen Temperaturen {$meter}
+2	AT00000000000000000003333	Sensor 1	Zu viel Strom bei hohen Temperaturen 180.0
+3	AT00000000000000000003333	Sensor 1	Zu viel Strom bei hohen Temperaturen 180.0
+\.
+
+
+--
+-- TOC entry 2359 (class 0 OID 16451)
+-- Dependencies: 193
+-- Data for Name: NotificationExceptions; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "NotificationExceptions" (id, notification, period, min_positive_deviation, min_negative_deviation) FROM stdin;
+1	1	3	5	5
+\.
+
+
+--
+-- TOC entry 2360 (class 0 OID 16454)
+-- Dependencies: 194
+-- Data for Name: NotificationMeters; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "NotificationMeters" (meter, notification) FROM stdin;
+AT00000000000000000003333	1
+AT00000000000000000004444	2
+\.
+
+
+--
+-- TOC entry 2361 (class 0 OID 16457)
+-- Dependencies: 195
+-- Data for Name: Notifications; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Notifications" (id, "user", name, type, min_positive_deviation, min_negative_deviation) FROM stdin;
+2	190	XXX	2	5	90
+1	185	Test_Notification	2	1	1
+\.
+
+
+--
+-- TOC entry 2362 (class 0 OID 16460)
+-- Dependencies: 196
+-- Data for Name: Periods; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Periods" (id, name) FROM stdin;
+1	Daily
+3	Monthly
+2	Weekly
+4	Yearly
+0	General
+\.
+
+
+--
+-- TOC entry 2363 (class 0 OID 16466)
+-- Dependencies: 197
+-- Data for Name: ReportStatistics; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "ReportStatistics" (report, statistic) FROM stdin;
+1	1
+\.
+
+
+--
+-- TOC entry 2364 (class 0 OID 16469)
+-- Dependencies: 198
+-- Data for Name: Reports; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Reports" (id, name, annotation, from_date, to_date, period, "user") FROM stdin;
+1	Test_Report	Test Report Annotation	2017-06-15	2017-06-16	1	185
+2	XXX	YYY	2017-06-17	2017-06-18	1	190
+\.
+
+
+--
+-- TOC entry 2365 (class 0 OID 16475)
+-- Dependencies: 199
+-- Data for Name: StatisticMeters; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "StatisticMeters" (statistic, meter) FROM stdin;
+1	AT00000000000000000003333
+\.
+
+
+--
+-- TOC entry 2366 (class 0 OID 16478)
+-- Dependencies: 200
+-- Data for Name: StatisticTimes; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "StatisticTimes" (id, statistic, period, period_value_1, period_value_2, from_date, to_date) FROM stdin;
+1	1	1	0	0	2017-06-15	2017-06-16
+\.
+
+
+--
+-- TOC entry 2367 (class 0 OID 16481)
+-- Dependencies: 201
+-- Data for Name: Statistics; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Statistics" (id, "user", name) FROM stdin;
+1	185	Test Statistic
+2	190	XXX
+\.
+
+
+--
+-- TOC entry 2368 (class 0 OID 16487)
+-- Dependencies: 202
+-- Data for Name: TransferInfos; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "TransferInfos" (id, secret_number, key, mod_number) FROM stdin;
+0	13	2368290482055749	5575688493897720000000000000000000000000000000000000
+\.
+
+
+--
+-- TOC entry 2369 (class 0 OID 16490)
+-- Dependencies: 203
+-- Data for Name: Users; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "Users" (id, username, password) FROM stdin;
+185	x	\\x0e8fbf4bc734cf8dba070f433eced060
+190	y	\\x0e8fbf4bc734cf8dba070f433eced060
+215	master	\\xe14f06c7290c6965239251f63996a8493e4e99dfa68db040ebf5d2bda67eca20
+\.
+
+
+--
+-- TOC entry 2370 (class 0 OID 16496)
+-- Dependencies: 204
+-- Data for Name: WeatherData; Type: TABLE DATA; Schema: aems; Owner: aems
+--
+
+COPY "WeatherData" (id, meter, "timestamp", temperature, humidity) FROM stdin;
+1	AT00000000000000000005555	2017-06-15 00:00:00	25.00	56.00
+2	AT00000000000000000004444	\N	12.00	\N
+19	AT00000000000000000003333	\N	15.02	\N
+\.
+
+
+--
+-- TOC entry 2403 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: amn_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('amn_seq', 10, true);
+
+
+--
+-- TOC entry 2404 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: anomaly_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('anomaly_seq', 12, true);
+
+
+--
+-- TOC entry 2405 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: meter_data_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('meter_data_seq', 100, true);
+
+
+--
+-- TOC entry 2406 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: meters_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('meters_seq', 1, false);
+
+
+--
+-- TOC entry 2407 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: notices_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('notices_seq', 3, true);
+
+
+--
+-- TOC entry 2408 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: notification_exceptions_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('notification_exceptions_seq', 100, true);
+
+
+--
+-- TOC entry 2409 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: notifications_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('notifications_seq', 100, false);
+
+
+--
+-- TOC entry 2410 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: periods_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('periods_seq', 100, false);
+
+
+--
+-- TOC entry 2411 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: report_statistics_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('report_statistics_seq', 100, false);
+
+
+--
+-- TOC entry 2412 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: reports_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('reports_seq', 100, false);
+
+
+--
+-- TOC entry 2413 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: statistic_meters_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('statistic_meters_seq', 100, false);
+
+
+--
+-- TOC entry 2414 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: statistic_times_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('statistic_times_seq', 100, false);
+
+
+--
+-- TOC entry 2415 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: statistics_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('statistics_seq', 100, true);
+
+
+--
+-- TOC entry 2416 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: user_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('user_seq', 219, true);
+
+
+--
+-- TOC entry 2417 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: weather_data_seq; Type: SEQUENCE SET; Schema: aems; Owner: aems
+--
+
+SELECT pg_catalog.setval('weather_data_seq', 100, false);
+
+
+--
+-- TOC entry 2175 (class 2606 OID 16504)
+-- Name: DebugInfo DebugInfo_pkey; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "DebugInfo"
+    ADD CONSTRAINT "DebugInfo_pkey" PRIMARY KEY (pk);
+
+
+--
+-- TOC entry 2209 (class 2606 OID 41832)
+-- Name: Anomalies pk_anomaly; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Anomalies"
+    ADD CONSTRAINT pk_anomaly PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2173 (class 2606 OID 16506)
+-- Name: ArchivedMeterNotifications pk_archived_meter_notifications; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ArchivedMeterNotifications"
+    ADD CONSTRAINT pk_archived_meter_notifications PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2177 (class 2606 OID 16508)
+-- Name: MeterData pk_meterdata; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "MeterData"
+    ADD CONSTRAINT pk_meterdata PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2181 (class 2606 OID 16510)
+-- Name: Meters pk_meters; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Meters"
+    ADD CONSTRAINT pk_meters PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2179 (class 2606 OID 16512)
+-- Name: MeterTypes pk_metertypes; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "MeterTypes"
+    ADD CONSTRAINT pk_metertypes PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2211 (class 2606 OID 41851)
+-- Name: Notices pk_notices; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Notices"
+    ADD CONSTRAINT pk_notices PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2183 (class 2606 OID 16514)
+-- Name: NotificationExceptions pk_notification_exceptions; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "NotificationExceptions"
+    ADD CONSTRAINT pk_notification_exceptions PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2187 (class 2606 OID 16516)
+-- Name: Notifications pk_notifications; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Notifications"
+    ADD CONSTRAINT pk_notifications PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2189 (class 2606 OID 16518)
+-- Name: Periods pk_periods; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Periods"
+    ADD CONSTRAINT pk_periods PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2193 (class 2606 OID 16520)
+-- Name: Reports pk_reports; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Reports"
+    ADD CONSTRAINT pk_reports PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2191 (class 2606 OID 16522)
+-- Name: ReportStatistics pk_reportstatistics; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ReportStatistics"
+    ADD CONSTRAINT pk_reportstatistics PRIMARY KEY (report, statistic);
+
+
+--
+-- TOC entry 2195 (class 2606 OID 16524)
+-- Name: StatisticMeters pk_statistic_meters; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "StatisticMeters"
+    ADD CONSTRAINT pk_statistic_meters PRIMARY KEY (statistic, meter);
+
+
+--
+-- TOC entry 2197 (class 2606 OID 16526)
+-- Name: StatisticTimes pk_statistic_times; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "StatisticTimes"
+    ADD CONSTRAINT pk_statistic_times PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2199 (class 2606 OID 16528)
+-- Name: Statistics pk_statistics; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Statistics"
+    ADD CONSTRAINT pk_statistics PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2201 (class 2606 OID 16530)
+-- Name: TransferInfos pk_transfer_infos; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "TransferInfos"
+    ADD CONSTRAINT pk_transfer_infos PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2203 (class 2606 OID 16532)
+-- Name: Users pk_users; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Users"
+    ADD CONSTRAINT pk_users PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2207 (class 2606 OID 16534)
+-- Name: WeatherData pk_weatherdata; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "WeatherData"
+    ADD CONSTRAINT pk_weatherdata PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2185 (class 2606 OID 16536)
+-- Name: NotificationMeters unique_meter; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "NotificationMeters"
+    ADD CONSTRAINT unique_meter UNIQUE (meter);
+
+
+--
+-- TOC entry 2205 (class 2606 OID 16538)
+-- Name: Users users_username_key; Type: CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Users"
+    ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- TOC entry 2212 (class 2606 OID 16539)
+-- Name: ArchivedMeterNotifications fk_amn_meters; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ArchivedMeterNotifications"
+    ADD CONSTRAINT fk_amn_meters FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2213 (class 2606 OID 16544)
+-- Name: ArchivedMeterNotifications fk_amn_notifications; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ArchivedMeterNotifications"
+    ADD CONSTRAINT fk_amn_notifications FOREIGN KEY (notification) REFERENCES "Notifications"(id);
+
+
+--
+-- TOC entry 2214 (class 2606 OID 16549)
+-- Name: ArchivedMeterNotifications fk_amn_period; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ArchivedMeterNotifications"
+    ADD CONSTRAINT fk_amn_period FOREIGN KEY (period) REFERENCES "Periods"(id);
+
+
+--
+-- TOC entry 2233 (class 2606 OID 41833)
+-- Name: Anomalies fk_anomaly_meters_meter; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Anomalies"
+    ADD CONSTRAINT fk_anomaly_meters_meter FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2234 (class 2606 OID 41838)
+-- Name: Anomalies fk_anomaly_meters_sensor; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Anomalies"
+    ADD CONSTRAINT fk_anomaly_meters_sensor FOREIGN KEY (sensor) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2215 (class 2606 OID 16554)
+-- Name: MeterData fk_meterdata_meters; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "MeterData"
+    ADD CONSTRAINT fk_meterdata_meters FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2216 (class 2606 OID 16559)
+-- Name: Meters fk_meters_metertypes; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Meters"
+    ADD CONSTRAINT fk_meters_metertypes FOREIGN KEY (metertype) REFERENCES "MeterTypes"(id);
+
+
+--
+-- TOC entry 2217 (class 2606 OID 16564)
+-- Name: Meters fk_meters_users; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Meters"
+    ADD CONSTRAINT fk_meters_users FOREIGN KEY ("user") REFERENCES "Users"(id);
+
+
+--
+-- TOC entry 2235 (class 2606 OID 41852)
+-- Name: Notices fk_notices_meters_meter; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Notices"
+    ADD CONSTRAINT fk_notices_meters_meter FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2236 (class 2606 OID 41857)
+-- Name: Notices fk_notices_meters_sensor; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Notices"
+    ADD CONSTRAINT fk_notices_meters_sensor FOREIGN KEY (sensor) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2218 (class 2606 OID 16569)
+-- Name: NotificationExceptions fk_notification_exceptions_notifications; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "NotificationExceptions"
+    ADD CONSTRAINT fk_notification_exceptions_notifications FOREIGN KEY (notification) REFERENCES "Notifications"(id);
+
+
+--
+-- TOC entry 2219 (class 2606 OID 16574)
+-- Name: NotificationExceptions fk_notification_exceptions_periods; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "NotificationExceptions"
+    ADD CONSTRAINT fk_notification_exceptions_periods FOREIGN KEY (period) REFERENCES "Periods"(id);
+
+
+--
+-- TOC entry 2220 (class 2606 OID 16579)
+-- Name: NotificationMeters fk_notificationmeters_meters; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "NotificationMeters"
+    ADD CONSTRAINT fk_notificationmeters_meters FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2222 (class 2606 OID 16584)
+-- Name: Notifications fk_notifications_users; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Notifications"
+    ADD CONSTRAINT fk_notifications_users FOREIGN KEY ("user") REFERENCES "Users"(id);
+
+
+--
+-- TOC entry 2221 (class 2606 OID 16589)
+-- Name: NotificationMeters fk_otificationmeters_notifications; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "NotificationMeters"
+    ADD CONSTRAINT fk_otificationmeters_notifications FOREIGN KEY (notification) REFERENCES "Notifications"(id);
+
+
+--
+-- TOC entry 2225 (class 2606 OID 16594)
+-- Name: Reports fk_reports_period; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Reports"
+    ADD CONSTRAINT fk_reports_period FOREIGN KEY (period) REFERENCES "Periods"(id);
+
+
+--
+-- TOC entry 2226 (class 2606 OID 16599)
+-- Name: Reports fk_reports_user; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Reports"
+    ADD CONSTRAINT fk_reports_user FOREIGN KEY ("user") REFERENCES "Users"(id);
+
+
+--
+-- TOC entry 2223 (class 2606 OID 16604)
+-- Name: ReportStatistics fk_reportstatistics_reports; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ReportStatistics"
+    ADD CONSTRAINT fk_reportstatistics_reports FOREIGN KEY (report) REFERENCES "Reports"(id);
+
+
+--
+-- TOC entry 2224 (class 2606 OID 16609)
+-- Name: ReportStatistics fk_reportstatistics_statistics; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "ReportStatistics"
+    ADD CONSTRAINT fk_reportstatistics_statistics FOREIGN KEY (statistic) REFERENCES "Statistics"(id);
+
+
+--
+-- TOC entry 2227 (class 2606 OID 16614)
+-- Name: StatisticMeters fk_statistic_meters_meters; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "StatisticMeters"
+    ADD CONSTRAINT fk_statistic_meters_meters FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2228 (class 2606 OID 16619)
+-- Name: StatisticMeters fk_statistic_meters_statistics; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "StatisticMeters"
+    ADD CONSTRAINT fk_statistic_meters_statistics FOREIGN KEY (statistic) REFERENCES "Statistics"(id);
+
+
+--
+-- TOC entry 2229 (class 2606 OID 16624)
+-- Name: StatisticTimes fk_statistic_times_periods; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "StatisticTimes"
+    ADD CONSTRAINT fk_statistic_times_periods FOREIGN KEY (period) REFERENCES "Periods"(id);
+
+
+--
+-- TOC entry 2230 (class 2606 OID 16629)
+-- Name: StatisticTimes fk_statistic_times_statistics; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "StatisticTimes"
+    ADD CONSTRAINT fk_statistic_times_statistics FOREIGN KEY (statistic) REFERENCES "Statistics"(id);
+
+
+--
+-- TOC entry 2231 (class 2606 OID 16634)
+-- Name: Statistics fk_statistics_users; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "Statistics"
+    ADD CONSTRAINT fk_statistics_users FOREIGN KEY ("user") REFERENCES "Users"(id);
+
+
+--
+-- TOC entry 2232 (class 2606 OID 16639)
+-- Name: WeatherData fk_weatherdata_meters; Type: FK CONSTRAINT; Schema: aems; Owner: aems
+--
+
+ALTER TABLE ONLY "WeatherData"
+    ADD CONSTRAINT fk_weatherdata_meters FOREIGN KEY (meter) REFERENCES "Meters"(id);
+
+
+--
+-- TOC entry 2393 (class 0 OID 0)
+-- Dependencies: 9
+-- Name: aems; Type: ACL; Schema: -; Owner: aems
+--
+
+GRANT ALL ON SCHEMA aems TO postgres;
+
+
+--
+-- TOC entry 2396 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: sqlj; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT USAGE ON SCHEMA sqlj TO PUBLIC;
+
+
+--
+-- TOC entry 2400 (class 0 OID 0)
+-- Dependencies: 191
+-- Name: MeterTypes; Type: ACL; Schema: aems; Owner: aems
+--
+
+REVOKE ALL ON TABLE "MeterTypes" FROM aems;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "MeterTypes" TO aems;
+
+
+--
+-- TOC entry 2401 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: Meters; Type: ACL; Schema: aems; Owner: aems
+--
+
+REVOKE ALL ON TABLE "Meters" FROM aems;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "Meters" TO aems;
+
+
+--
+-- TOC entry 2402 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: Users; Type: ACL; Schema: aems; Owner: aems
+--
+
+REVOKE ALL ON TABLE "Users" FROM aems;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "Users" TO aems;
+
+
+-- Completed on 2018-02-02 19:07:25
+
+--
+-- PostgreSQL database dump complete
+--
+

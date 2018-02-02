@@ -26,7 +26,11 @@ public class Logger {
 		System.err.printf("[%d] ", Logger.lineNumber);
 		System.err.printf(msg, args);
 		System.err.printf("%n");
-		throw new RuntimeException("execution has terminated since an error was encountered!");
+		throw new RuntimeException(String.format(msg, args));
+	}
+	
+	public static int getLineNumber() {
+		return lineNumber + 1;
 	}
 	
 }

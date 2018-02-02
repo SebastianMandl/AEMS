@@ -191,6 +191,9 @@ public class Tokenizer {
 			case '.':
 				type = TokenTypes.DECIMAL;
 				break;
+			case '#':
+				type = TokenTypes.HASHTAG;
+				break;
 			case ',':
 				type = TokenTypes.COMMA;
 		}

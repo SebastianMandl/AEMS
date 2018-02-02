@@ -1,4 +1,4 @@
-#$y := $meter of period from $today - $year until $today + $month * 10
+$y := $meter of period from $today - $year until $today + $month * 10
 #$avg := $y : avg
 
 #raise notice "Zu viel Strom bei hohen Temperaturen {$meter}" on 1 = 1

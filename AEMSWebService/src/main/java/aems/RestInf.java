@@ -7,6 +7,8 @@ import aems.graphql.Query;
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
 import at.htlgkr.aems.util.crypto.KeyUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -189,14 +191,19 @@ public class RestInf extends HttpServlet {
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
                 PrintWriter writer = resp.getWriter();
                 ExecutionResult result = ql.execute(query);
-
-                for(Object o : result.getErrors()) {
-                    System.out.println(o);
-                            
-                }
+                
+                
                 
                 try {
-                    String data = result.getData().toString().replaceAll("=", ":");
+                    String data = result.getData().toString();
+                    
+                    Gson builder = new GsonBuilder().create();
+                    data = builder.toJson(result.getData());
+                    
+                    for(Object o : result.getErrors()) {
+                        System.out.println(o);
+                    }
+                    
                     if(encryption.equals(ENCRYPTION_AES)) {
                         data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(NUMBER_PATTERN.matcher(request[2]).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), request[2]), data.getBytes()));
                     }
