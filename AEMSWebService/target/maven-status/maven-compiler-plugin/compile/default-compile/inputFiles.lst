@@ -13,12 +13,14 @@ H:\hubiC\AEMS\AEMSWebService\src\main\java\at\htlgkr\aems\util\crypto\KeyUtils.j
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Statistic.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\at\htlgkr\aems\util\crypto\Decrypter.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\MeterType.java
+H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Anomaly.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\logger\Logger.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\DatabaseConnectionManager.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Period.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\ArchivedMeterNotification.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\RestInf.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\WeatherData.java
+H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Notices.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\MeterData.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Notification.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\AESKeyManager.java

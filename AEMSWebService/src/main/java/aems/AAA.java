@@ -6,6 +6,8 @@
 package aems;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +25,7 @@ public class AAA extends HttpServlet {
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         byte[] key = DiffieHellmanProcedure.receiveKeyInfos();
         AESKeyManager.addKey(req.getLocalAddr(), key);
+        
     }
     
 }

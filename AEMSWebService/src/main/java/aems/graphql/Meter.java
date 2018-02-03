@@ -77,6 +77,8 @@ public class Meter extends GraphQLObjectType {
     }).build();
     
     private static final GraphQLFieldDefinition IS_SENSOR = Query.getFieldDefinition("is_sensor", AEMSDatabase.METERS, AEMSDatabase.Meters.IS_SENSOR, Scalars.GraphQLBoolean);
+    private static final GraphQLFieldDefinition NAME = Query.getFieldDefinition("name", AEMSDatabase.METERS, AEMSDatabase.Meters.NAME, Scalars.GraphQLString);
+    
     
     public Meter(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
@@ -94,6 +96,7 @@ public class Meter extends GraphQLObjectType {
         defs.add(LONGITUDE);
         defs.add(METERTYPE);
         defs.add(IS_SENSOR);
+        defs.add(NAME);
         
         instance = new Meter("meter", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;

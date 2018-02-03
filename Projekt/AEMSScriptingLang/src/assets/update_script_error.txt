@@ -1,0 +1,1 @@
+{ "id" : "%", "anomalies" : [{ "script_errors" : "%" }]}

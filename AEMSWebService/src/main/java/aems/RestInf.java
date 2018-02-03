@@ -4,12 +4,15 @@ import aems.database.AEMSDatabase;
 import aems.database.DatabaseConnection;
 import aems.database.ResultSet;
 import aems.graphql.Query;
+import at.aems.apilib.AemsUser;
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
+import at.htlgkr.aems.util.crypto.KeyUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -20,12 +23,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -51,22 +55,32 @@ public class RestInf extends HttpServlet {
     private static final String ACTION_UPDATE = "UPDATE";
     private static final String ACTION_DELETE = "DELETE";
     private static final String ACTION_QUERY = "QUERY";
+    private static final String ACTION_BOT = "BOT";
     private static final String ENCRYPTION_AES = "AES";
     private static final String ENCRYPTION_SSL = "SSL";
     
-    private boolean isHashEqual(String user, String authStr, HttpServletResponse resp) {
+    private boolean isHashEqual(String user, String authStr, String salt, HttpServletResponse resp) {
         DatabaseConnection con = DatabaseConnectionManager.getDatabaseConnection();
         try {
+            String userId = "-1";
             if(NUMBER_PATTERN.matcher(user).find()) { // convert user id to username
                 ArrayList<String[]> projection = new ArrayList<>();
                 projection.add(new String[]{ AEMSDatabase.Users.USERNAME });
                 HashMap<String, String> selection = new HashMap<>();
                 selection.put(AEMSDatabase.Users.ID, user);
                 ResultSet set = con.select("aems", AEMSDatabase.USERS, projection, selection);
+                userId = user;
                 user = set.getString(0,0);
+            } else {
+                ArrayList<String[]> projection = new ArrayList<>();
+                projection.add(new String[]{ AEMSDatabase.Users.ID });
+                HashMap<String, String> selection = new HashMap<>();
+                selection.put(AEMSDatabase.Users.USERNAME, user);
+                ResultSet set = con.select("aems", AEMSDatabase.USERS, projection, selection);
+                userId = set.getString(0,0);
             }
-            String password = con.callFunction("aems", "get_user_password", String.class, new Object[]{ user });
-            return isHashEqual(user, password, authStr, resp);
+            String password = "pwd"; //con.callFunction("aems", "get_user_password", String.class, new Object[]{ user });
+            return isHashEqual(userId, user, password, salt, authStr, resp);
         } catch (SQLException ex) {
             Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
             try {
@@ -80,21 +94,19 @@ public class RestInf extends HttpServlet {
         return false;
     }
     
-    private boolean isHashEqual(String username, String password, String authStr, HttpServletResponse resp) {
-         try {
-            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-            byte[] hash = sha256.digest((username + "" + password).getBytes());
-            byte[] x = authStr.getBytes();
-            // apply salt here
-            if(!Arrays.equals(hash, authStr.getBytes())) {
-                resp.getWriter().write("{ error : \"Invalid credentials!\" }");
-                return false;
-            }
+    private boolean isHashEqual(String userId, String username, String password, String salt, String authStr, HttpServletResponse resp) {
+        AemsUser user = new AemsUser(Integer.parseInt(userId), username, password);
+        //String result = user.getAuthString(salt);
+        if(user.getAuthString(salt).equals(authStr)) {
             return true;
-        } catch (NoSuchAlgorithmException | IOException ex) {
+        }
+        
+        try {
+            resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+        } catch (IOException ex) {
             Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
         }
-         return false;
+        return false;
     }
     
     private void doLogin(String query, String encryption, HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -103,7 +115,7 @@ public class RestInf extends HttpServlet {
         String authStr = root.getString("auth_str");
         String salt = root.getString("salt");
         
-       if(!isHashEqual(username, authStr, resp))
+       if(!isHashEqual(username, authStr, salt, resp))
            return;
 
         // certainty that the username exists and ...
@@ -160,6 +172,19 @@ public class RestInf extends HttpServlet {
         
         // establish exception for login request
         switch (action) {
+            case ACTION_BOT:
+            {
+                try {
+                    BigDecimal key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.exertProcedure(DatabaseConnectionManager.getDatabaseConnection()))), "master", "test");
+                    String json = new String(DatabaseConnectionManager.getDatabaseConnection().callFunction("get_user_infos", byte[].class));
+                    json = new String(Decrypter.requestDecryption(key, json.getBytes()));
+                    resp.getWriter().write(Base64.getUrlEncoder().encodeToString(json.getBytes()));
+                    resp.getWriter().flush();
+                    return;
+                } catch (SQLException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+                    Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             case ACTION_LOGIN:
                 if(encryption.equals(ENCRYPTION_SSL))
                     doLogin(query, encryption, req, resp);
@@ -174,11 +199,23 @@ public class RestInf extends HttpServlet {
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
                 PrintWriter writer = resp.getWriter();
                 ExecutionResult result = ql.execute(query);
-
+                
+                
+                
                 try {
                     String data = result.getData().toString();
+                    
+                    Gson builder = new GsonBuilder().create();
+                    data = builder.toJson(result.getData());
+                    
+                    for(Object o : result.getErrors()) {
+                        System.out.println(o);
+                    }
+                    
                     if(encryption.equals(ENCRYPTION_AES)) {
                         data = Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(NUMBER_PATTERN.matcher(request[2]).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(request[2])) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), request[2]), data.getBytes()));
+                    } else if(encryption.equals(ENCRYPTION_SSL)) {
+                        data = Base64.getUrlEncoder().encodeToString(data.getBytes());
                     }
                     writer.write(data);
                     writer.flush();
@@ -366,6 +403,7 @@ public class RestInf extends HttpServlet {
         String user = req.getParameter("user"); // int oder string
         String authStr = req.getParameter("auth_str"); // string
         String encryption = req.getParameter("encryption").toUpperCase(); // string
+        String salt = req.getParameter("salt"); // string
 //        
 //        while(data == null || action == null || encryption == null || user == null) {
 //            if(System.currentTimeMillis() - lastTime >= TIMEOUT) {
@@ -392,6 +430,7 @@ public class RestInf extends HttpServlet {
             action = action == null ? json.getString("action") : action;
             user = user == null ? json.getString("user") : user;
             authStr = authStr == null ? json.getString("auth_str") : authStr;
+            authStr = authStr == null ? json.getString("auth_str") : authStr;
             encryption = encryption == null ? json.getString("encryption") : encryption;
         }
         
@@ -404,7 +443,7 @@ public class RestInf extends HttpServlet {
             }
         } else if(encryption.equals(ENCRYPTION_SSL)) {
             
-            if(authStr == null && !action.equals(ACTION_LOGIN)) {
+            if((authStr == null || salt == null) &&  !action.equals(ACTION_LOGIN)) {
                 // if the action is LOGIN that this parameter is included within the DATA field.
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("Parameters missing!");
@@ -412,7 +451,8 @@ public class RestInf extends HttpServlet {
                 return null;
             }
             
-            if(!isHashEqual(user, authStr, resp) && !action.equals(ACTION_LOGIN)) { // if the action is not the LOGIN action proceed
+            // resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+            if(IPtoID.convertIPToId(req.getRemoteAddr()) == null && !action.equals(ACTION_LOGIN)) { // if the action is not the LOGIN action proceed
                 // reason for that being that if this is a LOGIN packet the credentials will be check later on in the process anyway.
                 // at this point the credentials cannot be checked since they are contained within the DATA field.
                 resp.getWriter().write("Invalid credentials!");
@@ -422,7 +462,7 @@ public class RestInf extends HttpServlet {
             data = new String(Base64.getUrlDecoder().decode(data));
         }
         
-        return new String[]{ data, action, user, encryption };
+        return new String[]{ data, action, user, encryption, authStr, salt };
     }
 
 }

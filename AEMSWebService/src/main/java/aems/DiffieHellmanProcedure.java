@@ -1,6 +1,6 @@
 package aems;
 
-import at.htlgkr.aems.database.DatabaseConnection;
+import aems.database.DatabaseConnection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;

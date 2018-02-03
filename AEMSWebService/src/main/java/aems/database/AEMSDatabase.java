@@ -29,12 +29,31 @@ public class AEMSDatabase {
         public static final String REPORTS = "Reports";
         public static final String REPORT_STATISTICS = "ReportStatistics";
         
+        public static final String ANOMALIES = "Anomalies";
+        public static final String NOTICES = "Notices";
+        
         public static final String NOTIFICATIONS = "Notifications";
         public static final String NOTIFICATION_METERS = "NotificationMeters";
         public static final String NOTIFICATION_EXCEPTIONS = "NotificationExceptions";
         
         public static final String ARCHIVED_METER_NOTIFICATIONS = "ArchivedMeterNotifications";
 	
+        public class Anomalies {
+            public static final String ID = "id";
+            public static final String SCRIPT = "script";
+            public static final String EXEC_INTERMEDIATE_TIME = "exec_intermediate_time";
+            public static final String LAST_EXECUTION = "last_execution";
+            public static final String METER = "meter";
+            public static final String SENSOR = "sensor";
+        }
+        
+        public class Notices {
+            public static final String ID = "id";
+            public static final String METER = "meter";
+            public static final String SENSOR = "sensor";
+            public static final String NOTICE = "notice";
+        }
+        
 	public class Meters {
             public static final String ID = "id";
             public static final String METERTYPE = "metertype";
@@ -43,6 +62,7 @@ public class AEMSDatabase {
             public static final String LATITUDE = "latitude";
             public static final String LONGITUDE = "longitude";
             public static final String IS_SENSOR = "is_sensor";
+            public static final String NAME = "name";
 	}
 	
 	public class MeterTypes {

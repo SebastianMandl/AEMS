@@ -1,0 +1,11 @@
+$y := $meter of period from $today - $year until $today + $month * 10
+#$avg := $y : avg
+
+#raise notice "Zu viel Strom bei hohen Temperaturen {$meter}" on 1 = 1
+
+#raise notice "notice {$meter}" on 1 = 1 if on $tuesday
+#raise notice "notice {$meter}" on 1 = 1 except on $tuesday
+
+#$x := $thursday
+
+#raise notice "notice {$meter}" on 1 = 1 if on $monday, $x

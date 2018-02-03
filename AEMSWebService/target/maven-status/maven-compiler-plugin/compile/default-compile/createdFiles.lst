@@ -9,6 +9,7 @@ aems\AESKeyManager.class
 aems\graphql\Period$1.class
 aems\database\AEMSDatabase$MeterData.class
 at\htlgkr\aems\util\crypto\Encrypter.class
+aems\graphql\Anomaly.class
 at\htlgkr\aems\util\hashcode\HashCode.class
 aems\graphql\Query$3.class
 aems\KeyDetails.class
@@ -21,6 +22,7 @@ aems\DiffieHellmanProcedure.class
 aems\graphql\Statistic$2.class
 at\htlgkr\aems\util\key\DiffieHellmanProcedure.class
 aems\database\AEMSDatabase$StatisticTimes.class
+aems\graphql\Notices.class
 aems\graphql\MeterType.class
 aems\graphql\StatisticMeter.class
 aems\graphql\Period$2.class
@@ -33,6 +35,7 @@ aems\graphql\MeterData$3.class
 aems\graphql\User.class
 aems\database\AEMSDatabase$Reports.class
 aems\graphql\StatisticTime$3.class
+aems\database\AEMSDatabase$Anomalies.class
 aems\graphql\User$2.class
 aems\graphql\Period.class
 aems\graphql\Meter.class
@@ -42,6 +45,7 @@ aems\database\AEMSDatabase$Periods.class
 aems\IPtoID.class
 aems\graphql\NotificationException.class
 aems\graphql\utils\GraphQLCondition.class
+aems\database\AEMSDatabase$Notices.class
 aems\graphql\MeterType$1.class
 aems\graphql\Meter$6.class
 aems\graphql\StatisticTime$6.class

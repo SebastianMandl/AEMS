@@ -1,0 +1,58 @@
+predefined variables:
+
+$value = current_value
+$sensor = current_sensor_value
+
+$today = current_date
+$day = 1
+$week = 7
+$month = 31
+$year = 365
+
+$monday = 1
+$tuesday = 2
+$wednesday = 3
+$thursday = 4
+$friday = 5
+$saturday = 6
+$sunday = 7
+
+syntax:
+
+varible definition:
+
+def <var_name> := <expression>
+
+make $value dependent on the period:
+
+o $value of period from 2017-06-15 until 2017-06-16
+o $value of period from $today - $week * 2 until $today
+o $value of period $week # equ: $value of period from $today - $week until $today
+
+check against underflow or overflow:
+
+raise notice on <expression>
+
+def values := $value of period from $today - $week until $today
+raise notice on $values < 20 # if only one value is below 20 a notice will be risen
+
+
+define exceptions:
+
+def values := $value of period from $today - $week until $today
+raise notice on ($values > 20 and $values < 30) except on $thursday
+raise notice on $values < 20 except on ($monday, $tuesday) # executed on all days except for monday and tuesday
+
+raise notice on $values > 50 if on $sunday # only exerted on sunday
+
+send mail to "sebastian-mandl@gmx.net" on $values < 10
+
+
+commands:
+
+o raise notice:
+	insertion into the AEMSMeterNotifications if expression resolves to true
+
+o send mail to <email>:
+	insertion into the AEMSMeterNotifications and
+	sends a mail to the stated mail address if expression resolves to true

@@ -1,3 +1,6 @@
+https://www.mkyong.com/java/how-do-convert-java-object-to-from-json-format-gson-api/
+
+
 > CREATE EXTENSION pgcrypto; -- needs to be issued otherwise no encryption or decryption functionality is available
 > CREATE EXTENSION pljava; -- will enable java in postgres: one is required to specify the pljava.libjvm_location (jvm location)
 

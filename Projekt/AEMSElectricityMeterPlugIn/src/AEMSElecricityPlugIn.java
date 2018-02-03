@@ -30,7 +30,7 @@ public class AEMSElecricityPlugIn extends PlugIn {
 			e.printStackTrace();
 		}
 		
-		super.getUploader().upload(new UploadPackage().addData(new TableData("weather_data").addData("meter", plugin.getSetting().getMeterId()).addData("temperature", "15.02").addData("id", "19")));
+		//super.getUploader().upload(new UploadPackage().addData(new TableData("weather_data").addData("meter", plugin.getSetting().getMeterId()).addData("temperature", "15.02").addData("id", "19")));
 		
 		return true;
 	}

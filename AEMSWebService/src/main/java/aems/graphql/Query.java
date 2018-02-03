@@ -66,6 +66,12 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("statistics", AEMSDatabase.STATISTICS, Statistic.getInstance(), 
                     getArgumentList(new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL)));
     
+    private static final GraphQLFieldDefinition ANOMALIES = 
+            Query.getRootFieldDefinition("anomalies", AEMSDatabase.ANOMALIES, Anomaly.getInstance());
+    
+    private static final GraphQLFieldDefinition NOTICES = 
+            Query.getRootFieldDefinition("notices", AEMSDatabase.NOTICES, Notices.getInstance());
+    
     private static final GraphQLFieldDefinition STATISTIC_TIMES = 
             Query.getRootFieldDefinition("statistic_times", AEMSDatabase.STATISTIC_TIMES, StatisticTime.getInstance());
     
@@ -123,6 +129,8 @@ public class Query extends GraphQLObjectType {
         defs.add(NOTIFICATION_EXCEPTIONS);
         defs.add(WEATHER_DATA);
         defs.add(ARCHIVED_METER_NOTIFICATIONS);
+        defs.add(NOTICES);
+        defs.add(ANOMALIES);
         
         instance = new Query("query", "", defs, new ArrayList<GraphQLOutputType>());
         instance.authorizationId = authorizationId;
@@ -259,15 +267,17 @@ public class Query extends GraphQLObjectType {
     private static boolean checkAuthority3Level(JSONObject obj, String table) {
         ArrayList<String[]> projection = new ArrayList<>();
         HashMap<String, String> selection = new HashMap<>();
-        String meterId = obj.getString("meter");
+        String meterId = null;
         try {
             
             if(!obj.has("meter")) {
                 projection.add(new String[]{ "meter" });
-                selection.put("id", obj.getString("id"));
+                selection.put("id", obj.get("id").toString());
 
                 ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
                 meterId = set.getString(0,0);
+            } else {
+                meterId = obj.getString("meter");
             }
             projection.clear();
             projection.add(new String[]{ "user" });
@@ -293,14 +303,18 @@ public class Query extends GraphQLObjectType {
                     
         boolean authorized = false;
         
-        if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
-            authorized = checkAuthority2Level(obj, table);
-        } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
-            authorized = checkAuthority3Level(obj, table);
-        } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
-            authorized = checkAuthority1Level(obj);
-        } else {
+        if(instance.authorizationId.equals("215")) {
             authorized = true;
+        } else {
+            if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
+                authorized = checkAuthority2Level(obj, table);
+            } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
+                authorized = checkAuthority3Level(obj, table);
+            } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
+                authorized = checkAuthority1Level(obj);
+            } else {
+                authorized = true;
+            }
         }
         
         if(!authorized) {
