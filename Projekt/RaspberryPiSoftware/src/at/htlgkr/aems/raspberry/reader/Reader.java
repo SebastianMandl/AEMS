@@ -89,7 +89,7 @@ public class Reader implements Runnable {
 			}
 			
 			// check for continuation and invoke plugin-function
-			if(!plugin.readCyclic(is))
+			if(!plugin.readCyclic(plugin, is))
 				break;
 			
 			try {
