@@ -1,26 +1,19 @@
-function populateStatisticLists(data) {
-    var homepageDiv = $("#homepageList");
-    var androidDiv = $("#androidList");
-    var allDiv = $("#allList");
-    
-    $.get("http://localhost:8080/webserver/templates/statistic-entry.html", function(html) {
-        for(var item of data) {
-            var template = $(html);
-            template.find(".list-group-item-heading").text(item.statistic_name);
-            template.find(".list-group-item-text").text(item.annotation);
-            
-            allDiv.append(template);
-            
-            if(item.display_home) {
-                homepageDiv.append(template.clone());
-            }
-            if(item.display_android) {
-                androidDiv.append(template.clone());
-            } 
-        }
-    });
-}
-
-function createEntry(data) {
-    
-}
+$(document).ready(function() {
+    console.log("ready!");
+   $(".edit-statistic").on("click", function() {
+      let id = $(this).attr("data-id");
+      let pre = "#edit-statistic-form\\:";
+      console.log("clicked: " + id); 
+      $.post("/webserver/Edit", {'type': 's', 'id': id}, function(data) {
+          $(pre + "_id").val(id);
+          $(pre + "name").val(data.name);
+          $("#edit-period").val(data.period);
+          $(pre + "annotation").val(data.annotation);
+      });
+      
+   });
+   
+   $("#edit-statistic-form\\:edit").on("click", function() {
+       $("#edit-statistic-form\\:_editPeriod").val($("#edit-period").val());
+   });
+});

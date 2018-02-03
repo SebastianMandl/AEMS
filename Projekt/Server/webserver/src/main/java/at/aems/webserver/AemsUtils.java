@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -19,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -28,10 +30,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.context.FacesContext;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 import javax.json.JsonStructure;
+import javax.servlet.ServletContext;
 
 /**
  * This class provides utility methods to access data from the aems api.
@@ -40,31 +44,31 @@ import javax.json.JsonStructure;
  */
 public class AemsUtils {
 
-    public static final String API_URL = "http://localhost:8080/webserver/dummy/";
+    public static final String API_URL = "http://localhost/graph";
 
     public static int getUserId(String username, String password) {
         return 3;
     }
-    
+
     public static JsonElement doPost(String body) {
         try {
             HttpURLConnection conn;
             URL url = new URL(API_URL);
             conn = (HttpURLConnection) url.openConnection();
-            
+
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Content-Length", Integer.toString(body.length()));
             conn.setDoOutput(true);
             conn.getOutputStream().write(body.getBytes("UTF-8"));
-            
+
             conn.connect();
-            
+
             String result = readResult(conn);
 
             return new JsonParser().parse(result);
-            
-        } catch(Exception e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -91,16 +95,16 @@ public class AemsUtils {
             }
             con.connect();
             String resultString = readResult(con);
-            
+
             JsonReader jsonReader = Json.createReader(new StringReader(resultString));
             JsonStructure result;
-            if(resultString.startsWith("[")) {
+            if (resultString.startsWith("[")) {
                 result = jsonReader.readArray();
             } else {
                 result = jsonReader.readObject();
             }
             jsonReader.close();
-            
+
             return result;
 
         } catch (MalformedURLException ex) {
@@ -109,6 +113,45 @@ public class AemsUtils {
             Logger.getLogger(AemsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public static String getQuery(String name, Map<String, String> placeholders) {
+        ServletContext servlet = (ServletContext) FacesContext.getCurrentInstance()
+                .getExternalContext().getContext();
+        String basePath = servlet.getRealPath("/") + "query";
+
+        File queryFolder = new File(basePath);
+        List<File> allFiles = listAllFiles(queryFolder);
+
+        try {
+            for (File file : allFiles) {
+                if (file.getName().startsWith(name)) {
+                    String fileContents = String.join(System.lineSeparator(), Files.readAllLines(file.toPath()));
+                    if (placeholders != null) {
+                        for (Entry<String, String> entry : placeholders.entrySet()) {
+                            fileContents = fileContents.replaceAll("#" + entry.getKey() + "#", entry.getValue());
+                        }
+                    }
+                    return fileContents;
+                }
+            }
+        } catch (IOException e) {
+            Logger.getLogger(AemsUtils.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        throw new IllegalArgumentException("No query file found for name: " + name);
+
+    }
+
+    private static List<File> listAllFiles(File folder) {
+        List<File> files = new ArrayList<>();
+        for(File f : folder.listFiles()) {
+            if(f.isFile())
+                files.add(f);
+            else
+                files.addAll(listAllFiles(f));
+        }
+        return files;
     }
 
     private static byte[] encodePostData(Map<String, Object> params) {
@@ -127,50 +170,51 @@ public class AemsUtils {
 
     private static String readResult(HttpURLConnection con) {
         try {
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuilder response = new StringBuilder();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        
-        return response.toString();
-        } catch(IOException e) {
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            return response.toString();
+        } catch (IOException e) {
             // ignore
         }
         return null;
     }
-    
+
     public static List<String> asStringList(String s) {
         String[] arr = s.split(";");
         List<String> res = new ArrayList<>(Arrays.asList(arr));
-        if(res.isEmpty())
+        if (res.isEmpty()) {
             return res;
+        }
         String last = res.get(res.size() - 1);
-        if(last == null || last.length() == 0){
+        if (last == null || last.length() == 0) {
             res.remove(last);
         }
         return res;
     }
-    
+
     public static List<Integer> asIntList(String s) {
         List<String> strings = asStringList(s);
         List<Integer> ints = new ArrayList<>();
-        for(String str : strings) {
+        for (String str : strings) {
             ints.add(Integer.parseInt(str));
         }
         return ints;
     }
-    
+
     public static String decodeBase64(String encoded) {
         return new String(Base64.getUrlDecoder().decode(encoded.getBytes()));
     }
-    
+
     public static int getResponseId(String json) {
         JsonObject ob = new JsonParser().parse(json).getAsJsonObject();
-        if(ob.has("id")) {
+        if (ob.has("id")) {
             return ob.get("id").getAsInt();
         }
         return -1;

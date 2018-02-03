@@ -13,78 +13,23 @@
                 <div class="loginmodal-container">
 
                     <h1>Statistik bearbeiten</h1><br />
-                    <h:form> 
-
+                    <h:form id="edit-statistic-form"> 
+                        <h:inputHidden id="_id" value="#{editStatisticBean.id}"></h:inputHidden>
                         <h4>Statistikname</h4>
-                        <h:inputText maxlength="64" pt:placeholder="Meine Statistik" pt:required="required" value="#{statistic.name}"/>
+                        <h:inputText id="name" maxlength="64" pt:placeholder="Meine Statistik" pt:required="required" value="#{editStatisticBean.name}"/>
                         
-                        <h4>Zählertyp</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <!-- WILL BE LOADED WITH AJAX
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
-                                    </div>
-                                </li>
-                                -->
-                            </ul>
-                        </div>
-
-                        <h4>Verwendete Zähler</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <!-- AJAX JOB :)
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-                                -->
-                            </ul>
-                        </div>
-
-
                         <h4>Zeitraum</h4>
-                        <select id="period" class="form-control">
+                        <select id="edit-period" class="form-control">
                             <option value="0">Täglich</option>
                             <option value="1">Wöchentlich</option>
                             <option value="2">Monatlich</option>
                             <option value="3">Jährlich</option>
                         </select>
-
-                        <h4>Anomalien berücksichtigen</h4>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Anomalien<span class="caret" /></button>
-
-                            <ul class="dropdown-menu zaehler_format">
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Außentemperatur</label>
-                                    </div>
-                                </li>
-
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Jahreszeit</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                        <h:inputHidden id="_editPeriod" value="#{editStatisticBean.period}"></h:inputHidden>
 
                         <h4>Anmerkung</h4>
-                        <input type="text" />
-                        <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Statistik bearbeiten" />
+                        <h:inputText id="annotation" value="#{editStatisticBean.annotation}"/>
+                        <h:commandButton id="edit" class="login loginmodal-submit submitFormat" action="#{editStatisticBean.doEdit()}" value="Statistik bearbeiten"></h:commandButton>
                         <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                     </h:form>			
                 </div>

@@ -104,6 +104,7 @@ public class Main {
     for(AemsUser user : usersToHandle) {
       new TemperatureGetter(user).updateTemperatures();
     }
+    AemsAPI.commitWeatherData();
   }
 
   /**
