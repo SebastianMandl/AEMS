@@ -5,6 +5,7 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.webserver.beans.objects.Meter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -23,54 +25,104 @@ import org.json.JSONObject;
  * @author Sebastian
  */
 @ManagedBean
-public class WebUIBean {
-    
-    @ManagedProperty(value="#{user}")
+public final class WebUIBean {
+
+    @ManagedProperty(value = "#{user}")
     private UserBean userBean;
+
+    private final ArrayList<Meter> METERS = new ArrayList<>();
+    private final ArrayList<Meter> SENSORS = new ArrayList<>();
+
+    public ArrayList<Meter> getMETERS() {
+        return METERS;
+    }
     
-    public ArrayList<String> getMeters() {
+    public ArrayList<Meter> getSENSORS() {
+        return SENSORS;
+    }
+
+    private static final String REST_ADDRESS = "http://localhost:8084/AEMSWebService/RestInf?";
+
+    public WebUIBean() {
+        try {
+            login(String.valueOf(userBean.getUserId()), "123456789", userBean.getAuthenticationString(), userBean.getUsername());
+        } catch (Exception ex) {
+            Logger.getLogger(WebUIBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        populateMeters();
+    }
+
+    public void populateMeters() {
         // provisional
         /**
-         * String data = req.getParameter("data"); // string
-         * String action = req.getParameter("action").toUpperCase(); // string
-         * String user = req.getParameter("user"); // int oder string
-         * String authStr = req.getParameter("auth_str"); // string
-         * String encryption = req.getParameter("encryption").toUpperCase(); // string
-         * 
-         * 
-         * 
-         * {meters=[{id=Sensor 1, user={username=x}}, {id=null, user={username=null}}]}
-         * 
-         * 
-         * 
+         * String data = req.getParameter("data"); // string String action =
+         * req.getParameter("action").toUpperCase(); // string String user =
+         * req.getParameter("user"); // int oder string String authStr =
+         * req.getParameter("auth_str"); // string String encryption =
+         * req.getParameter("encryption").toUpperCase(); // string
+         *
+         *
+         *
+         * {meters=[{id=Sensor 1, user={username=x}}, {id=null,
+         * user={username=null}}]}
+         *
+         *
+         *
          */
+        
+        fetchUnit(false, METERS);
+        fetchUnit(false, SENSORS);
+    }
+
+    private void fetchUnit(boolean isSensor, final ArrayList<Meter> REF) {
         try {
+
             StringBuilder builder = new StringBuilder();
             builder.append("{\n");
-            builder.append("meters(is_sensor : \"true\") {\n") ;
-            builder.append("id,\n");
-            builder.append("user {\n");
-            builder.append("username\n}");
+            builder.append("meters(is_sensor : \"").append(isSensor).append("\") {\n");
+            builder.append("id\n");
             builder.append("}\n");
             builder.append("}");
-
-            HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8084/AEMSWebService/RestInf?auth_str=" + userBean.getAuthenticationString() + "&user=" + userBean.getUserId() + "&data=" + Base64.getUrlEncoder().encodeToString(builder.toString().getBytes()) + "&action=QUERY" + "&ecryption=SSL").openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL(REST_ADDRESS + "auth_str=" + userBean.getAuthenticationString() + "&user=" + userBean.getUserId() + "&data=" + Base64.getUrlEncoder().encodeToString(builder.toString().getBytes()) + "&action=QUERY&ecryption=SSL").openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            if(con.getResponseCode() == 200) {
+            if (con.getResponseCode() == 200) {
                 // response ok
                 builder = new StringBuilder();
-                for(String line = reader.readLine(); line != null; reader.readLine()) {
+                for (String line = reader.readLine(); line != null; reader.readLine()) {
                     builder.append(line);
                 }
                 JSONObject root = new JSONObject(new String(Base64.getUrlDecoder().decode(builder.toString())));
-                
-            } else {
-                throw new NullPointerException("something went wrong while fetching data from REST-API!!!");
-            }            
-        } catch (IOException ex) {
-            Logger.getLogger(WebUIBean.class.getName()).log(Level.SEVERE, null, ex);
+                JSONArray array = root.getJSONArray("meters");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject object = array.getJSONObject(i);
+                    Meter meter = new Meter();
+                    meter.setId(object.getString("id"));
+                    meter.setIsSensor(isSensor);
+
+                    REF.add(meter);
+                }
+            }
+        } catch (Exception e) {
+            // something went wrong while fetching from the REST-API
         }
-        return null;
     }
-    
+
+    private void login(String userId, String salt, String authStr, String username) throws Exception {
+
+        JSONObject object = new JSONObject();
+        object.put("auth_str", authStr);
+        object.put("salt", salt);
+        object.put("user", username);
+
+        byte[] data = object.toString().getBytes();
+
+        HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8084/AEMSWebService/RestInf?user=" + userId + "&encryption=SSL&action=LOGIN&data=" + Base64.getUrlEncoder().encodeToString(data)).openConnection();
+        con.setRequestMethod("POST");
+        con.setDoOutput(true);
+
+        if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            // login failed
+        }
+    }
+
 }

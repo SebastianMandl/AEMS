@@ -1,16 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
     <head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
     </head>
     <body>
+        <c:forEach items="#{webUIBean.METERS}" var="meter">
+            <li>
+                <h2>#{meter.id}</h2> 
+            </li>
+        </c:forEach>
         
+        <c:forEach items="#{webUIBean.SENSORS}" var="sensor">
+            <li>
+                <h2>#{sensor.id}</h2> 
+            </li>
+        </c:forEach>
     </body>
+    
 </html>
