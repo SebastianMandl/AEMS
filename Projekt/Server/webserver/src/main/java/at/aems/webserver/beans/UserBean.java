@@ -5,6 +5,7 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsUser;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -56,6 +57,10 @@ public class UserBean implements Serializable {
 
     public boolean isLoggedIn() {
         return userId != -1;
+    }
+
+    public AemsUser getAemsUser() {
+        return new AemsUser(this.getUserId(), getUsername(), getPassword());
     }
 
     public String getAuthenticationString() {

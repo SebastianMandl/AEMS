@@ -5,149 +5,146 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
- 
-        <div class="modal fade" id="editWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 
-            <div class="modal-dialog">
+    <div class="modal fade" id="editWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 
-                <div class="loginmodal-container">
+        <div class="modal-dialog">
 
-                    <h1>Benachrichtigung bearbeiten</h1><br />
-                    <h:form>
+            <div class="loginmodal-container">
 
-                        <h4>Bezeichnung</h4>
-                        <input type="text" name="user" placeholder="Meine Warnung" required="" />
+                <h1>Benachrichtigung bearbeiten</h1><br />
+                <h:form>
 
-                        <h4>Benachrichtigungstyp</h4>
+                    <h4>Bezeichnung</h4>
+                    <input type="text" name="user" placeholder="Meine Warnung" required="" />
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zeitraum<span class="caret" /></button>
-                            <ul class="dropdown-menu">
-                                <li role="presentation"><a href="#">Benachrichtigung</a></li>
-                                <li role="presentation"><a href="#">Warnung</a></li>                  
-                            </ul>
-                        </div>                   
+                    <h4>Benachrichtigungstyp</h4>
 
-                        <h4>Zählertyp</h4>
+                    <select id="warningType" class="form-control"> 
+                        <option value="0">Benachrichtigung</option>
+                        <option value="1">Warnung</option>
+                    </select>                 
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
+                    <h4>Zählertyp</h4>
 
-                            <ul class="dropdown-menu zaehler_format">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Strom</label>
-                                    </div>
-                                </li>
+                        <ul class="dropdown-menu zaehler_format">
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wasser</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Strom</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Gas</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Wasser</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Wärme</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Gas</label>
+                                </div>
+                            </li>
 
-                        <h4>Verwendete Zähler</h4>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Wärme</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
+                    <h4>Verwendete Zähler</h4>
 
-                            <ul class="dropdown-menu zaehler_format">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
+                        <ul class="dropdown-menu zaehler_format">
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />AT368746482374</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
 
-                        <h4>Ausnahme für bestimmte Tage:</h4>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />AT368746482374</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret" /></button>
+                    <h4>Ausnahme für bestimmte Tage:</h4>
 
-                            <ul class="dropdown-menu zaehler_format">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wochentag<span class="caret" /></button>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Montag</label>
-                                    </div>
-                                </li>
+                        <ul class="dropdown-menu zaehler_format">
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Dienstag</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Montag</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Mittwoch</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Dienstag</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Donnerstag</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Mittwoch</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Freitag</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Donnerstag</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Samstag</label>
-                                    </div>
-                                </li>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Freitag</label>
+                                </div>
+                            </li>
 
-                                <li role="presentation">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" />Sonntag</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Samstag</label>
+                                </div>
+                            </li>
 
-                        <h4>Wie hoch darf die Abweichung sein?</h4>
+                            <li role="presentation">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="" />Sonntag</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <input name="variance" type="number" min="1" max="100" value="50"> %</input>
+                    <h4>Wie hoch darf die Abweichung sein?</h4>
+
+                    <input name="variance" type="number" min="1" max="100" value="50"> %</input>
 
 
 
@@ -156,15 +153,15 @@
                     <input id="addDate" type="button" class="btn btn-default btn-sm" value="Datum hinzufügen" /> <br /> <br />
 
                     <ul id="dateList" style="list-style-type:none;"></ul>
-                    
+
                     <input onclick="" type="submit" name="createReport" class="login loginmodal-submit submitFormat" value="Warnung bearbeiten" />
-  
-                    
+
+
                     <a href="#" class="loginModalClose" data-dismiss="modal" aria-hidden="true">Close</a>
                 </h:form>			
 
             </div>
         </div>
-        </div>
+    </div>
 </ui:composition>
 

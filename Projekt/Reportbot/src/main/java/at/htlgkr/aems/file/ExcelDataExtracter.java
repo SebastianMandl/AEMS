@@ -47,7 +47,6 @@ public class ExcelDataExtracter implements Runnable {
   }
   
   public void run() {
-
     String filePath = Main.config.get(BotConfiguration.FILE_STORAGE, "Exceldateien") + "/" + user.getUsername();
     File excelFolder = new File(filePath);
     
@@ -71,11 +70,13 @@ public class ExcelDataExtracter implements Runnable {
       
     }
     try {
+      Main.setComplete(this);
       FileUtils.deleteDirectory(excelFolder);
     } catch(IOException e) {
       Main.logger.log(LogType.ERROR, "Unable to delete folder at %0%", excelFolder.getAbsolutePath());
       e.printStackTrace(Main.logger.getPrinter());
     }
+    
     
     
   }

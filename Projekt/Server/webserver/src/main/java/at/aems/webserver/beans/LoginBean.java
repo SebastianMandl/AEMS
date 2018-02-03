@@ -5,7 +5,10 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsUser;
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.NewMap;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
@@ -15,6 +18,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import jdk.nashorn.internal.codegen.MapCreator;
 
 /**
  * This managed bean class is designated to serve as the login interface by calling
@@ -51,6 +56,7 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     }
     
     public String doLogin() {
+        
         int userId = AemsUtils.getUserId(username, password);
         if(userId != -1) {
             userBean.setUserId(userId);

@@ -110,11 +110,11 @@ public class AemsLocation {
    * {@code long} attribute (as a {@link Double} value).
    * @param location The location, as a JSONObject
    * @return The location, as an AemsLocation
-   */
+   */ 
   public static AemsLocation fromJsonObject(JSONObject location) {
     if(location.get("city") != JSONObject.NULL) {
       return new AemsLocation(location.getString("city"));
-    }
+    } 
     double lat = location.getDouble("lat");
     double lng = location.getDouble("long");
     return new AemsLocation(lat, lng);

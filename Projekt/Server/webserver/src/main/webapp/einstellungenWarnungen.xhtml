@@ -47,8 +47,7 @@
                                 <h4 class="list-group-item-heading">#{item.name}</h4>
                                 <p class="list-group-item-text">Some text</p>
                                 <div class="btn-glyph">
-                                    <button class="btn btn-default" title="Benachrichtigung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
-
+                                    <div class="edit-warning btn btn-default" data-id="#{item.id}" title="Warnung bearbeiten" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></div>
                                     <h:commandLink action="#{warningActionBean.doDelete(item.id)}">
                                         <button class="btn btn-default" title="Benachrichtigung löschen"><span class="glyphicon glyphicon-trash"></span></button>
                                     </h:commandLink>
@@ -68,7 +67,7 @@
                                 <h4 class="list-group-item-heading">#{item.name}</h4>
                                 <p class="list-group-item-text">Some text</p>
                                 <div class="btn-glyph">
-                                    <button class="btn btn-default" title="Warnung bearbeiten"  data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                                    <div class="edit-warning btn btn-default" data-id="#{item.id}" title="Warnung bearbeiten" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></div>
                                     <h:commandLink action="#{warningActionBean.doDelete(item.id)}">
                                         <button class="btn btn-default" title="Warnung löschen"><span class="glyphicon glyphicon-trash"></span></button>
                                     </h:commandLink>

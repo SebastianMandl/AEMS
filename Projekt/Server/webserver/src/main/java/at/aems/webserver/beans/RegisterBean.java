@@ -5,6 +5,9 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsRegisterAction;
+import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -107,23 +110,15 @@ public class RegisterBean extends AbstractBean {
             }
         }
         
-        JsonObject obj = new JsonObject();
-        JsonObject data = new JsonObject();
+        AemsRegisterAction action = new AemsRegisterAction(EncryptionType.SSL);
+        action.setEmail(email);
+        action.setUsername(username);
+        action.setPassword(password);
+        action.setPlz(plz);
         
-        data.addProperty("username", this.username);
-        data.addProperty("password", this.password);
-        data.addProperty("email", this.email);
-        data.addProperty("plz", this.plz);
+        AemsAPI.setUrl(AemsUtils.API_URL);
+        //AemsAPI.call(action, new byte[16]);
         
-        obj.addProperty("action", "REGISTER");
-        obj.add("data", data);
-        
-        String jsonString = new Gson().toJson(obj);
-        
-        AemsUtils.doPost(jsonString);
-        System.out.println(jsonString);
-        
-        isRegistering = true;
         
         return "home";
     }

@@ -28,12 +28,16 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.gson.GsonBuilder;
 
 import at.aems.apilib.AemsInsertAction;
 
@@ -57,33 +61,39 @@ public class AemsAPI {
     /* Before any static method is called, initialize the userList */
     static {
         API_URL = Main.config.get(BotConfiguration.API_URL);
+        superUser = new at.aems.apilib.AemsUser(
+                Main.config.getInt(BotConfiguration.SUPER_USER_ID, -1),
+                Main.config.get(BotConfiguration.SUPER_USER_NAME), 
+                Main.config.get(BotConfiguration.SUPER_USER_PWD)
+        );
         initialize();
     }
 
     private static String API_URL;
     private static List<AemsUser> userList;
-    private static Map<AemsLocation, Double> temperatureMap;
 
-    private static at.aems.apilib.AemsUser superUser = new at.aems.apilib.AemsUser(
-            Main.config.getInt(BotConfiguration.SUPER_USER_ID, -1),
-            Main.config.get(BotConfiguration.SUPER_USER_NAME), 
-            Main.config.get(BotConfiguration.SUPER_USER_PWD)
-    );
+    private static at.aems.apilib.AemsUser superUser;
     private static AemsInsertAction insertMeters;
+    private static AemsInsertAction insertWeather;
 
     /**
      * This methods initializes this class by populating the {@link #userList}.
      */
     private static void initialize() {
         userList = new ArrayList<AemsUser>();
-        temperatureMap = new HashMap<AemsLocation, Double>();
+        
         insertMeters = new AemsInsertAction(superUser, EncryptionType.SSL);
+        insertMeters.setTable("MeterData");
+        
+        insertWeather = new AemsInsertAction(superUser, EncryptionType.SSL);
+        insertWeather.setTable("WeatherData");
+        
         at.aems.apilib.AemsAPI.setUrl(API_URL);
         try {
             AemsBotAction bot = new AemsBotAction(superUser, EncryptionType.SSL);
             String response = at.aems.apilib.AemsAPI.call(bot, new byte[16]);
             String rawData = new String(Base64.getUrlDecoder().decode(response.getBytes()));
-            
+            Main.logger.log(LogType.DEBUG, "Raw data: " + rawData);
             JSONArray users = new JSONArray(rawData);
             AemsUser aemsUser;
             for (int i = 0; i < users.length(); i++) {
@@ -124,21 +134,31 @@ public class AemsAPI {
         return new ArrayList<AemsUser>(userList);
     }
 
-    public static void insertWeatherData(AemsLocation location, Double value) {
-        temperatureMap.put(location, value);
+    public static void insertWeatherData(String id, AemsLocation location, Double value) {
+        
+        // round down to the previous hour
+        GregorianCalendar c = new GregorianCalendar();
+        c.set(Calendar.MINUTE, 0);
+        
+        insertWeather.write("meter", id);
+        insertWeather.write("timestamp", "" + new Timestamp(c.getTimeInMillis()));
+        insertWeather.write("temperature", value);
+        insertWeather.endWrite();
     }
 
     public static void commitWeatherData() {
-
+        try {
+            at.aems.apilib.AemsAPI.setUrl(API_URL);
+            Main.logger.log(LogType.INFO, new GsonBuilder().setPrettyPrinting().create().toJson(insertWeather.toJsonObject()));
+            at.aems.apilib.AemsAPI.call(insertWeather, new byte[16]);
+        } catch (IOException e) {
+            Main.logger.log(LogType.ERROR, e);
+        }
     }
 
     public static void insertMeterData(MeterValue value) {
-        // IMPORTANT: Due to the way this is programmed it is possible that
-        // rows could be inserted multiple times. On insert, the database will have
-        // to check if an entry like this (same meterId and timestamp) already
-        // exists. If so, do not insert this row.
         insertMeters.write("meter", value.getId());
-        insertMeters.write("timestamp", new Timestamp(value.getDate().getTime()));
+        insertMeters.write("timestamp", "" + new Timestamp(value.getDate().getTime()));
         insertMeters.write("measured_value", value.getValue());
         insertMeters.write("unit", "kWh");
         insertMeters.endWrite();
@@ -146,19 +166,12 @@ public class AemsAPI {
 
     public static void commitMeterData() {
         try {
+            at.aems.apilib.AemsAPI.setUrl(API_URL);
+            Main.logger.log(LogType.INFO, new GsonBuilder().setPrettyPrinting().create().toJson(insertMeters.toJsonObject()));
             at.aems.apilib.AemsAPI.call(insertMeters, new byte[16]);
+            Main.logger.log(LogType.INFO, new GsonBuilder().setPrettyPrinting().create().toJson(insertMeters.toJsonObject()));
         } catch (IOException e) {
             Main.logger.log(LogType.ERROR, e);
         }
-    }
-
-    private static String readDataFromStream(InputStream stream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuffer buffer = new StringBuffer();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            buffer.append(line);
-        }
-        return buffer.toString();
     }
 }
