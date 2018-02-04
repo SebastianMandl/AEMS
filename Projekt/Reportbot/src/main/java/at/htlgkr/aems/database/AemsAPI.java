@@ -139,8 +139,12 @@ public class AemsAPI {
         // round down to the previous hour
         GregorianCalendar c = new GregorianCalendar();
         c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
         
         insertWeather.write("meter", id);
+        // putting a "" before timestamp is important because otherwise
+        // GSON would format it differently
         insertWeather.write("timestamp", "" + new Timestamp(c.getTimeInMillis()));
         insertWeather.write("temperature", value);
         insertWeather.endWrite();
