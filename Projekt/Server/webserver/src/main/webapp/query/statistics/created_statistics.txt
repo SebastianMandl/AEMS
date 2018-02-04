@@ -2,19 +2,12 @@ query GetCreatedStatistics {
     Statistics(user: #USER_ID#) {
         id
         name
+        is_startpage
+        is_android
         period {
             id
             name
         }
-        # This will not work!
-        StatisticMeters {
-            meter {
-                id
-                metertype {
-                    id
-                    display_name
-                }
-            }
-        }
+# add more
     }
 }

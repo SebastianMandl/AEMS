@@ -5,6 +5,8 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsLoginAction;
+import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.beans.objects.Meter;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedProperty;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +27,8 @@ import org.json.JSONObject;
  *
  * @author Sebastian
  */
+// I bims da Graf und I pfusch in deins Code
+// Du brauchst die javax.faces.bean.ManagedBean, sunst wird des nix ;)
 @ManagedBean
 public final class WebUIBean {
 
@@ -45,11 +50,18 @@ public final class WebUIBean {
 
     public WebUIBean() {
         try {
+            //Ich würde das auf die init() auslagern. 
             login(String.valueOf(userBean.getUserId()), "123456789", userBean.getAuthenticationString(), userBean.getUsername());
         } catch (Exception ex) {
             Logger.getLogger(WebUIBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         populateMeters();
+    }
+    
+    @PostConstruct
+    public void init() {
+        // Execute logic that requires other beans here.
+        // Bad exceptions may occur if other beans are accessed in the constructor.
     }
 
     public void populateMeters() {
@@ -107,8 +119,7 @@ public final class WebUIBean {
         }
     }
 
-    private void login(String userId, String salt, String authStr, String username) throws Exception {
-
+    private void login(String userId, String salt, String authStr, String username) throws Exception {        
         JSONObject object = new JSONObject();
         object.put("auth_str", authStr);
         object.put("salt", salt);
