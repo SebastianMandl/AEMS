@@ -5,25 +5,27 @@
  */
 package at.aems.webserver.beans.display;
 
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
-import at.aems.webserver.beans.UserBean;
+import at.aems.webserver.NewMap;
 import at.aems.webserver.data.notifications.NotificationType;
 import at.aems.webserver.data.notifications.SimpleNotificationData;
 import com.google.gson.Gson;
-import java.io.Serializable;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 
 /**
  * This managed bean stores notification data. Due to the fact that the
@@ -34,31 +36,51 @@ import javax.json.JsonObject;
  */
 @ManagedBean
 @SessionScoped
-public class NotificationBean implements Serializable {
+public class NotificationBean extends AbstractDisplayBean {
 
     private List<SimpleNotificationData> notifications;
     private long lastUpdate;
     
-    @ManagedProperty(value="#{user}")
-    private UserBean user;
+    @ManagedProperty(value="#{userMeterBean}")
+    private UserMeterBean userMeterBean;
 
     public NotificationBean() {
     }
 
-    public void init() {
-        System.out.println(" ------ " + FacesContext.getCurrentInstance().getViewRoot().getViewId());
-        if (needsUpdate()) {
-            new Thread() {
-                public void run() {
-                    updateNotifications();
-                }
-            }.start();
-            lastUpdate = System.currentTimeMillis();
+    @Override
+    public void update() {
+        
+        notifications = new ArrayList<>();
+        AemsQueryAction notificationQuery = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+        
+        for(Map.Entry<String, String> meter : userMeterBean.getMeters().entrySet()) {
+            String meterId = meter.getKey();
+            String query = AemsUtils.getQuery("archived_notifications", NewMap.of("METER_ID", meterId));
+            notificationQuery.setQuery(query);
+            String data = getRawData(notificationQuery);
+            System.out.println("RAW: " + data);
+            JsonArray array = new JsonParser().parse(data).getAsJsonArray();
+            for(int i = 0; i < array.size(); i++) {
+                JsonObject current = array.get(i).getAsJsonObject();
+                notifications.add(SimpleNotificationData.fromJsonObject(current));
+            }
         }
+        System.out.print("I HAVE " + getNotificationCount() + " notifications!");
+        /*
+        notifications = new ArrayList<>();
+        notifications.add(new SimpleNotificationData(123, "Schreckliches ist passiert!", NotificationType.WARNING));
+        */
     }
-    // Must be provided for injection (i guess)
-    public void setUser(UserBean bean) {
-        this.user = bean;
+    
+    private String getRawData(AemsQueryAction query) {
+        try {
+            AemsAPI.setUrl(AemsUtils.API_URL + "/warnings.txt");
+            String data = AemsAPI.call(query, new byte[16]);
+            return new String(Base64.getUrlDecoder().decode(data));
+        } catch (IOException ex) {
+            Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     private boolean needsUpdate() {
@@ -66,6 +88,11 @@ public class NotificationBean implements Serializable {
         return true;
     }
 
+    public void setUserMeterBean(UserMeterBean userMeterBean) {
+        this.userMeterBean = userMeterBean;
+    }
+
+    
     public int getNotificationCount() {
         return notifications != null ? notifications.size() : -1;
     }
@@ -74,37 +101,13 @@ public class NotificationBean implements Serializable {
         return new Gson().toJson(notifications);
     }
 
-    private void updateNotifications() {
-        try {
-            // TODO: Make this ASYNC
-            Thread.sleep(5000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.notifications = new ArrayList<>();
-        
-        Map<String, Object> postParameters = new HashMap<>();
-        postParameters.put("query", getNotificationQueryString());
-        
-        JsonArray notificationArray = (JsonArray) AemsUtils.call("warnings.json", postParameters);
-        
-        for(int i = 0; i < notificationArray.size(); i++) {
-            JsonObject currentObject = notificationArray.getJsonObject(i);
-            int id = currentObject.getInt("id");
-            
-            JsonObject nestedNotification = currentObject.getJsonObject("notification");
-            String name = nestedNotification.getString("name");
-            NotificationType type = NotificationType.byId(nestedNotification.getInt("type"));
-            
-            notifications.add(new SimpleNotificationData(id, name, type));
-         }
-        
-    }
-    
+    /**
+     * @deprecated
+     */
     private String getNotificationQueryString() {
         return String.join("\n",
                 "{",
-                    "archived_meter_notifications(user: " + user.getUserId() + ") {",
+                    "archived_meter_notifications(user: " + userBean.getUserId() + ") {",
                         "id",
                         "meter",
                         "notification {",
@@ -113,4 +116,7 @@ public class NotificationBean implements Serializable {
                     "}",
                 "}");
     }
+
+    
+    
 }

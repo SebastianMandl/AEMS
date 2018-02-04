@@ -105,10 +105,6 @@
 
         </script>
 
-        <c:if test="#{notifyBean.hasMessage()}">
-            <script>
-                $.notify("#{notifyBean.message}", "info");
-            </script>
-        </c:if>
+        <ui:include src="/templates/message-show.xhtml"></ui:include>
     </body>
 </html>

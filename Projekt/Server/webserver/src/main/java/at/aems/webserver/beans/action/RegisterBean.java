@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsRegisterAction;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.beans.action.AbstractActionBean;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.swing.AbstractAction;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -34,7 +36,7 @@ import org.apache.http.message.BasicNameValuePair;
  * @author Niklas
  */
 @ManagedBean(name="register")
-public class RegisterBean extends AbstractBean {
+public class RegisterBean extends AbstractActionBean {
     
     private String username;
     private String password;
@@ -142,6 +144,5 @@ public class RegisterBean extends AbstractBean {
         
         return false;
     }
-    
     
 }

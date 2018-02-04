@@ -1,22 +1,30 @@
 [
     {
-        "id": "AT0001",
-        "type": "Strom"
+        "id": "AT00001",
+        "metertype": {
+            "id": 0,
+            "display_name": "Strom"
+        }
     },
-        {
-        "id": "AT0002",
-        "type": "Strom"
+    {
+        "id": "AT00002",
+        "metertype": {
+            "id": 0,
+            "display_name": "Strom"
+        }
     },
-        {
-        "id": "AT0003",
-        "type": "Strom"
+    {
+        "id": "AT00003",
+        "metertype": {
+            "id": 1,
+            "display_name": "Gas"
+        }
     },
-        {
-        "id": "AT0004",
-        "type": "Gas"
-    },
-        {
-        "id": "AT0005",
-        "type": "Wärme"
+    {
+        "id": "AT00004",
+        "metertype": {
+            "id": 2,
+            "display_name": "IrgendwasExotisches"
+        }
     }
 ]

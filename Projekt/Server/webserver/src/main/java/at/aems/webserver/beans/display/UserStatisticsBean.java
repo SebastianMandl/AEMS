@@ -12,21 +12,23 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Niggi
  */
 @ManagedBean
-public class UserStatisticsBean {
+@SessionScoped
+public class UserStatisticsBean extends AbstractDisplayBean {
     private List<String> categories = new ArrayList<>();
     private Map<Integer, StatisticData> statistics = new HashMap<>();
 
     public UserStatisticsBean() {
     }
-    
-    @PostConstruct
-    public void init() {
+
+    @Override
+    public void update() {
         statistics.put(123, new StatisticData("Strom", "Stromstatistik 1"));
         statistics.put(124, new StatisticData("Strom", "Stromstatistik X"));
         statistics.put(125, new StatisticData("Gas", "Andere Statistik 1"));
@@ -34,6 +36,7 @@ public class UserStatisticsBean {
         categories.add("Strom");
         categories.add("Gas");      
     }
+    
 
     public List<String> getCategories() {
         return categories;

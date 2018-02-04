@@ -13,7 +13,7 @@ import javax.faces.bean.ManagedBean;
  * @author Niggi
  */
 @ManagedBean
-public class WarningActionBean extends AbstractBean {
+public class WarningActionBean extends AbstractActionBean {
     public String doDelete(Integer id) {
         notify.setMessage("Benachrichtigung wurde entfernt!");
         return "einstellungenWarnungen";

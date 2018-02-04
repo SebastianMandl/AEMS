@@ -5,6 +5,8 @@
  */
 package at.aems.webserver.data.notifications;
 
+import com.google.gson.JsonObject;
+
 /**
  * 
  * @author Niklas
@@ -48,5 +50,13 @@ public class SimpleNotificationData {
         this.type = type;
     }
     
+    public static SimpleNotificationData fromJsonObject(JsonObject object) {
+        Integer id = object.get("id").getAsInt();
+        JsonObject noti = object.get("notification").getAsJsonObject();
+        String name = noti.get("name").getAsString();
+        Integer type = noti.get("type").getAsInt();
+        
+        return new SimpleNotificationData(id, name, NotificationType.byId(type));
+    }
     
 }

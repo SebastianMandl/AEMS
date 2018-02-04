@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.beans.UserBean;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import javax.faces.bean.ManagedProperty;
  * @author Niklas
  */
 @ManagedBean(name="newWarning")
-public class NewWarningBean implements Serializable {
+public class NewWarningBean extends AbstractActionBean {
     
     private String name;
     private int type;
@@ -158,7 +159,7 @@ public class NewWarningBean implements Serializable {
             
             AemsAPI.call(insertExceptions, null);
             System.out.print(insertNoti.toJson(null));
-            
+            callUpdateOn("userWarningsBean");
 
         } catch (IOException ex) {
             Logger.getLogger(NewWarningBean.class.getName()).log(Level.SEVERE, null, ex);

@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsInsertAction;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.beans.UserBean;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -18,10 +19,7 @@ import javax.faces.bean.ManagedProperty;
  * @author Niggi
  */
 @ManagedBean
-public class NewReportBean {
-    
-    @ManagedProperty(value = "#{user}")
-    private UserBean userBean;
+public class NewReportBean extends AbstractActionBean {
     
     private String name;
     private String annotation;
@@ -90,6 +88,7 @@ public class NewReportBean {
         action.setTable("Reports"); 
         action.write("name", name);
         action.write("annotation", annotation);
+        action.write("auto_generate", autoGenerate);
         action.write("period", timePeriod);
         action.write("user", user.getUserId());
         action.endWrite();
@@ -106,6 +105,7 @@ public class NewReportBean {
         } 
         System.out.println(action2.toJsonObject());
         
+        notify.setMessage("Bericht wurde erstellt!");
         return "einstellungenBerichte";
     }
     

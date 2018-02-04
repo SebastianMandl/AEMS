@@ -16,15 +16,18 @@ $(document).ready(function () {
         });
         
         let type = dis.val();
-        $("#meters input").each(function(index, element) {
+        console.log("Selected type: " + type);
+        $("#meterss input").each(function(index, element) {
+            console.log("type: " + $(this).attr("data-type"));
            if($(this).attr("data-type") === type) {
-               $(this).parent().show();
+               $(this).parent().show(); 
            } else {
                $(this).parent().hide();
                $(this).prop("checked", false);
            }
         });
     });
+    
     $("#meterType input").eq(0).click(); 
 
     $("#submitNewStatistic").on("click", function () {
@@ -32,7 +35,7 @@ $(document).ready(function () {
         var name = $("#statisticName").val();
         var annotation = $("#statisticAnnotation").val();
         var userId = $("#uId").val();
-        var boxes = $("#meters label input:checked");
+        var boxes = $("#meterss label input:checked");
         var meterIds = [];
         boxes.each(function (index, obj) {
             meterIds.push(this.value);
@@ -89,7 +92,7 @@ $(document).ready(function () {
         box.on("click", function () {
             $("#meterType input[type=checkbox]").prop("checked", false);
             box.prop("checked", true);
-            $("#meters").empty();
+            $("#meterss").empty();
             addMeters(box.val());
         });
 
@@ -128,7 +131,7 @@ $(document).ready(function () {
     
     function getMeters() {
         var str = "";
-        $("#meters input:checked").each(function(index, element) {
+        $("#meterss input:checked").each(function(index, element) {
             str += $(element).val();
             str += ";";
         });

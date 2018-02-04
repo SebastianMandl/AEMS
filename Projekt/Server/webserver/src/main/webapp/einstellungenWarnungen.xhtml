@@ -80,6 +80,7 @@
 
         </c:if>
 
+
         <div class="spacer"></div>
 
 
@@ -98,22 +99,28 @@
         <!-- Edit Warning Modal -->
         <ui:include src="/templates/editWarning-modal.xhtml"></ui:include>
 
+        <script src="js/lib/noty.min.js"></script>
+        <link href="js/lib/noty.css" rel="stylesheet"></link>
 
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/mobile-functions.js"></script>
         <script src="js/einstellungenWarnungen.js"></script>
         <script src="js/warningModal.js"></script>
+        
+                <script>
+                    var notifs = #{notificationBean.nofificationsAsJson};
+                    notifications = $.map(notifs, function (el) {
+                        return el
+                    });
+        </script>
+        
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>
 
     </body>
 
-    <c:if test="#{notifyBean.hasMessage()}">
-        <script>
-            $.notify("#{notifyBean.message}", "info");
-        </script>
-    </c:if>
+    <ui:include src="/templates/message-show.xhtml"></ui:include>
 
 </html>

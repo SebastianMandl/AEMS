@@ -44,7 +44,7 @@ import javax.servlet.ServletContext;
  */
 public class AemsUtils {
 
-    public static final String API_URL = "http://localhost/graph";
+    public static final String API_URL = "http://localhost:8080/webserver/dummy";
 
     public static int getUserId(String username, String password) {
         return 3;

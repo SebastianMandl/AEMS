@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans;
+package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsInsertAction;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.beans.UserBean;
 import at.aems.webserver.data.statistic.Period;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import javax.faces.model.SelectItem;
  * @author Niklas
  */
 @ManagedBean(name = "newStatistic")
-public class NewStatisticBean implements Serializable {
+public class NewStatisticBean extends AbstractActionBean {
 
     private Period periods;
     
@@ -129,6 +130,8 @@ public class NewStatisticBean implements Serializable {
         }
          
         System.out.print(insertMeters.toJsonObject());
+        notify.setMessage("Statistik wurde erstellt!");
+        callUpdateOn("userStatisticsBean");
         /* Call API - JSON Body = data.toJson() */
         return "einstellungenStatistiken";
     }
