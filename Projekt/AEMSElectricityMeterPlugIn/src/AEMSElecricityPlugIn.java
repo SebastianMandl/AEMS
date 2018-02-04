@@ -13,14 +13,14 @@ import at.htlgkr.aems.settings.Setting;
 public class AEMSElecricityPlugIn extends PlugIn {
 
 	public AEMSElecricityPlugIn() {
-		super("Electricity Meter", Setting.getSetting(MeterTypes.ELECTRICITY, new ScriptFile("ruby", "run.ruby")));
+		super("Potentiometer PLUGIN", Setting.getSetting("°C", new ScriptFile("py", "run.py")));
 		super.getSetting().setMillisUntilRepetition(1000);
-		super.setUploader(new AEMSUploader(this));
+		//super.setUploader(new AEMSUploader(this));
 	}
 
 	@Override
 	public boolean readCyclic(PlugIn plugin, InputStream inputStream) {
-		getUploader().setPlugIn(plugin);
+		//getUploader().setPlugIn(plugin);
 		
 		try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 			for(String line = reader.readLine(); line != null; line = reader.readLine()) {
