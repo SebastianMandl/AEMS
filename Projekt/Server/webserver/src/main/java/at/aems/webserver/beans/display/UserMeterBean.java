@@ -80,8 +80,7 @@ public class UserMeterBean extends AbstractDisplayBean {
     private String getRawResponse(AemsQueryAction query) {
         try {
             AemsAPI.setUrl(AemsUtils.API_URL + "/meters.base64");
-            String resp = AemsAPI.call(query, new byte[16]);
-            return new String(Base64.getUrlDecoder().decode(resp));
+            return AemsAPI.call0(query, null).getDecryptedResponse();
         } catch (IOException ex) {
             Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, null, ex);
         }

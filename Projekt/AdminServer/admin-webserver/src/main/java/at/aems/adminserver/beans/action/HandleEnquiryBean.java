@@ -5,10 +5,7 @@
  */
 package at.aems.adminserver.beans.action;
 
-import at.aems.adminserver.beans.display.EnquiriesBean;
-import at.aems.adminserver.beans.display.NotifyBean;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 
 /**
  *

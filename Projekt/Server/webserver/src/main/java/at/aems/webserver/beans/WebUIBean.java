@@ -5,9 +5,17 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
+import at.aems.webserver.AemsUtils;
+import at.aems.webserver.NewMap;
 import at.aems.webserver.beans.objects.Meter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -88,7 +96,34 @@ public final class WebUIBean {
 
     private void fetchUnit(boolean isSensor, final ArrayList<Meter> REF) {
         try {
+            /**
+             * I see code covered by library. I shall
+             * P R O P O S E
+             * but it's up to you really, Seboostian
+             */
+            // <editor-fold defaultstate="collapsed" desc="The usage of the beautiful aems-apilib">
+            /* UNCOMMENT PLS
+            String query = AemsUtils.getQuery("sensors", NewMap.of("IS_SENSOR", isSensor));
+            AemsQueryAction action = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+            action.setQuery(query);
+            
+            AemsAPI.setUrl(REST_ADDRESS);
+            AemsResponse response = AemsAPI.call0(action, null);
+            
+            if(response.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                JsonObject root = response.getAsJsonObject(true);   // true = response is encrypted
+                JsonArray array = root.get("meters").getAsJsonArray();
+                for(JsonElement item : array) {
+                    JsonObject current = item.getAsJsonObject();
+                    Meter meter = new Meter();
+                    meter.setId(current.get("id").getAsString());
+                    meter.setIsSensor(isSensor);
 
+                    REF.add(meter);
+                }
+            }
+                */
+// </editor-fold>        
             StringBuilder builder = new StringBuilder();
             builder.append("{\n");
             builder.append("meters(is_sensor : \"").append(isSensor).append("\") {\n");
@@ -119,7 +154,7 @@ public final class WebUIBean {
         }
     }
 
-    private void login(String userId, String salt, String authStr, String username) throws Exception {        
+    private void login(String userId, String salt, String authStr, String username) throws Exception {  
         JSONObject object = new JSONObject();
         object.put("auth_str", authStr);
         object.put("salt", salt);
