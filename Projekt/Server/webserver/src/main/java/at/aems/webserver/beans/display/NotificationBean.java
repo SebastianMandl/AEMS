@@ -7,6 +7,7 @@ package at.aems.webserver.beans.display;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.NewMap;
@@ -57,27 +58,24 @@ public class NotificationBean extends AbstractDisplayBean {
             String meterId = meter.getKey();
             String query = AemsUtils.getQuery("archived_notifications", NewMap.of("METER_ID", meterId));
             notificationQuery.setQuery(query);
-            String data = getRawData(notificationQuery);
-            System.out.println("RAW: " + data);
-            JsonArray array = new JsonParser().parse(data).getAsJsonArray();
+            JsonArray array = getJsonData(notificationQuery);
             for(int i = 0; i < array.size(); i++) {
                 JsonObject current = array.get(i).getAsJsonObject();
                 notifications.add(SimpleNotificationData.fromJsonObject(current));
             }
         }
-        System.out.print("I HAVE " + getNotificationCount() + " notifications!");
         /*
         notifications = new ArrayList<>();
         notifications.add(new SimpleNotificationData(123, "Schreckliches ist passiert!", NotificationType.WARNING));
         */
     }
     
-    private String getRawData(AemsQueryAction query) {
+    private JsonArray getJsonData(AemsQueryAction query) {
         try {
             AemsAPI.setUrl(AemsUtils.API_URL + "/warnings.txt");
-            String data = AemsAPI.call(query, new byte[16]);
-            return new String(Base64.getUrlDecoder().decode(data));
-        } catch (IOException ex) {
+            AemsResponse data = AemsAPI.call0(query, new byte[16]);
+            return data.getJsonArrayWithinObject();
+        } catch (Exception ex) {
             Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

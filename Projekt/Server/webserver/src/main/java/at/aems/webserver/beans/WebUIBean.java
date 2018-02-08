@@ -5,19 +5,9 @@
  */
 package at.aems.webserver.beans;
 
-import at.aems.apilib.AemsAPI;
-import at.aems.apilib.AemsLoginAction;
-import at.aems.apilib.AemsQueryAction;
-import at.aems.apilib.AemsResponse;
-import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
-import at.aems.webserver.NewMap;
 import at.aems.webserver.beans.objects.Meter;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,8 +25,6 @@ import org.json.JSONObject;
  *
  * @author Sebastian
  */
-// I bims da Graf und I pfusch in deins Code
-// Du brauchst die javax.faces.bean.ManagedBean, sunst wird des nix ;)
 @ManagedBean
 public final class WebUIBean {
 
@@ -45,6 +33,9 @@ public final class WebUIBean {
 
     private final ArrayList<Meter> METERS = new ArrayList<>();
     private final ArrayList<Meter> SENSORS = new ArrayList<>();
+    
+    private Meter selectedMeter;
+    private Meter selectedSensor;
 
     public ArrayList<Meter> getMETERS() {
         return METERS;
@@ -54,22 +45,39 @@ public final class WebUIBean {
         return SENSORS;
     }
 
-    private static final String REST_ADDRESS = "http://localhost:8084/AEMSWebService/RestInf?";
+    public Meter getSelectedMeter() {
+	return selectedMeter;
+    }
+
+    public void setSelectedMeter(Meter selectedMeter) {
+	this.selectedMeter = selectedMeter;
+    }
+
+    public Meter getSelectedSensor() {
+	return selectedSensor;
+    }
+
+    public void setSelectedSensor(Meter selectedSensor) {
+	this.selectedSensor = selectedSensor;
+    }
+    
+    
+
+    private static final String REST_ADDRESS = AemsUtils.API_URL;
 
     public WebUIBean() {
-        try {
+       
+    }
+    
+    @PostConstruct
+    public void init() {
+         try {
             //Ich würde das auf die init() auslagern. 
             login(String.valueOf(userBean.getUserId()), "123456789", userBean.getAuthenticationString(), userBean.getUsername());
         } catch (Exception ex) {
             Logger.getLogger(WebUIBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         populateMeters();
-    }
-    
-    @PostConstruct
-    public void init() {
-        // Execute logic that requires other beans here.
-        // Bad exceptions may occur if other beans are accessed in the constructor.
     }
 
     public void populateMeters() {
@@ -124,6 +132,9 @@ public final class WebUIBean {
             }
                 */
 // </editor-fold>        
+
+	    
+
             StringBuilder builder = new StringBuilder();
             builder.append("{\n");
             builder.append("meters(is_sensor : \"").append(isSensor).append("\") {\n");

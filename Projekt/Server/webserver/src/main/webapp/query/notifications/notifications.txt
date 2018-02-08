@@ -1,9 +1,9 @@
 query GetNotifications {
-    Notifications(user: #USER_ID#) {
-        id
-        name
-        type
-        min_positive_deviation
-        max_positive_deviation
-    }
+	Anomalies ( meter : #METER_ID# ) {
+		id
+		name
+		type
+		min_positive_deviation
+		max_positive_deviation
+	}
 }

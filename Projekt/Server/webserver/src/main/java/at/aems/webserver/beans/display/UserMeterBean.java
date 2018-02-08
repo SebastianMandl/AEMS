@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import org.json.JSONArray;
 
 /**
  *
@@ -43,13 +42,17 @@ public class UserMeterBean extends AbstractDisplayBean {
 
     @Override
     public void update() {
+	// Initialize to empty
         meterTypes = new HashSet<>();
         meters = new HashMap<>();
         
-        AemsQueryAction query = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	// retrieve GraphQL-Query from text file and send to REST
+        AemsQueryAction query = new AemsQueryAction
+	    (userBean.getAemsUser(), EncryptionType.SSL);
         query.setQuery(AemsUtils.getQuery("meters_simple", NewMap.of("USER_ID", userBean.getUserId())));
-        String json = getRawResponse(query);
-        JsonArray data = new JsonParser().parse(json).getAsJsonArray();
+        JsonArray data = getJsonResponse(query);
+	
+	// iterate over response and add all meters
         for(int i = 0; i < data.size(); i++) {
             JsonObject j = data.get(i).getAsJsonObject();
             String id = j.get("id").getAsString();
@@ -57,6 +60,7 @@ public class UserMeterBean extends AbstractDisplayBean {
             meters.put(id, type);
         }
         
+	// Since meterTypes is a HashSet, duplicate values will be erased
         meterTypes.addAll(meters.values());
 
     }
@@ -77,10 +81,10 @@ public class UserMeterBean extends AbstractDisplayBean {
         this.meters = meters;
     }
 
-    private String getRawResponse(AemsQueryAction query) {
+    private JsonArray getJsonResponse(AemsQueryAction query) {
         try {
             AemsAPI.setUrl(AemsUtils.API_URL + "/meters.base64");
-            return AemsAPI.call0(query, null).getDecryptedResponse();
+            return AemsAPI.call0(query, null).getJsonArrayWithinObject();
         } catch (IOException ex) {
             Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -93,8 +93,11 @@ public class AemsAPI {
             AemsBotAction bot = new AemsBotAction(superUser, EncryptionType.SSL);
             String response = at.aems.apilib.AemsAPI.call(bot, new byte[16]);
             String rawData = new String(Base64.getUrlDecoder().decode(response.getBytes()));
-            Main.logger.log(LogType.DEBUG, "Raw data: " + rawData);
-            JSONArray users = new JSONArray(rawData);
+            
+            JSONObject responseObj = new JSONObject(rawData);
+            String firstKey = responseObj.keys().next();
+            
+            JSONArray users = responseObj.getJSONArray(firstKey);
             AemsUser aemsUser;
             for (int i = 0; i < users.length(); i++) {
                 JSONObject user = users.getJSONObject(i);

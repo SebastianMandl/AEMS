@@ -1,9 +1,9 @@
 query GetNotificationExceptions {
-    NotificationExceptions(notification: #NOTIFICATION_ID#) {
-        id
-        min_positive_deviation
-        max_positive_deviation
-        week_day
-        exception_date
-    }
+	NotificationExceptions(notification: #NOTIFICATION_ID#) {
+		id
+		min_positive_deviation
+		max_positive_deviation
+		week_day
+		exception_date
+	}
 }

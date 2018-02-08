@@ -1,12 +1,12 @@
 query GetMetersVerbose {
-    Meters(user: #USER_ID#) {
-        id
-        city
-        latitude
-        longitude
-        metertype {
-            id
-            display_name
-        }
-    }
+	Meters ( user : #USER_ID# ) {
+		id
+		city
+		latitude
+		longitude
+		metertype {
+			id
+			display_name
+		}
+	}
 }

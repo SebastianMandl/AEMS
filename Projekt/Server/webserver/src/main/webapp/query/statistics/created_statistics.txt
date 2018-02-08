@@ -1,13 +1,12 @@
 query GetCreatedStatistics {
-    Statistics(user: #USER_ID#) {
-        id
-        name
-        is_startpage
-        is_android
-        period {
-            id
-            name
-        }
-# add more
-    }
+	Statistics ( user : #USER_ID# ) {
+		id
+		name
+		display_home
+		display_android
+		period {
+			id
+			name
+		}
+	}
 }
