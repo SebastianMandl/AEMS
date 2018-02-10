@@ -7,7 +7,6 @@ import aems.graphql.Query;
 import at.aems.apilib.AemsUser;
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
-import at.htlgkr.aems.util.crypto.KeyUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graphql.ExecutionResult;
@@ -17,14 +16,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -109,14 +104,14 @@ public class RestInf extends HttpServlet {
         return false;
     }
     
-    private void doLogin(String query, String encryption, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JSONObject root = new JSONObject(query);
-        String username = root.getString("user");
-        String authStr = root.getString("auth_str");
-        String salt = root.getString("salt");
+    private boolean doLogin(String username, String authStr, String salt, String encryption, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //JSONObject root = new JSONObject(query);
+//        String username = root.getString("user");
+//        String authStr = root.getString("auth_str");
+//        String salt = root.getString("salt");
         
        if(!isHashEqual(username, authStr, salt, resp))
-           return;
+           return false;
 
         // certainty that the username exists and ...
         // ... certainty that the credentials are valid
@@ -135,13 +130,16 @@ public class RestInf extends HttpServlet {
             
             String response = "{ id : " + username + " }";
             response = getEncryptedResponse(response, encryption, username, req, resp);
+            response = Base64.getUrlEncoder().encodeToString(response.getBytes());
             
             resp.getWriter().write(response);
             resp.getWriter().flush();
         } catch (SQLException ex) {
             resp.getWriter().write("{ error : \"Invalid credentials!\" }");
             resp.getWriter().flush();
+            return false;
         }
+        return true;
     }
     
     private String getEncryptedResponse(String response, String encryption, String user, HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -169,31 +167,37 @@ public class RestInf extends HttpServlet {
         String action = request[1];
         String encryption = request[3];
         String user = request[2];
+        String authStr = request[4];
+        String salt = request[5];
         
         // establish exception for login request
         switch (action) {
             case ACTION_BOT:
             {
+                if(!doLogin(user, authStr, salt, encryption, req, resp))
+                    return; // abort if authentication has failed
+                
                 try {
-                    BigDecimal key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.exertProcedure(DatabaseConnectionManager.getDatabaseConnection()))), "master", "test");
                     String json = new String(DatabaseConnectionManager.getDatabaseConnection().callFunction("get_user_infos", byte[].class));
-                    json = new String(Decrypter.requestDecryption(key, json.getBytes()));
                     resp.getWriter().write(Base64.getUrlEncoder().encodeToString(json.getBytes()));
                     resp.getWriter().flush();
                     return;
-                } catch (SQLException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+                } catch (IOException | SQLException ex) {
                     Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             case ACTION_LOGIN:
                 if(encryption.equals(ENCRYPTION_SSL))
-                    doLogin(query, encryption, req, resp);
+                    doLogin(user, authStr, salt, encryption, req, resp);
                 else if(encryption.equals(ENCRYPTION_AES)) { // in case of AES-encryption just return the id of the user that was already established
                     resp.getWriter().write(getEncryptedResponse("{ id : \"" + IPtoID.convertIPToId(req.getRemoteAddr()) + "\" }", encryption, user, req, resp));
                     resp.getWriter().flush();
                 }
                 break;
             case ACTION_QUERY:
+                if(!doLogin(user, authStr, salt, encryption, req, resp))
+                    return; // abort if authentication has failed
+                
                 GraphQLSchema schema = new GraphQLSchema(Query.getInstance(IPtoID.convertIPToId(req.getRemoteAddr())));
                 //GraphQLSchema schema = new GraphQLSchema(Query.getInstance("185"));
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
@@ -202,11 +206,23 @@ public class RestInf extends HttpServlet {
                 
                 
                 
-                try {
-                    String data = result.getData().toString();
-                    
+                try {                    
                     Gson builder = new GsonBuilder().create();
-                    data = builder.toJson(result.getData());
+                    String data = builder.toJson(result.getData());
+                    
+                    // remove superfluous objects ; meaning
+                    JSONObject obj = new JSONObject(data);
+                    String key = obj.keySet().iterator().next();
+                    JSONArray array = obj.getJSONArray(key);
+                    for(int i = 0; i < array.length(); i++) {
+                        if(array.getJSONObject(i).keySet().isEmpty()) {
+                            array.remove(i);
+                        }
+                    }
+                    
+                    obj = new JSONObject();
+                    obj.put(key, array);
+                    data = obj.toString();
                     
                     for(Object o : result.getErrors()) {
                         System.out.println(o);
@@ -321,7 +337,7 @@ public class RestInf extends HttpServlet {
                         if(action.equals(ACTION_UPDATE)) {
                             SQL.append(column).append("=").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replace("\\s", "") + "'" : entryObj.get(column)).append(",");
                         } else if(action.equals(ACTION_INSERT)) {
-                            COLUMN_BUFFER.append(column).append(",");
+                            COLUMN_BUFFER.append("\"").append(column).append("\",");
                             SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
                         }
                     }
@@ -358,6 +374,7 @@ public class RestInf extends HttpServlet {
             ResultSet set = con.customSelect(stm);
             String response = "{ id : \"" + set.getString(0, 0) + "\" }";
             response = getEncryptedResponse(response, results[3], results[2], req, resp);
+            response = Base64.getUrlEncoder().encodeToString(response.getBytes());
             
             resp.getWriter().write(response);
             resp.getWriter().flush();
@@ -397,13 +414,29 @@ public class RestInf extends HttpServlet {
     private String[] checkRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final int TIMEOUT = 10_000; // 10 seconds
         long lastTime = System.currentTimeMillis();
+        boolean receivedData = false;
         
-        String data = req.getParameter("data"); // string
-        String action = req.getParameter("action").toUpperCase(); // string
-        String user = req.getParameter("user"); // int oder string
-        String authStr = req.getParameter("auth_str"); // string
-        String encryption = req.getParameter("encryption").toUpperCase(); // string
-        String salt = req.getParameter("salt"); // string
+        String data = null;
+        String action = null;
+        String user = null;
+        String authStr = null;
+        String encryption = null;
+        String salt = null;
+        
+        try {
+            data = req.getParameter("data"); // string
+            action = req.getParameter("action"); // string
+            user = req.getParameter("user"); // int oder string
+            authStr = req.getParameter("auth_str"); // string
+            encryption = req.getParameter("encryption"); // string
+            salt = req.getParameter("salt"); // string
+            
+            if(data != null || action != null || user != null || authStr != null || encryption != null || salt != null) {
+                receivedData = true;
+            }
+        } catch(Exception e) {
+            receivedData = false;
+        }
 //        
 //        while(data == null || action == null || encryption == null || user == null) {
 //            if(System.currentTimeMillis() - lastTime >= TIMEOUT) {
@@ -424,16 +457,33 @@ public class RestInf extends HttpServlet {
                 JSON.append(s);
             }
         });
-        JSONObject json = new JSONObject(JSON);
+        String notFinalJson = JSON.toString();
+        JSONObject json = new JSONObject(notFinalJson);
+        
         if(json.keySet().size() > 0) {
             data = data == null ? json.getString("data") : data;
             action = action == null ? json.getString("action") : action;
-            user = user == null ? json.getString("user") : user;
+            //user = user == null ? json.getString("user") : user;
+            try {
+                user = user == null ? json.getString("user") : user;
+            } catch(Exception e) {
+                user = user == null ? String.valueOf(json.getInt("user")) : user;
+            }
             authStr = authStr == null ? json.getString("auth_str") : authStr;
-            authStr = authStr == null ? json.getString("auth_str") : authStr;
+            salt = salt == null ? json.getString("salt") : salt;
             encryption = encryption == null ? json.getString("encryption") : encryption;
+            receivedData = true;
         }
         
+        if(!receivedData) {
+            resp.getWriter().write("Parameters missing!");
+            resp.getWriter().flush();
+            return null;
+        } else {
+            action = action.toUpperCase();
+            encryption = encryption.toUpperCase();
+        }
+
         if(encryption.equals(ENCRYPTION_AES)) {
             BigDecimal key = NUMBER_PATTERN.matcher(user).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(user)) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), user);
             try {

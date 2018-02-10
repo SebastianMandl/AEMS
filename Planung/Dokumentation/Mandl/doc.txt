@@ -1,4 +1,6 @@
 https://www.mkyong.com/java/how-do-convert-java-object-to-from-json-format-gson-api/
+https://pypi.python.org/pypi/pyserial#downloads
+https://stackoverflow.com/questions/39176985/how-to-pipe-data-from-dev-ttyusb0-to-a-python-script
 
 
 > CREATE EXTENSION pgcrypto; -- needs to be issued otherwise no encryption or decryption functionality is available
