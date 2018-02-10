@@ -25,5 +25,12 @@
 			<artifactId>json</artifactId>
 			<version>20170516</version>
 		</dependency>
+		
+		<!-- Grafs Experiment -->
+		<dependency>
+			<groupId>AEMSDatabaseLib</groupId>
+	<artifactId>AEMSDatabaseLib</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

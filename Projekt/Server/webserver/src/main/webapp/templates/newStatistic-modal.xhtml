@@ -33,17 +33,17 @@
                             </ul>
                         </div>
 
-                        <h4>Verwendete Zähler</h4>
+                        <h4>Verwendete Zähler #{userMeterBean.meters.entrySet().size()} </h4>
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zähler<span class="caret" /></button>
 
-                            <ul id="meters" class="dropdown-menu zaehler_format">
+                            <ul id="meterss" class="dropdown-menu zaehler_format">
  
-                                <c:forEach items="#{userMeterBean.meters.entrySet()}" var="meter">
-                                    <li role="presentation">
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" data-type="#{meter.value}" value="#{meter.key}" />#{meter.key}</label>
+                                <c:forEach items="#{userMeterBean.meters.entrySet()}" var="item">
+                                    <li role="presentation"> 
+                                        <div class="checkbox"> 
+                                            <label><input type="checkbox" data-type="#{item.value}" value="#{item.key}" />#{item.key}</label>
                                         </div>
                                     </li>
                                 </c:forEach>

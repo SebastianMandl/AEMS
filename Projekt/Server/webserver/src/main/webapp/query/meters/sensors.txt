@@ -1,0 +1,5 @@
+{
+    meters(is_sensor: "#IS_SENSOR#") {
+        id
+    }
+}

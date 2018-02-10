@@ -13,26 +13,26 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Niggi
  */
 @ManagedBean
-public class UserWarningsBean {
+@SessionScoped
+public class UserWarningsBean extends AbstractDisplayBean {
+
     private List<WarningMeta> allWarnings = new ArrayList<>();
 
-    public UserWarningsBean() {
-    }
-    
-    @PostConstruct
-    public void init() {
+    @Override
+    public void update() {
         WarningMeta m = new WarningMeta(1234, "Warning 1");
         m.setType(WarningType.WARNUNG);
-        
+
         WarningMeta m2 = new WarningMeta(1235, "Notifi 1");
         m2.setType(WarningType.BENACHRICHTIGUNG);
-        
+
         allWarnings.add(m);
         allWarnings.add(m2);
     }
@@ -44,7 +44,7 @@ public class UserWarningsBean {
     public void setAllNotifications(List<WarningMeta> allWarnings) {
         this.allWarnings = allWarnings;
     }
-    
+
     public List<WarningMeta> getWarnings() {
         final List<WarningMeta> result = new ArrayList<>();
         allWarnings.forEach(new Consumer<WarningMeta>() {
@@ -57,9 +57,9 @@ public class UserWarningsBean {
         });
         return result;
     }
-    
+
     public List<WarningMeta> getNotifications() {
-                final List<WarningMeta> result = new ArrayList<>();
+        final List<WarningMeta> result = new ArrayList<>();
         allWarnings.forEach(new Consumer<WarningMeta>() {
             @Override
             public void accept(WarningMeta t) {
@@ -70,6 +70,5 @@ public class UserWarningsBean {
         });
         return result;
     }
-    
-    
+
 }

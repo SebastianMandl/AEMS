@@ -19,22 +19,20 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Niggi
  */
 @ManagedBean
-public class StatisticBean {
+@SessionScoped
+public class StatisticBean extends AbstractDisplayBean {
 
     private List<StatisticMeta> allStatistics = new ArrayList<>();
 
-    public StatisticBean() {
-
-    }
-
-    @PostConstruct
-    public void init() {
+    @Override
+    public void update() {
         StatisticMeta s = new StatisticMeta(100, "Meins Statistik!");
         s.setAnnotation("Hallo");
         s.setAnomalies(Arrays.asList(new Anomaly(10, "Temperatur", "Celsius")));

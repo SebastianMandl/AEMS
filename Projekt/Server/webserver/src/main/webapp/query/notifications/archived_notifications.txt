@@ -1,20 +1,6 @@
 query GetArchivedNotifications {
-    ArchivedMeterNotifications(meter: #METER_ID#) {
-        id
-        notification {
-            id
-            name
-            type
-        }
-        positive_deviation
-        negative_deviation
-        positive_deviation_value
-        negative_deviation_value
-        period {
-            id
-            name
-        }
-        last_occurance
-        initial_occurance
-    }
+	Notices ( meter : #METER_ID# ) {
+		id
+		notice
+	}
 }

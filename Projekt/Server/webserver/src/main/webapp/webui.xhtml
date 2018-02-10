@@ -4,22 +4,33 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <head>
-        
+
     </head>
     <body>
+        <h1>Meters:</h1>
+
+	<h:form>
+
+	    <h:selectOneListbox value="#{webUIBean.selectedMeter}">
+		<f:selectItems value="#{webUIBean.METERS}" var="meter"
+			       itemLabel="#{meter.id}" itemValue="#{meter}"/>
+	    </h:selectOneListbox>
+
+	</h:form>
+
         <c:forEach items="#{webUIBean.METERS}" var="meter">
             <li>
                 <h2>#{meter.id}</h2> 
             </li>
         </c:forEach>
-        
+
         <c:forEach items="#{webUIBean.SENSORS}" var="sensor">
             <li>
                 <h2>#{sensor.id}</h2> 
             </li>
         </c:forEach>
     </body>
-    
+
 </html>

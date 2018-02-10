@@ -13,7 +13,7 @@ import javax.faces.bean.ManagedBean;
  * @author Niggi
  */
 @ManagedBean
-public class StatisticActionBean extends AbstractBean {
+public class StatisticActionBean extends AbstractActionBean {
 
     public static final String SECTION_ANDROID = "Android-App";
     public static final String SECTION_INDEX = "Startseite";

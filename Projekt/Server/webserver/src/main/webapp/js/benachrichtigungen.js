@@ -103,7 +103,7 @@ function displayNotifications(data) {
             callbacks: {
                 onClose: function () {
                     if(notifSelected === true)
-                        alert(noti.notificationId);
+                        alert("Hello " + noti.notificationId);
                 }
             }
         }); 

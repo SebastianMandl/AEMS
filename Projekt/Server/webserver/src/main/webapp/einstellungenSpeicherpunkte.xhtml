@@ -50,10 +50,10 @@
                     <div class="list-group-item ">
                         <h4 class="list-group-item-heading">Personenanzahl-Zähler</h4>
                         <p class="list-group-item-text">Monatlich, automatisch generiert</p>
-                         <div class="btn-glyph">
-                                <button class="btn btn-default" title="Speicherpunkt bearbeiten" data-toggle="modal" data-target="#editSpeicherpunkt-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
-                                <button class="btn btn-default" title="Speicherpunkt löschen"><span class="glyphicon glyphicon-trash"></span></button>
-                            </div>
+                        <div class="btn-glyph">
+                            <button class="btn btn-default" title="Speicherpunkt bearbeiten" data-toggle="modal" data-target="#editSpeicherpunkt-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button class="btn btn-default" title="Speicherpunkt löschen"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
                     </div>                  
                 </div>
             </article>
@@ -74,19 +74,26 @@
         <!-- Edit Speicherpunkt Modal -->
         <ui:include src="/templates/editSpeicherpunkt-modal.xhtml"></ui:include>
 
+        <script src="js/lib/noty.min.js"></script>
+        <link href="js/lib/noty.css" rel="stylesheet"></link>
 
         <script src="js/jquery-1.11.3.min.js"></script> 
         <script src="js/bootstrap.js"></script> 
         <script src="js/mobile-functions.js"></script>
+
+        <script>
+                    var notifs = #{notificationBean.nofificationsAsJson};
+                    notifications = $.map(notifs, function (el) {
+                        return el
+                    });
+        </script>
+
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
         <script language="javascript" type="text/javascript" src="js/notify.js"></script>  
         <script language="javascript" type="text/javascript" src="js/berichte.js"></script>
     </body>
-        <c:if test="#{notifyBean.hasMessage()}">
-            <script>
-                $.notify("#{notifyBean.message}", "info");
-            </script>
-        </c:if>
+
+    <ui:include src="/templates/message-show.xhtml"></ui:include>
 
 </html>

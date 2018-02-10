@@ -23,19 +23,22 @@ import javax.faces.bean.ManagedBean;
  * @author Niggi
  */
 @ManagedBean
-public class StatisticDisplayBean {
+public class StatisticDisplayBean extends AbstractDisplayBean {
+
     private List<DisplayedStatistic> statistics;
-    
-    public StatisticDisplayBean() {}
-    
-    @PostConstruct
-    public void init() {
+
+    public StatisticDisplayBean() {
+    }
+
+
+    @Override
+    public void update() {
         statistics = new ArrayList<>();
         GregorianCalendar c = new GregorianCalendar();
         DisplayedStatistic yearStatistic = new DisplayedStatistic(123, "Jahresstatistik", Period.YEARLY);
         yearStatistic.setElectricityValues(randomInts(c.get(Calendar.MONTH) + 4));
         yearStatistic.setPreviousValues(randomInts(c.get(Calendar.MONTH) + 4));
-       
+
         DisplayedStatistic monthStatistic = new DisplayedStatistic(234, "Monatsstatistik", Period.MONTHLY);
         monthStatistic.setElectricityValues(randomInts(c.get(Calendar.WEEK_OF_MONTH)));
         monthStatistic.setPreviousValues(randomInts(c.get(Calendar.WEEK_OF_MONTH)));
@@ -43,21 +46,20 @@ public class StatisticDisplayBean {
         data.put("Temperatur", Arrays.asList(15, 30, 15, 35));
         //data.put("Lichtstärke", Arrays.asList(50, 100, 20, 18));
         monthStatistic.setAnomalyValues(data);
-        
+
         DisplayedStatistic weeklyStatistic = new DisplayedStatistic(456, "Wochenstatistik", Period.WEEKLY);
         weeklyStatistic.setElectricityValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1));
-        weeklyStatistic.setPreviousValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1)); 
-        
+        weeklyStatistic.setPreviousValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1));
+
         DisplayedStatistic dailyStatistic = new DisplayedStatistic(678, "Tagesstatistik", Period.DAILY);
-        
-        dailyStatistic.setElectricityValues(randomInts(c.get(Calendar.HOUR_OF_DAY) / 6)); 
+
+        dailyStatistic.setElectricityValues(randomInts(c.get(Calendar.HOUR_OF_DAY) / 6));
         dailyStatistic.setPreviousValues(randomInts(c.get(Calendar.HOUR_OF_DAY) / 6));
-        
+
         statistics.add(yearStatistic);
         statistics.add(monthStatistic);
         statistics.add(weeklyStatistic);
-        statistics.add(dailyStatistic); 
-        
+        statistics.add(dailyStatistic);
     }
 
     public List<DisplayedStatistic> getStatistics() {
@@ -71,10 +73,10 @@ public class StatisticDisplayBean {
     private List<Integer> randomInts(int amount) {
         List<Integer> l = new ArrayList<>();
         Random r = new Random();
-        for(int i = 0; i < amount; i++) {
+        for (int i = 0; i < amount; i++) {
             l.add(r.nextInt(200) + 100);
         }
         return l;
     }
-    
+
 }

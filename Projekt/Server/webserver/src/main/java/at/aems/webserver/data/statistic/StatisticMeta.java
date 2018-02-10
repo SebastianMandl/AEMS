@@ -5,6 +5,7 @@
  */
 package at.aems.webserver.data.statistic;
 
+import com.google.gson.JsonObject;
 import java.util.List;
 
 /**
@@ -90,7 +91,6 @@ public class StatisticMeta {
     public void setStartpage(boolean isStartpage) {
         this.isStartpage = isStartpage;
     }
-    
     
     
     
