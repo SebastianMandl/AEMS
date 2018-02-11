@@ -27,6 +27,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -47,6 +48,8 @@ import at.htlgkr.aems.logger.Logger;
 import at.htlgkr.aems.logger.Logger.LogType;
 import at.htlgkr.aems.plugins.PlugIn;
 import at.htlgkr.aems.raspberry.plugins.PlugInManager;
+import at.htlgkr.aems.raspberry.upload.Authentication;
+import at.htlgkr.aems.raspberry.upload.Authentication.Encryption;
 import at.htlgkr.aems.settings.MeterTypes;
 
 public class DashboardConfigFrame {
@@ -61,6 +64,8 @@ public class DashboardConfigFrame {
 	
 	private static volatile boolean shouldBlockExecution = true;
 	private static BufferedImage image;
+	
+	private static JTextField username, password;
 	
 	//private static final int INDEX_AUTOMATIC = 0;
 	private static final int INDEX_GAS_METER = 0;
@@ -386,8 +391,12 @@ public class DashboardConfigFrame {
 		credentials.add(seperator);
 		credentials.setBackground(Color.WHITE);
 
-		credentials.add(GUIUtils.createInput("Benutzername:", FONT, false));
-		credentials.add(GUIUtils.createInput("Passwort:", FONT, true));
+		JComponent username = GUIUtils.createInput("Benutzername:", FONT, false);
+		DashboardConfigFrame.username = ((JTextField) username.getComponents()[1]);
+		credentials.add(username);
+		JComponent password = GUIUtils.createInput("Passwort:", FONT, true);
+		DashboardConfigFrame.password = ((JTextField) password.getComponents()[1]);
+		credentials.add(password);
 		
 		JPanel configurePanel = new JPanel();
 		configurePanel.setBackground(Color.WHITE);
@@ -398,8 +407,8 @@ public class DashboardConfigFrame {
 	
 		configure.addActionListener(x -> {
 			frame.dispose(); // exchange with loading screen introduction ?
-			PlugInManager.runAllPlugins();
-//			frame.setContentPane(consoleView);
+			PlugInManager.setAuthentication(new Authentication(DashboardConfigFrame.username.getText(), DashboardConfigFrame.password.getText(), Encryption.AES));
+			PlugInManager.runAllPlugins();//			frame.setContentPane(consoleView);
 //			ConsoleView.readFromConsole();
 //			System.out.println("test");
 //			frame.repaint();

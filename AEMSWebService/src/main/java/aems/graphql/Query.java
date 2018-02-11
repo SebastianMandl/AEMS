@@ -50,7 +50,8 @@ public class Query extends GraphQLObjectType {
                     getArgumentList(
                             new Argument("id", AEMSDatabase.Meters.ID, Argument.LIKE),
                             new Argument("user", AEMSDatabase.Meters.USER, Argument.EQUAL),
-                            new Argument("is_sensor", AEMSDatabase.Meters.IS_SENSOR, Argument.EQUAL)));
+                            new Argument("is_sensor", AEMSDatabase.Meters.IS_SENSOR, Argument.EQUAL),
+                            new Argument("name", AEMSDatabase.Meters.NAME, Argument.LIKE)));
     
     private static final GraphQLFieldDefinition METER_DATA = 
             Query.getRootFieldDefinition("meter_data", AEMSDatabase.METERDATA, MeterData.getInstance(), 

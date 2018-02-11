@@ -11,6 +11,8 @@ import java.util.zip.ZipInputStream;
 
 import at.htlgkr.aems.plugins.PlugIn;
 import at.htlgkr.aems.raspberry.meter.InputDevice;
+import at.htlgkr.aems.raspberry.upload.Authentication;
+import at.htlgkr.aems.raspberry.upload.Uploader;
 import at.htlgkr.aems.settings.MeterTypes;
 
 public class PlugInManager {
@@ -109,6 +111,23 @@ public class PlugInManager {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+		}
+	}
+
+
+	public static void setAuthentication(Authentication authentication) {
+		for(String key : METERS.keySet()) {
+			Uploader uploader = METERS.get(key).getPlugIn().getUploader();
+			if(uploader != null) {
+				uploader.setAuthentication(authentication);
+			}
+		}
+		
+		for(String key : SENSORS.keySet()) {
+			Uploader uploader = SENSORS.get(key).getPlugIn().getUploader();
+			if(uploader != null) {
+				uploader.setAuthentication(authentication);
 			}
 		}
 	}
