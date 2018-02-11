@@ -17,7 +17,7 @@ public class AEMSElecricityPlugIn extends PlugIn {
 
 	public AEMSElecricityPlugIn() {
 		super("Potentiometer PLUGIN", Setting.getSetting("°C", new ScriptFile("py", "run.py")));
-		super.getSetting().setMillisUntilRepetition(1000);
+		super.getSetting().setMillisUntilRepetition(1000 * 60);
 		super.setUploader(new AEMSUploader(this));
 	}
 	

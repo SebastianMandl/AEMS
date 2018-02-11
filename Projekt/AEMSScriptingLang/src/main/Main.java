@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,6 +19,8 @@ import org.json.JSONObject;
 
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
+import at.htlgkr.aems.util.crypto.KeyUtils;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 import main.logger.Logger;
 import main.parser.Parser;
 import main.tokens.Token;
@@ -27,7 +31,7 @@ public class Main {
 
 	public static final String REST_ADDRESS = "http://localhost:8084/AEMSWebService/RestInf?";
 	
-	public static BigDecimal key = new BigDecimal("2463721579296249");
+	public static BigDecimal key = new BigDecimal("3686817893335831");
 	
 	private static ArrayList<Anomaly> ANOMALIES = new ArrayList<>();
 	
@@ -174,7 +178,7 @@ public class Main {
 				
 				try {
 				
-				//System.out.println(anomaly.script);
+				System.out.println(anomaly.script);
 				Tokenizer tokenizer = new Tokenizer(anomaly.script);
 				Parser parser = new Parser(anomaly.meter, anomaly.sensor);
 				Token token = null;
@@ -200,6 +204,7 @@ public class Main {
 				//System.out.println("\nend of script");
 				
 				} catch(Exception e) {
+					e.printStackTrace();
 					uploadScriptError(anomaly, e.getMessage());
 				}
 			}
@@ -209,7 +214,7 @@ public class Main {
 			
 			try {
 				//1000 * 60 * 15
-				long wait = 1000 * 60 * 15 - (System.currentTimeMillis() - startTime); // 15 minutes cycle
+				long wait = 1000 - (System.currentTimeMillis() - startTime); // 15 minutes cycle
 				Thread.sleep(wait < 0 ? 0 : wait);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
