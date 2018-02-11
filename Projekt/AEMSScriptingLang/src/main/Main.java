@@ -31,7 +31,7 @@ public class Main {
 
 	public static final String REST_ADDRESS = "http://localhost:8084/AEMSWebService/RestInf?";
 	
-	public static BigDecimal key = new BigDecimal("3686817893335831");
+	public static BigDecimal key = new BigDecimal("1045480378380401");
 	
 	private static ArrayList<Anomaly> ANOMALIES = new ArrayList<>();
 	
