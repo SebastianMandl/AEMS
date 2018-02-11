@@ -80,7 +80,7 @@ public class RestInf extends HttpServlet {
             Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 // username does not exist
-                resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+                resp.getWriter().write(encodeBase64("{ error : \"Invalid credentials!\" }"));
                 resp.getWriter().flush();
             } catch (IOException ex1) {
                 Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex1);
@@ -97,14 +97,18 @@ public class RestInf extends HttpServlet {
         }
         
         try {
-            resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+            resp.getWriter().write(encodeBase64("{ error : \"Invalid credentials!\" }"));
         } catch (IOException ex) {
             Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
     
-    private boolean doLogin(String username, String authStr, String salt, String encryption, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private static String encodeBase64(String s) {
+        return Base64.getUrlEncoder().encodeToString(s.getBytes());
+    }
+    
+    private boolean doLogin(String username, String authStr, String salt, String encryption, HttpServletRequest req, HttpServletResponse resp, boolean returnId) throws IOException {
         //JSONObject root = new JSONObject(query);
 //        String username = root.getString("user");
 //        String authStr = root.getString("auth_str");
@@ -128,14 +132,16 @@ public class RestInf extends HttpServlet {
             
             IPtoID.registerIPtoIDMapping(req.getRemoteAddr(), username);
             
-            String response = "{ id : " + username + " }";
-            response = getEncryptedResponse(response, encryption, username, req, resp);
-            response = Base64.getUrlEncoder().encodeToString(response.getBytes());
-            
-            resp.getWriter().write(response);
-            resp.getWriter().flush();
+            if(returnId) {
+                String response = "{ id : " + username + " }";
+                response = getEncryptedResponse(response, encryption, username, req, resp);
+                response = Base64.getUrlEncoder().encodeToString(response.getBytes());
+
+                resp.getWriter().write(response);
+                resp.getWriter().flush();
+            }
         } catch (SQLException ex) {
-            resp.getWriter().write("{ error : \"Invalid credentials!\" }");
+            resp.getWriter().write(encodeBase64("{ error : \"Invalid credentials!\" }"));
             resp.getWriter().flush();
             return false;
         }
@@ -149,7 +155,7 @@ public class RestInf extends HttpServlet {
                 return response;
             } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
                 Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
-                resp.getWriter().write("{\"error\":\"no key was priorly established!\"}");
+                resp.getWriter().write(encodeBase64("{\"error\":\"no key was priorly established!\"}"));
                 resp.getWriter().flush();
                 return null;
             }
@@ -174,7 +180,7 @@ public class RestInf extends HttpServlet {
         switch (action) {
             case ACTION_BOT:
             {
-                if(!doLogin(user, authStr, salt, encryption, req, resp))
+                if(encryption.equals(ENCRYPTION_SSL) && !doLogin(user, authStr, salt, encryption, req, resp, false))
                     return; // abort if authentication has failed
                 
                 try {
@@ -188,14 +194,14 @@ public class RestInf extends HttpServlet {
             }
             case ACTION_LOGIN:
                 if(encryption.equals(ENCRYPTION_SSL))
-                    doLogin(user, authStr, salt, encryption, req, resp);
+                    doLogin(user, authStr, salt, encryption, req, resp, true);
                 else if(encryption.equals(ENCRYPTION_AES)) { // in case of AES-encryption just return the id of the user that was already established
                     resp.getWriter().write(getEncryptedResponse("{ id : \"" + IPtoID.convertIPToId(req.getRemoteAddr()) + "\" }", encryption, user, req, resp));
                     resp.getWriter().flush();
                 }
                 break;
             case ACTION_QUERY:
-                if(!doLogin(user, authStr, salt, encryption, req, resp))
+                if(encryption.equals(ENCRYPTION_SSL) && !doLogin(user, authStr, salt, encryption, req, resp, false))
                     return; // abort if authentication has failed
                 
                 GraphQLSchema schema = new GraphQLSchema(Query.getInstance(IPtoID.convertIPToId(req.getRemoteAddr())));
@@ -237,7 +243,7 @@ public class RestInf extends HttpServlet {
                     writer.flush();
                 } catch(NullPointerException | NumberFormatException | InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
                     //Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, e);
-                    writer.write("{ error :\"no data was returned!\"}");
+                    writer.write(encodeBase64("{ error :\"no data was returned!\"}"));
                     writer.flush();
                 }   
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -458,7 +464,7 @@ public class RestInf extends HttpServlet {
             }
         });
         String notFinalJson = JSON.toString();
-        JSONObject json = new JSONObject(notFinalJson);
+        JSONObject json = new JSONObject(notFinalJson.isEmpty() ? "{}" : notFinalJson);
         
         if(json.keySet().size() > 0) {
             data = data == null ? json.getString("data") : data;
@@ -476,7 +482,7 @@ public class RestInf extends HttpServlet {
         }
         
         if(!receivedData) {
-            resp.getWriter().write("Parameters missing!");
+            resp.getWriter().write(encodeBase64("Parameters missing!"));
             resp.getWriter().flush();
             return null;
         } else {
@@ -493,7 +499,7 @@ public class RestInf extends HttpServlet {
             }
         } else if(encryption.equals(ENCRYPTION_SSL)) {
             
-            if((authStr == null || salt == null) &&  !action.equals(ACTION_LOGIN)) {
+            /*if((authStr == null || salt == null) &&  !action.equals(ACTION_LOGIN)) {
                 // if the action is LOGIN that this parameter is included within the DATA field.
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("Parameters missing!");
@@ -508,7 +514,7 @@ public class RestInf extends HttpServlet {
                 resp.getWriter().write("Invalid credentials!");
                 resp.getWriter().flush();
                 return null;
-            }
+            }*/
             data = new String(Base64.getUrlDecoder().decode(data));
         }
         
