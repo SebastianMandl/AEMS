@@ -19,12 +19,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.Socket;
+
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
 import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.Decrypter;
 import at.aems.apilib.crypto.EncryptionType;
+import at.htlgkr.aems.util.crypto.KeyUtils;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
@@ -76,22 +85,33 @@ public class LoginActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
         final boolean boolLogin = true;
 
-        //Login to API
-/*
-        AemsUser user = new AemsUser(0, email, password);
-        AemsQueryAction action = new AemsQueryAction(user, EncryptionType.AES);
-        action.setQuery("authentication-query");
-        String json = action.toJson(sharedSecretKey);
+        //Login to AEMS
+        BigDecimal key = null;
+        try {
+            DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("localhost"), 9950));
+            key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), email, password);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        BigInteger keyInt = key.unscaledValue();
+        byte[] sharedSecretKey = keyInt.toByteArray();
 
         AemsAPI.setUrl("https://api.aems.at");
-        String response = AemsAPI.call(action, sharedSecretKey);
-        String decryptor = Decrypter.requestDecryption(sharedSecretKey, response.getBytes());
 
         AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
         loginAction.setUsername(email);
         loginAction.setPassword(password);
-*/
 
+        AemsResponse response = null;
+        try {
+            response = AemsAPI.call0(loginAction, sharedSecretKey);
+            int httpCode = response.getResponseCode();
+            String text = response.getResponseText();
+            String decryptedText = response.getDecryptedResponse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
