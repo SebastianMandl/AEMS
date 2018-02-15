@@ -63,7 +63,6 @@ public class App_Tab_2 extends ChartViewTab {
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
 
-
         //Left Y-Axis
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setDrawGridLines(false);

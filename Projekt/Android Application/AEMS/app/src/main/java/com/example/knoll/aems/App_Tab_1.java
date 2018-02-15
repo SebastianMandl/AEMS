@@ -47,11 +47,9 @@ public class App_Tab_1 extends ChartViewTab {
         entries.add(new BarEntry(10f, 7));
         entries.add(new BarEntry(11f, 8));
 
-
-        BarDataSet dataSet = new BarDataSet(entries, "Stromausschlag");
+        BarDataSet dataSet = new BarDataSet(entries, "Stromverbrauch");
         dataSet.setColor(Color.RED);
         dataSet.setValueTextColor(Color.BLUE);
-
 
         BarData barData = new BarData(dataSet);
         chart.setData(barData);
