@@ -20,8 +20,6 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-
-
         boolean warning = true;
         boolean notification = true;
 
@@ -45,7 +43,6 @@ public class BootReceiver extends BroadcastReceiver {
             loadNotification();
 
         }
-
     }
 
     private void loadNotification() {
@@ -56,10 +53,8 @@ public class BootReceiver extends BroadcastReceiver {
         stackBuilder.addParentStack(AllNotifications.class);
         stackBuilder.addNextIntent(in);
 
-
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(notificationID, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
-
 
         NotificationManager manager = (NotificationManager) builder.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(notificationID, builder.build());

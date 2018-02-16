@@ -43,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final String PREFERENCE_KEY_SESSION = "AemsLoginPreferenceKeySession";
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferencesSession;
+    int httpCode = 0;
+    String responseText = "";
+    String responseDecryptedText = "";
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -61,12 +64,10 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
-
     }
 
     public void login() {
         Log.d(TAG, "Login");
-
 
         if (!validate()) {
             onLoginFailed();
@@ -83,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
 
         final String email = _inputUsername.getText().toString();
         final String password = _passwordText.getText().toString();
-        final boolean boolLogin = true;
 
         //Login to AEMS
         BigDecimal key = null;
@@ -106,9 +106,9 @@ public class LoginActivity extends AppCompatActivity {
         AemsResponse response = null;
         try {
             response = AemsAPI.call0(loginAction, sharedSecretKey);
-            int httpCode = response.getResponseCode();
-            String text = response.getResponseText();
-            String decryptedText = response.getDecryptedResponse();
+            httpCode = response.getResponseCode();
+            responseText = response.getResponseText();
+            responseDecryptedText = response.getDecryptedResponse();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        if(boolLogin){
+                        if(httpCode == 200){
                             onLoginSuccess(email, password);
                         }
                         else{
@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         progressDialog.dismiss();
                     }
-                }, 2000);
+                }, 500);
     }
 
 
@@ -147,21 +147,12 @@ public class LoginActivity extends AppCompatActivity {
         if(user == null && passw == null){
             CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
 
-
             if(checkBoxRememberMe.isChecked()){
                 sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
                 sharedPreferences.edit().putString("EMAIL", email).commit();
                 sharedPreferences.edit().putString("PASSWORD", password).commit();
                 sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true).commit();
-
-
-                user = sharedPreferences.getString("EMAIL", "");
-                passw = sharedPreferences.getString("PASSWORD", "");
-                System.out.println("---------------------------------------------" + email + "-----" + password + "------------------------------------------------");
-                System.out.println("---------------------------------------------" + user + "-----" + passw + "----------------------------------------------------");
-
             }
-
         }
 
         finish();

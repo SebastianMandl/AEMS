@@ -199,21 +199,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
-
         if (id == R.id.action_logout){
             //Delete Logininformation
             sharedPreferences = this.getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.commit();
-
-            /*
-            sharedPreferencesSession = this.getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
-            SharedPreferences.Editor editorSession = sharedPreferencesSession.edit();
-            editorSession.clear();
-            editorSession.commit();
-            */
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -222,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AllNotifications.class);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
