@@ -19,12 +19,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.Socket;
+
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
 import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.Decrypter;
 import at.aems.apilib.crypto.EncryptionType;
+import at.htlgkr.aems.util.crypto.KeyUtils;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
@@ -34,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final String PREFERENCE_KEY_SESSION = "AemsLoginPreferenceKeySession";
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferencesSession;
+    int httpCode = 0;
+    String responseText = "";
+    String responseDecryptedText = "";
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -52,12 +64,10 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
-
     }
 
     public void login() {
         Log.d(TAG, "Login");
-
 
         if (!validate()) {
             onLoginFailed();
@@ -74,30 +84,40 @@ public class LoginActivity extends AppCompatActivity {
 
         final String email = _inputUsername.getText().toString();
         final String password = _passwordText.getText().toString();
-        final boolean boolLogin = true;
 
-        //Login to API
-/*
-        AemsUser user = new AemsUser(0, email, password);
-        AemsQueryAction action = new AemsQueryAction(user, EncryptionType.AES);
-        action.setQuery("authentication-query");
-        String json = action.toJson(sharedSecretKey);
+        //Login to AEMS
+        BigDecimal key = null;
+        try {
+            DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("localhost"), 9950));
+            key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), email, password);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        BigInteger keyInt = key.unscaledValue();
+        byte[] sharedSecretKey = keyInt.toByteArray();
 
         AemsAPI.setUrl("https://api.aems.at");
-        String response = AemsAPI.call(action, sharedSecretKey);
-        String decryptor = Decrypter.requestDecryption(sharedSecretKey, response.getBytes());
 
         AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
         loginAction.setUsername(email);
         loginAction.setPassword(password);
-*/
 
+        AemsResponse response = null;
+        try {
+            response = AemsAPI.call0(loginAction, sharedSecretKey);
+            httpCode = response.getResponseCode();
+            responseText = response.getResponseText();
+            responseDecryptedText = response.getDecryptedResponse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        if(boolLogin){
+                        if(httpCode == 200){
                             onLoginSuccess(email, password);
                         }
                         else{
@@ -105,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         progressDialog.dismiss();
                     }
-                }, 2000);
+                }, 500);
     }
 
 
@@ -127,21 +147,12 @@ public class LoginActivity extends AppCompatActivity {
         if(user == null && passw == null){
             CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
 
-
             if(checkBoxRememberMe.isChecked()){
                 sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
                 sharedPreferences.edit().putString("EMAIL", email).commit();
                 sharedPreferences.edit().putString("PASSWORD", password).commit();
                 sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true).commit();
-
-
-                user = sharedPreferences.getString("EMAIL", "");
-                passw = sharedPreferences.getString("PASSWORD", "");
-                System.out.println("---------------------------------------------" + email + "-----" + password + "------------------------------------------------");
-                System.out.println("---------------------------------------------" + user + "-----" + passw + "----------------------------------------------------");
-
             }
-
         }
 
         finish();

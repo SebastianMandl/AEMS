@@ -16,7 +16,6 @@ Notifications:
 notify.js
 
 
-
 ---------------------------------------------------
 Notifications Android-App:
 ---------------------------------------------------
@@ -28,7 +27,14 @@ SHA-512 verschlüsselung:
 ---------------------------------------------------
 https://howtodoinjava.com/security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/
 
+
 ---------------------------------------------------
 Shared Preferences Android-App:
 ---------------------------------------------------
 https://developer.android.com/training/data-storage/shared-preferences.html
+
+
+---------------------------------------------------
+BigDecimal to Byte[] Android-App:
+---------------------------------------------------
+https://stackoverflow.com/questions/6167697/how-to-convert-java-bigdecimal-to-normal-byte-array-not-2s-complement

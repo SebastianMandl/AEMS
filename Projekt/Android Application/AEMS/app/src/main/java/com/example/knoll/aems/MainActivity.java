@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         sharedPreferencesSession = getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
         boolean sessionLogin = sharedPreferencesSession.getBoolean("Session", true);
         System.out.println("---------------------------------------------" + sessionLogin + "------------------------------------------------");
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
-
 
         tab1 = new App_Tab_1();
         tab2 = new App_Tab_2();
@@ -201,19 +199,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
-
         if (id == R.id.action_logout){
             //Delete Logininformation
             sharedPreferences = this.getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.commit();
-
-            sharedPreferencesSession = this.getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
-            SharedPreferences.Editor editorSession = sharedPreferencesSession.edit();
-            editorSession.clear();
-            editorSession.commit();
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -222,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AllNotifications.class);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -241,21 +231,15 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             switch (position){
-
                 case 0:
                     return tab1;
-
                 case 1:
                     return tab2;
-
                 case 2:
                     return tab3;
-
                 default:
                     return null;
             }
-
-
         }
 
         public ChartViewTab getCurrentTab() {
@@ -267,7 +251,5 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 3;
         }
-
     }
-
 }

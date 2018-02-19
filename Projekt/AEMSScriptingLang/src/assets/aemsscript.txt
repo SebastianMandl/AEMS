@@ -17,6 +17,10 @@ $friday = 5
 $saturday = 6
 $sunday = 7
 
+$y := $sensor of period from $today until $today + 1
+$avg := $y : avg
+raise notice "Anomaly found" on $avg < 150
+
 syntax:
 
 varible definition:

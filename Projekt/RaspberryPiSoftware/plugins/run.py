@@ -1,8 +1,8 @@
 import sys
 import serial
 
-for line in sys.stdin:
-	print(line);
+#for line in sys.stdin:
+#	print(line);
 
 ser = serial.Serial('COM3', 9600)
 

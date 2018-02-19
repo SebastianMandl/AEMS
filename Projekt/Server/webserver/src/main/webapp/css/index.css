@@ -13,13 +13,11 @@
 	margin-left: 5%;
 }
 
-
 .statistic-container {
 	width: 850px;
 	margin-bottom: 3%;
 	display: inline-block;
 }
-
 
 @media screen and (min-width:1200px) and (max-width:1400px)
 {	
@@ -38,7 +36,6 @@
 	margin-left: 3%;
 }	
 }
-
 
 @media screen and (min-width:760px) and (max-width:1200px)
 {	

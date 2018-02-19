@@ -159,6 +159,7 @@ public class Tokenizer {
 			case '/':
 				type = TokenTypes.DIV;
 				break;
+			case '\r':
 			case '\n':
 				type = TokenTypes.NEW_LINE;
 				if(!peek)

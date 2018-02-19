@@ -16,6 +16,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import at.htlgkr.aems.logger.Logger;
@@ -100,9 +101,19 @@ public class AEMSUploader extends Uploader {
 			isLoggedIn = true;
 		}
 		
+		System.out.println(authentication);
+		
 		StringBuilder query = new StringBuilder();
-		System.out.println(super.plugin);
-		query.append("{\"meter\":\"").append(super.plugin.getSetting().getMeterId()).append("\",");
+		String meterId = super.plugin.getSetting().getMeterId();
+		if(super.plugin.getSetting().isSensor()) {
+			String sensorName = super.plugin.getSetting().getMeterId();
+			JSONObject object = new JSONObject(sendQuery0("{ meters (name:\"" + sensorName + "\") { id } }", authentication));
+			JSONArray meters = object.getJSONArray("meters");
+			meterId = meters.getJSONObject(0).getString("id");
+			System.out.println(meterId);
+		}
+		
+		query.append("{\"meter\":\"").append(meterId).append("\",");
 		for(TableData data : _package.getTableData()) {
 			query.append("\"").append(data.getTableName()).append("\"").append(":[");
 			for(ColumnData column : data) {
@@ -140,6 +151,34 @@ public class AEMSUploader extends Uploader {
 		} catch (IOException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private String sendQuery0(String query, Authentication authentication) {
+		try {
+			System.out.println(key);
+			HttpURLConnection con = (HttpURLConnection) new URL(SERVER_ADDRESS + "/AEMSWebService/RestInf?encryption=" + authentication.getEncryption() + "&user=" + authentication.getId() + "&action=QUERY&data=" + Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(key, query.getBytes()))).openConnection();
+			con.setRequestMethod("POST");
+			con.setDoInput(true);
+			if(con.getResponseCode() != 200) {
+				Logger.log(LogType.ERROR, "data could not be uploaded for plugin \"%s\"", super.plugin.getName());
+				BufferedReader reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+					Logger.log(LogType.ERROR, line);
+				}
+			} else {
+				StringBuilder builder = new StringBuilder();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+					builder.append(line);
+				}
+				String result = builder.toString();
+				result = new String(Decrypter.requestDecryption(key, Base64.getUrlDecoder().decode(result.getBytes())));
+				return result;
+			}
+		} catch (IOException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

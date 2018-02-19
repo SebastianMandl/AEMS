@@ -99,7 +99,7 @@ public final class WebUIBean {
          */
         
         fetchUnit(false, METERS);
-        fetchUnit(false, SENSORS);
+        fetchUnit(true, SENSORS);
     }
 
     private void fetchUnit(boolean isSensor, final ArrayList<Meter> REF) {

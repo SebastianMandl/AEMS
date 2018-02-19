@@ -63,7 +63,6 @@ public class App_Tab_2 extends ChartViewTab {
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
 
-
         //Left Y-Axis
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
@@ -90,7 +89,6 @@ public class App_Tab_2 extends ChartViewTab {
         data.setData(generateBarData());
         data.setData(generateLineData());
 
-
         xAxis.setAxisMaximum(data.getXMax() + 0.2f);
 
         chart.setData(data);
@@ -106,7 +104,6 @@ public class App_Tab_2 extends ChartViewTab {
 
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> entries2 = new ArrayList<BarEntry>();
-
 
         entries1.add(new BarEntry(1f, 2));
         entries1.add(new BarEntry(1f, 6));
