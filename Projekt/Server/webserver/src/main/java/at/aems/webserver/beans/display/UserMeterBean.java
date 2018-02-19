@@ -7,6 +7,7 @@ package at.aems.webserver.beans.display;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.NewMap;
@@ -52,6 +53,14 @@ public class UserMeterBean extends AbstractDisplayBean {
         query.setQuery(AemsUtils.getQuery("meters_simple", NewMap.of("USER_ID", userBean.getUserId())));
         JsonArray data = getJsonResponse(query);
 	
+	System.out.println(AemsUtils.getQuery("meters_simple", new HashMap<String, String>()));
+	
+	System.out.println("DATAAAAAAAAAAAAAAAAAA");
+	System.out.print(data);
+	
+	if(data == null)
+	    return;
+	
 	// iterate over response and add all meters
         for(int i = 0; i < data.size(); i++) {
             JsonObject j = data.get(i).getAsJsonObject();
@@ -82,12 +91,14 @@ public class UserMeterBean extends AbstractDisplayBean {
     }
 
     private JsonArray getJsonResponse(AemsQueryAction query) {
-        try {
-            AemsAPI.setUrl(AemsUtils.API_URL + "/meters.base64");
-            return AemsAPI.call0(query, null).getJsonArrayWithinObject();
+        AemsResponse resp = null;
+	try {
+            AemsAPI.setUrl(AemsUtils.API_URL);
+            resp = AemsAPI.call0(query, null);
+	    return resp.getJsonArrayWithinObject();
         } catch (IOException ex) {
             Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
         return null;
     }
 
