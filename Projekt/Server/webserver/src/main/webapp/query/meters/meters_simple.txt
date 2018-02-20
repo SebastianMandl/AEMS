@@ -1,9 +1,9 @@
 query GetMetersSimple {
-	meters ( user : #USER_ID# ) {
+	meters {
 		id
 		metertype {
 			id
-			display_name
+			name
 		}
 	}
 }
