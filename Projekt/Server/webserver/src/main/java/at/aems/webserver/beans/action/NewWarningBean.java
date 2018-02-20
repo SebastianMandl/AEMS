@@ -123,7 +123,7 @@ public class NewWarningBean extends AbstractActionBean {
             
             System.out.println(insertNoti.toJsonObject().toString());
             
-            AemsAPI.setUrl("http://api.aems.at"); 
+            AemsAPI.setUrl(AemsUtils.API_URL); 
             
             //String response = AemsUtils.decodeBase64(AemsAPI.call(insertNoti, null));
             int notificationId = 10;//AemsUtils.getResponseId(response);
