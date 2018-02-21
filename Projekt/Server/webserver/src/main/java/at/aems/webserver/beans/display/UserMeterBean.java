@@ -65,7 +65,7 @@ public class UserMeterBean extends AbstractDisplayBean {
         for(int i = 0; i < data.size(); i++) {
             JsonObject j = data.get(i).getAsJsonObject();
             String id = j.get("id").getAsString();
-            String type = j.get("metertype").getAsJsonObject().get("display_name").getAsString();
+            String type = j.get("metertype").getAsJsonObject().get("name").getAsString();
             meters.put(id, type);
         }
         
@@ -95,8 +95,15 @@ public class UserMeterBean extends AbstractDisplayBean {
 	try {
             AemsAPI.setUrl(AemsUtils.API_URL);
             resp = AemsAPI.call0(query, null);
-	    return resp.getJsonArrayWithinObject();
+	    JsonArray arr = resp.getJsonArrayWithinObject();
+	    for(int i = 0; i < arr.size(); i++) {
+		if(arr.get(i).isJsonObject() && arr.get(i).getAsJsonObject().keySet().isEmpty()) {
+		    arr.remove(i);
+		}
+	    }
+	    return arr; 
         } catch (IOException ex) {
+	    Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, "OH FUCC");
             Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return null;

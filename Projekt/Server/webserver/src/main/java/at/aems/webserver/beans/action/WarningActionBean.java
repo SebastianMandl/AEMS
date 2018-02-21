@@ -5,7 +5,12 @@
  */
 package at.aems.webserver.beans.action;
 
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsDeleteAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.beans.AbstractBean;
+import java.io.IOException;
 import javax.faces.bean.ManagedBean;
 
 /**
@@ -14,8 +19,19 @@ import javax.faces.bean.ManagedBean;
  */
 @ManagedBean
 public class WarningActionBean extends AbstractActionBean {
-    public String doDelete(Integer id) {
-        notify.setMessage("Benachrichtigung wurde entfernt!");
+    
+    public String doDelete(Integer id) {	
+	AemsDeleteAction delete = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
+	delete.setTable("Notifications");
+	delete.setIdColumn("id", id);
+	try {
+	    AemsAPI.call0(delete, null);
+	    notify.setMessage("Benachrichtigung wurde entfernt!");
+	    callUpdateOn("userWarningsBean");
+	} catch(IOException e) {
+	    notify.setMessage("Ein Fehler ist aufgetreten!");
+	}
         return "einstellungenWarnungen";
     }
+    
 }

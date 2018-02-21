@@ -8,26 +8,17 @@ package at.aems.webserver.beans;
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
 import at.aems.apilib.AemsResponse;
-import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
-import at.aems.webserver.NewMap;
 import at.aems.webserver.beans.action.AbstractActionBean;
 import com.google.gson.JsonObject;
-import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import jdk.nashorn.internal.codegen.MapCreator;
 
 /**
  * This managed bean class is designated to serve as the login interface by calling
@@ -39,13 +30,6 @@ import jdk.nashorn.internal.codegen.MapCreator;
 public class LoginBean extends AbstractActionBean { // Serializeable to allow application to run across multiple server nodes
     private String username;
     private String password;
-    
-    @ManagedProperty(value = "#{user}")
-    private UserBean userBean;
-    
-    public LoginBean() {
-        
-    }
 
     public String getUsername() {
         return username;
@@ -100,17 +84,8 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
         userBean.setUsername(null);
         userBean.setPassword(null);
 	FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+	notify.setMessage("Auf Wiedersehen!");
         return "index";
-    }
-
-    public UserBean getUserBean() {
-        return userBean;
-    }
-
-    public void setUserBean(UserBean userBean) {
-        this.userBean = userBean;
-    }
-    
-    
+    }    
     
 }
