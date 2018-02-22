@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_20" class="java.beans.XMLDecoder">
+    <object class="java.util.ArrayList">
+        <void method="add">
+            <object class="internals.Product">
+                <void property="catalogNumber">
+                    <string>123</string>
+                </void>
+                <void property="producer">
+                    <string>Apple</string>
+                </void>
+                <void property="productName">
+                    <string>Power Book</string>
+                </void>
+                <void property="price">
+                    <double>1299.99</double>
+                </void>
+            </object>
+        </void>
+        <void method="add">
+            <object class="internals.Product">
+                <void property="catalogNumber">
+                    <string>987</string>
+                </void>
+                <void property="producer">
+                    <string>Adobe</string>
+                </void>
+                <void property="productName">
+                    <string>Photoshop CS4</string>
+                </void>
+                <void property="price">
+                    <double>1399.99</double>
+                </void>
+            </object>
+        </void>
+        <void method="add">
+            <object class="internals.Product">
+                <void property="catalogNumber">
+                    <string>B99</string>
+                </void>
+                <void property="producer">
+                    <string>BMW</string>
+                </void>
+                <void property="productName">
+                    <string>525i</string>
+                </void>
+                <void property="price">
+                    <double>55999.99</double>
+                </void>
+            </object>
+        </void>
+        <void method="add">
+            <object class="internals.Product">
+                <void property="catalogNumber">
+                    <string>444</string>
+                </void>
+                <void property="producer">
+                    <string>Suchard</string>
+                </void>
+                <void property="productName">
+                    <string>Velma</string>
+                </void>
+                <void property="price">
+                    <double>1.99</double>
+                </void>
+            </object>
+        </void>
+    </object>
+</java>

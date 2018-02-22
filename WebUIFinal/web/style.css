@@ -1,0 +1,24 @@
+.inputTextAreaWebUI {
+    float: left;
+    margin-top: 5px;
+}
+
+.selectMenuWebUI {
+    margin-right: 20%;
+    min-width: 350px;
+    padding: 5px;
+}
+
+.selectItemWebUI {
+    
+}
+
+.columnWebUI {
+    padding: 50px;
+    min-width: 200px;
+}
+
+.headerWebUI {
+    padding: 5px;
+    font-weight: bold;
+}

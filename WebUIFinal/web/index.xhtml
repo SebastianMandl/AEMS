@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD
+    XHTML
+    1.0
+    Transitional//EN" "http://www.w3.
+    org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>WebUI</title>
+        <link rel="stylesheet" href="style.css" />
+        <meta charset="UTF-8" />
+    </h:head>
+    <h:body>
+        <h:form>            
+            <span style="font-weight: bold;margin-right: 5px">Zähler</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedMeter}" styleClass="selectMenuWebUI">
+                <f:selectItems value="#{webUIBean.METERS}" var="meter"
+                itemLabel="#{meter.id}" itemValue="#{meter.id}" />
+            </h:selectOneMenu>
+            
+            <br />
+            <br />
+            
+            <span style="font-weight: bold;margin-right: 5px">Sensor</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedSensor}" styleClass="selectMenuWebUI" >
+                <f:selectItems value="#{webUIBean.SENSORS}" var="sensor"
+                               itemLabel="#{sensor.id}" itemValue="#{sensor.id}" />
+            </h:selectOneMenu>
+            
+            <br />
+            <br />
+            
+            <h:inputTextarea value="#{webUIBean.script}" cols="100" rows="10" styleClass="inputTextAreaWebUI" />
+            
+            <br />
+            
+            <h:inputText value="#{webUIBean.cycleTime}" converter="javax.faces.Integer" />
+            <br />
+            
+            <h:commandButton value="Verlinken" type="submit" action="#{webUIBean.doSubmit()}" />
+            
+            <br />
+            <br />
+            
+            <h:dataTable value="#{webUIBean.ANOMALIES}" var="anomaly" rowClasses="columnWebUI" headerClass="headerWebUI" >
+                <h:column>
+                    <f:facet name="header">Zähler</f:facet>
+                    #{anomaly.meter}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Sensor</f:facet>
+                    #{anomaly.sensor}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Script</f:facet>
+                    <h:outputText value="#{anomaly.script}" escape="false" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Script Fehler</f:facet>
+                    <h:outputText value="#{anomaly.scriptErrors}" escape="false" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header"></f:facet>
+                    <h:commandButton style="margin-left: 20%" value="Löschen" type="submit" action="#{webUIBean.doDelete(anomaly)}" />
+                </h:column>
+                 <h:column>
+                    <f:facet name="header"></f:facet>
+                    <h:commandButton style="margin-left: 20%" value="Editieren" type="submit" action="#{webUIBean.doEdit(anomaly)}" />
+                </h:column>
+            </h:dataTable>
+        </h:form>
+    </h:body>
+</html>
