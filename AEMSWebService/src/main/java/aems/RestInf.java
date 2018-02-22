@@ -191,6 +191,7 @@ public class RestInf extends HttpServlet {
                 } catch (IOException | SQLException ex) {
                     Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                break;
             }
             case ACTION_LOGIN:
                 if(encryption.equals(ENCRYPTION_SSL))
@@ -223,6 +224,7 @@ public class RestInf extends HttpServlet {
                     for(int i = 0; i < array.length(); i++) {
                         if(array.getJSONObject(i).keySet().isEmpty()) {
                             array.remove(i);
+                            i--;
                         }
                     }
                     
@@ -327,7 +329,7 @@ public class RestInf extends HttpServlet {
                     SQL.append("UPDATE ").append("aems.").append("\"").append(key).append("\"").append(" SET ");
                     break;
                 case ACTION_DELETE:
-                    SQL.append("DELETE FROM ").append("aems.").append("\"").append(key).append("\"").append(" WHERE ");
+                    SQL.append("DELETE FROM ").append("aems.").append("\"").append(key).append("\" ");
                     break;
                 // fail
                 default:

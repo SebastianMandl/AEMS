@@ -27,7 +27,7 @@ public class Anomaly extends GraphQLObjectType {
     private static final GraphQLFieldDefinition SCRIPT = Query.getFieldDefinition("script", AEMSDatabase.ANOMALIES, AEMSDatabase.Anomalies.SCRIPT, Scalars.GraphQLString);
     private static final GraphQLFieldDefinition EXEC_INTERMEDIATE_TIME = Query.getFieldDefinition("exec_intermediate_time", AEMSDatabase.ANOMALIES, AEMSDatabase.Anomalies.EXEC_INTERMEDIATE_TIME, Scalars.GraphQLInt);
     private static final GraphQLFieldDefinition LAST_EXECUTION = Query.getFieldDefinition("last_execution", AEMSDatabase.ANOMALIES, AEMSDatabase.Anomalies.LAST_EXECUTION, Scalars.GraphQLString);
-    
+    private static final GraphQLFieldDefinition SCRIPT_ERRORS = Query.getFieldDefinition("script_errors", AEMSDatabase.ANOMALIES, AEMSDatabase.Anomalies.SCRIPT_ERRORS, Scalars.GraphQLString);
     public Anomaly(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
     }
@@ -43,6 +43,7 @@ public class Anomaly extends GraphQLObjectType {
         defs.add(SCRIPT);
         defs.add(LAST_EXECUTION);
         defs.add(EXEC_INTERMEDIATE_TIME);
+        defs.add(SCRIPT_ERRORS);
         
         instance = new Anomaly("anomaly", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;

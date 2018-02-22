@@ -38,9 +38,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
-    private static final String PREFERENCE_KEY_SESSION = "AemsLoginPreferenceKeySession";
     SharedPreferences sharedPreferences;
-    SharedPreferences sharedPreferencesSession;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -56,15 +54,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferencesSession = getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
-        boolean sessionLogin = sharedPreferencesSession.getBoolean("Session", true);
-        System.out.println("---------------------------------------------" + sessionLogin + "------------------------------------------------");
 
         sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
         String user = sharedPreferences.getString("EMAIL", null);
         String passw = sharedPreferences.getString("PASSWORD", null);
 
-        if (!sessionLogin || (user == null && passw == null)){
+        if (user == null && passw == null){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -104,15 +99,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-   /* protected void onDestroy(){
-        super.onDestroy();
-        sharedPreferencesSession = this.getSharedPreferences(PREFERENCE_KEY_SESSION, MODE_PRIVATE);
-        SharedPreferences.Editor editorSession = sharedPreferencesSession.edit();
-        editorSession.clear();
-        editorSession.commit();
-        finish();
-    }*/
 
 
     /**

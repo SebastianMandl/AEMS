@@ -114,20 +114,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="45dp"
         android:text="Liste aller Benachrichtigungen"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/primary"
-        />
-
-    <Button
-        android:id="@+id/buttonBackHome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="10dp"
-        android:text="Zurück zur Startseite"
         android:backgroundTint="@color/white"
         android:textColor="@color/primary"
         />
