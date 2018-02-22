@@ -9,6 +9,7 @@ import at.aems.webserver.beans.AbstractBean;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -21,6 +22,9 @@ public abstract class AbstractDisplayBean extends AbstractBean implements Serial
 
     public AbstractDisplayBean() {
     }
+    
+    @ManagedProperty(value="#{errorBean}")
+    protected ErrorBean errorBean;
     
     @PostConstruct
     public void init() {
@@ -40,4 +44,10 @@ public abstract class AbstractDisplayBean extends AbstractBean implements Serial
      * This method is used to update the data this bean is displaying
      */
     public abstract void update();
+
+    public void setErrorBean(ErrorBean errorBean) {
+	this.errorBean = errorBean;
+    }
+    
+    
 }

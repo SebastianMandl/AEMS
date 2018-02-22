@@ -44,14 +44,16 @@
 
                 <h2 class="h2-downloads">Konfigurierte Berichte:</h2>
                 <div class="list-group reportList" id="reportList"> 
-                    <div class="list-group-item ">
-                        <h4 class="list-group-item-heading">Strombericht 1</h4>
-                        <p class="list-group-item-text">Monatlich, automatisch generiert</p>
-                        <div class="btn-glyph">
-                            <button class="btn btn-default" title="Bericht bearbeiten" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
-                            <button class="btn btn-default" title="Bericht löschen"><span class="glyphicon glyphicon-trash"></span></button>
-                        </div>
-                    </div>
+		    <c:forEach items="#{userReportBean.reports}" var="rep">
+			<div class="list-group-item" data-id="#{rep.id}">
+			    <h4 class="list-group-item-heading">#{rep.name}</h4>
+			    <p class="list-group-item-text">#{rep.annotation}</p>
+			    <div class="btn-glyph">
+				<button class="btn btn-default" title="Bericht bearbeiten" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
+				<button class="btn btn-default" title="Bericht löschen"><span class="glyphicon glyphicon-trash"></span></button>
+			    </div>
+			</div>
+		    </c:forEach>
                 </div>
 
 
@@ -98,10 +100,10 @@
         <script src="js/mobile-functions.js"></script>
 
         <script>
-                    var notifs = #{notificationBean.nofificationsAsJson};
-                    notifications = $.map(notifs, function (el) {
-                        return el
-                    });
+	    var notifs = #{notificationBean.nofificationsAsJson};
+	    notifications = $.map(notifs, function (el) {
+		return el
+	    });
         </script>
 
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>

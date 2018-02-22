@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    console.log("ready!");
+//    console.log("ready!");
    $(".edit-statistic").on("click", function() {
       let id = $(this).attr("data-id");
       let pre = "#edit-statistic-form\\:";

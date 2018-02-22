@@ -60,7 +60,7 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	}
 	
 	if(response == null) {
-	    notify.setMessage("Es ist ein Fehler aufgetreten!");
+	    notify.setMessage("Login fehlgeschlagen!");
 	    return "index.xhtml";
 	}
 	
@@ -73,6 +73,9 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	userBean.setUserId(id);
 	userBean.setUsername(username);
 	userBean.setPassword(password);
+	
+	callUpdateOn("userMeterBean");
+//	callUpdateOn("userReportBean");
 	
         FacesContext context = FacesContext.getCurrentInstance();
         String viewId = context.getViewRoot().getViewId();

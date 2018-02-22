@@ -1,0 +1,11 @@
+{
+    reports {
+	id
+	name
+	annotation
+	period {
+	    id
+	    name
+	}
+    }
+}

@@ -52,6 +52,8 @@ public class NotificationBean extends AbstractDisplayBean {
     public void update() {
         
         notifications = new ArrayList<>();
+	if(userBean == null)
+	    return;
         AemsQueryAction notificationQuery = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
         
         for(Map.Entry<String, String> meter : userMeterBean.getMeters().entrySet()) {
@@ -72,13 +74,13 @@ public class NotificationBean extends AbstractDisplayBean {
     
     private JsonArray getJsonData(AemsQueryAction query) {
         try {
-            AemsAPI.setUrl(AemsUtils.API_URL + "/warnings.txt");
-            AemsResponse data = AemsAPI.call0(query, new byte[16]);
+            AemsAPI.setUrl(AemsUtils.API_URL);
+            AemsResponse data = AemsAPI.call0(query, null);
             return data.getJsonArrayWithinObject();
         } catch (Exception ex) {
-            Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, "Cannot fetch notifications!");
         }
-        return null;
+        return new JsonArray();
     }
 
     private boolean needsUpdate() {

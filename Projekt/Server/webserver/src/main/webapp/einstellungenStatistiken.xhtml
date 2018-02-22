@@ -35,35 +35,35 @@
 
             <article class="einstellungen">
 
-    <button id="createStatistic" class="btn btn-default ownButton" 
-            data-toggle="modal" data-target="#newStatistic-modal" 
-            data-backdrop="false" data-dismiss="modal">
-        Neue Statistik anlegen</button>
+		<button id="createStatistic" class="btn btn-default ownButton" 
+			data-toggle="modal" data-target="#newStatistic-modal" 
+			data-backdrop="false" data-dismiss="modal">
+		    Neue Statistik anlegen</button>
 
 
                 <h2 class="statistics-h2">Statistiken der Startseite:</h2>
-
-                <div id="homepageList" class="list-group statisticsList"> 
-                    <c:forEach items="#{statisticBean.startpageStatistics}" var="item">
-                        <div class="list-group-item ">
-                            <h4 class="list-group-item-heading">#{item.name}</h4>
-                            <p class="list-group-item-text">#{item.annotation}</p>
-                            <h:commandLink action="#{statisticActionBean.removeFromIndex(item.id)}">
-                                <div class="btn-glyph">
-                                    <button class="btn btn-default" title="Statistik aus Startseite entfernen"><span class="glyphicon glyphicon-ban-circle"></span></button>
-                                </div>
-                            </h:commandLink>
-                        </div>
-                    </c:forEach>
-                    <c:if test="#{statisticBean.startpageStatistics.isEmpty()}">
-                        <p class="no-statistics">
-                            Derzeit werden keine Statistiken auf der Startseite angezeigt.
-                            Wählen Sie bei "Alle Statistiken" eine Statistik aus, die Sie zur
-                            Startseite hinzufügen möchten.
-                        </p>
-                    </c:if>
-                </div>
-
+		<h:form>
+		    <div id="homepageList" class="list-group statisticsList"> 
+			<c:forEach items="#{statisticBean.startpageStatistics}" var="item">
+			    <div class="list-group-item ">
+				<h4 class="list-group-item-heading">#{item.name}</h4>
+				<p class="list-group-item-text">#{item.annotation}</p>
+				<h:commandLink action="#{statisticActionBean.removeFromIndex(item.id)}">
+				    <div class="btn-glyph">
+					<button class="btn btn-default" title="Statistik aus Startseite entfernen"><span class="glyphicon glyphicon-ban-circle"></span></button>
+				    </div>
+				</h:commandLink>
+			    </div>
+			</c:forEach>
+			<c:if test="#{statisticBean.startpageStatistics.isEmpty()}">
+			    <p class="no-statistics">
+				Derzeit werden keine Statistiken auf der Startseite angezeigt.
+				Wählen Sie bei "Alle Statistiken" eine Statistik aus, die Sie zur
+				Startseite hinzufügen möchten.
+			    </p>
+			</c:if>
+		    </div>
+		</h:form>
 
 
 
@@ -158,10 +158,10 @@
         <script src="js/bootstrap.js"></script>
         <script src="js/mobile-functions.js"></script>
         <script>
-                    var notifs = #{notificationBean.nofificationsAsJson};
-                    notifications = $.map(notifs, function (el) {
-                        return el
-                    });
+	    var notifs = #{notificationBean.nofificationsAsJson};
+	    notifications = $.map(notifs, function (el) {
+		return el
+	    });
         </script>
 
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>

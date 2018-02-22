@@ -6,6 +6,7 @@
 package at.aems.adminserver.beans;
 
 import at.aems.adminserver.UserRole;
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsUser;
 import java.io.IOException;
 import java.io.Serializable;
@@ -37,6 +38,7 @@ public class UserBean implements Serializable {
     @PostConstruct
     public void init() {
         role = UserRole.ADMIN;
+	AemsAPI.setUrl("http://10.10.0.167:8084/AEMSWebService/RestInf");
     }
 
     public int getUserId() {

@@ -5,17 +5,27 @@
  */
 package at.aems.webserver.beans.display;
 
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.data.statistic.Anomaly;
 import at.aems.webserver.data.statistic.Period;
 import at.aems.webserver.data.statistic.StatisticMeta;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -29,17 +39,45 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class StatisticBean extends AbstractDisplayBean {
 
-    private List<StatisticMeta> allStatistics = new ArrayList<>();
+    private List<StatisticMeta> allStatistics;
 
     @Override
     public void update() {
-        StatisticMeta s = new StatisticMeta(100, "Meins Statistik!");
-        s.setAnnotation("Hallo");
-        s.setAnomalies(Arrays.asList(new Anomaly(10, "Temperatur", "Celsius")));
-        s.setAndroid(true);
-        s.setMeters(Arrays.asList("AT0001", "AT0002"));
-        s.setPeriod(Period.DAILY);
-        allStatistics.add(s);
+	allStatistics = new ArrayList<>();
+	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	qry.setQuery(AemsUtils.getQuery("created_statistics", new HashMap<String, String>()));
+	
+	JsonArray result = null;
+	try {
+	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    AemsResponse response = AemsAPI.call0(qry, null);
+	    result = response.getJsonArrayWithinObject();
+	} catch (IOException | IllegalStateException ex) {
+	    Logger.getLogger(UserStatisticsBean.class.getName()).log(Level.SEVERE, null, ex);
+	    errorBean.setError("Anscheinend gibt es gerade Probleme mit der API!");
+	}
+	
+	if(result == null)
+	    return;
+	
+	for(JsonElement e : result) {
+	    JsonObject current = e.getAsJsonObject();
+	    
+	    StatisticMeta meta = new StatisticMeta(current.get("id").getAsInt(), current.get("name").getAsString());
+	    meta.setAndroid(true);
+	    meta.setStartpage(true);
+	    meta.setAnnotation("This is a statistic from the database! Hooray!");
+	    
+	    allStatistics.add(meta);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
     }
 
     public List<StatisticMeta> getStatistics() {

@@ -40,7 +40,7 @@ public class AbstractActionBean extends AbstractBean {
         if (bean instanceof AbstractDisplayBean) {
             return (AbstractDisplayBean) bean;
         } else {
-            throw new RuntimeException("Bean " + managedBeanName + " is not an instance of AbstractDisplayBean!");
+            throw new RuntimeException("Bean " + managedBeanName + " is not an instance of AbstractDisplayBean! Object: " + bean);
         }
     }
      
