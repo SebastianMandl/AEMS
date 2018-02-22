@@ -191,6 +191,7 @@ public class RestInf extends HttpServlet {
                 } catch (IOException | SQLException ex) {
                     Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                break;
             }
             case ACTION_LOGIN:
                 if(encryption.equals(ENCRYPTION_SSL))
