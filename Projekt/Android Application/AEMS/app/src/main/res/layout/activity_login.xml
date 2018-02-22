@@ -17,7 +17,7 @@
             android:layout_height="81dp"
             android:layout_marginBottom="30dp"
             android:layout_gravity="center_horizontal"
-            android:contentDescription=""
+            android:contentDescription="AEMS-Logo"
             />
 
 
@@ -53,14 +53,17 @@
             android:text="Login"
             />
 
-        <!--<android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_login"
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="Login"/> -->
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/iron"
+            android:text="Nutzen Sie bitte die selben Anmeldedaten, wie beim AEMS-Webdienst." />
+
 
     </LinearLayout>
 </ScrollView>

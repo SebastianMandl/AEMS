@@ -25,8 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.knoll.aems.LoginActivity"
-                  android:theme="@style/AppTheme.Dark"
-                  android:screenOrientation="portrait" />
+                  android:theme="@style/AppTheme.Dark" />
         <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>

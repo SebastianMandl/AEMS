@@ -17,10 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"
-        android:layout_marginBottom="60dp">
+        android:layout_marginBottom="40dp">
 
         <com.github.mikephil.charting.charts.CombinedChart
-            android:id="@+id/combChart"
+            android:id="@+id/chart2"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </com.github.mikephil.charting.charts.CombinedChart>

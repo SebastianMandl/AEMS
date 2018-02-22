@@ -21,7 +21,6 @@ public class Notification extends Activity {
 
         setContentView(R.layout.notification);
 
-        loadBackHome();
         loadAllNotifications();
     }
 
@@ -39,19 +38,6 @@ public class Notification extends Activity {
 
     }
 
-    private void loadBackHome() {
-
-        Button buttonBackHome = (Button) findViewById(R.id.buttonBackHome);
-
-        buttonBackHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Notification.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-    }
 
 
 }
