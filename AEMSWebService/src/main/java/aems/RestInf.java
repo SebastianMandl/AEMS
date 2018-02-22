@@ -223,6 +223,7 @@ public class RestInf extends HttpServlet {
                     for(int i = 0; i < array.length(); i++) {
                         if(array.getJSONObject(i).keySet().isEmpty()) {
                             array.remove(i);
+                            i--;
                         }
                     }
                     
