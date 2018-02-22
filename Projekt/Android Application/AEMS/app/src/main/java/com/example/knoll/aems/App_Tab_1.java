@@ -61,28 +61,4 @@ public class App_Tab_1 extends ChartViewTab {
         return "Strom1";
     }
 
-    public void onCreateChart(BarChart chart){
-        List<BarEntry> entries = new ArrayList<BarEntry>();
-        entries.add(new BarEntry(1f, 2));
-        entries.add(new BarEntry(2f, 1));
-        entries.add(new BarEntry(4f, 15));
-        entries.add(new BarEntry(5f, 13));
-        entries.add(new BarEntry(7f, 4));
-        entries.add(new BarEntry(8f, 5));
-        entries.add(new BarEntry(10f, 7));
-        entries.add(new BarEntry(11f, 8));
-
-
-        BarDataSet dataSet = new BarDataSet(entries, "Stromausschlag");
-        dataSet.setColor(Color.RED);
-        dataSet.setValueTextColor(Color.BLUE);
-
-
-        BarData barData = new BarData(dataSet);
-        chart.setData(barData);
-        chart.invalidate();
-
-    }
-
-
 }

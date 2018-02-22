@@ -32,8 +32,8 @@ import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.Decrypter;
 import at.aems.apilib.crypto.EncryptionType;
-import at.htlgkr.aems.util.crypto.KeyUtils;
-import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
+//import at.htlgkr.aems.util.crypto.KeyUtils;
+//import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
 
         //Login to AEMS
+        /*
         BigDecimal key = null;
         try {
             DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("localhost"), 9950));
@@ -113,6 +114,8 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+*/
+        httpCode = 200;
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
