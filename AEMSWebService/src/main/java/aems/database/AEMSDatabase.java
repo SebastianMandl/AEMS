@@ -45,6 +45,7 @@ public class AEMSDatabase {
             public static final String LAST_EXECUTION = "last_execution";
             public static final String METER = "meter";
             public static final String SENSOR = "sensor";
+            public static final String SCRIPT_ERRORS = "script_errors";
         }
         
         public class Notices {

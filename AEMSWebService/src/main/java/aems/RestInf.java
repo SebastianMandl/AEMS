@@ -328,7 +328,7 @@ public class RestInf extends HttpServlet {
                     SQL.append("UPDATE ").append("aems.").append("\"").append(key).append("\"").append(" SET ");
                     break;
                 case ACTION_DELETE:
-                    SQL.append("DELETE FROM ").append("aems.").append("\"").append(key).append("\"").append(" WHERE ");
+                    SQL.append("DELETE FROM ").append("aems.").append("\"").append(key).append("\" ");
                     break;
                 // fail
                 default:
