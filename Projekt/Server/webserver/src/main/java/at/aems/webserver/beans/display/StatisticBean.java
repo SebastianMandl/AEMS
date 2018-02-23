@@ -10,24 +10,17 @@ import at.aems.apilib.AemsQueryAction;
 import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
-import at.aems.webserver.data.statistic.Anomaly;
-import at.aems.webserver.data.statistic.Period;
 import at.aems.webserver.data.statistic.StatisticMeta;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -39,11 +32,14 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class StatisticBean extends AbstractDisplayBean {
 
-    private List<StatisticMeta> allStatistics;
+    private List<StatisticMeta> allStatistics = new ArrayList<>();
 
     @Override
     public void update() {
 	allStatistics = new ArrayList<>();
+	if(userBean == null)
+	    return;
+	
 	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
 	qry.setQuery(AemsUtils.getQuery("created_statistics", new HashMap<String, String>()));
 	
@@ -70,13 +66,6 @@ public class StatisticBean extends AbstractDisplayBean {
 	    
 	    allStatistics.add(meta);
 	}
-	
-	
-	
-	
-	
-	
-	
 	
     }
 

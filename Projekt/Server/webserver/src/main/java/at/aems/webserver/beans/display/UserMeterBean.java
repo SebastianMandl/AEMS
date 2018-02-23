@@ -55,12 +55,15 @@ public class UserMeterBean extends AbstractDisplayBean {
 	if (data == null) {
 	    return;
 	}
+	
+	System.out.println(data);
 
 	try {
 	    for (int i = 0; i < data.size(); i++) {
 		JsonObject j = data.get(i).getAsJsonObject();
 		String id = j.get("id").getAsString();
-		String type = j.get("metertype").getAsJsonObject().get("name").getAsString();
+		JsonObject metertype = j.get("metertype").getAsJsonObject();
+		String type = metertype.has("name") ? metertype.get("name").getAsString() : "N/A";
 		meters.put(id, type);
 	    }
 	} catch(Exception ex) {

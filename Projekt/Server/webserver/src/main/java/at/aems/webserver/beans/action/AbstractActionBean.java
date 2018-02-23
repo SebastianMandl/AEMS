@@ -46,6 +46,7 @@ public class AbstractActionBean extends AbstractBean {
      
     public void callUpdateOn(String managedBeanName) {
         getDisplayBean(managedBeanName).update();
+	System.out.println("Called update() on " + managedBeanName);
     }
 
 }

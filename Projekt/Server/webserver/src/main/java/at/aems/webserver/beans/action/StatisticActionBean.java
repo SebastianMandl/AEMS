@@ -30,6 +30,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	update.setIdColumn("id", statisticId);
 	update.write("display_android", false);
 	try {
+	    System.out.println(update.toJsonObject());
 	    AemsAPI.setUrl(AemsUtils.API_URL);
 	    AemsAPI.call0(update, null);
 	    notify.setMessage("Statistik aus Android-App entfernt!");

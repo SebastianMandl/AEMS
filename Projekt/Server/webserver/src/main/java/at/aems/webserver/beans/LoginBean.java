@@ -11,6 +11,10 @@ import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.action.AbstractActionBean;
+import at.aems.webserver.beans.display.StatisticBean;
+import at.aems.webserver.beans.display.UserReportBean;
+import at.aems.webserver.beans.display.UserStatisticsBean;
+import at.aems.webserver.beans.display.UserWarningsBean;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -53,6 +57,7 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	login.setPassword(password);
 	AemsResponse response = null;
 	try {
+	     System.out.println(login.toJson(null));
 	    AemsAPI.setUrl(AemsUtils.API_URL);
 	    response = AemsAPI.call0(login, null);
 	} catch(IOException e) {
@@ -74,9 +79,17 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	userBean.setUsername(username);
 	userBean.setPassword(password);
 	
-	callUpdateOn("userMeterBean");
-//	callUpdateOn("userReportBean");
+	/*
+	createSessionBean("statisticBean", StatisticBean.class);
+	createSessionBean("userReportBean", UserReportBean.class);
+	createSessionBean("userStatisticsBean", UserStatisticsBean.class);
+	createSessionBean("userWarningsBean", UserWarningsBean.class);
 	
+	
+	callUpdateOn("userReportBean");
+	callUpdateOn("statisticBean");
+	*/
+	callUpdateOn("userMeterBean");
         FacesContext context = FacesContext.getCurrentInstance();
         String viewId = context.getViewRoot().getViewId();
         return viewId;
@@ -90,5 +103,15 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	notify.setMessage("Auf Wiedersehen!");
         return "index";
     }    
+
+    private void createSessionBean(String name, Class<?> aClass) {
+	try {
+	    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(name, aClass.newInstance());
+	} catch (InstantiationException ex) {
+	    Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (IllegalAccessException ex) {
+	    Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+	}
+    }
     
 }
