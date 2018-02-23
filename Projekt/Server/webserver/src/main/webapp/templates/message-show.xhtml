@@ -10,5 +10,10 @@
                 $.notify("#{notifyBean.message}", "info");
             </script>
       </c:if>
+    <c:if test="#{errorBean.hasMessage()}">
+            <script>
+                $.notify("#{errorBean.error}", "error");
+            </script>
+      </c:if>
 </ui:composition>
 

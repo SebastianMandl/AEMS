@@ -76,7 +76,7 @@ function showChart(canvasId, labels, actualValues, previousValues, anomalies) {
                             max: highestAnomaly + averageAnomaly, //highestTemperature + 10,
                             min: lowestAnomaly - averageAnomaly,
                             callback: function (value, index, values) {
-                                return ""; //value + " Celsius";
+                                return value;
                             }
                         }
                     }

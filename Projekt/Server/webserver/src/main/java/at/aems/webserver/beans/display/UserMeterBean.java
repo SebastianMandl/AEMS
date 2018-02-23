@@ -44,69 +44,70 @@ public class UserMeterBean extends AbstractDisplayBean {
     @Override
     public void update() {
 	// Initialize to empty
-        meterTypes = new HashSet<>();
-        meters = new HashMap<>();
-        
+	meterTypes = new HashSet<>();
+	meters = new HashMap<>();
+
 	// retrieve GraphQL-Query from text file and send to REST
-        AemsQueryAction query = new AemsQueryAction
-	    (userBean.getAemsUser(), EncryptionType.SSL);
-        query.setQuery(AemsUtils.getQuery("meters_simple", NewMap.of("USER_ID", userBean.getUserId())));
-        JsonArray data = getJsonResponse(query);
-	
-	System.out.println(AemsUtils.getQuery("meters_simple", new HashMap<String, String>()));
-	
-	System.out.println("DATAAAAAAAAAAAAAAAAAA");
-	System.out.print(data);
-	
-	if(data == null)
+	AemsQueryAction query = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	query.setQuery(AemsUtils.getQuery("meters_simple", NewMap.of("USER_ID", userBean.getUserId())));
+	JsonArray data = getJsonResponse(query);
+
+	if (data == null) {
 	    return;
+	}
 	
-	// iterate over response and add all meters
-        for(int i = 0; i < data.size(); i++) {
-            JsonObject j = data.get(i).getAsJsonObject();
-            String id = j.get("id").getAsString();
-            String type = j.get("metertype").getAsJsonObject().get("name").getAsString();
-            meters.put(id, type);
-        }
-        
+	System.out.println(data);
+
+	try {
+	    for (int i = 0; i < data.size(); i++) {
+		JsonObject j = data.get(i).getAsJsonObject();
+		String id = j.get("id").getAsString();
+		JsonObject metertype = j.get("metertype").getAsJsonObject();
+		String type = metertype.has("name") ? metertype.get("name").getAsString() : "N/A";
+		meters.put(id, type);
+	    }
+	} catch(Exception ex) {
+	    // yes
+	}
+
 	// Since meterTypes is a HashSet, duplicate values will be erased
-        meterTypes.addAll(meters.values());
+	meterTypes.addAll(meters.values());
 
     }
 
     public Set<String> getMeterTypes() {
-        return meterTypes;
+	return meterTypes;
     }
 
     public void setMeterTypes(Set<String> meterTypes) {
-        this.meterTypes = meterTypes;
+	this.meterTypes = meterTypes;
     }
 
     public Map<String, String> getMeters() {
-        return meters;
+	return meters;
     }
 
     public void setMeters(Map<String, String> meters) {
-        this.meters = meters;
+	this.meters = meters;
     }
 
     private JsonArray getJsonResponse(AemsQueryAction query) {
-        AemsResponse resp = null;
+	AemsResponse resp = null;
 	try {
-            AemsAPI.setUrl(AemsUtils.API_URL);
-            resp = AemsAPI.call0(query, null);
+	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    resp = AemsAPI.call0(query, null);
 	    JsonArray arr = resp.getJsonArrayWithinObject();
-	    for(int i = 0; i < arr.size(); i++) {
-		if(arr.get(i).isJsonObject() && arr.get(i).getAsJsonObject().keySet().isEmpty()) {
+	    for (int i = 0; i < arr.size(); i++) {
+		if (arr.get(i).isJsonObject() && arr.get(i).getAsJsonObject().keySet().isEmpty()) {
 		    arr.remove(i);
 		}
 	    }
-	    return arr; 
-        } catch (IOException ex) {
+	    return arr;
+	} catch (IOException | IllegalStateException ex) {
 	    Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, "OH FUCC");
-            Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        return null;
+	    Logger.getLogger(UserMeterBean.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return null;
     }
 
 }

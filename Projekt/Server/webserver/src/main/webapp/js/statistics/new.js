@@ -16,7 +16,6 @@ $(document).ready(function () {
         });
         
         let type = dis.val();
-        console.log("Selected type: " + type);
         $("#meterss input").each(function(index, element) {
             console.log("type: " + $(this).attr("data-type"));
            if($(this).attr("data-type") === type) {

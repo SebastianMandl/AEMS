@@ -5,6 +5,8 @@
  */
 package at.aems.webserver.beans;
 
+import at.aems.webserver.AemsUtils;
+import at.aems.webserver.NewMap;
 import at.aems.webserver.beans.display.NotifyBean;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;

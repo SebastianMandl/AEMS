@@ -5,11 +5,17 @@
  */
 package at.aems.adminserver.beans;
 
+import at.aems.adminserver.Constants;
 import at.aems.adminserver.UserRole;
+import at.aems.adminserver.beans.action.AbstractActionBean;
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
+import com.google.gson.JsonObject;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -21,7 +27,7 @@ import javax.faces.context.FacesContext;
  */
 @ManagedBean(name="login")
 @RequestScoped
-public class LoginBean implements Serializable { // Serializeable to allow application to run across multiple server nodes
+public class LoginBean extends AbstractActionBean { // Serializeable to allow application to run across multiple server nodes
     public static final int LOGGED_OUT_USER_ID = -1;
     private String username;
     private String password;
@@ -49,21 +55,36 @@ public class LoginBean implements Serializable { // Serializeable to allow appli
     }
     
     public String doLogin() {
-        AemsAPI.setUrl("https://google.at");
         AemsLoginAction login = new AemsLoginAction(EncryptionType.SSL);
         login.setUsername(username);
         login.setPassword(password);
-        int userId = 123; 
+	AemsResponse response = null;
+	int userId = -1; 
+	try { 
+	    AemsAPI.setUrl(Constants.API_URL);
+	    System.out.println(login.toJson(null));
+	    response = AemsAPI.call0(login, null);
+	    
+	    System.out.print(response.getDecryptedResponse());
+	    JsonObject o = response.getAsJsonObject();
+	    userId = o.has("id") ? o.get("id").getAsInt() : -1;
+	} catch(Exception ex) {
+	    Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+	    notify.setMessage("Ein Fehler ist aufgetreten!");
+	}
+        
         if(userId != -1) {
             userBean.setUserId(userId);
             userBean.setUsername(username);
             userBean.setPassword(password);
-            if(username.equals("admin")) {
+            if(username.equals("master")) {
                 userBean.setRole(UserRole.ADMIN);
             } else {
                 userBean.setRole(UserRole.SUB_ADMIN);
             }
-        }
+        } else {
+	    notify.setMessage("Die Login-Daten sind falsch!");
+	}
         FacesContext context = FacesContext.getCurrentInstance();
         String viewId = context.getViewRoot().getViewId();
         return viewId;

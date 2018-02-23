@@ -5,7 +5,9 @@
  */
 package at.aems.webserver.beans.action;
 
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
@@ -104,7 +106,7 @@ public class NewStatisticBean extends AbstractActionBean {
         this.compare = compare;
     }
 
-    public String doCreate() {
+    public String doCreate() throws Exception {
         AemsUser user = new AemsUser(userBean.getUserId(), userBean.getUsername(), userBean.getPassword());
         AemsInsertAction insert = new AemsInsertAction(user, EncryptionType.SSL);
         insert.setTable("Statistics");
@@ -116,9 +118,10 @@ public class NewStatisticBean extends AbstractActionBean {
         insert.write("period_compare", compare);
         insert.endWrite();
         
-        System.out.print(insert.toJsonObject());
-        
-        int statisticId = 10;
+	AemsAPI.setUrl(AemsUtils.API_URL);
+        AemsResponse resp = AemsAPI.call0(insert, null);
+	System.err.println("yes: " + resp.getDecryptedResponse());
+        int statisticId = resp.getAsJsonObject().get("id").getAsInt();
         
         AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);
         insertMeters.setTable("SatatisticMeters");
@@ -129,10 +132,9 @@ public class NewStatisticBean extends AbstractActionBean {
             insertMeters.endWrite();
         }
          
-        System.out.print(insertMeters.toJsonObject());
+        AemsAPI.call0(insertMeters, null);
         notify.setMessage("Statistik wurde erstellt!");
-        callUpdateOn("userStatisticsBean");
-        /* Call API - JSON Body = data.toJson() */
+        callUpdateOn("statisticBean");
         return "einstellungenStatistiken";
     }
 
