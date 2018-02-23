@@ -9,7 +9,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>WebUI</title>
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="/WebUIFinal/style.css" />
         <meta charset="UTF-8" />
     </h:head>
     <h:body>
@@ -30,11 +30,11 @@
             <br />
             <br />
             
-            <h:inputTextarea value="#{webUIBean.script}" cols="100" rows="10" styleClass="inputTextAreaWebUI" />
+            <span title="Das Script, welches ausgeführt wird um Anomalien zu erkennen" style="font-weight: bold;margin-right: 5px">Script</span><h:inputTextarea value="#{webUIBean.script}" cols="100" rows="10" styleClass="inputTextAreaWebUI" />
             
             <br />
             
-            <h:inputText value="#{webUIBean.cycleTime}" converter="javax.faces.Integer" />
+            <span title="Anzahl der Minuten, nachdem das Script erneut ausgeführt wird" style="font-weight: bold;margin-right: 5px">Wiederholungszeit [Minuten]</span><h:inputText value="#{webUIBean.cycleTime}" converter="javax.faces.Integer" />
             <br />
             
             <h:commandButton value="Verlinken" type="submit" action="#{webUIBean.doSubmit()}" />
@@ -42,7 +42,7 @@
             <br />
             <br />
             
-            <h:dataTable value="#{webUIBean.ANOMALIES}" var="anomaly" rowClasses="columnWebUI" headerClass="headerWebUI" >
+            <h:dataTable value="#{webUIBean.ANOMALIES}" var="anomaly" columnClasses="columnWebUI,columnWebUI,columnScriptWebUI,columnWebUI,columnButtonsWebUI,columnButtonsWebUI" headerClass="headerWebUI" >
                 <h:column>
                     <f:facet name="header">Zähler</f:facet>
                     #{anomaly.meter}

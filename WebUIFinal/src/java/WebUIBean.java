@@ -243,7 +243,7 @@ public final class WebUIBean {
                 a.setSensor(oo.getAsJsonObject("sensor").get("name").getAsString());
                 a.setCycleTime(oo.get("exec_intermediate_time").getAsInt());
                 String scriptErrors = oo.get("script_errors").getAsString();
-                a.setScriptErrors(scriptErrors.toLowerCase().equals("null") ? "none" : scriptErrors.replaceAll("\n", "<br />"));
+                a.setScriptErrors(scriptErrors.toLowerCase().equals("null") ? "keine" : scriptErrors.replaceAll("\n", "<br />"));
                 a.setScript(oo.get("script").getAsString().replaceAll("\n", "<br />"));
                 a.setId(oo.get("id").getAsInt());
                 

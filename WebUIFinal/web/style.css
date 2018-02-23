@@ -1,5 +1,5 @@
 .inputTextAreaWebUI {
-    float: left;
+    display: block;
     margin-top: 5px;
 }
 
@@ -14,8 +14,18 @@
 }
 
 .columnWebUI {
-    padding: 50px;
-    min-width: 200px;
+    padding: 5px;
+    min-width: 150px;
+    text-align: center;
+}
+
+.columnScriptWebUI {
+    padding: 5px;
+    min-width: 150px;
+}
+
+.columnButtonsWebUI {
+    padding: 5px;
 }
 
 .headerWebUI {
