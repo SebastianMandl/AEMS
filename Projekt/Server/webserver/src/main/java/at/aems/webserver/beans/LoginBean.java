@@ -57,9 +57,9 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	login.setPassword(password);
 	AemsResponse response = null;
 	try {
-	     System.out.println(login.toJson(null));
 	    AemsAPI.setUrl(AemsUtils.API_URL);
 	    response = AemsAPI.call0(login, null);
+	    System.out.println(response.getDecryptedResponse());
 	} catch(IOException e) {
 	    Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
 	}
@@ -70,8 +70,8 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	}
 	
 	JsonObject responseObj = response.getAsJsonObject();
-	if(responseObj.has("error")) {
-	    notify.setMessage(response.getErrorMessage());
+	if(responseObj == null || responseObj.has("error")) {
+	    notify.setMessage("Login fehlgeschlagen.");
 	    return "index.xhtml";
 	}
 	int id = responseObj.get("id").getAsInt();
