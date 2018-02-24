@@ -21,14 +21,12 @@ public class NotificationAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<String> elemTitle;
-    private ArrayList<String> elemInfo;
     private ArrayList<String> elemType;
     private ArrayList<Integer> elemPicture;
 
-    public NotificationAdapter(Context context, ArrayList<String> elemTitle, ArrayList<String> elemInfo, ArrayList<String> elemType, ArrayList<Integer> elemPicture) {
+    public NotificationAdapter(Context context, ArrayList<String> elemTitle, ArrayList<String> elemType, ArrayList<Integer> elemPicture) {
         this.context = context;
         this.elemTitle = elemTitle;
-        this.elemInfo = elemInfo;
         this.elemType = elemType;
         this.elemPicture = elemPicture;
     }
@@ -58,12 +56,10 @@ public class NotificationAdapter extends BaseAdapter {
 
         ImageView images = (ImageView) convertView.findViewById(R.id.imageView);
         TextView title = (TextView) convertView.findViewById(R.id.textViewTitle);
-        TextView info = (TextView) convertView.findViewById(R.id.textViewInformation);
         TextView notType = (TextView) convertView.findViewById(R.id.textViewNotificationType);
 
         images.setImageResource(elemPicture.get(position));
         title.setText(elemTitle.get(position));
-        info.setText(elemInfo.get(position));
         notType.setText(elemType.get(position));
 
         return convertView;
