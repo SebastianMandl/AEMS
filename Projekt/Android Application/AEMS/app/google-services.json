@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1058018186716",
+    "firebase_url": "https://aems-6f5d2.firebaseio.com",
+    "project_id": "aems-6f5d2",
+    "storage_bucket": "aems-6f5d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058018186716:android:9be702b40466bfc7",
+        "android_client_info": {
+          "package_name": "com.example.knoll.aems"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058018186716-t48ngbjfuok7n8i4i2rvi5qcvpsc4ssr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB0SbS-G7ewKlaeMVdoPJxI3kR-iJIV2s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

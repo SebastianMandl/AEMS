@@ -19,6 +19,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,18 +37,21 @@ import at.aems.apilib.crypto.Decrypter;
 import at.aems.apilib.crypto.EncryptionType;
 //import at.htlgkr.aems.util.crypto.KeyUtils;
 //import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
+import at.htlgkr.aems.util.crypto.KeyUtils;
+import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
-    private static final String PREFERENCE_KEY_SESSION = "AemsLoginPreferenceKeySession";
     SharedPreferences sharedPreferences;
-    SharedPreferences sharedPreferencesSession;
+    byte[] sharedSecretKey;
     int httpCode = 0;
-    String responseText = "";
-    String responseDecryptedText = "";
+    String decryptedText;
+    String userId = "";
+    String username = "";
+    String password = "";
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -82,46 +88,20 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authentifizierung...");
         progressDialog.show();
 
-        final String email = _inputUsername.getText().toString();
-        final String password = _passwordText.getText().toString();
+        username = _inputUsername.getText().toString();
+        password = _passwordText.getText().toString();
 
         //Login to AEMS
-        /*
-        BigDecimal key = null;
-        try {
-            DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("localhost"), 9950));
-            key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), email, password);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        //loginToAEMS();
 
-        BigInteger keyInt = key.unscaledValue();
-        byte[] sharedSecretKey = keyInt.toByteArray();
-
-        AemsAPI.setUrl("https://api.aems.at");
-
-        AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
-        loginAction.setUsername(email);
-        loginAction.setPassword(password);
-
-        AemsResponse response = null;
-        try {
-            response = AemsAPI.call0(loginAction, sharedSecretKey);
-            httpCode = response.getResponseCode();
-            responseText = response.getResponseText();
-            responseDecryptedText = response.getDecryptedResponse();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-*/
         httpCode = 200;
+
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
                         if(httpCode == 200){
-                            onLoginSuccess(email, password);
+                            onLoginSuccess(username, password);
                         }
                         else{
                             onLoginFailed();
@@ -129,6 +109,44 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 500);
+    }
+
+    private void loginToAEMS() {
+        BigDecimal key = null;
+        BigInteger keyInt = null;
+        try {
+            DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("localhost"), 9950));
+            key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), username, password);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        if(key != null)
+        {
+            keyInt = key.unscaledValue();
+        }
+        sharedSecretKey = keyInt.toByteArray();
+
+        AemsAPI.setUrl("https://api.aems.at");
+
+        AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
+        loginAction.setUsername(username);
+        loginAction.setPassword(password);
+
+        AemsResponse response = null;
+        try {
+            response = AemsAPI.call0(loginAction, sharedSecretKey);
+            httpCode = response.getResponseCode();
+            decryptedText = response.getDecryptedResponse();
+
+            JSONObject json = new JSONObject(decryptedText);
+            userId = json.getString("id");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -152,21 +170,22 @@ public class LoginActivity extends AppCompatActivity {
 
             if(checkBoxRememberMe.isChecked()){
                 sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-                sharedPreferences.edit().putString("EMAIL", email).commit();
+                sharedPreferences.edit().putString("USERNAME", username).commit();
                 sharedPreferences.edit().putString("PASSWORD", password).commit();
                 sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true).commit();
+                String keyString = sharedSecretKey + "";
+                sharedPreferences.edit().putString("SHAREDSECRETKEYSTRING", keyString).commit();
+                sharedPreferences.edit().putString("USERID", userId).commit();
             }
         }
 
         finish();
     }
 
-    /*public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        finish();
-    }*/
 
     public void onLoginFailed() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
         Toast.makeText(getBaseContext(), "Login fehlgeschlagen - Überprüfen Sie Ihre Logindaten", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }
@@ -176,7 +195,6 @@ public class LoginActivity extends AppCompatActivity {
 
         String user = _inputUsername.getText().toString();
         String password = _passwordText.getText().toString();
-
 
         if (user.isEmpty()) {
             _inputUsername.setError("Geben Sie einen Benutzernamen ein");
@@ -191,7 +209,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             _passwordText.setError(null);
         }
-
         return valid;
     }
 }

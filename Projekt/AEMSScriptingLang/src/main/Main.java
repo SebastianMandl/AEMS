@@ -44,7 +44,8 @@ public class Main {
 			});
 			String raw = BUILDER.toString();
 			
-			HttpURLConnection con = (HttpURLConnection) new URL(REST_ADDRESS + "encryption=AES&action=QUERY&user=215&data=" + Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(Main.key, raw.getBytes()))).openConnection();
+			HttpURLConnection con = (HttpURLConnection) new URL(REST_ADDRESS + "encryption=AES&action=QUERY&user=215&data=" 
+					+ Base64.getUrlEncoder().encodeToString(Encrypter.requestEncryption(Main.key, raw.getBytes()))).openConnection();
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 			con.setDoInput(true);
@@ -151,70 +152,56 @@ public class Main {
 			e.printStackTrace();
 		}	
 	}
+	static String pwd = "pwd";
 	
 	public static void main(String[] args) throws IOException {
 		
-//		DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("127.0.0.1"), 9950));
-//		key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), "master", "pwd");
-//		System.out.println(key);
+		DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("127.0.0.1"), 9950));
+		key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), "master", pwd);
+		
+		System.out.println(key);
 		
 		Logger.setDebugMode(true);
 		
 		while(true) {
-			
 			fetchAnomalies();
-			
 			long startTime = System.currentTimeMillis();
-			
 			Logger.logDebug("start of iteration");
 			for(Anomaly anomaly : ANOMALIES) {
-				
 				long minutes = (System.currentTimeMillis() - anomaly.lastExecution.getTime()) / 1000 / 60;
 				if(minutes < anomaly.execIntermediateTime)
 					continue; // script should not be executed in this cycle
-				
 				anomaly.changed = true;
 				anomaly.lastExecution = new Date(System.currentTimeMillis());
-				
 				try {
-				
-				System.out.println(anomaly.script);
-				Tokenizer tokenizer = new Tokenizer(anomaly.script);
-				Parser parser = new Parser(anomaly.meter, anomaly.sensor);
-				Token token = null;
-				//System.out.println("start of script\n");
-				ArrayList<Token> tokens = new ArrayList<>();
-				while(!(token = tokenizer.nextToken()).getType().is(TokenTypes.EOF)) {
-					if(token.getType().is(TokenTypes.NEW_LINE)) {
-						if(tokens.size() == 0)
+					System.out.println(anomaly.script);
+					Tokenizer tokenizer = new Tokenizer(anomaly.script);
+					Parser parser = new Parser(anomaly.meter, anomaly.sensor);
+					Token token = null;
+					ArrayList<Token> tokens = new ArrayList<>();
+					while(!(token = tokenizer.nextToken()).getType().is(TokenTypes.EOF)) {
+						if(token.getType().is(TokenTypes.NEW_LINE)) {
+							if(tokens.size() == 0)
+								continue;
+							
+							parser.parse(tokens.toArray(new Token[tokens.size()]));
+							tokens.clear();
 							continue;
-						
-						parser.parse(tokens.toArray(new Token[tokens.size()]));
-						
-						tokens.clear();
-						continue;
+						}
+						tokens.add(token);
 					}
-					tokens.add(token);
-					//System.out.println(token);
-				}
-				
-				if(!tokens.isEmpty())
-					parser.parse(tokens.toArray(new Token[tokens.size()]));
-				
-				//System.out.println("\nend of script");
-				
+					if(!tokens.isEmpty())
+						parser.parse(tokens.toArray(new Token[tokens.size()]));
 				} catch(Exception e) {
 					e.printStackTrace();
 					uploadScriptError(anomaly, e.getMessage());
 				}
 			}
 			Logger.logDebug("end of iteration");
-			
 			updateAnomalies();
-			
 			try {
 				//1000 * 60 * 15
-				long wait = 1000 - (System.currentTimeMillis() - startTime); // 15 minutes cycle
+				long wait = 1000 * 60 * 15 - (System.currentTimeMillis() - startTime); // 15 minutes cycle
 				Thread.sleep(wait < 0 ? 0 : wait);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
