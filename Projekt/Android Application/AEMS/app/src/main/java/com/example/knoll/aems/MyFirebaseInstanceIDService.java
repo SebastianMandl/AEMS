@@ -36,9 +36,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
-        //saveTokenInDatabase(refreshedToken);
+        saveTokenInDatabase(refreshedToken);
     }
-
 
     private void saveTokenInDatabase(String refreshedToken) {
 
@@ -56,10 +55,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         insert.beginWrite();
         insert.write("notificationToken", refreshedToken);
+        insert.endWrite();
 
         byte[] sharedSecretKey = key.getBytes();
 
-        insert.toJson(sharedSecretKey);
         AemsResponse response = null;
 
         AemsAPI.setUrl("https://api.aems.at");
