@@ -40,7 +40,7 @@ import org.json.JSONObject;
 import com.google.gson.GsonBuilder;
 
 import at.aems.apilib.AemsInsertAction;
-
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.htlgkr.aems.main.Main;
 import at.htlgkr.aems.util.BotConfiguration;
@@ -91,8 +91,8 @@ public class AemsAPI {
         at.aems.apilib.AemsAPI.setUrl(API_URL);
         try {
             AemsBotAction bot = new AemsBotAction(superUser, EncryptionType.SSL);
-            String response = at.aems.apilib.AemsAPI.call(bot, new byte[16]);
-            String rawData = new String(Base64.getUrlDecoder().decode(response.getBytes()));
+            AemsResponse resp = at.aems.apilib.AemsAPI.call0(bot, null);
+            String rawData = resp.getDecryptedResponse();
             
             JSONObject responseObj = new JSONObject(rawData);
             String firstKey = responseObj.keys().next();

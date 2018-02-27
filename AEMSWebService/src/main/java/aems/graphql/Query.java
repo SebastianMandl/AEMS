@@ -65,13 +65,22 @@ public class Query extends GraphQLObjectType {
     
     private static final GraphQLFieldDefinition STATISTICS = 
             Query.getRootFieldDefinition("statistics", AEMSDatabase.STATISTICS, Statistic.getInstance(), 
-                    getArgumentList(new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL)));
+                    getArgumentList(
+			    new Argument("id", AEMSDatabase.Statistics.ID, Argument.EQUAL),
+			    new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL)));
     
     private static final GraphQLFieldDefinition ANOMALIES = 
-            Query.getRootFieldDefinition("anomalies", AEMSDatabase.ANOMALIES, Anomaly.getInstance());
+            Query.getRootFieldDefinition("anomalies", AEMSDatabase.ANOMALIES, Anomaly.getInstance(),
+		    getArgumentList(
+			    new Argument("id", AEMSDatabase.Anomalies.ID, Argument.EQUAL),
+			    new Argument("meter", AEMSDatabase.Anomalies.METER, Argument.EQUAL)
+		    ));
     
     private static final GraphQLFieldDefinition NOTICES = 
-            Query.getRootFieldDefinition("notices", AEMSDatabase.NOTICES, Notices.getInstance());
+            Query.getRootFieldDefinition("notices", AEMSDatabase.NOTICES, Notices.getInstance(),
+		    getArgumentList(
+			    new Argument("id", AEMSDatabase.Notices.ID, Argument.EQUAL)
+		    ));
     
     private static final GraphQLFieldDefinition STATISTIC_TIMES = 
             Query.getRootFieldDefinition("statistic_times", AEMSDatabase.STATISTIC_TIMES, StatisticTime.getInstance());
@@ -80,10 +89,18 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("periods", AEMSDatabase.PERIODS, Period.getInstance());
     
     private static final GraphQLFieldDefinition REPORTS = 
-            Query.getRootFieldDefinition("reports", AEMSDatabase.REPORTS, Report.getInstance());
+            Query.getRootFieldDefinition("reports", AEMSDatabase.REPORTS, Report.getInstance(),
+		    getArgumentList(
+			    new Argument("id", AEMSDatabase.Reports.ID, Argument.EQUAL),
+			    new Argument("name", AEMSDatabase.Reports.NAME, Argument.LIKE)
+		    ));
     
     private static final GraphQLFieldDefinition NOTIFICATIONS = 
-            Query.getRootFieldDefinition("notifications", AEMSDatabase.NOTIFICATIONS, Notification.getInstance());
+            Query.getRootFieldDefinition("notifications", AEMSDatabase.NOTIFICATIONS, Notification.getInstance(),
+		    getArgumentList(
+			    new Argument("id", AEMSDatabase.Notifications.ID, Argument.EQUAL),
+			    new Argument("type", AEMSDatabase.Notifications.TYPE, Argument.EQUAL)
+		    ));
     
     private static final GraphQLFieldDefinition WEATHER_DATA = 
             Query.getRootFieldDefinition("weather_data", AEMSDatabase.WEATHERDATA, WeatherData.getInstance(), 
@@ -99,7 +116,11 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("notification_exceptions", AEMSDatabase.NOTIFICATION_EXCEPTIONS, NotificationException.getInstance());
     
     private static final GraphQLFieldDefinition REPORT_STATISTICS = 
-            Query.getRootFieldDefinition("report_statistics", AEMSDatabase.REPORT_STATISTICS, ReportStatistic.getInstance());
+            Query.getRootFieldDefinition("report_statistics", AEMSDatabase.REPORT_STATISTICS, ReportStatistic.getInstance(),
+			   getArgumentList(
+				   new Argument("report", AEMSDatabase.ReportStatistics.REPORT, Argument.EQUAL),
+				   new Argument("statistic", AEMSDatabase.ReportStatistics.STATISTIC, Argument.EQUAL)
+			   ));
     
     private static final GraphQLFieldDefinition ARCHIVED_METER_NOTIFICATIONS = 
             Query.getRootFieldDefinition("archived_meter_notifications", AEMSDatabase.ARCHIVED_METER_NOTIFICATIONS, ArchivedMeterNotification.getInstance());
