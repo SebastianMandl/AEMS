@@ -43,9 +43,9 @@ function showChart(canvasId, labels, actualValues, previousValues, anomalies) {
         yAxisID: "primary"
     };
     dataSets.push(av);
-	if(previousValues != null) {
-		dataSets.push(pv);
-	}
+    if(previousValues !== null) {
+	dataSets.push(pv);
+    }
 	
     var highestAnomaly = getPeekValue(anomalies, Math.max);
     var lowestAnomaly = getPeekValue(anomalies, Math.min);

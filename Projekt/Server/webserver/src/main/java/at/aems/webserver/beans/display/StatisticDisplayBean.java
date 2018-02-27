@@ -49,7 +49,7 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 
         DisplayedStatistic weeklyStatistic = new DisplayedStatistic(456, "Wochenstatistik", Period.WEEKLY);
         weeklyStatistic.setElectricityValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1));
-        weeklyStatistic.setPreviousValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1));
+//        weeklyStatistic.setPreviousValues(randomInts(c.get(Calendar.DAY_OF_WEEK) - 1));
 
         DisplayedStatistic dailyStatistic = new DisplayedStatistic(678, "Tagesstatistik", Period.DAILY);
 
