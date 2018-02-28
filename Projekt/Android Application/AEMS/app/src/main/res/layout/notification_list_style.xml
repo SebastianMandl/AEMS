@@ -22,22 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageView"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="-3dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/imageView"
         android:text="Stromstatistik 1"
         android:textColor="@color/black"
-        android:textSize="16dp" />
-
-    <TextView
-        android:id="@+id/textViewInformation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignStart="@+id/textViewNotificationType"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="-3dp"
-        android:text="Verbrauch ist um 90 % zu hoch" />
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/textViewNotificationType"
@@ -45,6 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/textViewTitle"
         android:layout_below="@+id/textViewTitle"
-        android:layout_marginTop="-3dp"
+        android:layout_marginTop="2dp"
+        android:textSize="14dp"
         android:text="Warnung" />
+
 </RelativeLayout>

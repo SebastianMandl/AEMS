@@ -6,4 +6,5 @@
     <string name="stromstatistik_3">Stromstatistik 3</string>
     <string name="stromstatistik_2">Stromstatistik 2</string>
     <string name="stromstatistik_1">Stromstatistik 1</string>
+    <string name="default_notification_channel_id">14568</string>
 </resources>

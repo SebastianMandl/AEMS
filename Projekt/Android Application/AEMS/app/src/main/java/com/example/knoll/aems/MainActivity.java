@@ -27,8 +27,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.Chart;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,9 +57,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        String user = sharedPreferences.getString("EMAIL", null);
+        String user = sharedPreferences.getString("USERNAME", null);
         String passw = sharedPreferences.getString("PASSWORD", null);
 
         if (user == null && passw == null){

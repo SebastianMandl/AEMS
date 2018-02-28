@@ -63,7 +63,7 @@ public class BotConfiguration {
       InputStream stream = new FileInputStream(configFile);
       this.props.load(stream);
       
-      if(props.isEmpty()) {
+      if(props.isEmpty()) { // Put default values
         this.props.setProperty(BotConfiguration.API_URL, "http://localhost/graphql");
         this.props.setProperty(BotConfiguration.FILE_STORAGE, "Exceldateien");
         this.props.setProperty(BotConfiguration.MAX_RETRIES, "1");
