@@ -167,7 +167,7 @@ public class AemsAPI {
         insertMeters.write("meter", value.getId());
         insertMeters.write("timestamp", "" + new Timestamp(value.getDate().getTime()));
         insertMeters.write("measured_value", value.getValue());
-        insertMeters.write("unit", "kWh");
+//       insertMeters.write("unit", "kWh");
         insertMeters.endWrite();
     }
 
