@@ -23,6 +23,8 @@ SET pljava.libjvm_location TO 'P:\Java\jdk1.8.0_102\jre\bin\server\jvm.dll'; -- 
 ALTER DATABASE "AEMSData" SET client_min_messages FROM CURRENT;
 ALTER DATABASE "AEMSData" SET pljava.libjvm_location FROM CURRENT; -- making changes persisent
 
+psql -U postgres -d AEMSData -f "Desktop\AEMS 01-03-2018.backup"
+
 if committed then run -> CREATE EXTENSION pljava FROM unpackaged
 
 

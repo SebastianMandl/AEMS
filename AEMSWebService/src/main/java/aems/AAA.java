@@ -23,17 +23,8 @@ public class AAA extends HttpServlet {
     
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        new Thread(new Runnable() {
-            public void run() {
-                byte[] key;
-                try {
-                    key = DiffieHellmanProcedure.receiveKeyInfos();
-                    AESKeyManager.addKey(req.getLocalAddr(), key);
-                } catch (IOException ex) {
-                    Logger.getLogger(AAA.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }).start();
+        byte[] key = DiffieHellmanProcedure.receiveKeyInfos();
+        AESKeyManager.addKey(req.getLocalAddr(), key);
         
     }
     
