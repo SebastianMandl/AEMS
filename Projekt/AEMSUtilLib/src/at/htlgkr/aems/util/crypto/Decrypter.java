@@ -33,7 +33,8 @@ public class Decrypter {
 	 * @throws NoSuchAlgorithmException - this exception cannot occur since this function takes care of the integrity of the decryption functionality.
 	 * @throws NoSuchPaddingException - if the padding is not proper
 	 */
-	public static byte[] requestDecryption(byte[] key, byte[] encrypted) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
+	public static byte[] requestDecryption(byte[] key, byte[] encrypted) throws IllegalBlockSizeException, BadPaddingException, 
+		InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 		Key keyBytes = new SecretKeySpec(key, "AES");
 		Cipher cipher = Cipher.getInstance("AES");
 		cipher.init(Cipher.DECRYPT_MODE, keyBytes);
@@ -41,7 +42,8 @@ public class Decrypter {
 		return decrypted;
 	}
 	
-	public static byte[] requestDecryption(BigDecimal key, byte[] encrypted) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
+	public static byte[] requestDecryption(BigDecimal key, byte[] encrypted) throws IllegalBlockSizeException, BadPaddingException, 
+		InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
 		return requestDecryption(key.toString().getBytes(), encrypted);
 	}
 }
