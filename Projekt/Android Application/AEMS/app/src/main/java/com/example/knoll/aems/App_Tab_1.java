@@ -53,6 +53,8 @@ public class App_Tab_1 extends ChartViewTab {
     @Override
     public void onCreateChart(Chart chart1) {
 
+        loadDataFromServer();
+
         CombinedChart chart = (CombinedChart)chart1;
         chart.setSaveEnabled(true);
         chart.getDescription().setEnabled(false);
@@ -250,6 +252,10 @@ public class App_Tab_1 extends ChartViewTab {
 
         chart.setData(data);
         chart.invalidate();
+    }
+
+    private void loadDataFromServer() {
+
     }
 
 
