@@ -300,6 +300,7 @@ public class RestInf extends HttpServlet {
     private void exertAction(String[] results, String action, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final StringBuffer SQL = new StringBuffer();
         final StringBuffer COLUMN_BUFFER = new StringBuffer();
+        final StringBuffer GLOBAL_SQL = new StringBuffer();
         
         String whereColumn = null;
         String whereValue = null;
@@ -308,84 +309,106 @@ public class RestInf extends HttpServlet {
         JSONObject root = new JSONObject(results[0]);
         for(String key : root.keySet()) {
             Object obj = root.get(key);
-            if(!(obj instanceof JSONArray)) {
-                whereColumn = key;
-                if(obj instanceof String) {
-                    whereValue = "'" + obj.toString() + "'";
-                } else {
-                    whereValue = obj.toString();
+            
+            if(action.equals(ACTION_UPDATE) || action.equals(ACTION_DELETE)) {
+                for(String temp : root.keySet()) {
+                    Object tempObj = root.get(temp);
+                    if(!(tempObj instanceof JSONArray)) {
+                        whereColumn = temp;
+                        if(tempObj instanceof String) {
+                            whereValue = "'" + tempObj.toString() + "'";
+                        } else {
+                            whereValue = tempObj.toString();
+                        }
+                        break;
+                    }
                 }
-                continue;
             }
             
             JSONArray table = (JSONArray) obj;
             key = formatJSONTableName(key);
             tableName = key;
-            switch (action) {
-                case ACTION_INSERT:
-                    SQL.append("INSERT INTO ").append("aems.").append("\"").append(key).append("\"").append(" (%) VALUES (");
-                    break;
-                case ACTION_UPDATE:
-                    SQL.append("UPDATE ").append("aems.").append("\"").append(key).append("\"").append(" SET ");
-                    break;
-                case ACTION_DELETE:
-                    SQL.append("DELETE FROM ").append("aems.").append("\"").append(key).append("\" ");
-                    break;
-                // fail
-                default:
-                    break;
-            }
-            
-            for(Object entry : table) {
-                if(action.equals(ACTION_DELETE))
-                    break;
-                if(entry instanceof JSONObject) {
-                    JSONObject entryObj = (JSONObject) entry;
-                    for(String column : entryObj.keySet()) {
-                        if(action.equals(ACTION_UPDATE)) {
-                            SQL.append(column).append("=").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replace("\\s", "") + "'" : entryObj.get(column)).append(",");
-                        } else if(action.equals(ACTION_INSERT)) {
-                            COLUMN_BUFFER.append("\"").append(column).append("\",");
-                            SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column) + "'" : entryObj.get(column)).append(",");
-                        }
-                    }
-                   
+
+            // Object entry : table
+            for(int i = 0; i < table.length() || action.equals(ACTION_DELETE); i++) {
+                Object entry = action.equals(ACTION_DELETE) ? null : table.get(i);
+                COLUMN_BUFFER.setLength(0);
+                SQL.setLength(0);
+                
+                switch (action) {
+                    case ACTION_INSERT:
+                        SQL.append("INSERT INTO ").append("aems.").append("\"").append(key).append("\"").append(" (%) VALUES (");
+                        break;
+                    case ACTION_UPDATE:
+                        SQL.append("UPDATE ").append("aems.").append("\"").append(key).append("\"").append(" SET ");
+                        break;
+                    case ACTION_DELETE:
+                        SQL.append("DELETE FROM ").append("aems.").append("\"").append(key).append("\" ");
+                        break;
+                    // fail
+                    default:
+                        break;
                 }
-            }    
-            SQL.setLength(SQL.length() - 1);
-                                
-            if(COLUMN_BUFFER.length() > 0) // column buffer is not empty
-                COLUMN_BUFFER.setLength(COLUMN_BUFFER.length() - 1);
-        }
-        
-        if(action.equals(ACTION_UPDATE) || action.equals(ACTION_DELETE)) {
-            if(whereColumn == null || whereValue == null) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Request could not be fulfilled as a required parameter \"where\" is missing!");
-                return;
-            }
-            SQL.append(" WHERE ").append(whereColumn).append(" = ").append(whereValue.replace("\\s", ""));
-        } else if(action.equals(ACTION_INSERT)) {
-            SQL.append(")");
-        }
+                
+                if(!action.equals(ACTION_DELETE)) {
+                    if(entry instanceof JSONObject) {
+                        JSONObject entryObj = (JSONObject) entry;
+                        for(String column : entryObj.keySet()) {
+                            if(action.equals(ACTION_UPDATE)) {
+                                SQL.append(column).append("=").append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replaceAll("\\s;\\-", "") + "'" : entryObj.get(column).toString().replaceAll("\\s;\\-", "")).append(",");
+                            } else if(action.equals(ACTION_INSERT)) {
+                                COLUMN_BUFFER.append("\"").append(column).append("\",");
+                                SQL.append(entryObj.get(column) instanceof String ? "'" + entryObj.getString(column).replaceAll("\\s;\\-", "") + "'" : entryObj.get(column).toString().replaceAll("\\s;\\-", "")).append(",");
+                            }
+                        }
+
+                    }
+                    SQL.setLength(SQL.length() - 1);
+
+                    if(COLUMN_BUFFER.length() > 0) // column buffer is not empty
+                        COLUMN_BUFFER.setLength(COLUMN_BUFFER.length() - 1);
+                }
+                
+                if(action.equals(ACTION_UPDATE) || action.equals(ACTION_DELETE)) {
+                    if(whereColumn == null || whereValue == null) {
+                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Request could not be fulfilled as a required parameter \"where\" is missing!");
+                        return;
+                    }
+                    SQL.append(" WHERE ").append(whereColumn).append(" = ").append(whereValue.replace("\\s", ""));
+                } else if(action.equals(ACTION_INSERT)) {
+                    SQL.append(")");
+                }
                     
-        String sqlQuery = SQL.append(";").toString();
+                String sqlQuery = SQL.append(";").toString();
         
-        if(action.equals(ACTION_INSERT)) {
-            sqlQuery = sqlQuery.replace("%", COLUMN_BUFFER.toString());
+                if(action.equals(ACTION_INSERT)) {
+                    sqlQuery = sqlQuery.replace("%", COLUMN_BUFFER.toString());
+                }
+                
+                GLOBAL_SQL.append(sqlQuery);
+                
+                if(GLOBAL_SQL.length() > 0 && action.equals(ACTION_DELETE))
+                    break;
+            } 
+            
+            if(whereColumn != null && whereValue != null && GLOBAL_SQL.length() > 0)
+                break;
         }
         
         try {
             DatabaseConnection con = DatabaseConnectionManager.getDatabaseConnection();
-            con.executeSQL(sqlQuery);
+            con.executeSQL(GLOBAL_SQL.toString());
             
-            String stm = "SELECT id FROM aems.\"" + tableName + "\" ORDER BY \"id\" DESC";
-            ResultSet set = con.customSelect(stm);
-            String response = "{ id : \"" + set.getString(0, 0) + "\" }";
-            response = getEncryptedResponse(response, results[3], results[2], req, resp);
-            response = Base64.getUrlEncoder().encodeToString(response.getBytes());
-            
-            resp.getWriter().write(response);
-            resp.getWriter().flush();
+            if(action.equals(ACTION_INSERT)) {
+                String stm = "SELECT id FROM aems.\"" + tableName + "\" ORDER BY \"id\" DESC";
+                ResultSet set = con.customSelect(stm);
+                String response = "{ id : \"" + set.getString(0, 0) + "\" }";
+                response = getEncryptedResponse(response, results[3], results[2], req, resp);
+                response = Base64.getUrlEncoder().encodeToString(response.getBytes());
+
+                resp.getWriter().write(response);
+                resp.getWriter().flush();
+            }
             
         } catch (SQLException ex) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The issued SQL statement caused an error during execution!");

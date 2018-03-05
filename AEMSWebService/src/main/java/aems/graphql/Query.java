@@ -133,8 +133,8 @@ public class Query extends GraphQLObjectType {
     private String authorizationId = null;
 
     public static Query getInstance(String authorizationId) {  
-        if(instance != null)
-            return instance;
+//        if(instance != null)
+//            return instance;
         
         ArrayList<GraphQLFieldDefinition> defs = new ArrayList<>();
         defs.add(USERS);
