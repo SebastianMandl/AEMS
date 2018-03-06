@@ -74,7 +74,7 @@ public class RestInf extends HttpServlet {
                 ResultSet set = con.select("aems", AEMSDatabase.USERS, projection, selection);
                 userId = set.getString(0,0);
             }
-            String password = "pwd"; //con.callFunction("aems", "get_user_password", String.class, new Object[]{ user });
+            String password = /*"pwd"; //*/con.callFunction("aems", "get_user_password", String.class, new Object[]{ user });
             return isHashEqual(userId, user, password, salt, authStr, resp);
         } catch (SQLException ex) {
             Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
@@ -500,9 +500,15 @@ public class RestInf extends HttpServlet {
             } catch(Exception e) {
                 user = user == null ? String.valueOf(json.getInt("user")) : user;
             }
-            authStr = authStr == null ? json.getString("auth_str") : authStr;
-            salt = salt == null ? json.getString("salt") : salt;
-            encryption = encryption == null ? json.getString("encryption") : encryption;
+            
+            if(json.has("auth_str"))
+                authStr = authStr == null ? json.getString("auth_str") : authStr;
+            
+            if(json.has("salt"))
+                salt = salt == null ? json.getString("salt") : salt;
+            
+            if(json.has("encryption"))
+                encryption = encryption == null ? json.getString("encryption") : encryption;
             receivedData = true;
         }
         

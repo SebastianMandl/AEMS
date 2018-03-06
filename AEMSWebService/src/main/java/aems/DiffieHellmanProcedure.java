@@ -200,7 +200,7 @@ public class DiffieHellmanProcedure {
 			BigDecimal myCombination = compute(baseNumber, modNumber, secretNumber);
 			
 			// send key confirmation request
-			Socket clientSocket = new Socket(socket.getLocalAddress(), socket.getLocalPort() + 1);
+			Socket clientSocket = new Socket(socket.getInetAddress().toString(), socket.getPort() + 1);
 			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
