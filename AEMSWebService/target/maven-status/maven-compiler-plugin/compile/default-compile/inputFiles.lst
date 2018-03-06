@@ -1,6 +1,7 @@
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\database\DatabaseConnection.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\database\ResultSet.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Query.java
+H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Registration.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\at\htlgkr\aems\util\hashcode\HashCode.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\ReportStatistic.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\at\htlgkr\aems\util\crypto\Encrypter.java
@@ -28,9 +29,12 @@ H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\StatisticMeter.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\NotificationException.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\KeyDetails.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\database\AEMSDatabase.java
+H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Responsibility.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\DiffieHellmanProcedure.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\at\htlgkr\aems\util\key\DiffieHellmanProcedure.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\StatisticTime.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\utils\Argument.java
+H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\Role.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\User.java
+H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\NotificationTokens.java
 H:\hubiC\AEMS\AEMSWebService\src\main\java\aems\graphql\utils\GraphQLCondition.java
