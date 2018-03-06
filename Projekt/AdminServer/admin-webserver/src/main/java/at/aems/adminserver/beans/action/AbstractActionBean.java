@@ -8,6 +8,7 @@ package at.aems.adminserver.beans.action;
 import at.aems.adminserver.beans.UserBean;
 import at.aems.adminserver.beans.display.AbstractDisplayBean;
 import at.aems.adminserver.beans.display.NotifyBean;
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.ExternalContext;
@@ -18,7 +19,7 @@ import javax.faces.context.FacesContext;
  * @author Niggi
  */
 @ManagedBean
-public abstract class AbstractActionBean {
+public abstract class AbstractActionBean implements Serializable{
 
     @ManagedProperty(value = "#{notifyBean}")
     protected NotifyBean notify;

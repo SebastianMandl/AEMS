@@ -1,0 +1,6 @@
+{
+    statistics(display_home: true) {
+	id
+	name
+    }
+}

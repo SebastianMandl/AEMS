@@ -10,7 +10,7 @@ package at.aems.adminserver;
  * @author Niggi
  */
 public enum UserRole {
-    UNREGISTERED(0), MEMBER(1), SUB_ADMIN(2), ADMIN(3);
+    UNVERIFIED(0), UNREGISTERED(1), MEMBER(2), SUB_ADMIN(3), ADMIN(4);
     
     private final int id;
     

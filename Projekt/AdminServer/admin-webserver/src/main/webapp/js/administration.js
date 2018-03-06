@@ -7,10 +7,23 @@ $(document).ready(function () {
 
     $("#new-admin-form\\:username").on("change", function () {
         let username = $(this).val();
+	
+	// Replace with user query
+	let qry = `{
+	    users: meters(id: "${username}") {
+		id
+	    }
+	}`;
         
+	$.post("/admin-webserver/query", {q: qry}, function(data) {
+	    if(data["users"][0] !== undefined) {
+		$("#new-admin-form\\:add-admin").removeAttr("disabled");
+		$("#new-admin-form\\:add-admin").removeClass("loginmodal-disabled");
+	    }
+	});
+	
         if (username === "some") {
-            $("#new-admin-form\\:add-admin").removeAttr("disabled");
-            $("#new-admin-form\\:add-admin").removeClass("loginmodal-disabled");
+            
         }
     });
 

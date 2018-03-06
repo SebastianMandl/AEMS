@@ -5,7 +5,13 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.Constants;
+import at.aems.adminserver.UserRole;
 import at.aems.adminserver.beans.display.NotifyBean;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.AemsUpdateAction;
+import at.aems.apilib.crypto.EncryptionType;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 
@@ -14,13 +20,10 @@ import javax.faces.bean.ManagedProperty;
  * @author Niggi
  */
 @ManagedBean
-public class NewAdminBean {
+public class NewAdminBean extends AbstractActionBean {
 
     private String username;
     private boolean asAdmin;
-    
-    @ManagedProperty(value="#{notifyBean}")
-    private NotifyBean notify;
     
     public NewAdminBean() {
     }
@@ -41,18 +44,27 @@ public class NewAdminBean {
         this.username = username;
     }
 
-    public NotifyBean getNotify() {
-        return notify;
-    }
-
-    public void setNotify(NotifyBean notify) {
-        this.notify = notify;
-    }
     
     public String doCreate() {
         String adminStr = asAdmin ? "Admin" : "Sub-Admin";
-        notify.setMessage("Der Benutzer '" + username + "' wurde als " + adminStr + " festgelegt");
-        System.out.println(username + " - " + asAdmin);
+        
+	AemsAPI.setUrl(Constants.API_URL);
+	AemsUpdateAction up = new AemsUpdateAction(userBean.getAemsUser(), EncryptionType.SSL);
+	up.setTable("Users");
+	up.setIdColumn("username", username);
+	up.write("role", asAdmin ? UserRole.ADMIN.getId() : UserRole.SUB_ADMIN.getId());
+	
+	try {
+	    AemsResponse r = AemsAPI.call0(up, null);
+	    if(r.getResponseCode() == 200) {
+		notify.setMessage("Der Benutzer '" + username + "' wurde als " + adminStr + " festgelegt");
+	    } else {
+		notify.setMessage("Es ist ein Fehler aufgetreten!");
+	    }
+	} catch(Exception ex) {
+	    notify.setMessage("Fehler!");
+	}
+	
         return "administration";
     }
     
