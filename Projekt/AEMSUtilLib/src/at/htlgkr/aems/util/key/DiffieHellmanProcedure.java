@@ -7,9 +7,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Random;
@@ -201,7 +203,7 @@ public class DiffieHellmanProcedure {
 			BigDecimal myCombination = compute(baseNumber, modNumber, secretNumber);
 			
 			// send key confirmation request
-			Socket clientSocket = new Socket(socket.getLocalAddress(), socket.getLocalPort() + 1);
+			Socket clientSocket = new Socket(socket.getInetAddress().toString(), socket.getPort() + 1);
 			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
@@ -252,6 +254,19 @@ public class DiffieHellmanProcedure {
 			server.close();
 		}
 		return null;
+	}
+	
+	public static void prepareKeyAcquisition(String ip) throws Exception {
+		HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + ":8084/AEMSWebService/AAA").openConnection();
+		con.setRequestMethod("GET");
+		//con.setDoOutput(true);
+		con.setReadTimeout(3000);
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			for(String line = reader.readLine(); line != null; line = reader.readLine());
+		} catch(Exception e) {
+			
+		}
 	}
 	
 }

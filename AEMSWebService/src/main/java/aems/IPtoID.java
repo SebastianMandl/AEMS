@@ -15,6 +15,10 @@ public class IPtoID {
     
     private static final HashMap<String, String> MAP = new HashMap<>();
     
+    public static boolean hasMappingFor(String ipAddress) {
+        return MAP.containsKey(ipAddress);
+    }
+    
     public static String convertIPToId(String ipAddress) {
         return MAP.get(ipAddress);
     }

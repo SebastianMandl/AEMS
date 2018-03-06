@@ -76,10 +76,11 @@ public class AEMSUploader extends Uploader {
 	
 	private void exchangeKey(Authentication authentication) {
 		try {
+			DiffieHellmanProcedure.prepareKeyAcquisition(KEY_EXCHANGE_SERVICE_IP);
 			DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName(KEY_EXCHANGE_SERVICE_IP), KEY_EXCHANGE_SERVICE_PORT));
 			key = new BigDecimal(new String(DiffieHellmanProcedure.confirmKey()));
 			key = KeyUtils.salt(key, authentication.getUsername(), authentication.getPassword());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -101,7 +102,7 @@ public class AEMSUploader extends Uploader {
 			isLoggedIn = true;
 		}
 		
-		System.out.println(authentication);
+		//System.out.println(authentication);
 		
 		StringBuilder query = new StringBuilder();
 		String meterId = super.plugin.getSetting().getMeterId();
@@ -116,20 +117,22 @@ public class AEMSUploader extends Uploader {
 		query.append("{\"meter\":\"").append(meterId).append("\",");
 		for(TableData data : _package.getTableData()) {
 			query.append("\"").append(data.getTableName()).append("\"").append(":[");
+			query.append("{");
 			for(ColumnData column : data) {
-				query.append("{\"").append(column.getName()).append("\"").append(":");
+				query.append("\"").append(column.getName()).append("\"").append(":");
 				try {
 					Double.parseDouble(column.getValue());
 					query.append(column.getValue());
 				}catch(Exception e) {
 					query.append("\"").append(column.getValue()).append("\"");
 				}
-				query.append("},");
+				query.append(",");
 			}
 			query.setLength(query.length() - 1);
-			query.append("]}");
+			query.append("}]}");
 		}
 		
+		System.out.println(query.toString());
 		sendQuery(query.toString(), authentication);
 	}
 	

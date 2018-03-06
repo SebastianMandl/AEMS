@@ -65,7 +65,8 @@ public class AESKeyManager {
                 username = set.getString(0, 0);
             }
             
-            IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
+            if(!IPtoID.hasMappingFor(address))
+                IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
             
             BigDecimal key = KEYS.get(address);
             

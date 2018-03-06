@@ -85,8 +85,8 @@ public class DiffieHellmanProcedure {
 	private static BigDecimal modNumber = new BigDecimal(-1);
 	
 	public static final int KEY_LENGTH = 16;
-	private static final int SECRET_TOP_LIMIT = 49_999;
-	private static final int SECRET_BOTTOM_LIMIT = 25_111;
+	private static final int SECRET_TOP_LIMIT = 25_111;
+	private static final int SECRET_BOTTOM_LIMIT = 15_000;
 	
 	private static final int BASE_NUMBER_LENGTH = 60;
 	private static final int MOD_NUMBER_LENGTH = 60;
@@ -199,8 +199,12 @@ public class DiffieHellmanProcedure {
 			//secretNumberServer = secretNumber;
 			BigDecimal myCombination = compute(baseNumber, modNumber, secretNumber);
 			
+                        System.out.println(socket.getPort());
+                        System.out.println(socket.getInetAddress().getHostAddress());
+                                
+                        
 			// send key confirmation request
-			Socket clientSocket = new Socket(socket.getInetAddress().toString(), socket.getPort() + 1);
+			Socket clientSocket = new Socket(socket.getInetAddress().getHostAddress(), 9951);
 			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
@@ -216,6 +220,7 @@ public class DiffieHellmanProcedure {
 		} catch(IOException e) {
 			e.printStackTrace();
 		} finally {
+                        socket.close();
 			server.close();
 		}
 		

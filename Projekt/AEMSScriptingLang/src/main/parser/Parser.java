@@ -106,7 +106,23 @@ public class Parser {
 					SymbolTableEntry newVar = new SymbolTableEntry(input[0].getRawToken(), DataTypes.NUMBER, mean);
 					symbolTable.addSymbol(newVar);
 					System.out.println(mean);
-				} else {
+				} else if(functionName.equals("min")) {
+					float min = values.get(0);
+					for(float f : values) {
+						if(f < min)
+							min = f;
+					}
+					SymbolTableEntry newVar = new SymbolTableEntry(input[0].getRawToken(), DataTypes.NUMBER, min);
+					symbolTable.addSymbol(newVar);
+				}  else if(functionName.equals("max")) {
+					float max = values.get(0);
+					for(float f : values) {
+						if(f > max)
+							max = f;
+					}
+					SymbolTableEntry newVar = new SymbolTableEntry(input[0].getRawToken(), DataTypes.NUMBER, max);
+					symbolTable.addSymbol(newVar);
+				}else {
 					Logger.logError("invalid group function for type list!!!");
 				}
 				return;
