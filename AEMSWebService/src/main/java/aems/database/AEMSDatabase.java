@@ -36,8 +36,36 @@ public class AEMSDatabase {
         public static final String NOTIFICATION_METERS = "NotificationMeters";
         public static final String NOTIFICATION_EXCEPTIONS = "NotificationExceptions";
         
+        public static final String ROLES = "Roles";
+        public static final String RESPONSIBILITIES = "Responsibilities";
+        public static final String NOTIFICATION_TOKENS = "NotificationTokens";
+        public static final String REGISTRATIONS = "Registrations";
+        
         public static final String ARCHIVED_METER_NOTIFICATIONS = "ArchivedMeterNotifications";
 	
+        public class Roles {
+            public static final String ID = "id";
+            public static final String DISPLAY_NAME = "display_name";
+        }
+        
+        public class Responsibilities {
+            public static final String USER = "user";
+            public static final String POSTAL_CODE = "postal_code";
+            public static final String DESIGNATION = "designation";
+        }
+        
+        public class NotificationTokens {
+            public static final String ID = "id";
+            public static final String TOKEN = "token";
+            public static final String USER = "user";
+        }
+        
+        public class Registrations {
+            public static final String EMAIL = "email";
+            public static final String CONFIRM_CODE = "confirm_code";
+            public static final String TIMESTAMP = "timestamp";
+        }
+        
         public class Anomalies {
             public static final String ID = "id";
             public static final String SCRIPT = "script";
@@ -75,6 +103,11 @@ public class AEMSDatabase {
             public static final String ID = "id";
             public static final String USERNAME = "username";
             public static final String PASSWORD = "password";
+            public static final String EMAIL = "email";
+            public static final String ROLE = "role";
+            public static final String MEMBER_SINCE = "member_since";
+            public static final String USE_NETZONLINE = "use_netzonline";
+            public static final String POSTAL_CODE = "postal_code";
 	}
 	
 	public class MeterData {
@@ -102,6 +135,10 @@ public class AEMSDatabase {
             public static final String ID = "id";
             public static final String USER = "user";
             public static final String NAME = "name";
+            public static final String PERIOD = "period";
+            public static final String ANNOTATION = "annotation";
+            public static final String DISPLAY_HOME = "display_home";
+            public static final String DISPLAY_ANDROID = "display_android";
         }
         
         public class StatisticTimes {
@@ -154,6 +191,8 @@ public class AEMSDatabase {
             public static final String PERIOD = "period";
             public static final String MIN_POSITIVE_DEVIATION = "min_positive_deviation";
             public static final String MIN_NEGATIVE_DEVIATION = "min_negative_deviation";
+            public static final String EXCEPTION_DATE = "exception_date";
+            public static final String WEEK_DAY = "week_day";
         }
         
         public class ArchivedMeterNotifications {
@@ -167,6 +206,7 @@ public class AEMSDatabase {
             public static final String PERIOD = "period";
             public static final String INITIAL_OCCURRENCE = "initial_occurrence";
             public static final String LAST_OCCURRENCE = "last_occurrence";
+            public static final String SEEN = "senn";
         }
         
         public static boolean doesTablePossessColumn(String tableName, String columnName) {

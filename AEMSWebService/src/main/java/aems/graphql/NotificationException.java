@@ -28,6 +28,9 @@ public class NotificationException extends GraphQLObjectType {
      private static final GraphQLFieldDefinition MIN_NEGATIVE_DEVIATION = Query.getFieldDefinition("min_negative_deviation", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.MIN_NEGATIVE_DEVIATION, Scalars.GraphQLFloat);
     
     
+     private static final GraphQLFieldDefinition EXCEPTION__DATE = Query.getFieldDefinition("exception_date", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.EXCEPTION_DATE, Scalars.GraphQLString);
+    private static final GraphQLFieldDefinition WEEK_DAY = Query.getFieldDefinition("week_day", AEMSDatabase.NOTIFICATION_EXCEPTIONS, AEMSDatabase.NotificationExceptions.WEEK_DAY, Scalars.GraphQLInt);
+     
     public NotificationException(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
     }
@@ -42,6 +45,9 @@ public class NotificationException extends GraphQLObjectType {
         defs.add(PERIOD);
         defs.add(MIN_POSITIVE_DEVIATION);
         defs.add(MIN_NEGATIVE_DEVIATION);
+        defs.add(EXCEPTION__DATE);
+        defs.add(WEEK_DAY);
+        
         
         instance = new NotificationException("notification_exception", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;

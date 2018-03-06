@@ -31,6 +31,8 @@ public class ArchivedMeterNotification extends GraphQLObjectType {
     private static final GraphQLFieldDefinition INITIAL_OCCURRENCE = Query.getFieldDefinition("initial_occurrence", AEMSDatabase.ARCHIVED_METER_NOTIFICATIONS, AEMSDatabase.ArchivedMeterNotifications.INITIAL_OCCURRENCE, Scalars.GraphQLString);
     private static final GraphQLFieldDefinition LAST_OCCURRENCE = Query.getFieldDefinition("last_occurrence", AEMSDatabase.ARCHIVED_METER_NOTIFICATIONS, AEMSDatabase.ArchivedMeterNotifications.LAST_OCCURRENCE, Scalars.GraphQLString);
     
+    private static final GraphQLFieldDefinition SEEN = Query.getFieldDefinition("seen", AEMSDatabase.ARCHIVED_METER_NOTIFICATIONS, AEMSDatabase.ArchivedMeterNotifications.SEEN, Scalars.GraphQLBoolean);
+    
     
     private ArchivedMeterNotification(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
@@ -50,6 +52,7 @@ public class ArchivedMeterNotification extends GraphQLObjectType {
         defs.add(PERIOD);
         defs.add(INITIAL_OCCURRENCE);
         defs.add(LAST_OCCURRENCE);
+        defs.add(SEEN);
         
         instance = new ArchivedMeterNotification("archived_meter_notification", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;

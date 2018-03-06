@@ -46,6 +46,13 @@ public class User extends GraphQLObjectType {
         }
     }).build();
     
+    private static final GraphQLFieldDefinition EMAIL = Query.getFieldDefinition("email", AEMSDatabase.USERS, AEMSDatabase.Users.EMAIL, Scalars.GraphQLString);
+    private static final GraphQLFieldDefinition MEMBER_SINCE = Query.getFieldDefinition("member_since", AEMSDatabase.USERS, AEMSDatabase.Users.MEMBER_SINCE, Scalars.GraphQLString);
+    private static final GraphQLFieldDefinition USE_NETZONLINE = Query.getFieldDefinition("use_netzonline", AEMSDatabase.USERS, AEMSDatabase.Users.USE_NETZONLINE, Scalars.GraphQLBoolean);
+    private static final GraphQLFieldDefinition ROLE = Query.getFieldDefinition("role", Role.getInstance());
+    private static final GraphQLFieldDefinition POSTAL_CODE = Query.getFieldDefinition("postal_code", AEMSDatabase.USERS, AEMSDatabase.Users.POSTAL_CODE, Scalars.GraphQLInt);
+    
+    
     public User(String name, String description, List<GraphQLFieldDefinition> fieldDefinitions, List<GraphQLOutputType> interfaces) {
         super(name, description, fieldDefinitions, interfaces);
     }
@@ -57,6 +64,13 @@ public class User extends GraphQLObjectType {
         ArrayList<GraphQLFieldDefinition> defs = new ArrayList<>();
         defs.add(ID);
         defs.add(USERNAME);
+        defs.add(EMAIL);
+        defs.add(MEMBER_SINCE);
+        defs.add(USE_NETZONLINE);
+        defs.add(ROLE);
+        defs.add(POSTAL_CODE);
+        
+        
         
         instance = new User("user", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;
