@@ -21,7 +21,7 @@ public class DatabaseConnectionManager {
     public static DatabaseConnection getDatabaseConnection() {
         if(connection == null) {
             try {
-                connection = new DatabaseConnection();
+                connection = new DatabaseConnection("aems");
                 connection.open(USERNAME, PASSWORD);
             } catch (SQLException ex) {
                 Logger.getLogger(DatabaseConnectionManager.class.getName()).log(Level.SEVERE, null, ex);

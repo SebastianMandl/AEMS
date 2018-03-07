@@ -65,13 +65,14 @@ public class AESKeyManager {
                 username = set.getString(0, 0);
             }
             
-            IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
+            if(!IPtoID.hasMappingFor(address))
+                IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
             
-            BigDecimal key = KEYS.get("0:0:0:0:0:0:0:1");
+            BigDecimal key = KEYS.get(address);
             
-            //String password = DatabaseConnectionManager.getDatabaseConnection().callFunction("aems", "get_user_password", String.class, new Object[]{ username });
+            String password = DatabaseConnectionManager.getDatabaseConnection().callFunction("aems", "get_user_password", String.class, new Object[]{ username });
             
-            return KeyUtils.salt(key, username, "pwd"); // for pwd make a function call ; out of commission due to non functioning pljava in postgres.
+            return KeyUtils.salt(key, username, password); // for pwd make a function call ; out of commission due to non functioning pljava in postgres.
         } catch (SQLException ex) {
             Logger.getLogger(AESKeyManager.class.getName()).log(Level.SEVERE, null, ex);
         }

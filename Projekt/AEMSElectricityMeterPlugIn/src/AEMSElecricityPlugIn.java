@@ -10,14 +10,13 @@ import at.htlgkr.aems.plugins.PlugIn;
 import at.htlgkr.aems.raspberry.upload.AEMSUploader;
 import at.htlgkr.aems.raspberry.upload.TableData;
 import at.htlgkr.aems.raspberry.upload.UploadPackage;
-import at.htlgkr.aems.settings.MeterTypes;
 import at.htlgkr.aems.settings.ScriptFile;
 import at.htlgkr.aems.settings.Setting;
 
 public class AEMSElecricityPlugIn extends PlugIn {
 
 	public AEMSElecricityPlugIn() {
-		super("ElectricityMeter PLUGIN", Setting.getSetting(MeterTypes.ELECTRICITY, new ScriptFile("py", "run.py")));
+		super("Sensor PLUGIN", Setting.getSetting("kwH", new ScriptFile("py", "run.py")));
 		super.getSetting().setMillisUntilRepetition(1000 * 60 * 15);
 		super.setUploader(new AEMSUploader(this));
 	}
@@ -35,8 +34,7 @@ public class AEMSElecricityPlugIn extends PlugIn {
 				if(matcher.find()) {
 					String value = matcher.group("number");
 					super.getUploader().upload(new UploadPackage().addData(new TableData("meter_data")
-							.addData("meter", plugin.getSetting().getMeterId()).addData("measured_value", value).addData("timestamp", FORMAT.format(new Date()))));
-					
+							.addData("meter", plugin.getSetting().getMeterId()).addData("measured_value", value).addData("timestamp", FORMAT.format(new Date())).addData("unit", getSetting().getSensorUnit())));
 				}
 			}
 		} catch(Exception e) {

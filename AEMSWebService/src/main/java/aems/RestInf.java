@@ -7,6 +7,7 @@ import aems.graphql.Query;
 import at.aems.apilib.AemsUser;
 import at.htlgkr.aems.util.crypto.Decrypter;
 import at.htlgkr.aems.util.crypto.Encrypter;
+import at.htlgkr.aems.util.crypto.KeyUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graphql.ExecutionResult;
@@ -74,7 +75,7 @@ public class RestInf extends HttpServlet {
                 ResultSet set = con.select("aems", AEMSDatabase.USERS, projection, selection);
                 userId = set.getString(0,0);
             }
-            String password = "pwd"; //con.callFunction("aems", "get_user_password", String.class, new Object[]{ user });
+            String password = /*"pwd"; //*/con.callFunction("aems", "get_user_password", String.class, new Object[]{ user });
             return isHashEqual(userId, user, password, salt, authStr, resp);
         } catch (SQLException ex) {
             Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
@@ -184,11 +185,15 @@ public class RestInf extends HttpServlet {
                     return; // abort if authentication has failed
                 
                 try {
-                    String json = new String(DatabaseConnectionManager.getDatabaseConnection().callFunction("get_user_infos", byte[].class));
-                    resp.getWriter().write(Base64.getUrlEncoder().encodeToString(json.getBytes()));
+                    BigDecimal key = new BigDecimal(new String(DiffieHellmanProcedure.exertProcedure(DatabaseConnectionManager.getDatabaseConnection())).hashCode());
+                    key = KeyUtils.salt(key, "master", "pwd");
+                    String json = new String(Decrypter.requestDecryption(key, DatabaseConnectionManager.getDatabaseConnection().callFunction("get_user_infos", byte[].class)));
+                    String data = getEncryptedResponse(json, encryption, user, req, resp);
+                    if(encryption.equals(ENCRYPTION_SSL))
+                        data = Base64.getUrlEncoder().encodeToString(data.getBytes());
+                    resp.getWriter().write(data);
                     resp.getWriter().flush();
-                    return;
-                } catch (IOException | SQLException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
@@ -204,7 +209,7 @@ public class RestInf extends HttpServlet {
             case ACTION_QUERY:
                 if(encryption.equals(ENCRYPTION_SSL) && !doLogin(user, authStr, salt, encryption, req, resp, false))
                     return; // abort if authentication has failed
-                
+                String auth = IPtoID.convertIPToId(req.getRemoteAddr());
                 GraphQLSchema schema = new GraphQLSchema(Query.getInstance(IPtoID.convertIPToId(req.getRemoteAddr())));
                 //GraphQLSchema schema = new GraphQLSchema(Query.getInstance("185"));
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
@@ -324,6 +329,9 @@ public class RestInf extends HttpServlet {
                     }
                 }
             }
+            
+            if(!(obj instanceof JSONArray))
+                continue;
             
             JSONArray table = (JSONArray) obj;
             key = formatJSONTableName(key);
@@ -500,9 +508,15 @@ public class RestInf extends HttpServlet {
             } catch(Exception e) {
                 user = user == null ? String.valueOf(json.getInt("user")) : user;
             }
-            authStr = authStr == null ? json.getString("auth_str") : authStr;
-            salt = salt == null ? json.getString("salt") : salt;
-            encryption = encryption == null ? json.getString("encryption") : encryption;
+            
+            if(json.has("auth_str"))
+                authStr = authStr == null ? json.getString("auth_str") : authStr;
+            
+            if(json.has("salt"))
+                salt = salt == null ? json.getString("salt") : salt;
+            
+            if(json.has("encryption"))
+                encryption = encryption == null ? json.getString("encryption") : encryption;
             receivedData = true;
         }
         

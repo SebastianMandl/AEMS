@@ -1,6 +1,5 @@
 package main;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -29,7 +28,9 @@ import main.tokens.Tokenizer;
 
 public class Main {
 
-	public static final String REST_ADDRESS = "http://localhost:8084/AEMSWebService/RestInf?";
+	
+	private static final String SERVER_ADDRESS = "127.0.0.1";
+	public static final String REST_ADDRESS = "http://" + SERVER_ADDRESS + ":8084/AEMSWebService/RestInf?";
 	
 	public static BigDecimal key = new BigDecimal("1045480378380401");
 	
@@ -64,7 +65,12 @@ public class Main {
 				JSONObject object = array.getJSONObject(i);
 				Anomaly a = new Anomaly();
 				System.out.println(object);
-				a.meter = object.getJSONObject("meter").getString("id");
+				JSONObject meter = object.getJSONObject("meter");
+				JSONObject sensor = object.getJSONObject("sensor");
+				if(!meter.has("id") && !sensor.has("id")) // due to authority no insight to data
+					continue;
+				
+				a.meter = meter.getString("id");
 				a.sensor = object.getJSONObject("sensor").getString("id");
 				a.execIntermediateTime = object.getInt("exec_intermediate_time");
 				a.lastExecution = format.parse(object.getString("last_execution"));
@@ -154,9 +160,10 @@ public class Main {
 	}
 	static String pwd = "pwd";
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		
-		DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("127.0.0.1"), 9950));
+		DiffieHellmanProcedure.prepareKeyAcquisition(SERVER_ADDRESS);
+		DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName(SERVER_ADDRESS), 9950));
 		key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), "master", pwd);
 		
 		System.out.println(key);
@@ -169,6 +176,7 @@ public class Main {
 			Logger.logDebug("start of iteration");
 			for(Anomaly anomaly : ANOMALIES) {
 				long minutes = (System.currentTimeMillis() - anomaly.lastExecution.getTime()) / 1000 / 60;
+
 				if(minutes < anomaly.execIntermediateTime)
 					continue; // script should not be executed in this cycle
 				anomaly.changed = true;
