@@ -5,6 +5,8 @@
  */
 package at.aems.adminserver.data.users;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -63,6 +65,9 @@ public class Enquiry implements Comparable<Enquiry>{
     }
     
     public String getNiceSignupTime() {
+	if(signupTime == null) {
+	    return "Keine SignupTime gesetzt!";
+	}
         GregorianCalendar now = new GregorianCalendar();
         GregorianCalendar then = new GregorianCalendar();
         then.setTimeInMillis(signupTime.getTime());
@@ -85,6 +90,9 @@ public class Enquiry implements Comparable<Enquiry>{
 
     @Override
     public int compareTo(Enquiry o) {
+	if(signupTime == null || o.getSignupTime() == null) {
+	    return 0;
+	}
         Timestamp t1 = this.getSignupTime();
         Timestamp t2 = o.getSignupTime();
         if(t1 == null || t2 == null) {
@@ -93,6 +101,35 @@ public class Enquiry implements Comparable<Enquiry>{
         return t1.before(t2) ? 1 : -1;
     }
     
+    public static Enquiry fromJsonObject(JsonObject o) {
+	String email = o.has("email") ? o.get("email").getAsString() : null;
+	String user = o.has("username") ? o.get("username").getAsString() : null;
+	boolean netz = o.has("use_netzonline") ? o.get("use_netzonline").getAsBoolean() : false;
+	
+	String time = o.has("member_since") ? o.get("member_since").getAsString() : null;
+	Timestamp stamp = null;
+	
+	if(time != null && !time.equals("null")) {
+	    stamp = Timestamp.valueOf(time);
+	}
+	return new Enquiry(email, user, netz, stamp);
+    }
     
+    private static Object get(JsonObject o, String key) {
+	
+	if(o.has(key)) {
+	    JsonPrimitive p = o.get(key).getAsJsonPrimitive();
+	    if(p.isNumber())
+		return p.getAsNumber();
+	    if(p.isBoolean())
+		return p.getAsBoolean();
+	    if(p.isString()) {
+		return p.getAsString();
+	    }
+	}
+	
+	return null;
+	
+    }
     
 }

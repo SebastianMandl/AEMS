@@ -5,9 +5,11 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.Constants;
 import at.aems.adminserver.beans.UserBean;
 import at.aems.adminserver.beans.display.AbstractDisplayBean;
 import at.aems.adminserver.beans.display.NotifyBean;
+import at.aems.apilib.AemsAPI;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -25,7 +27,7 @@ public abstract class AbstractActionBean implements Serializable{
     protected NotifyBean notify;
     
     @ManagedProperty(value="#{userBean}")
-    protected UserBean userBean;
+    protected UserBean userBean; 
 
     public AbstractActionBean() {
     }
@@ -59,6 +61,10 @@ public abstract class AbstractActionBean implements Serializable{
         } else {
             throw new RuntimeException("Bean " + managedBeanName + " is not an instance of AbstractDisplayBean!");
         }
+    }
+    
+    public void setApiUrl() {
+	AemsAPI.setUrl(Constants.API_URL);
     }
     
     

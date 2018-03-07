@@ -35,9 +35,6 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
     private String username;
     private String password;
     
-    @ManagedProperty(value = "#{userBean}")
-    private UserBean userBean;
-    
     public LoginBean() {
     }
 
@@ -81,13 +78,12 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
             userBean.setUsername(username);
             userBean.setPassword(password);
 	    int roleId = getUserRole(userId);
-	    if(roleId < UserRole.SUB_ADMIN.getId() && !username.equals("master")) {
+	    if(roleId < UserRole.SUB_ADMIN.getId()) {
 		userBean.setUserId(-1);
 		userBean.setUsername(null); 
 		userBean.setPassword(null); 
 		notify.setMessage("Unzureichende Berechtigung für AEMS-Admin!");
 	    } else {
-		roleId = UserRole.ADMIN.getId();
 		userBean.setRole(UserRole.getById(roleId));
 	    }
             
@@ -106,26 +102,18 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index";
     }
-
-    public UserBean getUserBean() {
-        return userBean;
-    }
-
-    public void setUserBean(UserBean userBean) {
-        this.userBean = userBean;
-    }
-
+    
     private int getUserRole(int userId) {
 	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-	qry.setQuery("{ users(id: " + userId + ") { role { id } } }");
+	qry.setQuery("{ users(id: \"" + userId + "\") { role { id } } }");
 	
 	try {
 	    AemsAPI.setUrl(Constants.API_URL);
 	    AemsResponse r = AemsAPI.call0(qry, null);
 	    
 	    JsonArray array = r.getJsonArrayWithinObject();
-	    int id = array.get(0).getAsJsonObject().get("id").getAsInt();
-	    return id;
+	    int id = array.get(0).getAsJsonObject().get("role").getAsJsonObject().get("id").getAsInt();
+	    return id;  
 	} catch(Exception ex) {
 	    Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
 	}

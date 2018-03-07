@@ -42,8 +42,7 @@ public class ResponsibilityBean extends AbstractDisplayBean {
 
     @Override
     public void update() {
-        System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
-	
+	responsibilities.clear();
 	AemsAPI.setUrl(Constants.API_URL);
 	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
 	qry.setQuery("{ responsibilities { postal_code designation } }");

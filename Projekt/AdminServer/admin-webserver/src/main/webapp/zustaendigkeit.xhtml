@@ -44,6 +44,9 @@
                             <h4 class="list-group-item-heading">#{item.postalCode} #{item.name}</h4>
                         </a>
                     </c:forEach>
+		    <c:if test="#{responsibilityBean.responsibilities.size() == 0}">
+			<p>Keine Zuständigkeitsbereiche festgelegt</p>
+		    </c:if>
                 </div>
 
                 <br />
