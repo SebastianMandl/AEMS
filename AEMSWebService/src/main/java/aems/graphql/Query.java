@@ -56,7 +56,8 @@ public class Query extends GraphQLObjectType {
     private static final GraphQLFieldDefinition USERS = 
             Query.getRootFieldDefinition("users", AEMSDatabase.USERS, User.getInstance(), 
                     getArgumentList(
-                            new Argument("id", AEMSDatabase.Users.ID, Argument.EQUAL))); 
+                            new Argument("id", AEMSDatabase.Users.ID, Argument.EQUAL),
+			    new Argument("role", AEMSDatabase.Users.ROLE, Argument.EQUAL))); 
     
     private static final GraphQLFieldDefinition METERS = 
             Query.getRootFieldDefinition("meters", AEMSDatabase.METERS, Meter.getInstance(), 
@@ -354,6 +355,12 @@ public class Query extends GraphQLObjectType {
                     
         boolean authorized = false;
         
+	/**
+	 * checkAdminAuthority ?
+	 * if userRole == ADMIN or SUBADMIN
+	 *   authorized = true
+	 * lg graf c:
+	 */
         if(instance.authorizationId.equals("215")) {
             authorized = true;
         } else {
