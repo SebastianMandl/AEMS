@@ -5,8 +5,15 @@
  */
 package at.aems.adminserver.beans.display;
 
+import at.aems.adminserver.Constants;
 import at.aems.adminserver.beans.action.AbstractActionBean;
 import at.aems.adminserver.data.users.Responsibility;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.crypto.EncryptionType;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -35,9 +42,26 @@ public class ResponsibilityBean extends AbstractDisplayBean {
 
     @Override
     public void update() {
-        System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
-        Responsibility r = new Responsibility("1234", "Musterort");
-        responsibilities.add(r);
+	responsibilities.clear();
+	AemsAPI.setUrl(Constants.API_URL);
+	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	qry.setQuery("{ responsibilities { postal_code designation } }");
+	
+	try {
+	    AemsResponse resp = AemsAPI.call0(qry, null);
+	    JsonArray array = resp.getJsonArrayWithinObject();
+	    
+	    for(JsonElement e : array) {
+		responsibilities.add(Responsibility.fromJsonObject(e.getAsJsonObject()));
+	    }
+	} catch(Exception ex) {
+	    this.responsibilities.clear();
+	    this.responsibilities.add(new Responsibility("404", "Error!"));
+	    ex.printStackTrace();
+	}
+	
+	
+	
     }
     
     

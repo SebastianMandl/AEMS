@@ -1,0 +1,100 @@
+ADOBE INDESIGN - DRUCKANLEITUNGEN FÜR BELICHTUNGSBÜROBERICHT
+
+SATZDATEINAME: jebiane.indd
+
+PACKDATUM: 07.03.2018 15:28
+Erstellungsdatum 07.03.2018
+Änderungsdatum: 07.03.2018
+
+AUFTRAGGEBER
+
+Firma: 
+Ansprechpartner: Anette Jebinger
+Adresse: 
+
+
+
+
+
+Telefon: 
+Fax: 
+E-Mail: 
+
+BESONDERE ANWEISUNGEN UND ANDERE ANMERKUNGEN
+
+Bitte Bilder neu verknüpfen! Farbprofil überprüfen!
+
+
+
+
+Externe Zusatzmodule 0
+Nicht deckende Objekte: Auf Seite3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 66, 67, 68, 82, 83, 84, 85, 86, 91, 92, 93, 94, 95, 96
+
+SCHRIFTARTEN
+14 Schriftart(en) verwendet; 0 fehlend, 11 eingebettet, 0 unvollst., 0 geschützt
+
+Schriftarten verpackt
+- Name: Arial; Typ: TrueType, Status: eingebettet
+- Name: Arial,Bold; Typ: TrueType, Status: eingebettet
+- Name: Calibri; Typ: TrueType, Status: eingebettet
+- Name: Calibri; Typ: OpenType TrueType, Status: OK
+- Name: Calibri,Bold; Typ: TrueType, Status: eingebettet
+- Name: Calibri,Italic; Typ: TrueType, Status: eingebettet
+- Name: Calibri-Bold; Typ: OpenType TrueType, Status: OK
+- Name: Calibri-Italic; Typ: OpenType TrueType, Status: OK
+- Name: CalibriLight; Typ: TrueType, Status: eingebettet
+- Name: Cambria; Typ: TrueType, Status: eingebettet
+- Name: Cambria,Bold; Typ: TrueType, Status: eingebettet
+- Name: Symbol; Typ: ???, Status: eingebettet
+- Name: Times-Roman; Typ: Type 1, Status: eingebettet
+- Name: Wingdings; Typ: ???, Status: eingebettet
+
+
+FARBEN UND DRUCKFARBEN
+4 Prozessfarbe(n); 0 Volltonfarbe(n)
+
+- Name und Typ: Prozessfarbe Cyan; Winkel: 0,000; Linien/Zoll: 0,000
+- Name und Typ: Prozessfarbe Magenta; Winkel: 0,000; Linien/Zoll: 0,000
+- Name und Typ: Prozessfarbe Gelb; Winkel: 0,000; Linien/Zoll: 0,000
+- Name und Typ: Prozessfarbe Schwarz; Winkel: 0,000; Linien/Zoll: 0,000
+
+
+VERKNÜPFUNGEN UND BILDER
+(Nur fehlende & eingebettete Verknüpfungen)
+Verknüpfungen und Bilder: 127 Verknüpfung(en) gefunden; 0 geändert, 0 fehlend 0 Zugriff nicht möglich
+Bilder: 0 eingebettet, 112 verwenden RGB-Farbraum
+
+
+DRUCKEINSTELLUNGEN
+PPD: n. zutr., (HP Color LaserJet 2600n Class Driver)
+Druckausgabe: Drucker
+Anzahl der Exemplare: 1
+Druckbögen: Nein
+Gerade/Ungerade Seiten: Beides
+Seiten: Alle
+Probedruck: Nein
+Unterteilung: Ohne
+Skalieren: 100 %, 100 %
+Seitenposition: Oben links
+Ebenen drucken: Sichtbare und druckbare Ebenen
+Druckermarken: Ohne
+Anschnitt: 0 mm, 0 mm, 0 mm, 0 mm
+Farbe: Composite-RGB
+Überfüllungsmodus:  Ohne
+Bilddaten senden: Auflösung reduzieren
+OPI/DCS-Bildersetzung: Nein
+Seitenformat: A4
+Papierabmessungen: 210 mm x 297 mm
+Format: Hochformat
+Negativ: Nein
+Spiegelmodus: Aus
+
+
+DATEIPAKETLISTE
+
+1. jebiane.indd; Typ: Adobe InDesign-Satzdatei; Größe: 9328K
+2. jebiane.idml; Typ: InDesign Markup-Dokument; Größe: 606K
+3. jebiane.pdf; Typ: Adobe Acrobat-Dokument; Größe: 5438K
+4. calibri.ttf; Typ: Schriftartendatei; Größe: 792K
+5. calibrib.ttf; Typ: Schriftartendatei; Größe: 828K
+6. calibrii.ttf; Typ: Schriftartendatei; Größe: 833K

@@ -5,6 +5,8 @@
  */
 package at.aems.adminserver.data.users;
 
+import com.google.gson.JsonObject;
+
 /**
  *
  * @author Niggi
@@ -37,6 +39,13 @@ public class Responsibility {
     @Override
     public String toString() {
         return postalCode + " " + name;
+    }
+    
+    public static Responsibility fromJsonObject(JsonObject o) {
+	String post = o.has("postal_code") ? o.get("postal_code").getAsString() : null;
+	String name = o.has("designation") ? o.get("designation").getAsString() : null;
+	
+	return new Responsibility(post, name);
     }
     
 }

@@ -22,11 +22,16 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.ProtocolException;
 import java.net.Socket;
+import java.net.URL;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
@@ -52,6 +57,9 @@ public class LoginActivity extends AppCompatActivity {
     String userId = "";
     String username = "";
     String password = "";
+
+    static volatile BigDecimal key = null;
+    static volatile BigInteger keyInt = null;
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -92,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         password = _passwordText.getText().toString();
 
         //Login to AEMS
-        //loginToAEMS();
+        loginToAEMS();
 
         httpCode = 200;
 
@@ -108,45 +116,85 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         progressDialog.dismiss();
                     }
-                }, 500);
+                }, 2500);
     }
 
     private void loginToAEMS() {
-        BigDecimal key = null;
-        BigInteger keyInt = null;
-        try {
-            DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("localhost"), 9950));
-            key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), username, password);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
 
-        if(key != null)
-        {
-            keyInt = key.unscaledValue();
-        }
-        sharedSecretKey = keyInt.toByteArray();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection con = null;
+                try {
+                    con = (HttpURLConnection) new URL("http://10.0.6.41:8084/AEMSWebService/AAA").openConnection();
+                } catch (IOException e) {
+                    System.out.println("---------------------------------HTTP URL Error-----------------------------------------");
+                }
+                try {
+                    con.setRequestMethod("GET");
+                } catch (ProtocolException e) {
+                    System.out.println("---------------------------------Protokoll Error-----------------------------------------");
+                    e.printStackTrace();
+                }
+                //con.setDoOutput(true);
 
-        AemsAPI.setUrl("https://api.aems.at");
+                //con.setReadTimeout(1000);
 
-        AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
-        loginAction.setUsername(username);
-        loginAction.setPassword(password);
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    for(String line = reader.readLine(); line != null; line = reader.readLine())
+                        System.out.println(line);;
 
-        AemsResponse response = null;
-        try {
-            response = AemsAPI.call0(loginAction, sharedSecretKey);
-            httpCode = response.getResponseCode();
-            decryptedText = response.getDecryptedResponse();
+                } catch(Exception e) {
+                    System.out.println("---------------------------------BufferedReaderError-----------------------------------------");
+                }
 
-            JSONObject json = new JSONObject(decryptedText);
-            userId = json.getString("id");
+                try {
+                    System.out.println("----------------------------------------After Buffered Reader----------------------------------------");
+                    DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("10.0.6.41"), 9950));
+                    System.out.println("----------------------------------- After DiffieHellman---------------------------------------------");
+                    key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), username, password);
+                    System.out.println("----------------------------------- After Salt---------------------------------------------");
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+                System.out.println("-----------------------------------------" + key + "------------------------------------------------------------");
+
+                if(key != null)
+                {
+                    keyInt = key.unscaledValue();
+
+                    sharedSecretKey = keyInt.toByteArray();
+
+                    AemsAPI.setUrl("http://10.10.0.167:8084/AEMSWebService/RestInf");
+
+                    AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
+                    loginAction.setUsername(username);
+                    loginAction.setPassword(password);
+
+                    AemsResponse response = null;
+
+                    try {
+                        response = AemsAPI.call0(loginAction, sharedSecretKey);
+                        httpCode = response.getResponseCode();
+                        decryptedText = response.getDecryptedResponse();
+
+                        JSONObject json = new JSONObject(decryptedText);
+                        userId = json.getString("id");
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        }).start();
+
     }
 
 
@@ -176,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                 String keyString = sharedSecretKey + "";
                 sharedPreferences.edit().putString("SHAREDSECRETKEYSTRING", keyString).commit();
                 sharedPreferences.edit().putString("USERID", userId).commit();
+                sharedPreferences.getString("SHAREDSECRETKEYSTRING", null);
             }
         }
 

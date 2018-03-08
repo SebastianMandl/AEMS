@@ -5,6 +5,10 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.UserRole;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsUpdateAction;
+import at.aems.apilib.crypto.EncryptionType;
 import javax.faces.bean.ManagedBean;
 
 /**
@@ -36,7 +40,19 @@ public class HandleEnquiryBean extends AbstractActionBean {
     }
     
     public String doAccept() {
-        notify.setMessage("Benutzer " + email + " wurde Zugriff gewährt!");
+	
+	AemsUpdateAction update = new AemsUpdateAction(userBean.getAemsUser(), EncryptionType.SSL);
+	update.setTable("Users");
+	update.setIdColumn("email", email);
+	
+	update.write("role", UserRole.MEMBER.getId());
+	
+	try {
+	    AemsAPI.call0(update, null);
+	    notify.setMessage("Benutzer " + email + " wurde Zugriff gewährt!");
+	} catch(Exception ex) {
+	    notify.setMessage("Es ist ein Fehler aufgetreten");
+	}
         callUpdateOn("enquiriesBean");
         return "index";
     }

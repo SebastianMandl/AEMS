@@ -1,0 +1,7 @@
+{
+    meter_data(meter: #METER_ID#) {
+	id
+	timestamp
+	measured_value
+    }
+}

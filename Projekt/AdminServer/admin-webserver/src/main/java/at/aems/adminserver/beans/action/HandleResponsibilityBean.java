@@ -5,8 +5,14 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.Constants;
 import at.aems.adminserver.beans.display.ResponsibilityBean;
 import at.aems.adminserver.data.users.Responsibility;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsDeleteAction;
+import at.aems.apilib.AemsInsertAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.crypto.EncryptionType;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 
@@ -48,13 +54,45 @@ public class HandleResponsibilityBean extends AbstractActionBean {
                 return "zustaendigkeit";
             }
         }
+	
+	AemsInsertAction in = new AemsInsertAction(userBean.getAemsUser(), EncryptionType.SSL);
+	in.setTable("Responsibilities");
+	in.write("user", userBean.getUserId()); 
+	in.write("postal_code", postalCode);
+	in.write("designation", placeName);
+	in.endWrite();
+	
+	try {
+	    AemsAPI.setUrl(Constants.API_URL);
+	    AemsResponse r = AemsAPI.call0(in, null);
+	    notify.setMessage("Zuständigkeitsbereich wurde hinzugefügt!");
+	    callUpdateOn("responsibilityBean");
+	} catch(Exception ex) {
+	    notify.setMessage("Es ist ein Fehler aufgetreten!");
+	}
   
-        notify.setMessage("Zuständigkeitsbereich wurde hinzugefügt!");
+        
         return "zustaendigkeit";
     }
     
     public String doDelete() {
-        notify.setMessage("Zuständigkeitsbereich wurde gelöscht!");
+        
+	AemsDeleteAction del = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
+	del.setTable("Responsibilities");
+	del.setIdColumn("postal_code", postalCode);
+	
+	try {
+	    setApiUrl();
+	    AemsResponse resp = AemsAPI.call0(del, null);
+	    if(resp.getResponseCode() == 200) {
+		notify.setMessage("Zuständigkeit wurde erfolgreich entfernt!");
+	    } else {
+		notify.setMessage("Ein Fehler ist aufgetreten");
+	    }
+	} catch(Exception ex) {
+	    notify.setMessage("Ein Fehler ist aufgetreten");
+	}
+	callUpdateOn("responsibilityBean");
         return "zustaendigkeit";
     }
     

@@ -5,19 +5,25 @@
  */
 package at.aems.adminserver.servlet;
 
+import at.aems.adminserver.Constants;
+import at.aems.adminserver.beans.LoginBean;
 import at.aems.adminserver.beans.UserBean;
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedProperty;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
- 
+
 /**
  *
  * @author Niggi
@@ -34,24 +40,32 @@ public class QueryServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("application/json");
-        UserBean bean = (UserBean) request.getSession().getAttribute("userBean");
-        
-        try (PrintWriter out = response.getWriter()) {
-            if(bean == null || !bean.isLoggedIn()) {
-                out.println(jsonError("No session available"));
-                return;
-            }
-            String query = request.getParameter("q");
-            if(query == null) {
-                out.println(jsonError("No query was supplied."));
-                return; 
-            }
-            AemsQueryAction queryAction = new AemsQueryAction(bean.getAemsUser(), EncryptionType.SSL);
-            // Echo back query
-            out.print("{\"q\": \"" + query + "\"}");
-        }
+	    throws ServletException, IOException {
+	response.setContentType("application/json");
+	UserBean bean = (UserBean) request.getSession().getAttribute("userBean");
+
+	try (PrintWriter out = response.getWriter()) {
+	    if (bean == null || !bean.isLoggedIn()) {
+		out.println(jsonError("No session available"));
+		return;
+	    }
+	    String query = request.getParameter("q");
+	    if (query == null) {
+		out.println(jsonError("No query was supplied."));
+		return;
+	    }
+	    AemsAPI.setUrl(Constants.API_URL);
+	    AemsQueryAction queryAction = new AemsQueryAction(bean.getAemsUser(), EncryptionType.SSL);
+	    queryAction.setQuery(query);
+
+	    try {
+		AemsResponse r = AemsAPI.call0(queryAction, null);
+		out.println(r.getDecryptedResponse());
+	    } catch (Exception ex) {
+		Logger.getLogger(QueryServlet.class.getName()).log(Level.SEVERE, null, ex);
+		out.println(jsonError("Error when dispatching query: " + ex.getMessage()));
+	    }
+	}
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -65,11 +79,14 @@ public class QueryServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try (PrintWriter out = response.getWriter()) {
-            response.setStatus(400);    // bad request
-            out.print(jsonError("QueryServlet does not accept GET requests"));
-        }
+	    throws ServletException, IOException {
+	
+	processRequest(request, response);
+	/*
+	try (PrintWriter out = response.getWriter()) {
+	    response.setStatus(400);    // bad request
+	    out.print(jsonError("QueryServlet does not accept GET requests"));
+	} */
     }
 
     /**
@@ -82,8 +99,8 @@ public class QueryServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+	    throws ServletException, IOException {
+	processRequest(request, response);
     }
 
     /**
@@ -93,11 +110,11 @@ public class QueryServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+	return "Short description";
     }// </editor-fold>
 
     private String jsonError(String msg) {
-        return "{\"error\": \"" + msg + "\"}";
+	return "{\"error\": \"" + msg + "\"}";
     }
-    
+
 }
