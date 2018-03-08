@@ -56,7 +56,9 @@ public class Query extends GraphQLObjectType {
     private static final GraphQLFieldDefinition USERS = 
             Query.getRootFieldDefinition("users", AEMSDatabase.USERS, User.getInstance(), 
                     getArgumentList(
-                            new Argument("id", AEMSDatabase.Users.ID, Argument.EQUAL))); 
+                            new Argument("id", AEMSDatabase.Users.ID, Argument.EQUAL),
+                            new Argument("role", AEMSDatabase.Users.ROLE, Argument.EQUAL),
+                            new Argument("postal_code", AEMSDatabase.Users.POSTAL_CODE, Argument.EQUAL))); 
     
     private static final GraphQLFieldDefinition METERS = 
             Query.getRootFieldDefinition("meters", AEMSDatabase.METERS, Meter.getInstance(), 
@@ -285,7 +287,7 @@ public class Query extends GraphQLObjectType {
             else
                 return checkAuthority3Level(obj.put("meter", obj.getString("id")), AEMSDatabase.METERS);
         }else {
-            if(!obj.getString("id").equals(instance.authorizationId))
+            if(!obj.getString("id").equals(instance.authorizationId) && !isAdmin(obj.getString("id")))
                 return false;
         }
         return true;
@@ -304,7 +306,7 @@ public class Query extends GraphQLObjectType {
         selection.put("id", obj.getString("id"));
         try {
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
-            if(!set.getString(0, 0).equals(instance.authorizationId))
+            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(set.getString(0, 0)))
                 return false;
             return true;
         } catch (SQLException ex) {
@@ -337,13 +339,29 @@ public class Query extends GraphQLObjectType {
             
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.METERS, projection, selection);
             
-            if(!set.getString(0, 0).equals(instance.authorizationId))
+            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(set.getString(0, 0)))
                 return false;
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    private static boolean isAdmin(String userId) {
+        ArrayList<String[]> projection = new ArrayList<>();
+        projection.add(new String[] { AEMSDatabase.Users.ROLE });
+        
+        HashMap<String, String> selection = new HashMap<>();
+        selection.put("id", userId);
+        try {
+            ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.USERS, projection, selection);
+            int role = set.getInteger(0, 0);
+            return role == 5; // is admin
+        } catch (SQLException ex) {
+            Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
     
     private String parentTableName;
@@ -354,18 +372,14 @@ public class Query extends GraphQLObjectType {
                     
         boolean authorized = false;
         
-        if(instance.authorizationId.equals("215")) {
-            authorized = true;
+        if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
+            authorized = checkAuthority2Level(obj, table);
+        } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
+            authorized = checkAuthority3Level(obj, table);
+        } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
+            authorized = checkAuthority1Level(obj);
         } else {
-            if(AEMSDatabase.doesTablePossessColumn(table, "user")) {
-                authorized = checkAuthority2Level(obj, table);
-            } else if(AEMSDatabase.doesTablePossessColumn(table, "meter")) {
-                authorized = checkAuthority3Level(obj, table);
-            } else if(table.equals(AEMSDatabase.USERS) && !(table.equals(AEMSDatabase.NOTIFICATION_METERS) || table.equals(AEMSDatabase.REPORT_STATISTICS) || table.equals(AEMSDatabase.STATISTIC_METERS))) {
-                authorized = checkAuthority1Level(obj);
-            } else {
-                authorized = true;
-            }
+            authorized = true;
         }
         
         if(!authorized) {

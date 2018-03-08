@@ -198,6 +198,7 @@ public class DiffieHellmanProcedure {
 			BigDecimal secretNumber = new BigDecimal(RANDOM.nextInt(SECRET_TOP_LIMIT) + SECRET_BOTTOM_LIMIT);
 			//secretNumberServer = secretNumber;
 			BigDecimal myCombination = compute(baseNumber, modNumber, secretNumber);
+                        //BigDecimal myCombination = new BigDecimal("465786153465486156151687461318454");
 			
                         System.out.println(socket.getPort());
                         System.out.println(socket.getInetAddress().getHostAddress());

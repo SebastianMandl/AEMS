@@ -528,6 +528,12 @@ public class RestInf extends HttpServlet {
             action = action.toUpperCase();
             encryption = encryption.toUpperCase();
         }
+        
+                
+        if(encryption.equals(ENCRYPTION_SSL) && !req.isSecure()) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "encryption was promised to be secure but it is not! NO SSL WAS DEPLOYED!!");
+            return null;
+        }
 
         if(encryption.equals(ENCRYPTION_AES)) {
             BigDecimal key = NUMBER_PATTERN.matcher(user).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(user)) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), user);
@@ -555,6 +561,9 @@ public class RestInf extends HttpServlet {
                 return null;
             }*/
             data = new String(Base64.getUrlDecoder().decode(data));
+        } else {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "unavailable encryption type");
+            return null;
         }
         
         return new String[]{ data, action, user, encryption, authStr, salt };
