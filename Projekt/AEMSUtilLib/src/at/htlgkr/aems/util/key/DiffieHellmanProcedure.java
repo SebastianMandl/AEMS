@@ -242,7 +242,6 @@ public class DiffieHellmanProcedure {
 	 */
 	public static byte[] confirmKey() throws IOException {				
 		try(BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
-			System.out.println("reading from stream ...");
 			String input = reader.readLine();
 			JSONObject root = new JSONObject(input);
 			BigDecimal combination = root.getBigDecimal("combination");

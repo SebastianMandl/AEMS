@@ -215,6 +215,8 @@ public class DiffieHellmanProcedure {
 				e.printStackTrace();
 			}
                         writer.flush();
+                        
+                        server.close();
 			
 			BigDecimal key = compute(combination, modNumber, secretNumber);
 			return key.toString().substring(0, KEY_LENGTH).getBytes();
