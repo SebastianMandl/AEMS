@@ -531,7 +531,7 @@ public class RestInf extends HttpServlet {
         
                 
         if(encryption.equals(ENCRYPTION_SSL) && !req.isSecure()) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "encryption was promised to be secure but it is not! NO SSL WAS DEPLOYED!!");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "message was promised to be secure but it is not! NO SSL WAS DEPLOYED!!");
             return null;
         }
 

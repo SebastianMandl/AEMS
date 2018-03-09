@@ -185,7 +185,8 @@ public class DiffieHellmanProcedure {
 //			ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 1);
 //		}
 		
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                try {
 			
 			final Random RANDOM = new Random();
 			
@@ -205,24 +206,21 @@ public class DiffieHellmanProcedure {
                                 
                         
 			// send key confirmation request
-			Socket clientSocket = new Socket(socket.getInetAddress().getHostAddress(), 9951);
-			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
+			//Socket clientSocket = new Socket(socket.getInetAddress().getHostAddress(), 9951);
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                        try {
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
 			} catch(IOException e) {
 				e.printStackTrace();
-			} finally {
-				clientSocket.close();
 			}
+                        writer.flush();
 			
 			BigDecimal key = compute(combination, modNumber, secretNumber);
 			return key.toString().substring(0, KEY_LENGTH).getBytes();
 			
 		} catch(IOException e) {
 			e.printStackTrace();
-		} finally {
-                        socket.close();
-			server.close();
 		}
 		
 		return null;

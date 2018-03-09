@@ -134,6 +134,8 @@ public class DiffieHellmanProcedure {
 		return builder.toString();
 	}
 	
+	private static Socket clientSocket;
+	
 	/**
 	 * This method is invoked at the corresponding side which wants to initiate a key exchange.
 	 * In most cases this side refers to the client.
@@ -141,13 +143,14 @@ public class DiffieHellmanProcedure {
 	 * @throws IOException - if any error during io occurs
 	 */
 	public static void sendKeyInfos(Socket socket) throws IOException {
-		try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+		clientSocket = socket;
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+		try {
 			writer.write(getKeyDetails());
 			writer.write("\r\n");
+			writer.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			socket.close();
 		}
 	}
 	
@@ -203,14 +206,15 @@ public class DiffieHellmanProcedure {
 			BigDecimal myCombination = compute(baseNumber, modNumber, secretNumber);
 			
 			// send key confirmation request
-			Socket clientSocket = new Socket(socket.getInetAddress().toString(), socket.getPort() + 1);
-			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
+			//Socket clientSocket = new Socket(socket.getInetAddress().toString(), socket.getPort() + 1);
+			// don't attempt to connect to the client side since port forwarding can not be configured at the client side!!!
+			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
 			} catch(IOException e) {
 				e.printStackTrace();
 			} finally {
-				clientSocket.close();
+				socket.close();
 			}
 			
 			BigDecimal key = compute(combination, modNumber, secretNumber);
@@ -236,11 +240,9 @@ public class DiffieHellmanProcedure {
 	 * @return the definitive key
 	 * @throws IOException
 	 */
-	public static byte[] confirmKey() throws IOException {
-		ServerSocket server = new ServerSocket(9951);
-		Socket socket = server.accept();
-				
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+	public static byte[] confirmKey() throws IOException {				
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+			System.out.println("reading from stream ...");
 			String input = reader.readLine();
 			JSONObject root = new JSONObject(input);
 			BigDecimal combination = root.getBigDecimal("combination");
@@ -250,8 +252,7 @@ public class DiffieHellmanProcedure {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			socket.close();
-			server.close();
+			clientSocket.close();
 		}
 		return null;
 	}

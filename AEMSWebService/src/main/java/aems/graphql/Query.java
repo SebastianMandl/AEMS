@@ -283,11 +283,11 @@ public class Query extends GraphQLObjectType {
     private static boolean checkAuthority1Level(JSONObject obj) {
         if(instance.parentTableName != null) {
             if(NUMBER_PATTERN.matcher(obj.getString("id")).find())
-                return obj.getString("id").equals(instance.authorizationId);
+                return obj.getString("id").equals(instance.authorizationId) || isAdmin(instance.authorizationId);
             else
                 return checkAuthority3Level(obj.put("meter", obj.getString("id")), AEMSDatabase.METERS);
         }else {
-            if(!obj.getString("id").equals(instance.authorizationId) && !isAdmin(obj.getString("id")))
+            if(!obj.getString("id").equals(instance.authorizationId) && !isAdmin(instance.authorizationId))
                 return false;
         }
         return true;
@@ -297,7 +297,7 @@ public class Query extends GraphQLObjectType {
     // path: user -> user_id
     private static boolean checkAuthority2Level(JSONObject obj, String table) {
         if(obj.has("user")) {
-            return obj.getString("user").equals(instance.authorizationId);
+            return obj.getString("user").equals(instance.authorizationId) || isAdmin(instance.authorizationId);
         }
         
         ArrayList<String[]> projection = new ArrayList<>();
@@ -306,7 +306,7 @@ public class Query extends GraphQLObjectType {
         selection.put("id", obj.getString("id"));
         try {
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
-            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(set.getString(0, 0)))
+            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(instance.authorizationId))
                 return false;
             return true;
         } catch (SQLException ex) {
@@ -339,7 +339,7 @@ public class Query extends GraphQLObjectType {
             
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.METERS, projection, selection);
             
-            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(set.getString(0, 0)))
+            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(instance.authorizationId))
                 return false;
             return true;
         } catch (SQLException ex) {
@@ -357,7 +357,7 @@ public class Query extends GraphQLObjectType {
         try {
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.USERS, projection, selection);
             int role = set.getInteger(0, 0);
-            return role == 5; // is admin
+            return role == 5 || role == 4; // is admin or subadmin
         } catch (SQLException ex) {
             Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
             return false;
