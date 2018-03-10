@@ -34,8 +34,8 @@ public class AdminDisplayBean extends AbstractDisplayBean {
     public void update() {
         admins = new ArrayList<>();
         subAdmins =  new ArrayList<>();
-        DisplayedUser u1 = new DisplayedUser(123, "admin", "admin.admin@admin.a");
-        DisplayedUser u2 = new DisplayedUser(101, "Not Admin", "notadmin.admin@admin.a");
+        DisplayedUser u1 = new DisplayedUser(123, "admin", "admin.admin@admin.a", "1234");
+        DisplayedUser u2 = new DisplayedUser(101, "Not Admin", "notadmin.admin@admin.a", "4567");
         
         admins.add(u1);
         subAdmins.add(u2);

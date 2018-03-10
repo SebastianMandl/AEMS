@@ -16,6 +16,7 @@ import at.aems.apilib.crypto.EncryptionType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,25 +52,21 @@ public class EnquiriesBean extends AbstractDisplayBean {
     @Override
     public void update() {
         enquiries.clear();
-	AemsAPI.setUrl(Constants.API_URL);
-	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-	qry.setQuery("{ users { id username role { id } email member_since use_netzonline } }");
+	configureApiParams();
 	
+	List<String> myResposibilities = getMyResponsibilities();
+	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	qry.setQuery("{ users(role: \"" + UserRole.UNREGISTERED.getId() + "\") { id username role { id } email member_since postal_code } }");
+	 
 	JsonArray users = getEnquiries(qry);
 	for(JsonElement e : users) {
-	    enquiries.add(Enquiry.fromJsonObject(e.getAsJsonObject()));
+	    Enquiry enq = Enquiry.fromJsonObject(e.getAsJsonObject());
+	    if(enq != null && myResposibilities.contains(enq.getPostalCode())) {
+		enquiries.add(enq);
+	    }
 	}
 	
         System.out.println(" ------ Update called on " + this.getClass().getSimpleName());
-	/*
-        Enquiry e = new Enquiry("graf@graf.graf", "Graf", true, new Timestamp(System.currentTimeMillis() - 1500000));
-        Enquiry e2 = new Enquiry("knoll@knolli.k", "Knolli", true, new Timestamp(System.currentTimeMillis() - 1500000000));
-        Enquiry e3 = new Enquiry("mandl@mandl.m", "Mandl", true, new Timestamp(System.currentTimeMillis() - 150000000000L));
-	
-        enquiries.add(e);
-        enquiries.add(e2);
-        enquiries.add(e3);
-	*/
 	
 	if(first) {
 	    setNewEnquiriesCount(enquiries.size());
@@ -95,6 +92,29 @@ public class EnquiriesBean extends AbstractDisplayBean {
 
     public void setNewEnquiriesCount(int newEnquiriesCount) {
 	this.newEnquiriesCount = newEnquiriesCount;
+    }
+
+    private List<String> getMyResponsibilities() {
+	
+	List<String> result = new ArrayList<>();
+	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	qry.setQuery("{responsibilities(user: \"" + userBean.getUserId() + "\") { postal_code user { id } } }");
+	 
+	try { 
+	    AemsResponse r = AemsAPI.call0(qry, null);
+	    System.out.println(" ----------------------------------- ");
+	    System.out.println(r.getDecryptedResponse());
+	    for(JsonElement ele : r.getJsonArrayWithinObject()) {
+		JsonObject o = ele.getAsJsonObject();
+		if(o.has("postal_code")) {
+		    result.add(o.get("postal_code").getAsString());
+		}
+	    }
+	} catch(IOException ex) {
+	    throw new RuntimeException(ex.getCause());
+	}
+	
+	return result;
     }
     
     

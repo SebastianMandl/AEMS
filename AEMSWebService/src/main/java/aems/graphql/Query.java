@@ -57,6 +57,8 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("users", AEMSDatabase.USERS, User.getInstance(), 
                     getArgumentList(
                             new Argument("id", AEMSDatabase.Users.ID, Argument.EQUAL),
+			    new Argument("username", AEMSDatabase.Users.USERNAME, Argument.LIKE),
+			    new Argument("postal_code", AEMSDatabase.Users.POSTAL_CODE, Argument.EQUAL), 
 			    new Argument("role", AEMSDatabase.Users.ROLE, Argument.EQUAL))); 
     
     private static final GraphQLFieldDefinition METERS = 

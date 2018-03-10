@@ -43,16 +43,19 @@ public class ResponsibilityBean extends AbstractDisplayBean {
     @Override
     public void update() {
 	responsibilities.clear();
-	AemsAPI.setUrl(Constants.API_URL);
+	AemsAPI.setUrl(Constants.API_URL); 
 	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-	qry.setQuery("{ responsibilities { postal_code designation } }");
+	qry.setQuery("{ responsibilities(user: \"" + userBean.getUserId() + "\") { postal_code designation user { id } } }");
 	
 	try {
 	    AemsResponse resp = AemsAPI.call0(qry, null);
 	    JsonArray array = resp.getJsonArrayWithinObject();
 	    
 	    for(JsonElement e : array) {
-		responsibilities.add(Responsibility.fromJsonObject(e.getAsJsonObject()));
+		Responsibility r = Responsibility.fromJsonObject(e.getAsJsonObject());
+		if(r != null) {
+		    responsibilities.add(r);
+		}
 	    }
 	} catch(Exception ex) {
 	    this.responsibilities.clear();

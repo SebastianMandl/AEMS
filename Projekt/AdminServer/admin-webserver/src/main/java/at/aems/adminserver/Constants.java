@@ -9,7 +9,9 @@ package at.aems.adminserver;
  *
  * @author Niggi
  */
-public class Constants {
+public class Constants { 
+    // 
     //public static final String API_URL = "http://10.10.0.167:8084/AEMSWebService/RestInf";
-    public static final String API_URL = "http://aemsserver.ddns.net:8084/AEMSWebService/RestInf";
+   public static final String API_URL = "https://aemsserver.ddns.net:8085/AEMSWebService/RestInf";
+ //   public static final String API_URL = "http://10.0.6.41:8084/AEMSWebService/RestInf";
 }

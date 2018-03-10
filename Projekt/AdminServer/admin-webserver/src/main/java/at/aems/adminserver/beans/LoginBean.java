@@ -53,15 +53,15 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
     public void setPassword(String password) {
         this.password = password;
     }
-    
+     
     public String doLogin() {
         AemsLoginAction login = new AemsLoginAction(EncryptionType.SSL);
         login.setUsername(username);
         login.setPassword(password);
 	AemsResponse response = null;
 	int userId = -1; 
-	try { 
-	    AemsAPI.setUrl(Constants.API_URL);
+	try {  
+	    configureApiParams();
 	    System.out.println(login.toJson(null));
 	    response = AemsAPI.call0(login, null);
 	    
