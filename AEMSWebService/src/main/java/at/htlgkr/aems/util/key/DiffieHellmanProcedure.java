@@ -162,32 +162,34 @@ public class DiffieHellmanProcedure {
 		ServerSocket server = new ServerSocket(9950);
 		Socket socket = server.accept();
 		
-		if(BLOCKED_INET_ADDRESSES.containsKey(socket.getInetAddress())) {
-			Long blockedTime = BLOCKED_INET_ADDRESSES.get(socket.getInetAddress());
-			if(System.currentTimeMillis() - blockedTime >= (1_000 * 60)) {
-				BLOCKED_INET_ADDRESSES.remove(socket.getInetAddress());
-				ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 0);
-			} else {
-				server.close();
-				socket.close();
-				return null;
-			}
-		}
+//		if(BLOCKED_INET_ADDRESSES.containsKey(socket.getInetAddress())) {
+//			Long blockedTime = BLOCKED_INET_ADDRESSES.get(socket.getInetAddress());
+//			if(System.currentTimeMillis() - blockedTime >= (1_000 * 60)) {
+//				BLOCKED_INET_ADDRESSES.remove(socket.getInetAddress());
+//				ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 0);
+//			} else {
+//				server.close();
+//				socket.close();
+//				return null;
+//			}
+//		}
+//		
+//		if(ACCESSES_PER_ADDRESS_PER_MINUTE.containsKey(socket.getInetAddress())) {
+//			int accessCount = ACCESSES_PER_ADDRESS_PER_MINUTE.get(socket.getInetAddress());
+//			if(accessCount + 1 > TOTAL_ACCESSES_PER_ADDRESS_PER_MINUTE) {
+//				BLOCKED_INET_ADDRESSES.put(socket.getInetAddress(), System.currentTimeMillis());
+//				socket.close();
+//				server.close();
+//				return null;
+//			}
+//		} else {
+//			ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 1);
+//		}
 		
-		if(ACCESSES_PER_ADDRESS_PER_MINUTE.containsKey(socket.getInetAddress())) {
-			int accessCount = ACCESSES_PER_ADDRESS_PER_MINUTE.get(socket.getInetAddress());
-			if(accessCount + 1 > TOTAL_ACCESSES_PER_ADDRESS_PER_MINUTE) {
-				BLOCKED_INET_ADDRESSES.put(socket.getInetAddress(), System.currentTimeMillis());
-				socket.close();
-				server.close();
-				return null;
-			}
-		} else {
-			ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 1);
-		}
-		
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-			
+                // never close any socket under no circumstances!!! client is still required to read from
+                // the stream
+		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                try {
 			final Random RANDOM = new Random();
 			
 			String input = reader.readLine();
@@ -201,14 +203,14 @@ public class DiffieHellmanProcedure {
 			BigDecimal myCombination = compute(baseNumber, modNumber, secretNumber);
 			
 			// send key confirmation request
-			Socket clientSocket = new Socket(socket.getLocalAddress(), socket.getLocalPort() + 1);
-			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
+			//Socket clientSocket = new Socket(socket.getLocalAddress(), socket.getLocalPort() + 1);
+                        // don't attempt to connect to the client side since port forwarding can not be configured at the client side!!!
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                        try {
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
 			} catch(IOException e) {
 				e.printStackTrace();
-			} finally {
-				clientSocket.close();
 			}
 			
 			BigDecimal key = compute(combination, modNumber, secretNumber);
@@ -216,8 +218,6 @@ public class DiffieHellmanProcedure {
 			
 		} catch(IOException e) {
 			e.printStackTrace();
-		} finally {
-			server.close();
 		}
 		
 		return null;

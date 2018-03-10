@@ -48,7 +48,7 @@ public class User extends GraphQLObjectType {
     
     private static final GraphQLFieldDefinition EMAIL = Query.getFieldDefinition("email", AEMSDatabase.USERS, AEMSDatabase.Users.EMAIL, Scalars.GraphQLString);
     private static final GraphQLFieldDefinition MEMBER_SINCE = Query.getFieldDefinition("member_since", AEMSDatabase.USERS, AEMSDatabase.Users.MEMBER_SINCE, Scalars.GraphQLString);
-    private static final GraphQLFieldDefinition USE_NETZONLINE = Query.getFieldDefinition("use_netzonline", AEMSDatabase.USERS, AEMSDatabase.Users.USE_NETZONLINE, Scalars.GraphQLBoolean);
+    private static final GraphQLFieldDefinition USE_NETZONLINE = Query.getFieldDefinition("use_netzonline", AEMSDatabase.USERS, AEMSDatabase.Users.USE_NETZONLINE, Scalars.GraphQLString);
     private static final GraphQLFieldDefinition ROLE = Query.getFieldDefinition("role", Role.getInstance());
     private static final GraphQLFieldDefinition POSTAL_CODE = Query.getFieldDefinition("postal_code", AEMSDatabase.USERS, AEMSDatabase.Users.POSTAL_CODE, Scalars.GraphQLInt);
     
