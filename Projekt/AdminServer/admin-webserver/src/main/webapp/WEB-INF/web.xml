@@ -4,7 +4,7 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-        <context-param>
+    <context-param>
         <param-name>facelets.SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
@@ -17,6 +17,10 @@
         <servlet-name>QueryServlet</servlet-name>
         <servlet-class>at.aems.adminserver.servlet.QueryServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserExistsServlet</servlet-name>
+        <servlet-class>at.aems.adminserver.servlet.UserExistsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
@@ -24,6 +28,10 @@
     <servlet-mapping>
         <servlet-name>QueryServlet</servlet-name>
         <url-pattern>/query</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserExistsServlet</servlet-name>
+        <url-pattern>/UserExistsServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

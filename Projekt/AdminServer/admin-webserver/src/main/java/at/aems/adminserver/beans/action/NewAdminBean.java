@@ -48,7 +48,7 @@ public class NewAdminBean extends AbstractActionBean {
     public String doCreate() {
         String adminStr = asAdmin ? "Admin" : "Sub-Admin";
         
-	AemsAPI.setUrl(Constants.API_URL);
+	configureApiParams();
 	AemsUpdateAction up = new AemsUpdateAction(userBean.getAemsUser(), EncryptionType.SSL);
 	up.setTable("Users");
 	up.setIdColumn("username", username);
@@ -64,7 +64,7 @@ public class NewAdminBean extends AbstractActionBean {
 	} catch(Exception ex) {
 	    notify.setMessage("Fehler!");
 	}
-	
+	callUpdateOn("adminDisplayBean");
         return "administration";
     }
     

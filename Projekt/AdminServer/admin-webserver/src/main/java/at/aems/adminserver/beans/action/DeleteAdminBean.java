@@ -9,6 +9,7 @@ import at.aems.adminserver.UserRole;
 import at.aems.adminserver.beans.display.AbstractDisplayBean;
 import at.aems.adminserver.beans.display.EnquiriesBean;
 import at.aems.adminserver.beans.display.NotifyBean;
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsDeleteAction;
 import at.aems.apilib.AemsUpdateAction;
 import at.aems.apilib.crypto.EncryptionType;
@@ -41,6 +42,14 @@ public class DeleteAdminBean extends AbstractActionBean {
         delete.setTable("Users");
         delete.setIdColumn("username", username);
         delete.write("role", UserRole.MEMBER.getId());
+	 
+	try {
+	    configureApiParams();
+	    AemsAPI.call0(delete, null);
+	} catch(Exception ex) {
+	    notify.setMessage("Es ist ein Fehler aufgetreten");
+	}
+	
         callUpdateOn("adminDisplayBean");
         
         return "administration";

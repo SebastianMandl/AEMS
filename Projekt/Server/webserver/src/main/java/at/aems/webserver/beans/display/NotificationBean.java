@@ -54,6 +54,7 @@ public class NotificationBean extends AbstractDisplayBean {
         notifications = new ArrayList<>();
 	if(userBean == null)
 	    return;
+	configureApiParams();
         AemsQueryAction notificationQuery = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
         
         for(Map.Entry<String, String> meter : userMeterBean.getMeters().entrySet()) {

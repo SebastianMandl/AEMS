@@ -5,15 +5,20 @@
  */
 package at.aems.adminserver.beans.display;
 
-import at.aems.adminserver.beans.UserBean;
+import at.aems.adminserver.UserRole;
 import at.aems.adminserver.data.users.DisplayedUser;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsRegisterAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.crypto.EncryptionType;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -24,31 +29,13 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class AdminDisplayBean extends AbstractDisplayBean {
     
-    @ManagedProperty(value = "#{userBean}")
-    private UserBean userBean;
-    
     private List<DisplayedUser> admins;
     private List<DisplayedUser> subAdmins;
 
     @Override
-    public void update() {
-        admins = new ArrayList<>();
-        subAdmins =  new ArrayList<>();
-        DisplayedUser u1 = new DisplayedUser(123, "admin", "admin.admin@admin.a", "1234");
-        DisplayedUser u2 = new DisplayedUser(101, "Not Admin", "notadmin.admin@admin.a", "4567");
-        
-        admins.add(u1);
-        subAdmins.add(u2);
-        
-        List<DisplayedUser> newAdminList = new ArrayList<>();
-        for(DisplayedUser u : admins) {
-            if(u.getId() != userBean.getUserId()) {
-                newAdminList.add(u);
-            }
-        }
-
-        admins = newAdminList;
-        
+    public void update() { 
+	admins = getUsersWithRole(UserRole.ADMIN);
+	subAdmins = getUsersWithRole(UserRole.SUB_ADMIN);        
     }
 
     public List<DisplayedUser> getAdmins() {
@@ -67,16 +54,26 @@ public class AdminDisplayBean extends AbstractDisplayBean {
         this.subAdmins = subAdmins;
     }
 
-    public UserBean getUserBean() {
-        return userBean;
+    private List<DisplayedUser> getUsersWithRole(UserRole userRole) {
+	List<DisplayedUser> result = new ArrayList<>();
+	
+	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
+	qry.setQuery("{ users(role:\"" + userRole.getId() + "\") { id username email postal_code }}");
+	
+	try {
+	    AemsResponse response = AemsAPI.call0(qry, null);
+	    JsonArray array = response.getJsonArrayWithinObject();
+	    
+	    for(JsonElement ele : array) {
+		DisplayedUser user = DisplayedUser.fromJsonObject(ele.getAsJsonObject());
+		if(user != null && user.getId() != null && user.getId() != userBean.getUserId()) {
+		    result.add(user);
+		}
+	    }
+	} catch(Exception ex) {
+	    Logger.getLogger(AdminDisplayBean.class.getName()).log(Level.SEVERE, ex.getMessage());
+	}
+	
+	return result;
     }
-
-    public void setUserBean(UserBean userBean) {
-        this.userBean = userBean;
-    }
-    
-    
-    
-    
-    
 }

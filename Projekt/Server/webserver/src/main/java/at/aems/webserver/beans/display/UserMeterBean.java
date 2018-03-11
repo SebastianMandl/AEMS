@@ -43,6 +43,7 @@ public class UserMeterBean extends AbstractDisplayBean {
 
     @Override
     public void update() {
+	configureApiParams();
 	// Initialize to empty
 	meterTypes = new HashSet<>();
 	meters = new HashMap<>();
