@@ -219,7 +219,7 @@ public class RestInf extends HttpServlet {
                 
                 
                 try {                    
-                    Gson builder = new GsonBuilder().create();
+                    Gson builder = new GsonBuilder().serializeNulls().create();
                     String data = builder.toJson(result.getData());
                     
                     // remove superfluous objects ; meaning
