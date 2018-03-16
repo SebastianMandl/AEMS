@@ -19,8 +19,10 @@ import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -51,6 +53,7 @@ public class RestInf extends HttpServlet {
     private static final String ACTION_UPDATE = "UPDATE";
     private static final String ACTION_DELETE = "DELETE";
     private static final String ACTION_QUERY = "QUERY";
+    private static final String ACTION_REGISTER = "REGISTER";
     private static final String ACTION_BOT = "BOT";
     private static final String ENCRYPTION_AES = "AES";
     private static final String ENCRYPTION_SSL = "SSL";
@@ -196,6 +199,39 @@ public class RestInf extends HttpServlet {
                 } catch (Exception ex) {
                     Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                break;
+            }
+            case ACTION_REGISTER:
+            {
+                JSONObject root = new JSONObject(query);
+                String username = root.getString("username");
+                String password = root.getString("password");
+                String email = root.getString("email");
+                String postalCode = root.getString("postcode");
+                boolean isNetzonline = root.getBoolean("is_netzonline");
+                
+            try {
+                if(DatabaseConnectionManager.getDatabaseConnection().callFunction("aems", "register_user", boolean.class, username, password)) {
+                    HashMap<String, String> projection = new HashMap<>();
+                    HashMap<String, String> selection = new HashMap<>();
+                    selection.put(AEMSDatabase.Users.USERNAME, username);
+                    
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String accessionDate = format.format(new Date());
+                    
+                    projection.put(AEMSDatabase.Users.EMAIL, email);
+                    projection.put(AEMSDatabase.Users.POSTAL_CODE, postalCode);
+                    projection.put(AEMSDatabase.Users.USE_NETZONLINE, "" + isNetzonline);
+                    projection.put(AEMSDatabase.Users.MEMBER_SINCE, accessionDate);
+                    
+                    DatabaseConnectionManager.getDatabaseConnection().update("aems", AEMSDatabase.USERS, projection, selection);
+                } else {
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "something went wrong while processing function register_user!");
+                }
+            } catch (SQLException ex) {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "something went wrong while registering user!");
+            }
+                
                 break;
             }
             case ACTION_LOGIN:
@@ -503,10 +539,13 @@ public class RestInf extends HttpServlet {
             data = data == null ? json.getString("data") : data;
             action = action == null ? json.getString("action") : action;
             //user = user == null ? json.getString("user") : user;
-            try {
-                user = user == null ? json.getString("user") : user;
-            } catch(Exception e) {
-                user = user == null ? String.valueOf(json.getInt("user")) : user;
+            
+            if(!action.equals(ACTION_REGISTER)) {
+                try {
+                    user = user == null ? json.getString("user") : user;
+                } catch(Exception e) {
+                    user = user == null ? String.valueOf(json.getInt("user")) : user;
+                }
             }
             
             if(json.has("auth_str"))
