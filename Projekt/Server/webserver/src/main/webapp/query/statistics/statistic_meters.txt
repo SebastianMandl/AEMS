@@ -1,5 +1,5 @@
 {
-    statistic_meters(statistic: #STATISTIC_ID#) {
+    statistic_meters(statistic: "#STATISTIC_ID#") {
 	meter {
 	    id
 	}

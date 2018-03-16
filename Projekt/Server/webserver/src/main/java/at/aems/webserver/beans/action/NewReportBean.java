@@ -5,11 +5,14 @@
  */
 package at.aems.webserver.beans.action;
 
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.UserBean;
+import java.io.IOException;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -74,28 +77,34 @@ public class NewReportBean extends AbstractActionBean {
         this.annotation = annotation;
     }
     
-    public UserBean getUserBean() {
-        return userBean;
-    }
-
-    public void setUserBean(UserBean userBean) {
-        this.userBean = userBean;
-    }
-    
     public String doCreate() {
         AemsUser user = new AemsUser(userBean.getUserId(), userBean.getUsername(), userBean.getPassword());
         AemsInsertAction action = new AemsInsertAction(user, EncryptionType.SSL);
         action.setTable("Reports"); 
         action.write("name", name);
         action.write("annotation", annotation);
-        action.write("auto_generate", autoGenerate);
+//        action.write("auto_generate", autoGenerate);
         action.write("period", timePeriod);
         action.write("user", user.getUserId());
         action.endWrite();
         
-        System.out.println(action.toJsonObject());
+        AemsResponse response = null;
+	try {
+	    configureApiParams();
+	    response = AemsAPI.call0(action, null);
+	    if(response.getResponseCode() != 200) {
+		response = null;
+	    }
+	} catch(IOException ex) {
+	    // failed
+	}
+	
+	if(response == null) {
+	    notify.setMessage("Da ist etwas schief gelaufen!");
+	    return "einstellungenBerichte";
+	}
         
-        int reportId = 10;
+        String reportId = response.getAsJsonObject().get("id").getAsString();
         AemsInsertAction action2 = new AemsInsertAction(user, EncryptionType.SSL);
         action2.setTable("ReportStatistics");
         for(Integer i : statistics) {
@@ -103,9 +112,15 @@ public class NewReportBean extends AbstractActionBean {
             action2.write("statistic", i);
             action2.endWrite();
         } 
-        System.out.println(action2.toJsonObject());
+        
+	try {
+	    AemsResponse response2 = AemsAPI.call0(action2, null);
+	} catch(IOException e) {
+	    // yes
+	}
         
         notify.setMessage("Bericht wurde erstellt!");
+	callUpdateOn("userReportBean");
         return "einstellungenBerichte";
     }
     

@@ -68,7 +68,7 @@ public class ReportData {
 	
 	    return new ReportData(id, name, period, anno);
 	} catch(Exception e) {
-	    return new ReportData();
+	    return null;
 	}
 	
     }

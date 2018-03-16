@@ -36,17 +36,8 @@ public class NewStatisticBean extends AbstractActionBean {
     private boolean compare;
     
     private String annotation;
-    
-
-    @ManagedProperty(value = "#{user}")
-    private UserBean userBean;
 
     public NewStatisticBean() {
-    }
-
-    @PostConstruct
-    public void init() {
-        
     }
 
     public SelectItem[] getPeriodValues() {
@@ -57,10 +48,6 @@ public class NewStatisticBean extends AbstractActionBean {
         }
         return items;
     }
-
-    public void setUserBean(UserBean bean) {
-        this.userBean = bean;
-    }
     
     public String getMeters() {
         return String.join(";", meters);
@@ -68,10 +55,6 @@ public class NewStatisticBean extends AbstractActionBean {
     
     public void setMeters(String meters) {
         this.meters = AemsUtils.asStringList(meters);
-    }
-
-    public UserBean getUserBean() {
-        return userBean;
     }
 
     public String getName() {
@@ -115,12 +98,12 @@ public class NewStatisticBean extends AbstractActionBean {
         insert.write("name", name);
         insert.write("period", period);
         insert.write("annotation", annotation);
-        insert.write("period_compare", compare);
+//        insert.write("period_compare", compare);
         insert.endWrite();
         
-	AemsAPI.setUrl(AemsUtils.API_URL);
-        AemsResponse resp = AemsAPI.call0(insert, null);
-	System.err.println("yes: " + resp.getDecryptedResponse());
+	configureApiParams();
+        AemsResponse resp = AemsAPI.call0(insert, null); 
+	System.out.println(resp.getDecryptedResponse());
         int statisticId = resp.getAsJsonObject().get("id").getAsInt();
         
         AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);

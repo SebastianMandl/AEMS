@@ -5,6 +5,7 @@
  */
 package at.aems.webserver.data.statistic;
 
+import at.aems.accumulator.TimePeriod;
 import com.google.gson.annotations.SerializedName;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -62,6 +63,20 @@ public enum Period {
             return getWeekLabels();
         }
         return labels;
+    }
+    
+    public TimePeriod toTimePeriod() {
+	switch(this) {
+	    case DAILY:
+		return TimePeriod.DAYLY;
+	    case WEEKLY: 
+		return TimePeriod.WEEKLY;
+	    case MONTHLY:
+		return TimePeriod.MONTHLY;
+	    case YEARLY:
+		return TimePeriod.YEARLY;
+	}
+	return null;
     }
     
     private static String[] getWeekLabels() {

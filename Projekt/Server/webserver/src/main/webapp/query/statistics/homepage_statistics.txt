@@ -1,6 +1,8 @@
 {
-    statistics(display_home: true) {
+    statistics (user: "#USER#"){
 	id
 	name
+#	period
+	display_home
     }
 }

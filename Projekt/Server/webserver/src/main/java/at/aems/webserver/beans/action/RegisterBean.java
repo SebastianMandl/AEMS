@@ -11,6 +11,7 @@ import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.action.AbstractActionBean;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -117,10 +118,15 @@ public class RegisterBean extends AbstractActionBean {
         action.setEmail(email);
         action.setUsername(username);
         action.setPassword(password);
-        action.setPlz(plz);
-        
+	action.setNetzOnline(netzonline); 
+        action.setPlz(plz); 
+        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(action.toJsonObject()));
         AemsAPI.setUrl(AemsUtils.API_URL);
-        //AemsAPI.call(action, new byte[16]);
+        try {
+	    AemsAPI.call0(action, null);
+	} catch(IOException ex) {
+	    // yes 
+	}
         
         
         return "register.xhtml";

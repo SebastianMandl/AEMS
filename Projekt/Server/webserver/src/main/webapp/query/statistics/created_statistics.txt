@@ -1,8 +1,8 @@
 query GetCreatedStatistics {
-	statistics {
+	statistics (user: "#USER#") {
 		id
 		name
-#		display_home
-#		display_android
+		display_home
+		display_android
 	}
 }
