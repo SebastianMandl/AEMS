@@ -5,7 +5,11 @@
  */
 package at.aems.adminserver.beans.action;
 
+import at.aems.adminserver.UserRole;
+import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsDeleteAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.AemsUpdateAction;
 import at.aems.apilib.crypto.EncryptionType;
 import javax.faces.bean.ManagedBean;
 
@@ -27,13 +31,22 @@ public class KillUserBean extends AbstractActionBean {
     
     public String doRevoke() {
         
-        AemsDeleteAction delete = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
-        delete.setTable("Users");
-        delete.setIdColumn("email", email);
+        AemsUpdateAction revoke = new AemsUpdateAction(userBean.getAemsUser(), EncryptionType.SSL);
+        revoke.setTable("Users");
+        revoke.setIdColumn("email", email);
+	revoke.write("role", UserRole.UNREGISTERED.getId());
+	
+	try {
+	    AemsResponse r = AemsAPI.call0(revoke, null);
+	    if(r.getResponseCode() == 200) {
+		notify.setMessage("Benutzer wurde entfernt!");
+	    } 
+	} catch(Exception ex) {
+	    notify.setMessage("Fehler!");
+	}
         
-        notify.setMessage("Benutzer wurde entfernt!");
-        
-        callUpdateOn("adminDisplayBean");
+        callUpdateOn("acceptedUsersBean");
+	callUpdateOn("enquiriesBean");
         
         return "index";
     }

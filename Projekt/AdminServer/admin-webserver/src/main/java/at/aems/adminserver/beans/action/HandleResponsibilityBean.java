@@ -66,7 +66,8 @@ public class HandleResponsibilityBean extends AbstractActionBean {
 	    AemsAPI.setUrl(Constants.API_URL);
 	    AemsResponse r = AemsAPI.call0(in, null);
 	    notify.setMessage("Zuständigkeitsbereich wurde hinzugefügt!");
-	    callUpdateOn("responsibilityBean");
+	    callUpdateOn("responsibilityBean"); 
+	    callUpdateOn("enquiriesBean");
 	} catch(Exception ex) {
 	    notify.setMessage("Es ist ein Fehler aufgetreten!");
 	}
@@ -82,7 +83,7 @@ public class HandleResponsibilityBean extends AbstractActionBean {
 	del.setIdColumn("postal_code", postalCode);
 	
 	try {
-	    setApiUrl();
+	    configureApiParams();
 	    AemsResponse resp = AemsAPI.call0(del, null);
 	    if(resp.getResponseCode() == 200) {
 		notify.setMessage("Zuständigkeit wurde erfolgreich entfernt!");
@@ -93,6 +94,7 @@ public class HandleResponsibilityBean extends AbstractActionBean {
 	    notify.setMessage("Ein Fehler ist aufgetreten");
 	}
 	callUpdateOn("responsibilityBean");
+	callUpdateOn("enquiriesBean");
         return "zustaendigkeit";
     }
     

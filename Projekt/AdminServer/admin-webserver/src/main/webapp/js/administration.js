@@ -8,28 +8,22 @@ $(document).ready(function () {
     $("#new-admin-form\\:username").on("change", function () {
         let username = $(this).val();
 	
-	// Replace with user query
-	let qry = `{
-	    users: meters(id: "${username}") {
-		id
-	    }
-	}`;
-        
-	$.post("/admin-webserver/query", {q: qry}, function(data) {
-	    if(data["users"][0] !== undefined) {
+	$.post("/admin-webserver/UserExistsServlet", {user: username}, function(data) {
+	    console.log(data);
+	    console.log(typeof(data));  
+	    if(data === "true") {
 		$("#new-admin-form\\:add-admin").removeAttr("disabled");
 		$("#new-admin-form\\:add-admin").removeClass("loginmodal-disabled");
-	    }
+	    } 
 	});
-	
-        if (username === "some") {
-            
-        }
     });
 
     $("#new-admin-form\\:username").on("keyup", function () {
         $("#new-admin-form\\:add-admin").attr("disabled", "yes");
         $("#new-admin-form\\:add-admin").addClass("loginmodal-disabled");
     });
+    
+    $("#new-admin-form\\:add-admin").attr("disabled", "yes");
+    $("#new-admin-form\\:add-admin").addClass("loginmodal-disabled");
 });
 

@@ -96,14 +96,15 @@ public class RegisterBean extends AbstractActionBean {
     
     
     public String doRegister() {
-        if(isRegistering) {
+	/*
+        if(!isRegistering) {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("home");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("index");
             } catch(IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        
+        */
         if(netzonline) {
             boolean passwordOk = checkPassword();
             if(!passwordOk) {
@@ -122,7 +123,7 @@ public class RegisterBean extends AbstractActionBean {
         //AemsAPI.call(action, new byte[16]);
         
         
-        return "home";
+        return "register.xhtml";
     }
 
     private boolean checkPassword() {

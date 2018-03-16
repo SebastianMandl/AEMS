@@ -65,6 +65,11 @@
     margin: 5%;
 }
 
+.link {
+    color: blue;
+    text-decoration: underline;
+}
+
 .loginDiv input {
     height: 1em;
     width: 20%;

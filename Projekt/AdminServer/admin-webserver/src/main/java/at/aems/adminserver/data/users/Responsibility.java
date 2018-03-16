@@ -45,7 +45,10 @@ public class Responsibility {
 	String post = o.has("postal_code") ? o.get("postal_code").getAsString() : null;
 	String name = o.has("designation") ? o.get("designation").getAsString() : null;
 	
-	return new Responsibility(post, name);
+	if(post != null && name != null) {
+	    return new Responsibility(post, name);
+	}
+	return null;
     }
     
 }

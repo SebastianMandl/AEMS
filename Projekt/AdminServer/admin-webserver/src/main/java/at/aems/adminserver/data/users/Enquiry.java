@@ -21,15 +21,17 @@ public class Enquiry implements Comparable<Enquiry>{
     private String username;
     private boolean useNetzonline;
     private Timestamp signupTime;
+    private String postalCode;
 
     public Enquiry() {
     }
 
-    public Enquiry(String email, String username, boolean useNetzonline, Timestamp signupTime) {
+    public Enquiry(String email, String username, boolean useNetzonline, Timestamp signupTime, String postalCode) {
         this.email = email;
         this.username = username;
         this.useNetzonline = useNetzonline;
         this.signupTime = signupTime;
+	this.postalCode = postalCode;
     }
 
     public String getEmail() {
@@ -63,6 +65,16 @@ public class Enquiry implements Comparable<Enquiry>{
     public void setSignupTime(Timestamp signupTime) {
         this.signupTime = signupTime;
     }
+
+    public String getPostalCode() {
+	return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+	this.postalCode = postalCode;
+    }
+    
+    
     
     public String getNiceSignupTime() {
 	if(signupTime == null) {
@@ -105,6 +117,7 @@ public class Enquiry implements Comparable<Enquiry>{
 	String email = o.has("email") ? o.get("email").getAsString() : null;
 	String user = o.has("username") ? o.get("username").getAsString() : null;
 	boolean netz = o.has("use_netzonline") ? o.get("use_netzonline").getAsBoolean() : false;
+	String post = o.has("postal_code") ? o.get("postal_code").getAsString() : "-";
 	
 	String time = o.has("member_since") ? o.get("member_since").getAsString() : null;
 	Timestamp stamp = null;
@@ -112,7 +125,7 @@ public class Enquiry implements Comparable<Enquiry>{
 	if(time != null && !time.equals("null")) {
 	    stamp = Timestamp.valueOf(time);
 	}
-	return new Enquiry(email, user, netz, stamp);
+	return new Enquiry(email, user, netz, stamp, post);
     }
     
     private static Object get(JsonObject o, String key) {

@@ -54,6 +54,7 @@ public class HandleEnquiryBean extends AbstractActionBean {
 	    notify.setMessage("Es ist ein Fehler aufgetreten");
 	}
         callUpdateOn("enquiriesBean");
+	callUpdateOn("acceptedUsersBean"); 
         return "index";
     }
     
@@ -62,7 +63,7 @@ public class HandleEnquiryBean extends AbstractActionBean {
         notify.setMessage("Dem Benutzer mit der Adresse " + email + " wurde der Zugriff verweigert");
         callUpdateOn("enquiriesBean");
         return "index";
-    }
+    } 
 
     
     

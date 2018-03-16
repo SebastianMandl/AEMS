@@ -44,7 +44,7 @@ import javax.servlet.ServletContext;
  */
 public class AemsUtils {
 
-    public static final String API_URL = "http://10.10.0.167:8084/AEMSWebService/RestInf";
+    public static final String API_URL = "https://aemsserver.ddns.net:8085/AEMSWebService/RestInf";
 
     public static int getUserId(String username, String password) {
         return 3;
