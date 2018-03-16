@@ -162,6 +162,8 @@ public class DatabaseConnection {
 			type = Types.DECIMAL;
 		else if(returnClazz.equals(byte[].class))
 			type = Types.BINARY;
+                else if(returnClazz.equals(boolean.class))
+                        type = Types.BIT;
 		
 		if(!returnClazz.equals(Void.class))
 			func.registerOutParameter(1, type);
@@ -194,6 +196,8 @@ public class DatabaseConnection {
 			returnValue = func.getBigDecimal(1);
 		else if(returnClazz.equals(byte[].class))
 			returnValue = func.getBytes(1);
+                else if(returnClazz.equals(boolean.class))
+                        returnValue = func.getBoolean(1);
 		
 		func.close();
 		
