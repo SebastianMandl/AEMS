@@ -2,11 +2,12 @@ var pdf_xaxis_indent = 10;
 
 $(".download-pdf").click(function () {
     var statistic = $(this).parent().find("canvas").get(0);
+    var id = $(this).parent().find(".stat-title").eq(0).prop("id");
     var title = $(this).parent().find(".stat-title").eq(0).text();
 
     // Scroll to top so statistic is rendered
     $('html, body').animate({
-        scrollTop: $("#h_" + title).offset().top
+        scrollTop: $("#" + id).offset().top
     }, 0);
 
     var currentDate = formatDate(new Date());

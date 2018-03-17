@@ -44,7 +44,9 @@ public class UserReportBean extends AbstractDisplayBean {
 	    
 	    for(JsonElement e : array) {
 		ReportData d = ReportData.fromJsonObject(e.getAsJsonObject());
-		reports.add(d);
+		if(d != null) {
+		    reports.add(d);
+		}
 	    }
 	    
 	} catch(Exception e) {

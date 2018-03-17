@@ -85,7 +85,7 @@ public abstract class AbstractDisplayBean implements Serializable {
 	} catch (Exception e) {
 	}
 
-	config = new ApiConfig(Constants.API_URL, 5000, path, "Minecraft=0");
+	config = new ApiConfig(Constants.API_URL, 2500, path, "Minecraft=0");
 
 	AemsAPI.setConfig(config);
     }

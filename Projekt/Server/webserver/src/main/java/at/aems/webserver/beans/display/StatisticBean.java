@@ -10,6 +10,7 @@ import at.aems.apilib.AemsQueryAction;
 import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
+import at.aems.webserver.NewMap;
 import at.aems.webserver.data.statistic.StatisticMeta;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -39,9 +40,9 @@ public class StatisticBean extends AbstractDisplayBean {
 	allStatistics = new ArrayList<>();
 	if(userBean == null)
 	    return;
-	
+	 
 	AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-	qry.setQuery(AemsUtils.getQuery("created_statistics", new HashMap<String, String>()));
+	qry.setQuery(AemsUtils.getQuery("created_statistics", NewMap.of("USER", userBean.getUserId())));
 	
 	JsonArray result = null;
 	try {

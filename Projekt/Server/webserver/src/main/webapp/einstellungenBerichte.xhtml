@@ -3,7 +3,8 @@
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
     <head>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -49,8 +50,12 @@
 			    <h4 class="list-group-item-heading">#{rep.name}</h4>
 			    <p class="list-group-item-text">#{rep.annotation}</p>
 			    <div class="btn-glyph">
-				<button class="btn btn-default" title="Bericht bearbeiten" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></button>
-				<button class="btn btn-default" title="Bericht löschen"><span class="glyphicon glyphicon-trash"></span></button>
+				<h:form>
+				    <div type="button" class="btn btn-default" title="Bericht bearbeiten" data-toggle="modal" data-target="#editReport-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></div>
+				    <h:commandLink action="#{deleteReportBean.doDelete(rep.id)}">
+					<button class="btn btn-default" title="Bericht löschen"><span class="glyphicon glyphicon-trash"></span></button>
+				    </h:commandLink>
+				</h:form>
 			    </div>
 			</div>
 		    </c:forEach>

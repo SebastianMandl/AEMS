@@ -22,12 +22,12 @@ public class DisplayedStatistic {
     private Period period;
     private String[] labels;
 
-    private List<Integer> electricityValues;
+    private List<Double> electricityValues;
     private List<Integer> previousValues = new ArrayList<>(); 
 
     private Map<String, List<Integer>> anomalyValues = new HashMap<>();
 
-    public DisplayedStatistic(Integer id, String name, Period period, List<Integer> electricityValues, List<Integer> previousValues, Map<String, List<Integer>> anomalyValues) {
+    public DisplayedStatistic(Integer id, String name, Period period, List<Double> electricityValues, List<Integer> previousValues, Map<String, List<Integer>> anomalyValues) {
         this.id = id;
         this.name = name;
         this.period = period;
@@ -66,11 +66,11 @@ public class DisplayedStatistic {
         this.period = period;
     }
 
-    public List<Integer> getElectricityValues() {
+    public List<Double> getElectricityValues() {
         return electricityValues;
     }
 
-    public void setElectricityValues(List<Integer> electricityValues) {
+    public void setElectricityValues(List<Double> electricityValues) {
         this.electricityValues = electricityValues;
     }
 

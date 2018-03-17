@@ -57,7 +57,7 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	login.setPassword(password);
 	AemsResponse response = null;
 	try {
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    response = AemsAPI.call0(login, null);
 	    System.out.println(response.getDecryptedResponse());
 	} catch(IOException e) {
@@ -90,6 +90,7 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	callUpdateOn("statisticBean");
 	*/
 	callUpdateOn("userMeterBean");
+	callUpdateOn("statisticDisplayBean");
         FacesContext context = FacesContext.getCurrentInstance();
         String viewId = context.getViewRoot().getViewId();
         return viewId;

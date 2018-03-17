@@ -1,5 +1,5 @@
 {
-    meter_data(meter: #METER_ID#) {
+    meter_data(meter: "#METER_ID#", start: "#START#") {
 	id
 	timestamp
 	measured_value
