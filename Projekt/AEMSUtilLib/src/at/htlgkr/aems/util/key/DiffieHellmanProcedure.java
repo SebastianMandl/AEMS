@@ -167,31 +167,8 @@ public class DiffieHellmanProcedure {
 		ServerSocket server = new ServerSocket(9950);
 		Socket socket = server.accept();
 		
-//		if(BLOCKED_INET_ADDRESSES.containsKey(socket.getInetAddress())) {
-//			Long blockedTime = BLOCKED_INET_ADDRESSES.get(socket.getInetAddress());
-//			if(System.currentTimeMillis() - blockedTime >= (1_000 * 60)) {
-//				BLOCKED_INET_ADDRESSES.remove(socket.getInetAddress());
-//				ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 0);
-//			} else {
-//				server.close();
-//				socket.close();
-//				return null;
-//			}
-//		}
-//		
-//		if(ACCESSES_PER_ADDRESS_PER_MINUTE.containsKey(socket.getInetAddress())) {
-//			int accessCount = ACCESSES_PER_ADDRESS_PER_MINUTE.get(socket.getInetAddress());
-//			if(accessCount + 1 > TOTAL_ACCESSES_PER_ADDRESS_PER_MINUTE) {
-//				BLOCKED_INET_ADDRESSES.put(socket.getInetAddress(), System.currentTimeMillis());
-//				socket.close();
-//				server.close();
-//				return null;
-//			}
-//		} else {
-//			ACCESSES_PER_ADDRESS_PER_MINUTE.put(socket.getInetAddress(), 1);
-//		}
-		
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
 			final Random RANDOM = new Random();
 			
@@ -208,14 +185,16 @@ public class DiffieHellmanProcedure {
 			// send key confirmation request
 			//Socket clientSocket = new Socket(socket.getInetAddress().toString(), socket.getPort() + 1);
 			// don't attempt to connect to the client side since port forwarding can not be configured at the client side!!!
-			try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+			try {
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 				writer.write("{combination:" + myCombination.toString() + "}");
 				writer.write("\r\n");
+				writer.flush();
 			} catch(IOException e) {
 				e.printStackTrace();
-			} finally {
-				socket.close();
 			}
+			
+			server.close();
 			
 			BigDecimal key = compute(combination, modNumber, secretNumber);
 			return key.toString().substring(0, KEY_LENGTH).getBytes();
@@ -256,17 +235,20 @@ public class DiffieHellmanProcedure {
 		return null;
 	}
 	
-	public static void prepareKeyAcquisition(String ip) throws Exception {
+	public static String prepareKeyAcquisition(String ip) throws Exception {
 		HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + ":8084/AEMSWebService/AAA").openConnection();
 		con.setRequestMethod("GET");
 		//con.setDoOutput(true);
 		con.setReadTimeout(3000);
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			for(String line = reader.readLine(); line != null; line = reader.readLine());
+			for(String line = reader.readLine(); line != null;) {
+				return line;
+			}
 		} catch(Exception e) {
 			
 		}
+		return null;
 	}
 	
 }

@@ -29,8 +29,8 @@ import at.htlgkr.aems.util.key.DiffieHellmanProcedure;
 
 public class AEMSUploader extends Uploader {
 
-	private static final String SERVER_ADDRESS = "http://localhost:8084";
-	private static final String KEY_EXCHANGE_SERVICE_IP = "localhost";
+	private static final String SERVER_ADDRESS = "http://aemsserver.ddns.net:8084";
+	private static final String KEY_EXCHANGE_SERVICE_IP = "aemsserver.ddns.net";
 	private static final int KEY_EXCHANGE_SERVICE_PORT = 9950;
 	
 	private boolean isLoggedIn;
@@ -78,8 +78,7 @@ public class AEMSUploader extends Uploader {
 		try {
 			DiffieHellmanProcedure.prepareKeyAcquisition(KEY_EXCHANGE_SERVICE_IP);
 			DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName(KEY_EXCHANGE_SERVICE_IP), KEY_EXCHANGE_SERVICE_PORT));
-			key = new BigDecimal(new String(DiffieHellmanProcedure.confirmKey()));
-			key = KeyUtils.salt(key, authentication.getUsername(), authentication.getPassword());
+			key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), authentication.getUsername(), authentication.getPassword());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
