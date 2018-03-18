@@ -235,17 +235,20 @@ public class DiffieHellmanProcedure {
 		return null;
 	}
 	
-	public static void prepareKeyAcquisition(String ip) throws Exception {
+	public static String prepareKeyAcquisition(String ip) throws Exception {
 		HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + ":8084/AEMSWebService/AAA").openConnection();
 		con.setRequestMethod("GET");
 		//con.setDoOutput(true);
 		con.setReadTimeout(3000);
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			for(String line = reader.readLine(); line != null; line = reader.readLine());
+			for(String line = reader.readLine(); line != null;) {
+				return line;
+			}
 		} catch(Exception e) {
 			
 		}
+		return null;
 	}
 	
 }

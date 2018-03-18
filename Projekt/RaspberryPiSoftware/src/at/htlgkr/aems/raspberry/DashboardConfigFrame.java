@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -274,8 +275,20 @@ public class DashboardConfigFrame {
 		pane.setHorizontalScrollBar(null);
 		frame.add(pane, BorderLayout.CENTER);
 		
-		String commandResult = "ttyUSB0, ttyUSB1, ttyUSB2, ttyUSB3"; //readFromStream(readCommand("listDevsCommand.bash"), false);
-		final Pattern TTY_USB_PATTERN = Pattern.compile("(ttyUSB[0-9]+)+");
+		StringBuilder builder = new StringBuilder();
+		try {
+			Process process = Runtime.getRuntime().exec(new String[] {"bash", "listDevsCommand.bash"});
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		    Logger.log(LogType.INFO, "Reading in ports...");
+		    for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+		    	builder.append(line).append("\n");
+		    }
+		} catch(Exception e) {e.printStackTrace();}
+		
+		Logger.log(LogType.INFO, builder.toString());
+		
+		String commandResult = /*builder.toString();*/"ttyUSB0, ttyUSB1, ttyUSB2, ttyUSB3"; //*/
+		final Pattern TTY_USB_PATTERN = Pattern.compile("(ttyUSB[0-9]+|ttyACM[0-9]+)+");
 		Matcher matcher = TTY_USB_PATTERN.matcher(commandResult);
 		int count = 0;
 		while(matcher.find()) {

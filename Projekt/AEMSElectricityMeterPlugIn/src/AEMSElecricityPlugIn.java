@@ -16,8 +16,8 @@ import at.htlgkr.aems.settings.Setting;
 public class AEMSElecricityPlugIn extends PlugIn {
 
 	public AEMSElecricityPlugIn() {
-		super("Sensor PLUGIN", Setting.getSetting("kwH", new ScriptFile("py", "run.py")));
-		super.getSetting().setMillisUntilRepetition(1000 * 60 * 15);
+		super("Sensor PLUGIN", Setting.getSetting("kwH", new ScriptFile("python", "run.py")));
+		super.getSetting().setMillisUntilRepetition(1000);
 		super.setUploader(new AEMSUploader(this));
 	}
 	
@@ -33,6 +33,7 @@ public class AEMSElecricityPlugIn extends PlugIn {
 				Matcher matcher = NUMBER.matcher(line);
 				if(matcher.find()) {
 					String value = matcher.group("number");
+					System.out.println("--------- read : " + value);
 					super.getUploader().upload(new UploadPackage().addData(new TableData("meter_data")
 							.addData("meter", plugin.getSetting().getMeterId()).addData("measured_value", value).addData("timestamp", FORMAT.format(new Date())).addData("unit", getSetting().getSensorUnit())));
 				}
