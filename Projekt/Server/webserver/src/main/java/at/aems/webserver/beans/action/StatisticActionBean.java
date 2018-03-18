@@ -6,6 +6,7 @@
 package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsDeleteAction;
 import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUpdateAction;
 import at.aems.apilib.crypto.EncryptionType;
@@ -30,8 +31,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	update.setIdColumn("id", statisticId);
 	update.write("display_android", false);
 	try {
-	    System.out.println(update.toJsonObject());
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    AemsAPI.call0(update, null);
 	    notify.setMessage("Statistik aus Android-App entfernt!");
 	} catch(Exception ex) {
@@ -47,7 +47,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	update.setIdColumn("id", statisticId);
 	update.write("display_home", false);
 	try {
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    AemsAPI.call0(update, null);
 	    notify.setMessage("Statistik aus Startseite entfernt!");
 	} catch(Exception ex) {
@@ -63,7 +63,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	update.setIdColumn("id", statisticId);
 	update.write("display_android", true);
 	try {
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    AemsAPI.call0(update, null);
 	    System.out.println(update.toJsonObject());
 	    notify.setMessage("Statistik zu Android-App hinzugefügt!");
@@ -80,7 +80,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	update.setIdColumn("id", statisticId);
 	update.write("display_android", true);
 	try {
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    AemsAPI.call0(update, null);
 	    notify.setMessage("Statistik zu Startseite hinzugefügt!");
 	} catch(Exception ex) {
@@ -91,7 +91,18 @@ public class StatisticActionBean extends AbstractActionBean {
     }
 
     public String remove(Integer statisticId) {
-        notify.setMessage("Statistik wurde gelöscht");
+        AemsDeleteAction delete = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
+	delete.setTable("Statistics");
+	delete.setIdColumn("id", statisticId);
+	try {
+	    configureApiParams();
+	    AemsAPI.call0(delete, null);
+	    notify.setMessage("Die Statistik wurde entfernt!");
+	} catch(Exception ex) {
+	    notify.setMessage("Ein Fehler ist aufgetreten!");
+	}
+	callUpdateOn("statisticBean");
+	
         return "einstellungenStatistiken";
     }
 }

@@ -18,6 +18,7 @@ public class StatisticMeta {
     private String name;
     private Period period;
     private String annotation;
+    private String statisticType;
     private List<String> meters;
     private List<Anomaly> anomalies;
     private boolean isAndroid;
@@ -91,7 +92,15 @@ public class StatisticMeta {
     public void setStartpage(boolean isStartpage) {
         this.isStartpage = isStartpage;
     }
-    
+
+    public String getStatisticType() {
+	return statisticType;
+    }
+
+    public void setStatisticType(String statisticType) {
+	this.statisticType = statisticType;
+    }
+
     
     
 }

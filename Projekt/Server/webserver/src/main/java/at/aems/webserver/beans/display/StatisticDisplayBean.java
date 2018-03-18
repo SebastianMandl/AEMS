@@ -100,14 +100,8 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 		
 		Integer id = obj.get("id").getAsInt();
 		String name = obj.get("name").getAsString();
-		Period period = obj.has("period") ? Period.byId(obj.get("period").getAsInt()) : Period.WEEKLY;
-		
-		String displayHome;
-		if(!obj.has("display_home")) {
-		    displayHome = "true";
-		} else {
-		    displayHome = obj.get("display_home").getAsString();
-		}
+		Period period = obj.has("period") ? Period.byId(obj.get("period").getAsInt()) : Period.DAILY;
+		String displayHome = "true";
 
 		if(Boolean.parseBoolean(displayHome)) {
 		    result.add(new DisplayedStatistic(id, name, period));

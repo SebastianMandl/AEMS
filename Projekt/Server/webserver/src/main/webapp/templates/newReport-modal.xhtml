@@ -25,10 +25,10 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zählertyp<span class="caret" /></button>
 
                             <ul id="categories" class="dropdown-menu zaehler_format">
-                                <c:forEach items="#{userStatisticsBean.categories}" var="category">
+                                <c:forEach items="#{statisticBean.statisticTypes}" var="type">
                                     <li role="presentation">
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="#{category}" />#{category}</label>
+                                            <label><input type="checkbox" value="#{type}" />#{type}</label>
                                         </div>
                                     </li>
                                 </c:forEach>
@@ -52,10 +52,10 @@
 
                             <ul id="statistics" class="dropdown-menu zaehler_format">
 
-                                <c:forEach items="#{userStatisticsBean.statistics.entrySet()}" var="entry">
+                                <c:forEach items="#{statisticBean.statistics}" var="entry">
                                     <li role="presentation">
                                         <div class="checkbox">
-                                            <label><input type="checkbox" value="#{entry.key}" data-type="#{entry.value.type}" />#{entry.value.name}</label>
+                                            <label><input type="checkbox" value="#{entry.id}" data-type="#{entry.statisticType}" />#{entry.name}</label>
                                         </div>
                                     </li>
                                 </c:forEach>

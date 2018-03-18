@@ -71,7 +71,14 @@ public class DisplayedStatistic {
     }
 
     public void setElectricityValues(List<Double> electricityValues) {
-        this.electricityValues = electricityValues;
+	List<Double> rounded = new ArrayList<>();
+	for(Double doub : electricityValues) {
+	    if(doub != null)
+		rounded.add(Math.ceil(doub));
+	    else
+		rounded.add(null);
+	}
+        this.electricityValues = rounded;
     }
 
     public List<Integer> getPreviousValues() {

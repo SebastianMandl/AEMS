@@ -1,5 +1,5 @@
 query GetMetersSimple {
-	meters {
+	meters(user: "#USER_ID#") {
 		id
 		metertype {
 			id
