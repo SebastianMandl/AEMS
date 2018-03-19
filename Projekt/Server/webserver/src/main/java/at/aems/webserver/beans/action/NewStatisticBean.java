@@ -96,7 +96,7 @@ public class NewStatisticBean extends AbstractActionBean {
         insert.beginWrite();
         insert.write("user", user.getUserId());
         insert.write("name", name);
-        insert.write("period", period);
+//        insert.write("period", period);
         insert.write("annotation", annotation);
 //        insert.write("period_compare", compare);
         insert.endWrite();
@@ -115,7 +115,7 @@ public class NewStatisticBean extends AbstractActionBean {
             insertMeters.endWrite();
         }
          
-        AemsAPI.call0(insertMeters, null);
+        AemsResponse resp2 = AemsAPI.call0(insertMeters, null);
         notify.setMessage("Statistik wurde erstellt!");
         callUpdateOn("statisticBean");
         return "einstellungenStatistiken";

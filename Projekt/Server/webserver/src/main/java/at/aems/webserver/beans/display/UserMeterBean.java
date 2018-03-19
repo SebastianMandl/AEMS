@@ -14,6 +14,7 @@ import at.aems.webserver.NewMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.JsonPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -52,7 +53,7 @@ public class UserMeterBean extends AbstractDisplayBean {
 	AemsQueryAction query = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
 	query.setQuery(AemsUtils.getQuery("meters_simple", NewMap.of("USER_ID", userBean.getUserId())));
 	JsonArray data = getJsonResponse(query);
-
+ 
 	if (data == null) {
 	    return;
 	}
@@ -60,11 +61,13 @@ public class UserMeterBean extends AbstractDisplayBean {
 	System.out.println(data);
 
 	try {
+	    String jsonString = data.toString();
 	    for (int i = 0; i < data.size(); i++) {
-		JsonObject j = data.get(i).getAsJsonObject();
-		String id = j.get("id").getAsString();
-		JsonObject metertype = j.get("metertype").getAsJsonObject();
-		String type = metertype.has("name") ? metertype.get("name").getAsString() : "N/A";
+		String id = JsonPath.read(jsonString, "$[" + i + "].id");
+		String type = JsonPath.read(jsonString, "$[" + i + "].metertype.name");
+		if(type == null) {
+		    type = "N/A";
+		}
 		meters.put(id, type);
 	    }
 	} catch(Exception ex) {
@@ -95,7 +98,7 @@ public class UserMeterBean extends AbstractDisplayBean {
     private JsonArray getJsonResponse(AemsQueryAction query) {
 	AemsResponse resp = null;
 	try {
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    resp = AemsAPI.call0(query, null);
 	    JsonArray arr = resp.getJsonArrayWithinObject();
 	    for (int i = 0; i < arr.size(); i++) {

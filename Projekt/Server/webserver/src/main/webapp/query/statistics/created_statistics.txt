@@ -4,5 +4,6 @@ query GetCreatedStatistics {
 		name
 		display_home
 		display_android
+		annotation
 	}
 }

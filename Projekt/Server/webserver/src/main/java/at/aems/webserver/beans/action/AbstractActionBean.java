@@ -37,6 +37,8 @@ public class AbstractActionBean extends AbstractBean {
     public AbstractDisplayBean getDisplayBean(String managedBeanName) {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         Object bean = context.getSessionMap().get(managedBeanName);
+	if(bean == null)
+	    return null;
         if (bean instanceof AbstractDisplayBean) {
             return (AbstractDisplayBean) bean;
         } else {
@@ -45,8 +47,12 @@ public class AbstractActionBean extends AbstractBean {
     }
      
     public void callUpdateOn(String managedBeanName) {
-        getDisplayBean(managedBeanName).update();
-	System.out.println("Called update() on " + managedBeanName);
+        AbstractDisplayBean bean = getDisplayBean(managedBeanName);
+	if(bean != null) {
+	    bean.update();
+	    System.out.println("Called update() on " + managedBeanName);
+	}
+	
     }
 
 }
