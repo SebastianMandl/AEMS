@@ -236,7 +236,11 @@ public class DiffieHellmanProcedure {
 	}
 	
 	public static String prepareKeyAcquisition(String ip) throws Exception {
-		HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + ":8084/AEMSWebService/AAA").openConnection();
+		return prepareKeyAcquisition(ip, false);
+	}
+	
+	public static String prepareKeyAcquisition(String ip, boolean android) throws Exception {
+		HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + ":8084/AEMSWebService/AAA" + (android ? "?android=android" : "")).openConnection();
 		con.setRequestMethod("GET");
 		//con.setDoOutput(true);
 		con.setReadTimeout(3000);
@@ -249,6 +253,17 @@ public class DiffieHellmanProcedure {
 			
 		}
 		return null;
+	}
+	
+	public static BufferedReader prepareKeyAcquisition0(String ip) throws Exception {
+		return prepareKeyAcquisition0(ip, false);
+	}
+	
+	public static BufferedReader prepareKeyAcquisition0(String ip, boolean android) throws Exception {
+		HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + ":8084/AEMSWebService/AAA" + (android ? "?android=android" : "")).openConnection();
+		con.setRequestMethod("GET");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		return reader;
 	}
 	
 }
