@@ -64,9 +64,8 @@ public class AESKeyManager {
                 ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.USERS, PROJECTION, SELECTION);
                 username = set.getString(0, 0);
             }
-            
-            if(!IPtoID.hasMappingFor(address))
-                IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
+
+            IPtoID.registerIPtoIDMapping(address, String.valueOf(userId));
             
             BigDecimal key = KEYS.get(address);
             

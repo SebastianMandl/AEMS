@@ -290,8 +290,8 @@ public class Query extends GraphQLObjectType {
             else
                 return checkAuthority3Level(obj.put("meter", obj.getString("id")), AEMSDatabase.METERS);
         }else {
-            if(!obj.getString("id").equals(instance.authorizationId) && !isAdmin(instance.authorizationId))
-                return false;
+            if(!obj.getString("id").equals(instance.authorizationId))
+                return isAdmin(instance.authorizationId);
         }
         return true;
     }
@@ -309,8 +309,8 @@ public class Query extends GraphQLObjectType {
         selection.put("id", obj.getString("id"));
         try {
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", table, projection, selection);
-            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(instance.authorizationId))
-                return false;
+            if(!set.getString(0, 0).equals(instance.authorizationId))
+                return isAdmin(instance.authorizationId);
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
@@ -342,8 +342,8 @@ public class Query extends GraphQLObjectType {
             
             ResultSet set = DatabaseConnectionManager.getDatabaseConnection().select("aems", AEMSDatabase.METERS, projection, selection);
             
-            if(!set.getString(0, 0).equals(instance.authorizationId) && !isAdmin(instance.authorizationId))
-                return false;
+            if(!set.getString(0, 0).equals(instance.authorizationId))
+                return isAdmin(instance.authorizationId);
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
