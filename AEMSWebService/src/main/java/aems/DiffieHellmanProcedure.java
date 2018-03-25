@@ -205,6 +205,8 @@ public class DiffieHellmanProcedure {
                         System.out.println(socket.getInetAddress().getHostAddress());
                                 
                         
+                        BigDecimal key = compute(combination, modNumber, secretNumber);
+                        
 			// send key confirmation request
 			//Socket clientSocket = new Socket(socket.getInetAddress().getHostAddress(), 9951);
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -218,7 +220,7 @@ public class DiffieHellmanProcedure {
                         
                         server.close();
 			
-			BigDecimal key = compute(combination, modNumber, secretNumber);
+			
 			return key.toString().substring(0, KEY_LENGTH).getBytes();
 			
 		} catch(IOException e) {

@@ -81,6 +81,8 @@ public class AEMSDatabase {
             public static final String METER = "meter";
             public static final String SENSOR = "sensor";
             public static final String NOTICE = "notice";
+            public static final String SEEN = "seen";
+            public static final String TITLE = "title";
         }
         
 	public class Meters {

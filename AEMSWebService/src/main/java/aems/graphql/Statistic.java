@@ -26,8 +26,8 @@ public class Statistic extends GraphQLObjectType {
     
     private static final GraphQLFieldDefinition PERIOD = Query.getFieldDefinition("period", Period.getInstance());
     private static final GraphQLFieldDefinition ANNOTATION = Query.getFieldDefinition("annotation", AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.ANNOTATION, Scalars.GraphQLString);
-    private static final GraphQLFieldDefinition DISPLAY_HOME = Query.getFieldDefinition("display_home", AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.DISPLAY_HOME, Scalars.GraphQLBoolean);
-    private static final GraphQLFieldDefinition DISPLAY_ANDROID = Query.getFieldDefinition("display_android", AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.DISPLAY_ANDROID, Scalars.GraphQLBoolean);
+    private static final GraphQLFieldDefinition DISPLAY_HOME = Query.getFieldDefinition("display_home", AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.DISPLAY_HOME, Scalars.GraphQLString);
+    private static final GraphQLFieldDefinition DISPLAY_ANDROID = Query.getFieldDefinition("display_android", AEMSDatabase.STATISTICS, AEMSDatabase.Statistics.DISPLAY_ANDROID, Scalars.GraphQLString);
     
     
     private static final GraphQLFieldDefinition ID = GraphQLFieldDefinition.newFieldDefinition().name("id").type(Scalars.GraphQLInt).dataFetcher(new DataFetcher<Integer> () {

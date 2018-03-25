@@ -1,5 +1,11 @@
 package at.htlgkr.aems.firebase;
 
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import org.json.JSONObject;
 
 public class Trigger {
@@ -24,12 +30,12 @@ public class Trigger {
 		 */
 		
 		try {
-//			HttpsURLConnection con = (HttpsURLConnection) new URL("link").openConnection();
-//			con.setRequestMethod("POST");
-//			con.setRequestProperty("content-type", "application/json");
-//			con.setDoOutput(true);
-//			
-//			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+			HttpsURLConnection con = (HttpsURLConnection) new URL("https://console.firebase.google.com/project/aems-6f5d2/notification/compose").openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("content-type", "application/json");
+			con.setDoOutput(true);
+			
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
 			JSONObject object = new JSONObject();
 			JSONObject msgObj  = new JSONObject();
 			JSONObject notificationObj = new JSONObject();
@@ -39,9 +45,9 @@ public class Trigger {
 			msgObj.put("notification", notificationObj);
 			object.put("message", msgObj);
 			
-//			writer.write(object.toString());
-//			writer.flush();
-//			writer.close();
+			writer.write(object.toString());
+			writer.flush();
+			writer.close();
 		} catch (Exception e) {
 			return false;
 		}

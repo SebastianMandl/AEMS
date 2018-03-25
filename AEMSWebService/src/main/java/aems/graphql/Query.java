@@ -86,7 +86,9 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("statistics", AEMSDatabase.STATISTICS, Statistic.getInstance(), 
                     getArgumentList(
 			    new Argument("id", AEMSDatabase.Statistics.ID, Argument.EQUAL),
-			    new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL)));
+			    new Argument("user", AEMSDatabase.Statistics.USER, Argument.EQUAL),
+                            new Argument("display_home", AEMSDatabase.Statistics.DISPLAY_HOME, Argument.EQUAL),
+                            new Argument("display_android", AEMSDatabase.Statistics.DISPLAY_ANDROID, Argument.EQUAL)));
     
     private static final GraphQLFieldDefinition ANOMALIES = 
             Query.getRootFieldDefinition("anomalies", AEMSDatabase.ANOMALIES, Anomaly.getInstance(),
