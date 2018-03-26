@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,7 +84,24 @@ public class StatisticBean extends AbstractDisplayBean {
 	}
 
     }
+    
+    public boolean isAndroidStatistic(Integer id) {
+	for(StatisticMeta m : this.allStatistics) {
+	    if(Objects.equals(m.getId(), id)) {
+		return m.isAndroid();
+	    }
+	}
+	return false;
+    }
 
+    public boolean isHomepageStatistic(Integer id) {
+	for(StatisticMeta m : this.allStatistics) {
+	    if(Objects.equals(m.getId(), id)) {
+		return m.isStartpage();
+	    }
+	}
+	return false;
+    }
     public List<StatisticMeta> getStatistics() {
 	return allStatistics;
     }

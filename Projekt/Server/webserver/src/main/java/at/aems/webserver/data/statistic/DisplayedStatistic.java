@@ -23,7 +23,7 @@ public class DisplayedStatistic {
     private String[] labels;
 
     private List<Double> electricityValues;
-    private List<Integer> previousValues = new ArrayList<>(); 
+    private List<Integer> previousValues;
 
     private Map<String, List<Integer>> anomalyValues = new HashMap<>();
 

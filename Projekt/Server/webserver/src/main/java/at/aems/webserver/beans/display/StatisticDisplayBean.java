@@ -9,6 +9,7 @@ import at.aems.accumulator.TimePeriod;
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsQueryAction;
 import at.aems.apilib.AemsResponse;
+import at.aems.apilib.AemsStatisticAction;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.NewMap;
@@ -17,6 +18,7 @@ import at.aems.webserver.data.statistic.Period;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.jayway.jsonpath.JsonPath;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -45,44 +47,71 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
     public StatisticDisplayBean() {
     }
 
-
     @Override
     public void update() {
 	configureApiParams();
-        statistics = new ArrayList<>();
-	
+	statistics = new ArrayList<>();
+
 	List<DisplayedStatistic> statisticIds = getStatisticsOfUser();
-	if(statisticIds == null) {
+	if (statisticIds == null) {
 	    return;
 	}
+
+	System.out.println("");
 	
-	Map<DisplayedStatistic, List<String>> statisticMeters =
-		getStatisticMeters(statisticIds);
-	
-	fillStatisticValues(statisticMeters);
-	
-	for(DisplayedStatistic stat : statisticIds) {
-	    statistics.add(stat);
+	for (DisplayedStatistic dis : statisticIds) {
+	    if(dis.getId() == null)
+		continue;
+	    AemsStatisticAction statisticAction = new AemsStatisticAction(userBean.getAemsUser(), EncryptionType.SSL);
+	    statisticAction.setStatisticId(dis.getId());
+
+	    try {
+		AemsResponse resp = AemsAPI.call0(statisticAction, null);
+		JsonObject obj = resp.getAsJsonObject();
+
+		System.out.println(" ************************** ");
+		System.out.println(obj.toString());
+		JsonArray period = obj.get("period").getAsJsonArray();
+		JsonArray prePeriod = obj.get("pre_period").getAsJsonArray();
+
+		List<Double> vals = new ArrayList<>();
+		for (JsonElement e : period) {
+		    vals.add(e.getAsDouble());
+		}
+		dis.setElectricityValues(vals);
+
+		List<Integer> prevVals = new ArrayList<>();
+		for (JsonElement e : prePeriod) {
+		    prevVals.add(e.getAsInt());
+		}
+		dis.setPreviousValues(prevVals);
+
+	    } catch (Exception ex) {
+		Logger.getLogger("StatisticDisplayBean").log(Level.SEVERE, null, ex);
+	    }
 	}
 
+	for (DisplayedStatistic stat : statisticIds) {
+	    statistics.add(stat);
+	}
 
     }
 
     public List<DisplayedStatistic> getStatistics() {
-        return statistics;
+	return statistics;
     }
 
     public void setStatistics(List<DisplayedStatistic> statistics) {
-        this.statistics = statistics;
+	this.statistics = statistics;
     }
 
     private List<Integer> randomInts(int amount) {
-        List<Integer> l = new ArrayList<>();
-        Random r = new Random();
-        for (int i = 0; i < amount; i++) {
-            l.add(r.nextInt(200) + 100);
-        }
-        return l;
+	List<Integer> l = new ArrayList<>();
+	Random r = new Random();
+	for (int i = 0; i < amount; i++) {
+	    l.add(r.nextInt(200) + 100);
+	}
+	return l;
     }
 
     private List<DisplayedStatistic> getStatisticsOfUser() {
@@ -93,112 +122,73 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 	    AemsResponse resp = AemsAPI.call0(qry, null);
 	    System.out.println(resp.getDecryptedResponse());
 	    JsonArray array = resp.getJsonArrayWithinObject();
-	    for(JsonElement element : array) {
-		if(!element.isJsonObject())
+	    for (JsonElement element : array) {
+		if (!element.isJsonObject()) {
 		    continue;
+		}
 		JsonObject obj = element.getAsJsonObject();
+ 
 		
 		Integer id = obj.get("id").getAsInt();
 		String name = obj.get("name").getAsString();
-		Period period = obj.has("period") ? Period.byId(obj.get("period").getAsInt()) : Period.DAILY;
+		String periodStr = JsonPath.read(obj.toString(), "$.period.id");
+		Integer periodId = AemsUtils.isInt(periodStr) ? Integer.valueOf(periodStr) : null;
+		Period period = periodId == null ? Period.YEARLY : Period.byId(periodId); 
 		String displayHome = "true";
-
-		if(Boolean.parseBoolean(displayHome)) {
+ 
+		if (Boolean.parseBoolean(displayHome)) {
 		    result.add(new DisplayedStatistic(id, name, period));
 		}
 	    }
-	} catch(Exception ex) {
+	} catch (Exception ex) {
 	    Logger.getLogger(StatisticDisplayBean.class.getName()).log(Level.SEVERE, null, ex);
 	    return null;
 	}
-	
+
 	return result;
-	
+
     }
 
     private Map<DisplayedStatistic, List<String>> getStatisticMeters(List<DisplayedStatistic> statisticIds) {
 	Map<DisplayedStatistic, List<String>> result = new HashMap<>();
 	try {
-	    
-	    for(DisplayedStatistic statistic : statisticIds) {
+
+	    for (DisplayedStatistic statistic : statisticIds) {
 		result.put(statistic, new ArrayList<String>());
 		AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-		qry.setQuery(AemsUtils.getQuery("statistic_meters", 
+		qry.setQuery(AemsUtils.getQuery("statistic_meters",
 			NewMap.of("STATISTIC_ID", statistic.getId())));
-		
+
 		AemsResponse resp = AemsAPI.call0(qry, null);
 		JsonArray array = resp.getJsonArrayWithinObject();
-		
-		for(JsonElement element : array) {
-		    String id = element.getAsJsonObject().get("meter")
-			    .getAsJsonObject().get("id").getAsString();
-		    result.get(statistic).add(id);
+		System.out.println(" ***************** ");
+		System.out.println(resp.getDecryptedResponse());
+
+		for (JsonElement element : array) {
+		    String id = JsonPath.read(element.toString(), "$.meter.id");
+		    if (id != null) {
+			result.get(statistic).add(id);
+		    }
 		}
-		
+
 	    }
-	    
-	} catch(Exception ex) {
-	    return null;
+
+	} catch (Exception ex) {
+	    Logger.getLogger("Statistics").log(Level.SEVERE, null, ex);
+	    return new HashMap<>();
 	}
-	
+
 	return result;
     }
 
     private void fillStatisticValues(Map<DisplayedStatistic, List<String>> statisticMeters) {
-	
-	for(Map.Entry<DisplayedStatistic, List<String>> entry : statisticMeters.entrySet()) {
 
-	    TimePeriod period = entry.getKey().getPeriod().toTimePeriod();
-	    Double[] accumulatedValues = new Double[period.getValues()];
-	    
-	    for(String meter : entry.getValue()) {
-		AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-		qry.setQuery(AemsUtils.getQuery("statistic_values", 
-			NewMap.of("METER_ID", meter,
-				  "START", getStart(entry.getKey().getPeriod()))));
-		
-		NavigableMap<Timestamp, Double> values = new TreeMap<>();
-		
-		try {
-		    AemsResponse r = AemsAPI.call0(qry, null);
-		    JsonArray array = r.getJsonArrayWithinObject();
-		    
-		    for(JsonElement ele : array) {
-			if(!ele.isJsonObject())
-			    continue;
-			JsonObject obj = ele.getAsJsonObject();
-			
-			Timestamp t = Timestamp.valueOf(obj.get("timestamp").getAsString());
-			Double doub = obj.get("measured_value").getAsDouble();
-			
-			values.put(t, doub);
-		    }
-		    Double[] pre = period.accumulate(values);
-		    for(int i = 0; i < accumulatedValues.length; i++) {
-			if(pre[i] == null) {
-			    break;
-			}
-			if(accumulatedValues[i] == null) {
-			    accumulatedValues[i] = 0.0;
-			}
-			accumulatedValues[i] += pre[i];
-		    }
-		    
-		} catch(IOException ex) {
-		    
-		}
-	    }
-	    
-	    entry.getKey().setElectricityValues(Arrays.asList(accumulatedValues));
-	    
-	}
-	
     }
-    
+
     private String getStart(Period p) {
 	GregorianCalendar calendar = new GregorianCalendar();
 	int daysToSubtract = -1;
-	switch(p) {
+	switch (p) {
 	    case DAILY:
 		daysToSubtract = 2;
 		break;
@@ -212,9 +202,9 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 		daysToSubtract = 365;
 		break;
 	}
-	
+
 	calendar.add(Calendar.DAY_OF_YEAR, -daysToSubtract);
-	
+
 	return new Timestamp(calendar.getTimeInMillis()).toString();
     }
 

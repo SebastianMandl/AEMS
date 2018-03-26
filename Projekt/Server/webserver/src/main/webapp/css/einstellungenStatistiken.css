@@ -41,3 +41,7 @@ form .btn-group .dropdown-menu.zaehler_format {
     margin-top: -2.8em;
     float: right;
 }
+
+.disabled-btn {
+    color: #969696;
+}

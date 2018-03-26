@@ -7,6 +7,9 @@ package at.aems.webserver.data.statistic;
 
 import at.aems.accumulator.TimePeriod;
 import com.google.gson.annotations.SerializedName;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.IsoFields;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -15,18 +18,19 @@ import java.util.GregorianCalendar;
  * @author Niklas
  */
 public enum Period {
-    @SerializedName("0")
-    DAILY(0, "Tag", new String[]{"0 - 6 Uhr", "6 - 12 Uhr", "12 - 18 Uhr", "18 - 24 Uhr"}), 
+    @SerializedName("1")
+    DAILY(1, "Tag", new String[]{"0 - 3 Uhr", "3 - 6 Uhr", "6 - 9 Uhr", "9 - 12 Uhr",
+				 "12 - 15 Uhr", "15 - 18 Uhr", "18 - 21 Uhr", "21 - 24 Uhr"}), 
     //
     
-    @SerializedName("1")
-    WEEKLY(1, "Woche", new String[]{"Montag", "Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"}),  //
-    
     @SerializedName("2")
-    MONTHLY(2, "Monat", new String[]{"getweeklabels"}),
+    WEEKLY(2, "Woche", new String[]{"Montag", "Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"}),  //
     
     @SerializedName("3")
-    YEARLY(3, "Jahr", new String[]{"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
+    MONTHLY(3, "Monat", new String[]{"getweeklabels"}),
+    
+    @SerializedName("4")
+    YEARLY(4, "Jahr", new String[]{"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
                      "August", "September", "Oktober", "November", "Dezember"}); //
    
     
@@ -80,15 +84,14 @@ public enum Period {
     }
     
     private static String[] getWeekLabels() {
-        GregorianCalendar c = new GregorianCalendar();
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        String[]arr = new String[5];
-        int startWeek = c.get(Calendar.WEEK_OF_YEAR);
-        for(int i = 0; i < arr.length; i++) {
-            String s = startWeek < 10 ? "0" + startWeek : "" + startWeek;
-            arr[i] = "KW " + s;
-            startWeek++;
-        }
-        return arr;
+        LocalDate localDate = LocalDate.now();
+        int weekNumber = localDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        
+	String[] weeks = new String[5];
+	for(int i = 4; i >= 0; i--) {
+	    weeks[i] = weekNumber < 10 ? "KW 0" + weekNumber : "KW " + weekNumber;
+	    weekNumber--;
+	}
+	return weeks;
     } 
 }
