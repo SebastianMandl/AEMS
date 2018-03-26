@@ -74,6 +74,7 @@ aems\graphql\Period.class
 aems\graphql\Query$2.class
 aems\database\AEMSDatabase$Periods.class
 aems\graphql\NotificationException.class
+aems\StatisticServlet.class
 aems\database\AEMSDatabase$Notices.class
 aems\graphql\StatisticTime$6.class
 aems\graphql\User$2$1.class

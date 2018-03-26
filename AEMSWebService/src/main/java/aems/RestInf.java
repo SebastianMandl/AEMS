@@ -19,10 +19,14 @@ import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -57,6 +61,7 @@ public class RestInf extends HttpServlet {
     private static final String ACTION_BOT = "BOT";
     private static final String ENCRYPTION_AES = "AES";
     private static final String ENCRYPTION_SSL = "SSL";
+    private static final String ACTION_STATISTIC = "STATISTIC";
     
     private boolean isHashEqual(String user, String authStr, String salt, HttpServletResponse resp) {
         DatabaseConnection con = DatabaseConnectionManager.getDatabaseConnection();
@@ -242,6 +247,127 @@ public class RestInf extends HttpServlet {
                     resp.getWriter().flush();
                 }
                 break;
+            case ACTION_STATISTIC:
+            {
+                DatabaseConnection con = DatabaseConnectionManager.getDatabaseConnection();
+                try {
+                    
+                    ResultSet setPrePeriod = null;
+                    ResultSet set = con.customSelect("select period " +
+                                    "from aems.\"Statistics\" s " +
+                                    "where s.id = " + query);
+                    
+                    int period = set.getInteger(0, 0);
+                    int deductionDays = 0;
+                    
+                    switch(period) {
+                        case 1:
+                            //deductionDays = 6;
+                            break;
+                        case 2:
+                            deductionDays = 6;
+                            break;
+                        case 3:
+                            deductionDays = 30;
+                            break;
+                        case 4:
+                            deductionDays = 364;
+                            break;
+                    }
+
+                    if(period != 1) {                        
+                        set = con.customSelect("select sum(md.measured_value), to_char(md.timestamp, 'yyyy-MM-dd') " +
+                                            "from aems.\"StatisticMeters\" sm " +
+                                            "inner join aems.\"MeterData\" md on (sm.meter = md.meter) " +
+                                            "where sm.statistic = " + query + " and md.timestamp between to_char(now(), 'yyyy-MM-dd')::date - interval '" + deductionDays + " days'  and now() " +
+                                            "group by to_char(md.timestamp, 'yyyy-MM-dd') " + 
+                                            "order by to_char(md.timestamp, 'yyyy-MM-dd') ");
+                        
+                        setPrePeriod = con.customSelect("select sum(md.measured_value), to_char(md.timestamp, 'yyyy-MM-dd') " +
+                                            "from aems.\"StatisticMeters\" sm " +
+                                            "inner join aems.\"MeterData\" md on (sm.meter = md.meter) " +
+                                            "where sm.statistic = " + query + " and md.timestamp between to_char(now(), 'yyyy-MM-dd')::date - interval '" + (deductionDays * 2) + " days'  and now() - interval '" + deductionDays + " days' " +
+                                            "group by to_char(md.timestamp, 'yyyy-MM-dd') " + 
+                                            "order by to_char(md.timestamp, 'yyyy-MM-dd') ");
+                    } else {                     
+                        set = con.customSelect("select sum(md.measured_value), to_char(md.timestamp, 'yyyy-MM-dd hh') " + 
+                                            "from aems.\"StatisticMeters\" sm " +
+                                            "inner join aems.\"MeterData\" md on (sm.meter = md.meter) " +
+                                            "where sm.statistic = 1 and md.timestamp between to_char(now(), 'yyyy-MM-dd')::date - interval '1 days' and now() " + 
+                                            "group by to_char(md.timestamp, 'yyyy-MM-dd hh') " +
+                                            "order by to_char(md.timestamp, 'yyyy-MM-dd hh')");
+                        
+                        setPrePeriod = con.customSelect("select sum(md.measured_value), to_char(md.timestamp, 'yyyy-MM-dd hh') " + 
+                                            "from aems.\"StatisticMeters\" sm " +
+                                            "inner join aems.\"MeterData\" md on (sm.meter = md.meter) " +
+                                            "where sm.statistic = 1 and md.timestamp between to_char(now(), 'yyyy-MM-dd')::date - interval '2 days' and now() - interval '1 days' " + 
+                                            "group by to_char(md.timestamp, 'yyyy-MM-dd hh') " +
+                                            "order by to_char(md.timestamp, 'yyyy-MM-dd hh')");
+                    }
+                    
+                    JSONObject root = new JSONObject();
+                    JSONArray thisPeriod = new JSONArray();
+                    JSONArray prePeriod = new JSONArray();
+                    root.put("period", thisPeriod);
+                    root.put("pre_period", prePeriod);
+                    GregorianCalendar cal = new GregorianCalendar();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh");
+                    
+                    if(period == 1 || period == 2) { // weekly
+                        for(Object[] x : set) {
+                            thisPeriod.put(((BigDecimal) x[0]).floatValue());
+                        }
+                        for(Object[] x : setPrePeriod) {
+                            prePeriod.put(((BigDecimal) x[0]).floatValue());
+                        }
+                    } else if(period == 3) {
+                        int count = 0;
+                        float agg = 0;
+                         for(Object[] x : set) {
+                            float f = ((BigDecimal) x[0]).floatValue();
+                            agg += f;
+                            count++;
+                            
+                            if(count == 7) {
+                                thisPeriod.put(agg);
+                                count = 0;
+                                f = 0;
+                            }
+                        }
+                        if(agg > 0) {
+                            thisPeriod.put(agg);
+                        }
+                    } else if(period == 4) {
+                        int count = 0;
+                        float agg = 0;
+                         for(Object[] x : set) {
+                            float f = ((BigDecimal) x[0]).floatValue();
+                            agg += f;
+                            count++;
+                            
+                            if(count == 31) {
+                                thisPeriod.put(agg);
+                                count = 0;
+                                f = 0;
+                            }
+                        }
+                        if(agg > 0) {
+                            thisPeriod.put(agg);
+                        }
+                    }
+                    
+                    String json = root.toString();
+                    json = getEncryptedResponse(json, encryption, user, req, resp);
+                    if(encryption.equals(ENCRYPTION_SSL)) {
+                        json = Base64.getUrlEncoder().encodeToString(json.getBytes());
+                    }
+                    resp.getWriter().write(json);
+                    resp.getWriter().flush();                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(RestInf.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
             case ACTION_QUERY:
                 if(encryption.equals(ENCRYPTION_SSL) && !doLogin(user, authStr, salt, encryption, req, resp, false))
                     return; // abort if authentication has failed
@@ -257,7 +383,7 @@ public class RestInf extends HttpServlet {
                 try {                    
                     Gson builder = new GsonBuilder().serializeNulls().create();
                     String data = builder.toJson(result.getData());
-                    
+                    System.out.println(data);
                     // remove superfluous objects ; meaning
                     JSONObject obj = new JSONObject(data);
                     String key = obj.keySet().iterator().next();
@@ -568,11 +694,11 @@ public class RestInf extends HttpServlet {
             encryption = encryption.toUpperCase();
         }
         
-                
-        if(encryption.equals(ENCRYPTION_SSL) && !req.isSecure()) {
+        // preliminarily disabled     
+        /*if(encryption.equals(ENCRYPTION_SSL) && !req.isSecure()) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "message was promised to be secure but it is not! NO SSL WAS DEPLOYED!!");
             return null;
-        }
+        }*/
 
         if(encryption.equals(ENCRYPTION_AES)) {
             BigDecimal key = NUMBER_PATTERN.matcher(user).find() ? AESKeyManager.getSaltedKey(req.getRemoteAddr(), Integer.parseInt(user)) : AESKeyManager.getSaltedKey(req.getRemoteAddr(), user);
