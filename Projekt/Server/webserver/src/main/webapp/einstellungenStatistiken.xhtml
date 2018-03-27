@@ -105,10 +105,10 @@
                                 <p class="list-group-item-text">#{item.annotation}</p>
                                 <div class="btn-glyph">
                                     <div class="edit-statistic btn btn-default" data-id="#{item.id}" title="Statistik bearbeiten" data-toggle="modal" data-target="#editStatistic-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></div>
-                                    <h:commandLink action="#{statisticActionBean.addToAndroid(item.id)}">
-                                        <button class="btn btn-default" title="Statistik zu Android-App hinzufügen"><span class="glyphicon glyphicon-phone"></span></button>
+                                    <h:commandLink action="#{statisticActionBean.addToAndroid(item.id)}" rendered="#{!item.android}">
+					<button class="btn btn-default" title="Statistik zu Android-App hinzufügen"><span class="glyphicon glyphicon-phone"></span></button>
                                     </h:commandLink> 
-                                    <h:commandLink action="#{statisticActionBean.addToIndex(item.id)}">
+                                    <h:commandLink action="#{statisticActionBean.addToIndex(item.id)}" rendered="#{!item.startpage}">
                                         <button class="btn btn-default" title="Statistik zu Startseite hinzufügen"><span class="glyphicon glyphicon-home"></span></button>
                                     </h:commandLink>
                                     <h:commandLink action="#{statisticActionBean.remove(item.id)}">
@@ -172,5 +172,5 @@
 
     </body>
 
-    <!-- <ui:include src="/templates/message-show.xhtml"></ui:include> -->
+     <ui:include src="/templates/message-show.xhtml"></ui:include>
 </html>

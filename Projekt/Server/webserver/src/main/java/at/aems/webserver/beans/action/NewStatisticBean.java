@@ -96,7 +96,7 @@ public class NewStatisticBean extends AbstractActionBean {
         insert.beginWrite();
         insert.write("user", user.getUserId());
         insert.write("name", name);
-//        insert.write("period", period);
+        insert.write("period", period);
         insert.write("annotation", annotation);
 //        insert.write("period_compare", compare);
         insert.endWrite();
@@ -107,14 +107,14 @@ public class NewStatisticBean extends AbstractActionBean {
         int statisticId = resp.getAsJsonObject().get("id").getAsInt();
         
         AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);
-        insertMeters.setTable("SatatisticMeters");
+        insertMeters.setTable("statistic_meters");
         insertMeters.beginWrite();
         for(String m : meters) {
             insertMeters.write("statistic", statisticId);
             insertMeters.write("meter", m);
             insertMeters.endWrite();
         }
-         
+        System.out.println(insertMeters.toJsonObject());
         AemsResponse resp2 = AemsAPI.call0(insertMeters, null);
         notify.setMessage("Statistik wurde erstellt!");
         callUpdateOn("statisticBean");

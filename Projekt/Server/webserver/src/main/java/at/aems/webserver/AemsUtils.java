@@ -44,10 +44,19 @@ import javax.servlet.ServletContext;
  */
 public class AemsUtils {
 
-    public static final String API_URL = "https://aemsserver.ddns.net:8085/AEMSWebService/RestInf"; 
+    public static final String API_URL = "http://aemsserver.ddns.net:8084/AEMSWebService/RestInf"; 
 
     public static int getUserId(String username, String password) {
         return 3;
+    }
+    
+    public static boolean isInt(String s) {
+	try {
+	    Integer.parseInt(s);
+	    return true;
+	} catch(NumberFormatException ex) {
+	    return false;
+	}
     }
 
     public static JsonElement doPost(String body) {

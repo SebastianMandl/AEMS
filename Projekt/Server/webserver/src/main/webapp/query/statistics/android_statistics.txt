@@ -1,0 +1,7 @@
+{
+    statistics (user: "#USER#", display_android: "true"){
+	id
+	name
+	period { id }
+    }
+}
