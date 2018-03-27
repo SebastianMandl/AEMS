@@ -56,11 +56,11 @@ public class NotificationAdapter extends BaseAdapter {
 
         ImageView images = (ImageView) convertView.findViewById(R.id.imageView);
         TextView title = (TextView) convertView.findViewById(R.id.textViewTitle);
-        TextView notType = (TextView) convertView.findViewById(R.id.textViewNotificationType);
+        TextView notificationType = (TextView) convertView.findViewById(R.id.textViewNotificationType);
 
         images.setImageResource(elemPicture.get(position));
         title.setText(elemTitle.get(position));
-        notType.setText(elemType.get(position));
+        notificationType.setText(elemType.get(position));
 
         return convertView;
     }

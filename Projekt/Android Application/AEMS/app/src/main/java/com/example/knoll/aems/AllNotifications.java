@@ -1,6 +1,7 @@
 package com.example.knoll.aems;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -36,15 +38,7 @@ import at.aems.apilib.crypto.EncryptionType;
 public class AllNotifications extends Activity {
 
     ListView notifications;
-
-    //Delete
-    //------------------------------
-    ArrayList<Integer> idImages;
-    ArrayList<String> titleList;
-    ArrayList<String> infoList;
-    ArrayList<String> notificationType;
     NotificationAdapter adapter;
-    //------------------------------
 
     SharedPreferences sharedPreferences;
     private static final String TAG = "AllNotifications";
@@ -55,12 +49,15 @@ public class AllNotifications extends Activity {
     int userId = 0;
 
     int errorCount = 0;
+
+    ArrayList<String> notificationIds;
     ArrayList<String> titles;
     ArrayList<String> notificationTypes;
     ArrayList<Integer> images;
-    ArrayList<Integer> notificationIds;
-
-
+    ArrayList<String> meterId;
+    ArrayList<String> sensors;
+    ArrayList<String> furtherInformation;
+    ArrayList<String> seen;
 
 
     @Override
@@ -72,55 +69,81 @@ public class AllNotifications extends Activity {
         username = sharedPreferences.getString("USERNAME", null);
         password = sharedPreferences.getString("PASSWORD", null);
         key = sharedPreferences.getString("SHAREDSECRETKEYSTRING", null);
-        //String userIdString = sharedPreferences.getString("USERID", null);
-        //userId = Integer.parseInt(userIdString);
+        String userIdString = sharedPreferences.getString("USERID", null);
+        userId = Integer.parseInt(userIdString);
 
         loadData();
 
+        backHome();
+
     }
+
+    private void backHome() {
+        Button backHome = (Button) findViewById(R.id.buttonBackToMainActivity);
+
+        backHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AllNotifications.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
 
     private void loadData() {
 
-        //loadNotifications();
-
         notifications = (ListView) findViewById(R.id.listAllNotifications);
 
-        //Delete
-        //-----------------------------------------------
-        idImages = new ArrayList<>();
-        titleList = new ArrayList<>();
-        notificationType = new ArrayList<>();
+        final ProgressDialog progressDialog = new ProgressDialog(AllNotifications.this,
+                R.style.Theme_AppCompat_Light_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Lade Benachrichtigungen...");
+        progressDialog.show();
 
-        idImages = getImageList();
-        titleList = getTitleList();
-        notificationType = getNotificationTypleList();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    loadNotifications();
 
-        adapter = new NotificationAdapter(AllNotifications.this, titleList, notificationType, idImages);
-        notifications.setAdapter(adapter);
-        //------------------------------------------------
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
-        updateNotifications();
 
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        adapter = new NotificationAdapter(AllNotifications.this, titles, notificationTypes, images);
+                        notifications.setAdapter(adapter);
+                        updateNotifications();
+                    }
+                }, 5000);
+
+        progressDialog.setIndeterminate(false);
     }
 
     private void loadNotifications() throws JSONException {
 
         AemsUser user = new AemsUser(userId, username, password);
 
-        AemsQueryAction action = new AemsQueryAction(user, EncryptionType.AES);
-        action.setQuery(""); // Hier muss meine GraphQL Query rein
+        AemsQueryAction action = new AemsQueryAction(user, EncryptionType.SSL);
+        action.setQuery("{notices {id, title, meter{id}, notificationtype{display_name}, sensor{name}, notice, seen}}"); // Hier muss meine GraphQL Query rein sensor, seen
+        System.out.println("{notices {id, title, meter{id}, notice}}");
 
-        byte[] sharedSecretKey = key.getBytes();
-        action.toJson(sharedSecretKey);
-
-        AemsAPI.setUrl("https://api.aems.at");
+        AemsAPI.setUrl("http:aemsserver.ddns.net:8084/AEMSWebService/RestInf");
         AemsResponse response = null;
         try {
-            response = AemsAPI.call0(action, sharedSecretKey);
+            response = AemsAPI.call0(action, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
         int httpCode = response.getResponseCode();
+        System.out.println("------------------------------" + httpCode + "------------------------------------------------------");
         if (httpCode != 200 && errorCount<3){
             errorCount ++;
             loadNotifications();
@@ -130,6 +153,7 @@ public class AllNotifications extends Activity {
         }
 
         String decryptedResponse = response.getDecryptedResponse();
+        System.out.println(decryptedResponse);
 
         //Get Data from JSON-Object
         JSONObject[] jsons = getDataFromJson(decryptedResponse);
@@ -138,25 +162,39 @@ public class AllNotifications extends Activity {
         notificationTypes = new ArrayList<>();
         images = new ArrayList<>();
         notificationIds = new ArrayList<>();
+        meterId = new ArrayList<>();
+        sensors = new ArrayList<>();
+        furtherInformation = new ArrayList<>();
+        seen = new ArrayList<>();
 
 
         for(int i = 0; i< jsons.length; i++){
-            titles.add(jsons[i].getString("title"));
-            notificationTypes.add(jsons[i].getString("type"));
-            images.add(R.drawable.logo_icon);
-            String id = (jsons[i].getString("id"));
-            notificationIds.add(Integer.parseInt(id));
+            seen.add(jsons[i].getString("seen"));
+            if(seen.get(i).equals("false")){
+                notificationIds.add(jsons[i].getString("id"));
+                titles.add(jsons[i].getString("title"));
+                furtherInformation.add(jsons[i].getString("notice"));
+                sensors.add(jsons[i].getJSONObject("sensor").getString("name"));
+                notificationTypes.add(jsons[i].getJSONObject("notificationtype").getString("display_name"));
+                images.add(R.drawable.logo_icon);
+                meterId.add(jsons[i].getJSONObject("meter").getString("id"));
+            }
+
+
+            System.out.println(notificationIds);
+            System.out.println(titles);
+            System.out.println(meterId);
+            System.out.println(furtherInformation);
+            System.out.println(sensors);
+            System.out.println(notificationTypes);
         }
 
-        adapter = new NotificationAdapter(AllNotifications.this, titles, notificationTypes, images);
-        notifications.setAdapter(adapter);
     }
-
 
     private JSONObject[] getDataFromJson(String decryptedResponse) throws JSONException {
 
         JSONObject json = new JSONObject(decryptedResponse);
-        JSONArray jsonArray = json.getJSONArray("notifications");
+        JSONArray jsonArray = json.getJSONArray("notices");
 
         int size = jsonArray.length();
         ArrayList<JSONObject> arrays = new ArrayList<>();
@@ -164,9 +202,9 @@ public class AllNotifications extends Activity {
             JSONObject newJsonObject = jsonArray.getJSONObject(i);
             arrays.add(newJsonObject);
         }
-        JSONObject[] jsons = new JSONObject[arrays.size()];
+        JSONObject[] myJsonObjectArray = new JSONObject[size];
 
-        return jsons;
+        return arrays.toArray(myJsonObjectArray);
     }
 
 
@@ -175,81 +213,55 @@ public class AllNotifications extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //updateDatabase(position);
+                ArrayList<String> notificationItem = new ArrayList<>();
+                notificationItem.add(notificationIds.get(position));
+                notificationItem.add(titles.get(position));
+                notificationItem.add(meterId.get(position));
+                notificationItem.add(furtherInformation.get(position));
+                notificationItem.add(sensors.get(position));
+                notificationItem.add(notificationTypes.get(position));
+
+                System.out.println(notificationItem);
+                //System.out.println(notificationItem.get(0) + " , " + notificationItem.get(1) + " , " + notificationItem.get(2));
+
+                updateDatabase(position);
 
                 Intent intent = new Intent(AllNotifications.this, Notification.class);
+                intent.putStringArrayListExtra("notificationItem", notificationItem);
                 startActivity(intent);
             }
         });
     }
 
-    private void updateDatabase(int position) {
+    private void updateDatabase(final int position) {
 
-        AemsUser user = new AemsUser(userId, username, password);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AemsUser user = new AemsUser(userId, username, password);
 
-        AemsDeleteAction delete = new AemsDeleteAction(user, EncryptionType.AES);
-        delete.setTable("Notifications");
+                AemsUpdateAction update = new AemsUpdateAction(user, EncryptionType.SSL);
+                update.setTable("notices");
+                update.setIdColumn("id", notificationIds.get(position));
+                update.write("seen", true);
 
-        delete.setIdColumn("id", notificationIds.get(position));
-
-        byte[] sharedSecretKey = key.getBytes();
-        delete.toJson(sharedSecretKey);
-
-        AemsAPI.setUrl("https://api.aems.at");
-        AemsResponse response = null;
-        try {
-            response = AemsAPI.call0(delete, sharedSecretKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int httpCode = response.getResponseCode();
-        if (httpCode != 200 && errorCount<3){
-            errorCount ++;
-            updateDatabase(position);
-        }
-        else if(errorCount>2){
-            Log.w(TAG, "Notification konnte nicht vom Server gelöscht werden");
-        }
+                AemsAPI.setUrl("http:aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+                AemsResponse response = null;
+                try {
+                    response = AemsAPI.call0(update, null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                int httpCode = response.getResponseCode();
+                if (httpCode != 200 && errorCount<3){
+                    errorCount ++;
+                    updateDatabase(position);
+                }
+                else if(errorCount>2){
+                    Log.w(TAG, "Notification konnte nicht als gelesen markiert werden");
+                }
+            }
+        }).start();
 
     }
-
-
-
-    //Delete
-    //------------------------------------------------------------
-    public ArrayList<String> getTitleList(){
-        titleList = new ArrayList<>();
-        titleList.add("Notification 1");
-        titleList.add("Notification 3");
-        titleList.add("Notification 4");
-        titleList.add("Notification 7");
-        titleList.add("Notification 21");
-
-        return titleList;
-    }
-
-    public ArrayList<Integer> getImageList(){
-        idImages = new ArrayList<>();
-        idImages.add(R.drawable.logo_icon);
-        idImages.add(R.drawable.logo_icon);
-        idImages.add(R.drawable.logo_icon);
-        idImages.add(R.drawable.logo_icon);
-        idImages.add(R.drawable.logo_icon);
-
-        return idImages;
-    }
-
-
-    public ArrayList<String> getNotificationTypleList(){
-        notificationType = new ArrayList<>();
-        notificationType.add("Warnung");
-        notificationType.add("Benachrichtigung");
-        notificationType.add("Benachrichtigung");
-        notificationType.add("Warnung");
-        notificationType.add("Benachrichtigung");
-
-        return notificationType;
-    }
-    //------------------------------------------------------------
-
 }
