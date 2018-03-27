@@ -16,6 +16,7 @@ import at.aems.apilib.AemsUpdateAction;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -98,9 +99,11 @@ public final class WebUIBean {
     
 
     //private static final String REST_ADDRESS = AemsUtils.API_URL;
-    private static final String REST_ADDRESS = "http://localhost:8084/AEMSWebService/RestInf";
+    private static final String REST_ADDRESS = "https://aemsserver.ddns.net:8085/AEMSWebService/RestInf";
 
     public WebUIBean() {
+        AemsAPI.setCertPath("H:\\hubiC\\AEMS\\WebUIFinal\\keystore.cert");
+        AemsAPI.setCertPassword("Minecraft=0");
         AemsAPI.setUrl(REST_ADDRESS);
     }
     
@@ -235,7 +238,7 @@ public final class WebUIBean {
             JsonArray array = object.getAsJsonArray("anomalies");
             for (int i = 0; i < array.size(); i++) {
                 JsonObject oo = array.get(i).getAsJsonObject();
-                if(!oo.has("id"))
+                if(oo.get("id") == JsonNull.INSTANCE)
                     continue; // signifies unauthorized access
                 
                 Anomaly a = new Anomaly();
@@ -298,6 +301,8 @@ public final class WebUIBean {
             for (int i = 0; i < array.size(); i++) {
                 JsonObject oo = array.get(i).getAsJsonObject();
                 Meter meter = new Meter();
+                if(oo.get("id") == JsonNull.INSTANCE)
+                    continue;
                 meter.setId(oo.get("id").getAsString());
                 meter.setIsSensor(isSensor);
 

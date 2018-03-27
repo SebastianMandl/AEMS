@@ -44,6 +44,9 @@ public class Query extends GraphQLObjectType {
             Query.getRootFieldDefinition("roles", AEMSDatabase.ROLES, Role.getInstance(),
                     getArgumentList(new Argument("id", AEMSDatabase.Roles.ID, Argument.EQUAL))); 
     
+    private static final GraphQLFieldDefinition NOTIFICATION_TYPES = 
+            Query.getRootFieldDefinition("notification_types", AEMSDatabase.NOTIFICATION_TYPES, Role.getInstance()); 
+    
     private static final GraphQLFieldDefinition NOTIFICATION_TOKENS = 
             Query.getRootFieldDefinition("notification_tokens", AEMSDatabase.NOTIFICATION_TOKENS, NotificationTokens.getInstance(),
                 getArgumentList(new Argument("user", AEMSDatabase.NotificationTokens.USER, Argument.EQUAL)));
@@ -182,6 +185,7 @@ public class Query extends GraphQLObjectType {
         defs.add(ARCHIVED_METER_NOTIFICATIONS);
         defs.add(NOTICES);
         defs.add(ANOMALIES);
+        defs.add(NOTIFICATION_TYPES);
         
         defs.add(REGISTRATIONS);
         defs.add(ROLES);

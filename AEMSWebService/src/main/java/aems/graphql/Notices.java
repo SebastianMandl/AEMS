@@ -24,6 +24,7 @@ public class Notices extends GraphQLObjectType {
     private static final GraphQLFieldDefinition ID = Query.getFieldDefinition("id", AEMSDatabase.NOTICES, AEMSDatabase.Notices.ID, Scalars.GraphQLInt);
     private static final GraphQLFieldDefinition METER = Query.getFieldDefinition("meter", Meter.getInstance());
     private static final GraphQLFieldDefinition SENSOR = Query.getFieldDefinition("sensor", Meter.getInstance());
+    private static final GraphQLFieldDefinition NOTIFICATION_TYPE = Query.getFieldDefinition("notificationtype", NotificationType.getInstance());
     private static final GraphQLFieldDefinition NOTICE = Query.getFieldDefinition("notice", AEMSDatabase.NOTICES, AEMSDatabase.Notices.NOTICE, Scalars.GraphQLString);
     private static final GraphQLFieldDefinition SEEN = Query.getFieldDefinition("seen", AEMSDatabase.NOTICES, AEMSDatabase.Notices.SEEN, Scalars.GraphQLString);
     private static final GraphQLFieldDefinition TITLE = Query.getFieldDefinition("title", AEMSDatabase.NOTICES, AEMSDatabase.Notices.TITLE, Scalars.GraphQLString);
@@ -43,6 +44,7 @@ public class Notices extends GraphQLObjectType {
         defs.add(NOTICE);
         defs.add(SEEN);
         defs.add(TITLE);
+        defs.add(NOTIFICATION_TYPE);
         
         instance = new Notices("notice", "", defs, new ArrayList<GraphQLOutputType>());
         return instance;
