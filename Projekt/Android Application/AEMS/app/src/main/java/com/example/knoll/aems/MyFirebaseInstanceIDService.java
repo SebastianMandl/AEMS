@@ -36,46 +36,56 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
-        saveTokenInDatabase(refreshedToken);
+        System.out.println(refreshedToken);
+      //  saveTokenInDatabase(refreshedToken);
     }
 
-    private void saveTokenInDatabase(String refreshedToken) {
+    private void saveTokenInDatabase(final String refreshedToken) {
 
         sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        String username = sharedPreferences.getString("USERNAME", null);
-        String password = sharedPreferences.getString("PASSWORD", null);
-        String key = sharedPreferences.getString("SHAREDSECRETKEYSTRING", null);
-        String userIdString = sharedPreferences.getString("USERID", null);
-        int userId = Integer.parseInt(userIdString);
+        //sharedPreferences = sharedPreferences.edit().putString("NOTIFYTOKEN", String.valueOf(refreshedToken)).commit();
+        //final String username = sharedPreferences.getString("USERNAME", null);
+        //final String password = sharedPreferences.getString("PASSWORD", null);
+        //final String key = sharedPreferences.getString("SHAREDSECRETKEYSTRING", null);
+        //String userIdString = sharedPreferences.getString("USERID", null);
+        //final int userId = Integer.parseInt(userIdString);
 
-        AemsUser user = new AemsUser(userId, username, password);
+        /*
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AemsUser user = new AemsUser(userId, username, password);
 
-        AemsInsertAction insert = new AemsInsertAction(user, EncryptionType.AES);
-        insert.setTable("Benutzer");
+                AemsInsertAction insert = new AemsInsertAction(user, EncryptionType.AES);
+                insert.setTable("notification_tokens");
 
-        insert.beginWrite();
-        insert.write("notificationToken", refreshedToken);
-        insert.endWrite();
+                insert.beginWrite();
+                insert.write("token", refreshedToken);
+                insert.endWrite();
 
-        byte[] sharedSecretKey = key.getBytes();
+                //byte[] sharedSecretKey = key.getBytes();
 
-        AemsResponse response = null;
+                AemsResponse response = null;
 
-        AemsAPI.setUrl("https://api.aems.at");
-        try {
-            response = AemsAPI.call0(insert, sharedSecretKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                AemsAPI.setUrl("http://10.0.0.25:8084/AEMSWebService/RestInf");
+                try {
+                    response = AemsAPI.call0(insert, null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        int httpCode = response.getResponseCode();
-        if (httpCode != 200 && errorCount<3){
-            errorCount ++;
-            saveTokenInDatabase(refreshedToken);
-        }
-        else if(errorCount>2){
-            Log.w(TAG, "Notification-Key konnte nicht an den Server übermittelt werden");
-        }
+                int httpCode = response.getResponseCode();
+                if (httpCode != 200 && errorCount<3){
+                    errorCount ++;
+                    saveTokenInDatabase(refreshedToken);
+                }
+                else if(errorCount>2){
+                    Log.w(TAG, "Notification-Key konnte nicht an den Server übermittelt werden");
+                }
+            }
+        }).start();
+
+*/
     }
 
 

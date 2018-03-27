@@ -29,6 +29,8 @@ public class AEMSDatabase {
         public static final String REPORTS = "Reports";
         public static final String REPORT_STATISTICS = "ReportStatistics";
         
+        public static final String NOTIFICATION_TYPES = "NotificationTypes";
+        
         public static final String ANOMALIES = "Anomalies";
         public static final String NOTICES = "Notices";
         
@@ -74,6 +76,11 @@ public class AEMSDatabase {
             public static final String METER = "meter";
             public static final String SENSOR = "sensor";
             public static final String SCRIPT_ERRORS = "script_errors";
+        }
+        
+        public class NotificationTypes {
+            public static final String ID = "id";
+            public static final String DISPLAY_NAME = "display_name";
         }
         
         public class Notices {

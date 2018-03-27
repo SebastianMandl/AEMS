@@ -377,13 +377,21 @@ public class RestInf extends HttpServlet {
                 GraphQL ql = GraphQL.newGraphQL(schema).build();
                 PrintWriter writer = resp.getWriter();
                 ExecutionResult result = ql.execute(query);
-                
+                                 
                 
                 
                 try {                    
                     Gson builder = new GsonBuilder().serializeNulls().create();
+                    
                     String data = builder.toJson(result.getData());
-                    System.out.println(data);
+                    System.out.println("query: " + query);      
+                    System.out.println("data: " + data);
+                    
+                    if(data.equals("null") || data == null) {
+                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query malformed!");
+                        return;
+                    }
+                    
                     // remove superfluous objects ; meaning
                     JSONObject obj = new JSONObject(data);
                     String key = obj.keySet().iterator().next();
