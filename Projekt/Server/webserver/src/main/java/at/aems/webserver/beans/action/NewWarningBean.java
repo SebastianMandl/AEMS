@@ -37,9 +37,6 @@ public class NewWarningBean extends AbstractActionBean {
     
     private AemsInsertAction action;
     
-    @ManagedProperty(value = "#{user}")
-    private UserBean userBean;
-    
     private AemsUser user;
     
     public NewWarningBean() {}
@@ -97,71 +94,19 @@ public class NewWarningBean extends AbstractActionBean {
     public int getVariance() {
         return variance;
     }
-
-    public UserBean getUserBean() {
-        return userBean;
-    }
-
-    public void setUserBean(UserBean userBean) {
-        this.userBean = userBean;
-    }
-    
-    
     
     
     public String doAddWarning() {
         try {
-            AemsInsertAction insertNoti = new AemsInsertAction(user, EncryptionType.SSL);
-            insertNoti.setTable("Notifications");
-            insertNoti.beginWrite();
-            insertNoti.write("user", user.getUserId());
-            insertNoti.write("name", name);
-            insertNoti.write("type", type);
-            insertNoti.write("min_positive_deviation", variance);
-            insertNoti.write("min_negative_deviation", variance);
-            insertNoti.endWrite();
-            
-            System.out.println(insertNoti.toJsonObject().toString());
-            
-            AemsAPI.setUrl(AemsUtils.API_URL); 
-            
-            //String response = AemsUtils.decodeBase64(AemsAPI.call(insertNoti, null));
-            int notificationId = 10;//AemsUtils.getResponseId(response);
-            
-            AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);
-            insertMeters.setTable("NotificationMeters");
-            for(String meter : this.meterIds) {
-                insertMeters.write("meter", meter);
-                insertMeters.write("notification", notificationId);
-                insertMeters.endWrite();
-            }
-            System.out.println(insertMeters.toJsonObject().toString());
-            AemsAPI.call(insertMeters, null);
-            
-            
-            AemsInsertAction insertExceptions = new AemsInsertAction(user, EncryptionType.SSL);
-            insertExceptions.setTable("NotificationExceptions");
-            insertExceptions.beginWrite();
-            for(String day : exceptionDays) {
-                insertExceptions.write("notification", notificationId);
-                insertExceptions.write("week_day", Integer.valueOf(day));
-                insertExceptions.write("min_positive_deviation", 90);
-                insertExceptions.write("min_negative_deviation", 90);
-                insertExceptions.endWrite();
-            }
-            for(String date : exceptionDates) {
-                insertExceptions.write("notification", notificationId);
-                insertExceptions.write("exception_date", Integer.valueOf(date));
-                insertExceptions.write("min_positive_deviation", 90);
-                insertExceptions.write("min_negative_deviation", 90);
-                insertExceptions.endWrite();
-            }
-            
-            AemsAPI.call(insertExceptions, null);
-            System.out.print(insertNoti.toJson(null));
-            callUpdateOn("userWarningsBean");
-
-        } catch (IOException ex) {
+            System.out.println(" ========================== ");
+	    System.out.println(name + " " + this.meterIds.size() + " " + this.type);
+	    System.out.println(this.variance);
+	    System.out.println(" ========================== ");
+	    
+	    
+	    String t = this.type == 0 ? "Benachrichtugung" : "Warnung";
+	    notify.setMessage(t + " wurde erstellt!");
+        } catch (Exception ex) {
             Logger.getLogger(NewWarningBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "einstellungenWarnungen";

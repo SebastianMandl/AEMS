@@ -1,6 +1,0 @@
-query GetArchivedNotifications {
-	Notices ( meter : #METER_ID# ) {
-		id
-		notice
-	}
-}

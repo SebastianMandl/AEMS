@@ -15,6 +15,7 @@ import at.aems.webserver.data.notifications.NotificationType;
 import at.aems.webserver.data.notifications.SimpleNotificationData;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -40,13 +41,6 @@ import javax.faces.bean.SessionScoped;
 public class NotificationBean extends AbstractDisplayBean {
 
     private List<SimpleNotificationData> notifications;
-    private long lastUpdate;
-    
-    @ManagedProperty(value="#{userMeterBean}")
-    private UserMeterBean userMeterBean;
-
-    public NotificationBean() {
-    }
 
     @Override
     public void update() {
@@ -55,22 +49,23 @@ public class NotificationBean extends AbstractDisplayBean {
 	if(userBean == null)
 	    return;
 	configureApiParams();
-        AemsQueryAction notificationQuery = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
-        
-        for(Map.Entry<String, String> meter : userMeterBean.getMeters().entrySet()) {
-            String meterId = meter.getKey();
-            String query = AemsUtils.getQuery("archived_notifications", NewMap.of("METER_ID", meterId));
-            notificationQuery.setQuery(query);
-            JsonArray array = getJsonData(notificationQuery);
-            for(int i = 0; i < array.size(); i++) {
-                JsonObject current = array.get(i).getAsJsonObject();
-                notifications.add(SimpleNotificationData.fromJsonObject(current));
-            }
-        }
-        /*
-        notifications = new ArrayList<>();
-        notifications.add(new SimpleNotificationData(123, "Schreckliches ist passiert!", NotificationType.WARNING));
-        */
+        AemsQueryAction notificationQuery = new AemsQueryAction(userBean.getAemsUser());
+	notificationQuery.setQuery(AemsUtils.getQuery("notices", NewMap.of()));
+	
+	try {
+	    AemsResponse response = AemsAPI.call0(notificationQuery, null);
+	    JsonArray notices = response.getJsonArrayWithinObject();
+	    
+	    for(JsonElement e : notices) {
+		SimpleNotificationData data = SimpleNotificationData.fromJsonObject(e.getAsJsonObject());
+		if(data != null && !data.wasSeen()) {
+		    notifications.add(data);
+		}
+	    }
+	    
+	} catch(Exception ex) {
+	    Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }
     
     private JsonArray getJsonData(AemsQueryAction query) {
@@ -88,11 +83,6 @@ public class NotificationBean extends AbstractDisplayBean {
         // TODO: If last update was like 5 minutes ago then return true
         return true;
     }
-
-    public void setUserMeterBean(UserMeterBean userMeterBean) {
-        this.userMeterBean = userMeterBean;
-    }
-
     
     public int getNotificationCount() {
         return notifications != null ? notifications.size() : -1;

@@ -1,0 +1,13 @@
+query GetArchivedNotifications {
+	notices {
+	    id
+	    title
+	    meter { id }
+	    notificationtype { display_name }
+	    sensor { name }
+	    notice
+	    seen
+	}
+}
+
+#{notices {id, title, meter{id}, notificationtype{display_name}, sensor{name}, notice, seen}}

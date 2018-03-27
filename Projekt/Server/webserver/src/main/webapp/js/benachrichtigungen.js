@@ -94,7 +94,7 @@ function displayNotifications(data) {
     if(notifications === undefined)
         notifications = data;
     for (var noti of notifications) {
-        var type = noti.type;
+        var type = noti.notificationType;
         
         var n = new Noty({
             text: noti.name,
