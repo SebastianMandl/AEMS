@@ -153,9 +153,13 @@ public class LoginActivity extends AppCompatActivity {
                     //http://10.0.6.41:8084/AEMSWebService/AAA?android=android
                     //http://10.0.0.25:8084/AEMSWebService/AAA?android=android
 
+<<<<<<< HEAD
                     // SPASSSSSSSSSSSSDDDDDDDDDD LUGGGGGIIIIIIIIIIII
                     // AemsAPI.setUrl("http:aemsserver.ddns.net:8084/AEMSWebService/RestInf");
                     AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+=======
+                    AemsAPI.setUrl("http:aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+>>>>>>> a9b43593bb9d453c6e4418c6f9fe05e8a8eca6ef
 
                     AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.SSL);
                     loginAction.setUsername(username);
