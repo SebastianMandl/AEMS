@@ -135,7 +135,7 @@ public class AllNotifications extends Activity {
         action.setQuery("{notices {id, title, meter{id}, notificationtype{display_name}, sensor{name}, notice, seen}}"); // Hier muss meine GraphQL Query rein sensor, seen
         System.out.println("{notices {id, title, meter{id}, notice}}");
 
-        AemsAPI.setUrl("http:aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+        AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
         AemsResponse response = null;
         try {
             response = AemsAPI.call0(action, null);
@@ -245,7 +245,7 @@ public class AllNotifications extends Activity {
                 update.setIdColumn("id", notificationIds.get(position));
                 update.write("seen", true);
 
-                AemsAPI.setUrl("http:aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+                AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
                 AemsResponse response = null;
                 try {
                     response = AemsAPI.call0(update, null);
