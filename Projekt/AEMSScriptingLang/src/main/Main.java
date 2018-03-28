@@ -29,7 +29,7 @@ import main.tokens.Tokenizer;
 public class Main {
 
 	
-	private static final String SERVER_ADDRESS = "127.0.0.1";
+	private static final String SERVER_ADDRESS = "aemsserver.ddns.net";
 	public static final String REST_ADDRESS = "http://" + SERVER_ADDRESS + ":8084/AEMSWebService/RestInf?";
 	
 	public static BigDecimal key = new BigDecimal("1045480378380401");
@@ -182,7 +182,7 @@ public class Main {
 				anomaly.changed = true;
 				anomaly.lastExecution = new Date(System.currentTimeMillis());
 				try {
-					System.out.println(anomaly.script);
+					//System.out.println(anomaly.script);
 					Tokenizer tokenizer = new Tokenizer(anomaly.script);
 					Parser parser = new Parser(anomaly.meter, anomaly.sensor);
 					Token token = null;

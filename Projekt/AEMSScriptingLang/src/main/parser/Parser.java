@@ -62,12 +62,22 @@ public class Parser {
 		}
 	}
 	
+	private boolean preprocessorStms = true;
+	public String noticeTitle = "";
+	
 	public void parse(Token[] input) {
 		Logger.logDebug("%s", Arrays.toString(input));
 		
 		if(input[0].getType().is(TokenTypes.HASHTAG)) {
 			return; // skip comment
 		}
+		
+		if(preprocessorStms && Statements.is(Statements.TITLE_PREPROCESSOR, input)) {
+			noticeTitle = input[2].getRawToken();
+			return;
+		}
+		
+		preprocessorStms = false;
 		
 		if(Statements.is(Statements.DEF_VARIABLE, input)) {
 			Logger.logDebug("def stm found");
@@ -82,6 +92,9 @@ public class Parser {
 				}
 				@SuppressWarnings("unchecked")
 				ArrayList<Float> values = var.getValue(ArrayList.class);
+				if(values.isEmpty()) {
+					throw new RuntimeException("list is empty! function application failed!");
+				}
 				
 				if(functionName.equals("avg")) {
 					float avg = 0;
@@ -150,7 +163,7 @@ public class Parser {
 			NumericalExpressionParser parser = new NumericalExpressionParser(subExpr, symbolTable);
 			symbolTable.addSymbol(new SymbolTableEntry(input[0].getRawToken(), parser.getDataType(), parser.getResult()));
 			return;
-		} else if(Statements.is(Statements.RAISE_NOTICE_SIMPLE, input)) {
+		} else if(Statements.is(Statements.RAISE_NOTICE_SIMPLE, input) || Statements.is(Statements.RAISE_WARNING_SIMPLE, input)) {
 			Logger.logDebug("raise notice simple stm found");
 			
 			int index = Statements.indexOf("if", input);
@@ -219,7 +232,7 @@ public class Parser {
 			
 			if(parser.getResult()) {
 				String notice = input[2].getRawToken();
-				storeNotice(finalizeNotice(notice));
+				storeNotice(finalizeNotice(notice), input[1].getRawToken());
 			}
 			
 			return;
@@ -244,15 +257,13 @@ public class Parser {
 	private String finalizeNotice(String notice) {
 		Matcher matcher = VARIABLE_WITHIN_STRING.matcher(notice);
 		while(matcher.find()) {
-			System.out.println(matcher);
-			System.out.println(matcher.start() + ":" + matcher.end());
 			String var = matcher.group("name");
-			notice = notice.substring(0, matcher.start()) + symbolTable.getSymbol(var).getValue() + notice.substring(matcher.end() == notice.length() ? matcher.end() : matcher.end() + 1);
+			return finalizeNotice(notice.substring(0, matcher.start()) + symbolTable.getSymbol(var).getValue() + notice.substring(matcher.end()));
 		}
 		return notice;
 	}
 	
-	private void storeNotice(String notice) {		
+	private void storeNotice(String notice, String type) {		
 		Logger.logDebug(notice);
 		// { id:"AT...3333", meters : [{user:185}, {user:190}]}
 		JSONObject root = new JSONObject();
@@ -261,6 +272,13 @@ public class Parser {
 		jsonNotice.put("meter", meterId);
 		jsonNotice.put("sensor", sensorId);
 		jsonNotice.put("notice", notice);
+		jsonNotice.put("title", noticeTitle);
+		
+		if(type.equals("notice"))
+			jsonNotice.put("notificationtype", 1);
+		else if(type.equals("warning")) {
+			jsonNotice.put("notificationtype", 2);
+		}
 		
 		root.append("notices", jsonNotice);
 		

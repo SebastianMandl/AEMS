@@ -88,8 +88,8 @@ public class DiffieHellmanProcedure {
 	private static BigDecimal modNumber = new BigDecimal(-1);
 	
 	public static final int KEY_LENGTH = 16;
-	private static final int SECRET_TOP_LIMIT = 49_999;
-	private static final int SECRET_BOTTOM_LIMIT = 25_111;
+	private static final int SECRET_TOP_LIMIT = 25_999;
+	private static final int SECRET_BOTTOM_LIMIT = 15_111;
 	
 	private static final int BASE_NUMBER_LENGTH = 60;
 	private static final int MOD_NUMBER_LENGTH = 60;
