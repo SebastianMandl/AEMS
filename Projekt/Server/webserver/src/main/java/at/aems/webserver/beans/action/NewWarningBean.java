@@ -94,7 +94,6 @@ public class NewWarningBean extends AbstractActionBean {
     
     public String doAddWarning() {
         try {	    
-	    
 	    List<Integer> exceptions = new ArrayList<>();
 	    for(String s : this.exceptionDays) {
 		exceptions.add(Integer.valueOf(s));
@@ -122,7 +121,8 @@ public class NewWarningBean extends AbstractActionBean {
 		return "einstellungenWarnungen";
 	    }
 	    notify.setMessage("Objekt wurde erfolreich erstellt.");
-	    callUpdateOn("userWarningsBean");
+	    callUpdateOn("userWarningsBean"); 
+	    callUpdateOn("webUIBean");
         } catch (Exception ex) {
             Logger.getLogger(NewWarningBean.class.getName()).log(Level.SEVERE, null, ex);
         }

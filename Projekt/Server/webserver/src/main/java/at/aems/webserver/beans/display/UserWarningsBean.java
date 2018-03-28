@@ -14,7 +14,6 @@ import at.aems.webserver.data.warnings.AemsScript;
 import at.aems.webserver.data.warnings.WarningData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.sun.istack.internal.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

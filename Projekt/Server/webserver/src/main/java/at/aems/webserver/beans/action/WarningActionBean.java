@@ -28,6 +28,7 @@ public class WarningActionBean extends AbstractActionBean {
 	    AemsAPI.call0(delete, null);
 	    notify.setMessage("Benachrichtigung wurde entfernt!");
 	    callUpdateOn("userWarningsBean");
+	    callUpdateOn("webUIBean");
 	} catch(IOException e) {
 	    notify.setMessage("Ein Fehler ist aufgetreten!");
 	}

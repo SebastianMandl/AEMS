@@ -1,0 +1,37 @@
+.inputTextAreaWebUI {
+    display: block;
+    margin-top: 5px;
+}
+
+.selectMenuWebUI {
+    margin-right: 20%;
+    min-width: 350px;
+    padding: 5px;
+}
+
+.selectItemWebUI {
+    
+}
+
+.columnWebUI {
+    padding: 5px;
+    min-width: 150px;
+    text-align: center;
+}
+
+.columnScriptWebUI {
+    padding: 5px;
+    min-width: 150px;
+}
+
+.columnButtonsWebUI {
+    padding: 5px;
+}
+
+.headerWebUI {
+    padding: 5px;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {background: #FFF}
+tr:nth-child(odd) {background: #EEE}
