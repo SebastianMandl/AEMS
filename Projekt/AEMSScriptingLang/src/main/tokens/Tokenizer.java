@@ -89,7 +89,10 @@ public class Tokenizer {
 		StringBuilder builder = new StringBuilder();
 		for(Token token = nextToken(true); token.getType().is(TokenTypes.LETTER) || 
 				token.getType().is(TokenTypes.CLOSING_CURLY_BRACE) || token.getType().is(TokenTypes.OPENING_CURLY_BRACE)
-				|| token.getType().is(TokenTypes.DOLLAR); token = nextToken(true)) {
+				|| token.getType().is(TokenTypes.DOLLAR) || token.getType().is(TokenTypes.COLON) 
+				|| token.getType().is(TokenTypes.EXCLAMATION_MARK) || token.getType().is(TokenTypes.DECIMAL)
+				|| token.getType().is(TokenTypes.OPENING_PARENTHESE) || token.getType().is(TokenTypes.CLOSING_PARENTHESE)
+				|| token.getType().is(TokenTypes.DIGIT) || token.getType().is(TokenTypes.PERCENT); token = nextToken(true)) {
 			Token temp = nextToken(false);
 			builder.append(temp.getRawToken());
 		}
@@ -197,6 +200,16 @@ public class Tokenizer {
 				break;
 			case ',':
 				type = TokenTypes.COMMA;
+				break;
+			case '@':
+				type = TokenTypes.AT;
+				break;
+			case '!':
+				type = TokenTypes.EXCLAMATION_MARK;
+				break;
+			case '%':
+				type = TokenTypes.PERCENT;
+				break;
 		}
 		
 		if(type == null) {

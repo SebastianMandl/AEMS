@@ -99,8 +99,9 @@ public class NumericalExpressionParser {
 	
 	public Token factor() {
 		if(next(TokenTypes.OPENING_PARENTHESE)) {
-			evaluate();
+			Token token = evaluate();
 			next(TokenTypes.CLOSING_PARENTHESE);
+			return token;
 		}
 		return next();
 	}

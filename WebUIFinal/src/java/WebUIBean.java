@@ -99,7 +99,7 @@ public final class WebUIBean {
     
 
     //private static final String REST_ADDRESS = AemsUtils.API_URL;
-    private static final String REST_ADDRESS = "https://aemsserver.ddns.net:8085/AEMSWebService/RestInf";
+    private static final String REST_ADDRESS = "https://127.0.0.1:8085/AEMSWebService/RestInf";
 
     public WebUIBean() {
         AemsAPI.setCertPath("H:\\hubiC\\AEMS\\WebUIFinal\\keystore.cert");

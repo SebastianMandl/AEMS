@@ -73,7 +73,7 @@ public class Reader implements Runnable {
 				// json format: transmit port
 				
 				try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
-					writer.write("{ port : \"" + setting.getPort() + "\" }\r\n");
+					writer.write("{ \"port\" : \"" + setting.getPort() + "\" }\r\n");
 					writer.flush();
 				} catch(Exception e) {
 					e.printStackTrace();

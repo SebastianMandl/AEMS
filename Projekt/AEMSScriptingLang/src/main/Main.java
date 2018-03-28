@@ -182,7 +182,7 @@ public class Main {
 				anomaly.changed = true;
 				anomaly.lastExecution = new Date(System.currentTimeMillis());
 				try {
-					System.out.println(anomaly.script);
+					//System.out.println(anomaly.script);
 					Tokenizer tokenizer = new Tokenizer(anomaly.script);
 					Parser parser = new Parser(anomaly.meter, anomaly.sensor);
 					Token token = null;
