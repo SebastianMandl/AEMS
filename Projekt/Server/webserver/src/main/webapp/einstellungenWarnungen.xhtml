@@ -45,7 +45,7 @@
                         <c:forEach items="#{userWarningsBean.notifications}" var="item">
                             <div class="list-group-item ">
                                 <h4 class="list-group-item-heading">#{item.name}</h4>
-                                <p class="list-group-item-text">Some text</p>
+                                <p class="list-group-item-text">#{item.meterId}</p>
                                 <div class="btn-glyph">
                                     <div class="edit-warning btn btn-default" data-id="#{item.id}" title="Warnung bearbeiten" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></div>
                                     <h:commandLink action="#{warningActionBean.doDelete(item.id)}">
@@ -65,7 +65,7 @@
                         <c:forEach items="#{userWarningsBean.warnings}" var="item">
                             <div class="list-group-item ">
                                 <h4 class="list-group-item-heading">#{item.name}</h4>
-                                <p class="list-group-item-text">Some text</p>
+                                <p class="list-group-item-text">#{item.meterId}</p>
                                 <div class="btn-glyph">
                                     <div class="edit-warning btn btn-default" data-id="#{item.id}" title="Warnung bearbeiten" data-toggle="modal" data-target="#editWarning-modal" data-backdrop="false" data-dismiss="modal"><span class="glyphicon glyphicon-pencil"></span></div>
                                     <h:commandLink action="#{warningActionBean.doDelete(item.id)}">

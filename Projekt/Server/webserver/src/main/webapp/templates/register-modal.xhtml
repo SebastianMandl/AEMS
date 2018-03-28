@@ -11,8 +11,8 @@
                 <h:form>
                     <h:inputText value="#{register.username}" p:placeholder="Ihr netzonline Username" p:required="required"></h:inputText>
                     <h:inputSecret value="#{register.password}" p:placeholder="Ihr netzonline Passwort" p:required="required"></h:inputSecret>
-                    <h:inputText value="#{register.email}" p:placeholder="Ihre E-Mail" p:required="required" title="Die E-Mail wird nur zur Kontaktaufnahme verwendet"></h:inputText>
-                    <h:inputText value="#{register.plz}" p:placeholder="Ihre Postleitzahl" p:required="required"></h:inputText>
+                    <h:inputText value="#{register.email}" p:placeholder="Ihre E-Mail" p:pattern="[a-zA-Z0-9.!#$%’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*" p:required="required" title="Bitte eine gültige E-Mail-Adresse angeben"></h:inputText>
+                    <h:inputText value="#{register.plz}" p:placeholder="Ihre Postleitzahl" p:pattern="[0-9]{3,6}" p:required="required" p:title="Nur Zahlen sind erlaubt"></h:inputText>
 
                     <h:selectBooleanCheckbox p:id="netz" value="#{register.netzonline}" p:checked=""></h:selectBooleanCheckbox>
                     <label for="netz" class="termsOfUse-position" data-toggle="tooltip" data-placement="bottom" title="Wenn Sie dieser Option zustimmen dann müssen die eingegebenen Daten mit Ihren Anmeldedaten von Netzonline übereinstimmen">

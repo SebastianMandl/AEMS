@@ -27,6 +27,10 @@
 
         <c:if test="#{!user.loggedIn}">
             <ui:include src="/templates/welcome.xhtml"></ui:include>
+	    <div class="welcome" style="color: red">
+		<h4>#{connectionTestBean.message}</h4>
+	    </div>
+	    
         </c:if>
         <!-- Seiteninhalt -->
         <c:if test="#{user.loggedIn}">

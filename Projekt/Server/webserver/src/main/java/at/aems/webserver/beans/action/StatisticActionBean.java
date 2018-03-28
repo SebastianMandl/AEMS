@@ -59,6 +59,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	    notify.setMessage("Ein Fehler ist aufgetreten!");
 	}
 	callUpdateOn("statisticBean");
+	callUpdateOn("statisticDisplayBean");
         return "einstellungenStatistiken";
     }
 
@@ -108,6 +109,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	    notify.setMessage("Ein Fehler ist aufgetreten!");
 	}
 	callUpdateOn("statisticBean");
+	callUpdateOn("statisticDisplayBean");
         return "einstellungenStatistiken";
     }
 
@@ -136,6 +138,7 @@ public class StatisticActionBean extends AbstractActionBean {
 	    java.util.logging.Logger.getLogger("StatisticActionBean").log(Level.SEVERE, null, ex);
 	}
 	callUpdateOn("statisticBean");
+	callUpdateOn("statisticDisplayBean");
 	
         return "einstellungenStatistiken";
     }

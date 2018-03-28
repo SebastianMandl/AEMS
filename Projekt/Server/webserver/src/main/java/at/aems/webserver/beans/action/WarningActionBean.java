@@ -22,7 +22,7 @@ public class WarningActionBean extends AbstractActionBean {
     
     public String doDelete(Integer id) {	
 	AemsDeleteAction delete = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
-	delete.setTable("Notifications");
+	delete.setTable("anomalies");
 	delete.setIdColumn("id", id);
 	try {
 	    AemsAPI.call0(delete, null);

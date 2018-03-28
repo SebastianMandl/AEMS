@@ -27,7 +27,7 @@ public class NewReportBean extends AbstractActionBean {
     private String name;
     private String annotation;
     private int timePeriod;
-    private boolean autoGenerate;
+    private boolean instantDownload;
     private List<Integer> statistics;
     
     public NewReportBean() {}
@@ -62,11 +62,11 @@ public class NewReportBean extends AbstractActionBean {
     }
 
     public boolean isAutoGenerate() {
-        return this.autoGenerate;
+        return this.instantDownload;
     }
 
     public void setAutoGenerate(boolean autoGenerate) {
-        this.autoGenerate = autoGenerate;
+        this.instantDownload = autoGenerate;
     }
     
     public String getAnnotation() {

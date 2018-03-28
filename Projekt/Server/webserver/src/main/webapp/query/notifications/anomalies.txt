@@ -1,0 +1,8 @@
+query GetNotifications {
+	anomalies {
+		id
+		script
+		meter { id }
+		sensor { id }
+	}
+}

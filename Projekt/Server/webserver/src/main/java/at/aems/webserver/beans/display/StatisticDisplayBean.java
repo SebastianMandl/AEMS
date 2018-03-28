@@ -84,7 +84,8 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 		for (JsonElement e : prePeriod) {
 		    prevVals.add(e.getAsInt());
 		}
-		dis.setPreviousValues(prevVals);
+		if(!prevVals.isEmpty())
+		    dis.setPreviousValues(prevVals);
 
 	    } catch (Exception ex) {
 		Logger.getLogger("StatisticDisplayBean").log(Level.SEVERE, null, ex);
