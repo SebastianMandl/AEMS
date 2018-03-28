@@ -8,11 +8,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import android.content.Intent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -22,16 +24,34 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.Socket;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsLoginAction;
@@ -60,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
     static volatile BigDecimal key = null;
     static volatile BigInteger keyInt = null;
+    static volatile boolean wait = true;
 
     @Bind(R.id.input_username) EditText _inputUsername;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -99,16 +120,14 @@ public class LoginActivity extends AppCompatActivity {
         username = _inputUsername.getText().toString();
         password = _passwordText.getText().toString();
 
-        //Login to AEMS
         loginToAEMS();
-
-        httpCode = 200;
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
                         if(httpCode == 200){
+                            System.out.println("-------------------------------onLoginSuccess()--------------------------------------------");
                             onLoginSuccess(username, password);
                         }
                         else{
@@ -116,85 +135,51 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         progressDialog.dismiss();
                     }
-                }, 2500);
+                }, 5000);
     }
+
 
     private void loginToAEMS() {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection con = null;
+
+                String key = null;
+                URL url = null;
+                HttpURLConnection urlConnection = null;
                 try {
-                    con = (HttpURLConnection) new URL("http://10.0.6.41:8084/AEMSWebService/AAA").openConnection();
-                } catch (IOException e) {
-                    System.out.println("---------------------------------HTTP URL Error-----------------------------------------");
-                }
-                try {
-                    con.setRequestMethod("GET");
-                } catch (ProtocolException e) {
-                    System.out.println("---------------------------------Protokoll Error-----------------------------------------");
-                    e.printStackTrace();
-                }
-                //con.setDoOutput(true);
+                    //http://aemsserver.ddns.net:8084/AEMSWebService/AAA
+                    //http://10.0.6.41:8084/AEMSWebService/AAA?android=android
+                    //http://10.0.0.25:8084/AEMSWebService/AAA?android=android
 
-                //con.setReadTimeout(1000);
+                    AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
 
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    for(String line = reader.readLine(); line != null; line = reader.readLine())
-                        System.out.println(line);;
-
-                } catch(Exception e) {
-                    System.out.println("---------------------------------BufferedReaderError-----------------------------------------");
-                }
-
-                try {
-                    System.out.println("----------------------------------------After Buffered Reader----------------------------------------");
-                    DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName("10.0.6.41"), 9950));
-                    System.out.println("----------------------------------- After DiffieHellman---------------------------------------------");
-                    key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), username, password);
-                    System.out.println("----------------------------------- After Salt---------------------------------------------");
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                System.out.println("-----------------------------------------" + key + "------------------------------------------------------------");
-
-                if(key != null)
-                {
-                    keyInt = key.unscaledValue();
-
-                    sharedSecretKey = keyInt.toByteArray();
-
-                    AemsAPI.setUrl("http://10.10.0.167:8084/AEMSWebService/RestInf");
-
-                    AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.AES);
+                    AemsLoginAction loginAction = new AemsLoginAction(EncryptionType.SSL);
                     loginAction.setUsername(username);
                     loginAction.setPassword(password);
-
                     AemsResponse response = null;
 
                     try {
-                        response = AemsAPI.call0(loginAction, sharedSecretKey);
-                        httpCode = response.getResponseCode();
+                        response = AemsAPI.call0(loginAction, null);
                         decryptedText = response.getDecryptedResponse();
-
                         JSONObject json = new JSONObject(decryptedText);
                         userId = json.getString("id");
 
+                        httpCode = response.getResponseCode();
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    System.out.println("----------------------------------    " + httpCode + "   ----------------------------------------");
                 }
-
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
         }).start();
-
     }
 
 
@@ -206,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess(String email, String password) {
         _loginButton.setEnabled(true);
-
+        System.out.println("-------------------------- We are in the onLoginSuccess() -------------------------------");
         //Save Logindata in SharedPreference
         sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
         String user = sharedPreferences.getString("EMAIL", null);
@@ -214,18 +199,15 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if(user == null && passw == null){
+            System.out.println("----------------------------- user null und password null --------------------------------------");
             CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
 
-            if(checkBoxRememberMe.isChecked()){
                 sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
                 sharedPreferences.edit().putString("USERNAME", username).commit();
                 sharedPreferences.edit().putString("PASSWORD", password).commit();
                 sharedPreferences.edit().putBoolean("REMEMBERLOGIN", true).commit();
-                String keyString = sharedSecretKey + "";
-                sharedPreferences.edit().putString("SHAREDSECRETKEYSTRING", keyString).commit();
                 sharedPreferences.edit().putString("USERID", userId).commit();
-                sharedPreferences.getString("SHAREDSECRETKEYSTRING", null);
-            }
+                sharedPreferences.edit().putBoolean("REMEMEBERME", checkBoxRememberMe.isChecked()).commit();
         }
 
         finish();

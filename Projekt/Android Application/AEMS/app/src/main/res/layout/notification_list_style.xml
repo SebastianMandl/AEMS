@@ -37,6 +37,6 @@
         android:layout_below="@+id/textViewTitle"
         android:layout_marginTop="2dp"
         android:textSize="14dp"
-        android:text="Warnung" />
+        android:text="Benachrichtigung" />
 
 </RelativeLayout>

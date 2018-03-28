@@ -97,13 +97,10 @@
                         </div>
 -->
 
-                        <h4>Bericht automatisch generieren</h4>
+                        <h4>Bericht sofort herunterladen (nicht speichern)</h4>
 
                         <div id="RadioButtonsAutomaticGenerating">
-                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateYes" />
-                            <label for="RadioGenerateAutomaticallyYes">Ja</label>
-                            <input type="radio" name="radioButtonsAutomaticalReport" id="radioAutomaticGenerateNo" />
-                            <label for="RadioGenerateAutomaticallyNo">Nein</label>
+                            <h:selectBooleanCheckbox value="#{newReportBean.autoGenerate}"></h:selectBooleanCheckbox> <strong>Ja</strong>, sofort herunterladen
                         </div>
                         <h:inputHidden id="_autoGenerate" value="#{newReportBean.autoGenerate}"></h:inputHidden>
 

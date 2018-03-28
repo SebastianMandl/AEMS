@@ -100,10 +100,11 @@ public class Query extends GraphQLObjectType {
 			    new Argument("meter", AEMSDatabase.Anomalies.METER, Argument.EQUAL)
 		    ));
     
-    private static final GraphQLFieldDefinition NOTICES = 
+    private static final GraphQLFieldDefinition NOTICES =  
             Query.getRootFieldDefinition("notices", AEMSDatabase.NOTICES, Notices.getInstance(),
 		    getArgumentList(
-			    new Argument("id", AEMSDatabase.Notices.ID, Argument.EQUAL)
+			    new Argument("id", AEMSDatabase.Notices.ID, Argument.EQUAL),
+			    new Argument("seen", AEMSDatabase.Notices.SEEN, Argument.EQUAL)
 		    ));
     
     private static final GraphQLFieldDefinition STATISTIC_TIMES = 
