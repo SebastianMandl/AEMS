@@ -33,8 +33,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.knoll.aems.LoginActivity"
-                  android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".LoginActivity"
+                  android:theme="@style/AppTheme.Dark">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action."></action>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Notification"
             android:theme="@style/AppTheme" >
             <intent-filter>

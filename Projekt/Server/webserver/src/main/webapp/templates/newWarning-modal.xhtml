@@ -6,11 +6,11 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
-   <div class="modal fade" id="newWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+   <div class="modal fade" id="newWarning-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
 
             <div class="modal-dialog">
 
-                <div class="loginmodal-container">
+                <div class="loginmodal-container" style="overflow-y: visible">
 
                     <h1>Benachrichtigung erstellen</h1><br />
                     <h:form id="newWarningForm">
@@ -123,13 +123,15 @@
                         <h:inputHidden id="_warningVariance" value="#{newWarning.variance}"></h:inputHidden>
 
 
+			<!--    
                     <h4>Ausnahme für bestimmtes Datum</h4>
                     <input id="newDate" type="date" class="btn-block"/>
                     <input id="addDate" type="button" class="btn btn-default btn-sm" value="Datum hinzufügen" /> <br /> <br />
 
                     <ul id="dateList" style="list-style-type:none;">
                         
-                    </ul>
+                    </ul> -->
+		    <!--<div style="margin-top: 50px"></div>-->
                     <h:inputHidden id="_warningDates" value="#{newWarning.exceptionDates}"></h:inputHidden>
                     
                     <h:commandButton onclick="getVars()" id="submitWarning" action="#{newWarning.doAddWarning()}" class="login loginmodal-submit submitFormat" value="Benachrichtigung erstellen"></h:commandButton>

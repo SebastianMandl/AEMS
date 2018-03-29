@@ -24,7 +24,15 @@ function showChart(canvasId, labels, actualValues, previousValues, anomalies) {
     var highestValueP = Math.max.apply(Math, previousValues);
 
     var highestValueToDisplay = Math.max(highestValueA, highestValueP);
-    var valueOffset = highestValueToDisplay % 10 === 0 ? highestValueToDisplay : 10 - highestValueToDisplay % 10;
+    var factor;
+    if(highestValueToDisplay < 1000) {
+	factor = 10;
+    } else if(highestValueToDisplay < 10000) {
+	factor = 100;
+    } else {
+	factor = 1000;
+    }
+    var valueOffset = highestValueToDisplay % factor === 0 ? highestValueToDisplay : factor - highestValueToDisplay % factor;
 
     var ctx = document.getElementById(canvasId).getContext('2d');
 

@@ -7,10 +7,13 @@ package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
+import at.aems.apilib.AemsResponse;
 import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.UserBean;
+import at.aems.webserver.data.warnings.AemsScript;
+import at.aems.webserver.data.warnings.WarningData;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,16 +39,9 @@ public class NewWarningBean extends AbstractActionBean {
     private int variance;
     
     private AemsInsertAction action;
-    
-    private AemsUser user;
+   
     
     public NewWarningBean() {}
-    
-    @PostConstruct
-    public void init() {
-        user = new AemsUser(userBean.getUserId(), userBean.getUsername(), userBean.getPassword());
-        action = new AemsInsertAction(user, EncryptionType.SSL);
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -97,15 +93,36 @@ public class NewWarningBean extends AbstractActionBean {
     
     
     public String doAddWarning() {
-        try {
-            System.out.println(" ========================== ");
-	    System.out.println(name + " " + this.meterIds.size() + " " + this.type);
-	    System.out.println(this.variance);
-	    System.out.println(" ========================== ");
+        try {	    
+	    List<Integer> exceptions = new ArrayList<>();
+	    for(String s : this.exceptionDays) {
+		exceptions.add(Integer.valueOf(s));
+	    }
 	    
+	    WarningData data = new WarningData();
+	    data.setName(this.name);
+	    data.setMaxDerivation(this.variance);
+	    data.setMeterId(this.meterIds.get(0));
+	    data.setExceptionDays(exceptions);
+	    data.setPeriodId(1);
+	    data.setType(type);
+	    	    
+	    AemsInsertAction insert = new AemsInsertAction(userBean.getAemsUser());
+	    insert.setTable("anomalies");
+	    insert.write("meter", data.getMeterId());
+	    insert.write("script", AemsScript.compile(data));
+	    insert.write("sensor", "Sensor 1"); 
+	    insert.write("exec_intermediate_time", 15); 
+	    insert.endWrite();
 	    
-	    String t = this.type == 0 ? "Benachrichtugung" : "Warnung";
-	    notify.setMessage(t + " wurde erstellt!");
+	    AemsResponse response = AemsAPI.call0(insert, null);
+	    if(response == null || response.getResponseCode() != 200) {
+		notify.setMessage("Ein Fehler ist aufgetreten");
+		return "einstellungenWarnungen";
+	    }
+	    notify.setMessage("Objekt wurde erfolreich erstellt.");
+	    callUpdateOn("userWarningsBean"); 
+	    callUpdateOn("webUIBean");
         } catch (Exception ex) {
             Logger.getLogger(NewWarningBean.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -34,7 +34,7 @@ public class UserReportBean extends AbstractDisplayBean {
 	reports = new ArrayList<>();
 	
 	try {
-	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    configureApiParams();
 	    AemsQueryAction qry = new AemsQueryAction(userBean.getAemsUser(), EncryptionType.SSL);
 	    qry.setQuery(AemsUtils.getQuery("created_reports", new HashMap<String, String>()));
 	    

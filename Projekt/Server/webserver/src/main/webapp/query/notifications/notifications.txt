@@ -1,9 +1,0 @@
-query GetNotifications {
-	Anomalies ( meter : #METER_ID# ) {
-		id
-		name
-		type
-		min_positive_deviation
-		max_positive_deviation
-	}
-}

@@ -19,6 +19,10 @@
 		<pattern value="/warnungen" />
 		<view-id value="/faces/einstellungenWarnungen.xhtml" />
 	</url-mapping>
+	<url-mapping id="scripts">
+		<pattern value="/scripts" />
+		<view-id value="/faces/einstellungenScripts.xhtml" />
+	</url-mapping>
         <url-mapping id="schnellstatistik">
 		<pattern value="/schnellstatistik" />
 		<view-id value="/faces/statistiken.xhtml" />

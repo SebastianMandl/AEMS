@@ -9,11 +9,14 @@ import at.aems.apilib.AemsAPI;
 import at.aems.apilib.ApiConfig;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.NewMap;
+import at.aems.webserver.beans.display.AbstractDisplayBean;
+import at.aems.webserver.beans.display.ConnectionTestBean;
 import at.aems.webserver.beans.display.NotifyBean;
 import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -70,10 +73,29 @@ public abstract class AbstractBean {
 	    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 	} catch (Exception e) {
 	}
+	
+	AbstractDisplayBean bean = getDisplayBean("connectionTestBean");
+	int timeout = 5000;
+	if(bean != null) {
+	    if(((ConnectionTestBean)bean).hasMessage()) {
+		timeout = 10;
+	    }
+	}
  
-	ApiConfig config = new ApiConfig(AemsUtils.API_URL, 5000, path, "Minecraft=0");
+	ApiConfig config = new ApiConfig(AemsUtils.API_URL, 2000, path, "Minecraft=0");
 
 	AemsAPI.setConfig(config);
     }
 
+    public AbstractDisplayBean getDisplayBean(String managedBeanName) {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        Object bean = context.getSessionMap().get(managedBeanName);
+	if(bean == null)
+	    return null;
+        if (bean instanceof AbstractDisplayBean) {
+            return (AbstractDisplayBean) bean;
+        } else {
+            throw new RuntimeException("Bean " + managedBeanName + " is not an instance of AbstractDisplayBean! Object: " + bean);
+        }
+    }
 }

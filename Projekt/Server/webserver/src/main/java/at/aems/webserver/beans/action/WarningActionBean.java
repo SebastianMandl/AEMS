@@ -22,12 +22,13 @@ public class WarningActionBean extends AbstractActionBean {
     
     public String doDelete(Integer id) {	
 	AemsDeleteAction delete = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
-	delete.setTable("Notifications");
+	delete.setTable("anomalies");
 	delete.setIdColumn("id", id);
 	try {
 	    AemsAPI.call0(delete, null);
 	    notify.setMessage("Benachrichtigung wurde entfernt!");
 	    callUpdateOn("userWarningsBean");
+	    callUpdateOn("webUIBean");
 	} catch(IOException e) {
 	    notify.setMessage("Ein Fehler ist aufgetreten!");
 	}

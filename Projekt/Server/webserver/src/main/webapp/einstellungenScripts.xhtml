@@ -9,11 +9,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>WebUI</title>
-        <link rel="stylesheet" href="/WebUIFinal/style.css" />
+        <link rel="stylesheet" href="css/scripts.css" />
         <meta charset="UTF-8" />
     </h:head>
     <h:body>
-        <h:form>            
+        <h:form>
             <span style="font-weight: bold;margin-right: 5px">Zähler</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedMeter}" styleClass="selectMenuWebUI">
                 <f:selectItems value="#{webUIBean.METERS}" var="meter"
                 itemLabel="#{meter.id}" itemValue="#{meter.id}" />
@@ -39,6 +39,9 @@
             
             <h:commandButton value="Verlinken" type="submit" action="#{webUIBean.doSubmit()}" />
 	    
+	    <div style="margin-top: 2%">
+		<a href="warnungen">Zurück zu Benachrichtigungseinstellungen</a>
+	    </div>
             <br />
             <br />
             

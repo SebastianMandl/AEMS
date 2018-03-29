@@ -110,7 +110,7 @@ public class RegisterBean extends AbstractActionBean {
             boolean passwordOk = checkPassword();
             if(!passwordOk) {
                 notify.setMessage("Username und/oder Passwort stimmen nicht überein!");
-                return "home";
+                return "index";
             }
         }
         
@@ -134,6 +134,7 @@ public class RegisterBean extends AbstractActionBean {
 
     private boolean checkPassword() {
         
+	configureApiParams();
         HttpClient client = HttpClients.createMinimal();
         HttpPost post = new HttpPost("https://netz-online.netzgmbh.at/eServiceWeb/j_security_check");
         List<NameValuePair> params = new ArrayList<>();
@@ -142,9 +143,11 @@ public class RegisterBean extends AbstractActionBean {
         try {
             post.setEntity(new UrlEncodedFormEntity(params));
             HttpResponse response = client.execute(post);
+	    int responseCode = response.getStatusLine().getStatusCode();
+	    System.out.println(" *** register: " + username + "/" + password + ": " + responseCode);
             
-            // timeout means that it worked
-            return response.getStatusLine().getStatusCode() == HttpStatus.SC_REQUEST_TIMEOUT;
+            // 200 = Wrong Username/Password
+            return response.getStatusLine().getStatusCode() != HttpStatus.SC_OK;
         } catch (Exception ex) {
             Logger.getLogger(RegisterBean.class.getName()).log(Level.SEVERE, null, ex);
         }

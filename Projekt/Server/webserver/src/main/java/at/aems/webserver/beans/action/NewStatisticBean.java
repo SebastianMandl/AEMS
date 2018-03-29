@@ -118,6 +118,7 @@ public class NewStatisticBean extends AbstractActionBean {
         AemsResponse resp2 = AemsAPI.call0(insertMeters, null);
         notify.setMessage("Statistik wurde erstellt!");
         callUpdateOn("statisticBean");
+	callUpdateOn("statisticDisplayBean");
         return "einstellungenStatistiken";
     }
 
