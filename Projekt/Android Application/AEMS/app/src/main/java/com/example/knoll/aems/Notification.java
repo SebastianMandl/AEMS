@@ -28,18 +28,17 @@ public class Notification extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        getData();
-                        setData();
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getData();
+                    setData();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }).start();
+            }
+        }).start();
 
         loadAllNotifications();
     }
@@ -57,16 +56,14 @@ public class Notification extends Activity {
         type.setText(notificationItem.get(5));
         meterNumber.setText(notificationItem.get(2));
         reason.setText("Zähler " + notificationItem.get(2) + " meldet einen abweichenden Energieverbrauch");
-        if(notificationItem.get(3).equals("null")){
+        if (notificationItem.get(3).equals("null")) {
             info.setText("Es wurde keine zusätzliche Information konfiguriert");
-        }
-        else{
+        } else {
             info.setText(notificationItem.get(3));
         }
-        if(notificationItem.get(4).equals("null")){
+        if (notificationItem.get(4).equals("null")) {
             sensor.setText("Es wurde kein Sensor definiert");
-        }
-        else{
+        } else {
             sensor.setText(notificationItem.get(4));
         }
     }

@@ -28,6 +28,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = "MyFirebaseIIDService";
     private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
     SharedPreferences sharedPreferences;
+    String token;
     int errorCount = 0;
 
     @Override
@@ -35,20 +36,22 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
+        String token = refreshedToken;
 
-        System.out.println(refreshedToken);
-      //  saveTokenInDatabase(refreshedToken);
+        System.out.println("Tooooooooooken 1:" + token);
+        saveTokenInSharedPreference(token);
     }
 
-    private void saveTokenInDatabase(final String refreshedToken) {
-
+    private void saveTokenInSharedPreference(final String token) {
+        System.out.println("Tooooooooooken 2:" +token);
         sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-        //sharedPreferences = sharedPreferences.edit().putString("NOTIFYTOKEN", String.valueOf(refreshedToken)).commit();
-        //final String username = sharedPreferences.getString("USERNAME", null);
-        //final String password = sharedPreferences.getString("PASSWORD", null);
-        //final String key = sharedPreferences.getString("SHAREDSECRETKEYSTRING", null);
-        //String userIdString = sharedPreferences.getString("USERID", null);
-        //final int userId = Integer.parseInt(userIdString);
+        sharedPreferences.edit().putString("NOTIFICATIONTOKEN", token).commit();
+        String tokenBackup = sharedPreferences.getString("NOTIFICATIONTOKEN", null);
+        System.out.println("Tooooooooooken 3:" + tokenBackup);
+        sharedPreferences.edit().putBoolean("NOTIFICATIONTOKENSIGNED", false).commit();
+
+    }
+
 
         /*
         new Thread(new Runnable() {
@@ -84,9 +87,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
                 }
             }
         }).start();
-
 */
-    }
-
-
 }
+
+

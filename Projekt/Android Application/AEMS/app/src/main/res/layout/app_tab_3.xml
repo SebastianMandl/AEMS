@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="@string/stromstatistik_3"
+        android:text="@string/statistik3"
         android:layout_marginTop="10dp"
         android:textSize="15pt"/>
 
@@ -26,6 +26,5 @@
         </com.github.mikephil.charting.charts.CombinedChart>
 
     </LinearLayout>
-
 
 </LinearLayout>
