@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     int errorCount = 0;
 
+    int numberStatisticElements = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
         password = sharedPreferences.getString("PASSWORD", null);
         System.out.println("Password:-------------------------" + password);
 
-        if (username == null || username.equals("null") || username == "") {
+       if (username == null || username.equals("null") || username == "") {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        }
+       }
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -144,21 +146,18 @@ public class MainActivity extends AppCompatActivity {
         password = sharedPreferences.getString("PASSWORD", null);
         System.out.println("Password:-------------------------" + password);
 
-        int userId = 0;
+
         if (userIdString == null || userIdString.equals("null") || userIdString == "") {
             sharedPreferences = getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-            sharedPreferences.edit().clear().commit();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
-           // userId = Integer.parseInt(userIdString);
 
-
-        AemsUser user = new AemsUser(userId, username, password);
+        AemsUser user = new AemsUser(Integer.parseInt(userIdString), username, password);
 
         AemsQueryAction action = new AemsQueryAction(user, EncryptionType.SSL);
-        action.setQuery("{statistics(user:\"" + userId + "\", display_android:\"true\"){id, name, period{name}}}");
-        System.out.println("{statistics(user:\"" + userId + "\", display_android:\"true\"){id}}");
+        action.setQuery("{statistics(user:\"" + userIdString + "\", display_android:\"true\"){id, name, period{name}}}");
+        System.out.println("{statistics(user:\"" + userIdString + "\", display_android:\"true\"){id}}");
 
         AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
         AemsResponse response = null;
@@ -188,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
             statisticNames.add(jsons[i].getString("name"));
             periods.add(jsons[i].getJSONObject("period").getString("name"));
         }
+        numberStatisticElements = statisticIds.size();
+        System.out.println("Number Elements:"+numberStatisticElements);
         System.out.println(statisticIds);
         System.out.println(statisticNames);
         System.out.println(periods);
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         sharedPreferences = getSharedPreferences(PREFERENCE_KEY_STATISTICS, MODE_PRIVATE);
-        sharedPreferences.edit().clear().commit();
+       // sharedPreferences.edit().clear().commit();
         if (statisticIds.size() == 1) {
             sharedPreferences.edit().putInt("STATISTIC1ID", Integer.parseInt(statisticIds.get(0))).commit();
             sharedPreferences.edit().putString("STATISTIC1PERIOD", periods.get(0)).commit();
@@ -357,11 +358,11 @@ public class MainActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    return tab1;
+                        return tab1;
                 case 1:
-                    return tab2;
+                        return tab2;
                 case 2:
-                    return tab3;
+                        return tab3;
                 default:
                     return null;
             }
@@ -373,8 +374,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            System.out.println("NumberStatisticElements");
+          if(numberStatisticElements == 1){
+                return 1;
+            }
+            else if(numberStatisticElements == 2){
+                return 2;
+            }
+            else if(numberStatisticElements == 3){
+                return 3;
+            }
+            else{
+                // Show 3 total pages.
+                return 3;
+            }
+
+            //return 3;
+
         }
     }
 

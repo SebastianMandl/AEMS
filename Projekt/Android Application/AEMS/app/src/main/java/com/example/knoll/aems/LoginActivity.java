@@ -34,6 +34,7 @@ import at.aems.apilib.crypto.EncryptionType;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
+
 public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
     private static final String PREFERENCE_KEY = "AemsLoginPreferenceKey";
@@ -238,6 +239,8 @@ public class LoginActivity extends Activity {
 
         String user = _inputUsername.getText().toString();
         String password = _passwordText.getText().toString();
+        CheckBox checkBoxRememberMe = (CheckBox) findViewById(R.id.checkBoxRememberLogin);
+        boolean checkBoxChecked = checkBoxRememberMe.isChecked();
 
         if (user.isEmpty()) {
             _inputUsername.setError("Geben Sie einen Benutzernamen ein");
@@ -252,6 +255,16 @@ public class LoginActivity extends Activity {
         } else {
             _passwordText.setError(null);
         }
+        System.out.println("--------------------- Check Box Status:" + checkBoxChecked);
+        if (checkBoxChecked == false){
+            checkBoxRememberMe.setError("Bitte speichern Sie die Benutzerdaten");
+            valid = false;
+        }
+        else
+        {
+            checkBoxRememberMe.setError(null);
+        }
+
         return valid;
     }
 }
