@@ -30,11 +30,12 @@ public abstract class AbstractDisplayBean extends AbstractBean implements Serial
     @ManagedProperty(value="#{errorBean}")
     protected ErrorBean errorBean;
     
+    
     @PostConstruct
     public void init() {
-        onLoad();
+	    onLoad();
     }
-    
+
     /**
      * This method is executed after the bean is constructed. By default,
      * the update() method is called. If something spechial needs to be done,
@@ -52,6 +53,7 @@ public abstract class AbstractDisplayBean extends AbstractBean implements Serial
     public void setErrorBean(ErrorBean errorBean) {
 	this.errorBean = errorBean;
     }
+
     
     public void requireBean(Class<?> beanClass) {
 	// make first letter lower case

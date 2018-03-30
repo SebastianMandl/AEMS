@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span><span class="icon-bar">                 
                     </span><span class="icon-bar"></span></button>
                 <h:link outcome="index" class="navbar-brand titleFormat">
-                    <img class="titleImage" src="images/logo_schrift.png" alt="Logo"/>
+                    <img class="titleImage" src="#{request.contextPath}/images/logo_schrift.png" alt="Logo"/>
                 </h:link>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -55,7 +55,7 @@
                     </li>
 
                     <!-- Benachrichtigungsicon -->
-                    <li id="notifIcon"><img class="notificationIcon" src="images/notification.png"/>
+                    <li id="notifIcon"><img class="notificationIcon" src="#{request.contextPath}/images/notification.png"/>
                         <span id="notificationCounter" class="notification-counter">#{notificationBean.notificationCount}</span>   
                     </li>
 

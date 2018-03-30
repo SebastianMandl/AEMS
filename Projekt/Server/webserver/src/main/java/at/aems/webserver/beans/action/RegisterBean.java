@@ -6,7 +6,10 @@
 package at.aems.webserver.beans.action;
 
 import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsInsertAction;
 import at.aems.apilib.AemsRegisterAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.action.AbstractActionBean;
@@ -15,8 +18,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
@@ -45,7 +50,11 @@ public class RegisterBean extends AbstractActionBean {
     private String plz;
     private boolean netzonline;
     
+    private String auth;
+    
     private boolean isRegistering;
+    
+    private final AemsUser root = new AemsUser(215, "master", "pwd");
     
     public RegisterBean() {
         
@@ -120,13 +129,34 @@ public class RegisterBean extends AbstractActionBean {
         action.setPassword(password);
 	action.setNetzOnline(netzonline); 
         action.setPlz(plz); 
-        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(action.toJsonObject()));
         AemsAPI.setUrl(AemsUtils.API_URL);
+	AemsResponse registerResponse = null;
         try {
-	    AemsAPI.call0(action, null);
+	    registerResponse = AemsAPI.call0(action, null);
 	} catch(IOException ex) {
 	    // yes 
 	}
+	if(!registerResponse.isOk()) {
+	    return "register.xhtml";
+	}
+	
+	AemsInsertAction insert = new AemsInsertAction(root);
+	insert.setTable("registrations");
+	insert.write("email", this.email);
+	insert.write("timestamp", "" + new Timestamp(System.currentTimeMillis()));
+	String code = UUID.randomUUID().toString().replaceAll("-", "");
+	insert.write("confirm_code", code);
+	insert.endWrite();
+	
+	String json = "{\"e\": \"" + email + "\", \"c\": \"" + code + "\"}";
+	auth = json;
+	
+	try {
+	    AemsAPI.call0(insert, null);
+	} catch(IOException ex) {
+	    
+	}
+	
         
         
         return "register.xhtml";
@@ -150,9 +180,15 @@ public class RegisterBean extends AbstractActionBean {
             return response.getStatusLine().getStatusCode() != HttpStatus.SC_OK;
         } catch (Exception ex) {
             Logger.getLogger(RegisterBean.class.getName()).log(Level.SEVERE, null, ex);
+	    return true;
         }
         
-        return false;
     }
+
+    public String getAuth() {
+	return auth;
+    }
+    
+    
     
 }

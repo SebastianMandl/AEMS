@@ -2,6 +2,7 @@ package at.aems.reportlib;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import org.jfree.chart.JFreeChart;
@@ -37,7 +38,7 @@ public class AemsChart {
         CategoryItemRenderer lineRenderer = new LineAndShapeRenderer();
         lineRenderer.setSeriesStroke(1, new BasicStroke(10));
         if(anomalyValues != null)
-            plot.setDataset(1, asDataset("Temperatur", anomalyValues));
+            plot.setDataset(1, asDataset(anomalyName, anomalyValues));
         plot.setRenderer(1, lineRenderer);
 
         CategoryItemRenderer barRanderer = new BarRenderer();
@@ -75,6 +76,10 @@ public class AemsChart {
         }
         
         return data;
+    }
+    
+    public BufferedImage toBufferedImage() {
+        return toChart().createBufferedImage(600, 440);
     }
     
     private DefaultCategoryDataset asDataset(List<Double> list, List<Double> listPre) {

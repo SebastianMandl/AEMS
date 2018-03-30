@@ -128,17 +128,10 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 		    continue;
 		}
 		JsonObject obj = element.getAsJsonObject();
- 
+		DisplayedStatistic stat = DisplayedStatistic.fromJsonObject(obj);
 		
-		Integer id = obj.get("id").getAsInt();
-		String name = obj.get("name").getAsString();
-		String periodStr = JsonPath.read(obj.toString(), "$.period.id");
-		Integer periodId = AemsUtils.isInt(periodStr) ? Integer.valueOf(periodStr) : null;
-		Period period = periodId == null ? Period.YEARLY : Period.byId(periodId); 
-		String displayHome = "true";
- 
-		if (Boolean.parseBoolean(displayHome)) {
-		    result.add(new DisplayedStatistic(id, name, period));
+		if(stat != null) {
+		    result.add(stat);
 		}
 	    }
 	} catch (Exception ex) {

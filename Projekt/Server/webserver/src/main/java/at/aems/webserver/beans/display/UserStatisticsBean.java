@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.aems.webserver.beans.display;
-
+package at.aems.webserver.beans.display; 
+ 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsQueryAction;
 import at.aems.apilib.AemsResponse;
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**

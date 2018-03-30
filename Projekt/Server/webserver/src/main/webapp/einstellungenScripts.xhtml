@@ -6,71 +6,86 @@
     org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>WebUI</title>
+        <title>AEMS - Fortgeschrittener Editor</title>
         <link rel="stylesheet" href="css/scripts.css" />
         <meta charset="UTF-8" />
+	<link rel="icon" type="image/x-icon" href="images/favicon.ico"></link>
     </h:head>
     <h:body>
         <h:form>
-            <span style="font-weight: bold;margin-right: 5px">Zähler</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedMeter}" styleClass="selectMenuWebUI">
-                <f:selectItems value="#{webUIBean.METERS}" var="meter"
-                itemLabel="#{meter.id}" itemValue="#{meter.id}" />
-            </h:selectOneMenu>
-            
-            <br />
-            <br />
-            
-            <span style="font-weight: bold;margin-right: 5px">Sensor</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedSensor}" styleClass="selectMenuWebUI" >
-                <f:selectItems value="#{webUIBean.SENSORS}" var="sensor"
-                               itemLabel="#{sensor.id}" itemValue="#{sensor.id}" />
-            </h:selectOneMenu>
-            
-            <br />
-            <br />
-            
-            <span title="Das Script, welches ausgeführt wird um Anomalien zu erkennen" style="font-weight: bold;margin-right: 5px">Script</span><h:inputTextarea value="#{webUIBean.script}" cols="100" rows="10" styleClass="inputTextAreaWebUI" />
-            
-            <br />
-            
-            <span title="Anzahl der Minuten, nachdem das Script erneut ausgeführt wird" style="font-weight: bold;margin-right: 5px">Wiederholungszeit [Minuten]</span><h:inputText value="#{webUIBean.cycleTime}" converter="javax.faces.Integer" />
-            <br />
-            
-            <h:commandButton value="Verlinken" type="submit" action="#{webUIBean.doSubmit()}" />
-	    
-	    <div style="margin-top: 2%">
-		<a href="warnungen">Zurück zu Benachrichtigungseinstellungen</a>
-	    </div>
-            <br />
-            <br />
-            
-            <h:dataTable value="#{webUIBean.ANOMALIES}" var="anomaly" columnClasses="columnWebUI,columnWebUI,columnScriptWebUI,columnWebUI,columnButtonsWebUI,columnButtonsWebUI" headerClass="headerWebUI" >
-                <h:column>
-                    <f:facet name="header">Zähler</f:facet>
-                    #{anomaly.meter}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Sensor</f:facet>
-                    #{anomaly.sensor}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Script</f:facet>
-                    <h:outputText value="#{anomaly.script}" escape="false" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Script Fehler</f:facet>
-                    <h:outputText value="#{anomaly.scriptErrors}" escape="false" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header"></f:facet>
-                    <h:commandButton style="margin-left: 20%" value="Löschen" type="submit" action="#{webUIBean.doDelete(anomaly)}" />
-                </h:column>
-                 <h:column>
-                    <f:facet name="header"></f:facet>
-                    <h:commandButton style="margin-left: 20%" value="Editieren" type="submit" action="#{webUIBean.doEdit(anomaly)}" />
-                </h:column>
-            </h:dataTable>
-        </h:form>
+	    <c:if test="#{!user.loggedIn}">
+		<div>
+		    <p>Zum Betrachten dieser Seite müssen Sie eingeloggt sein.</p>
+		    <p>Sie können sich <a href="home">hier einloggen</a>.</p>
+		</div>
+	    </c:if>
+
+	    <c:if test="#{user.loggedIn}">
+		<div>
+		    <span style="font-weight: bold;margin-right: 5px">Zähler</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedMeter}" styleClass="selectMenuWebUI">
+			<f:selectItems value="#{webUIBean.METERS}" var="meter"
+				       itemLabel="#{meter.id}" itemValue="#{meter.id}" />
+		    </h:selectOneMenu>
+
+		    <br />
+		    <br />
+
+		    <span style="font-weight: bold;margin-right: 5px">Sensor</span><h:selectOneMenu converter="idConverter" value="#{webUIBean.selectedSensor}" styleClass="selectMenuWebUI" >
+			<f:selectItems value="#{webUIBean.SENSORS}" var="sensor"
+				       itemLabel="#{sensor.id}" itemValue="#{sensor.id}" />
+		    </h:selectOneMenu>
+
+		    <br />
+		    <br />
+
+		    <span title="Das Script, welches ausgeführt wird um Anomalien zu erkennen" style="font-weight: bold;margin-right: 5px">Script</span><h:inputTextarea value="#{webUIBean.script}" cols="100" rows="10" styleClass="inputTextAreaWebUI" />
+
+		    <br />
+
+		    <span title="Anzahl der Minuten, nachdem das Script erneut ausgeführt wird" style="font-weight: bold;margin-right: 5px">Wiederholungszeit [Minuten]</span><h:inputText value="#{webUIBean.cycleTime}" converter="javax.faces.Integer" />
+		    <br />
+
+		    <h:commandButton value="Verlinken" type="submit" action="#{webUIBean.doSubmit()}" />
+
+		    <div style="margin-top: 2%">
+			<a href="warnungen">Zurück zu Benachrichtigungseinstellungen</a>
+		    </div>
+		    <br />
+		    <br />
+
+		    <h:dataTable value="#{webUIBean.ANOMALIES}" var="anomaly" columnClasses="columnWebUI,columnWebUI,columnScriptWebUI,columnWebUI,columnButtonsWebUI,columnButtonsWebUI" headerClass="headerWebUI" >
+			<h:column>
+			    <f:facet name="header">Zähler</f:facet>
+				#{anomaly.meter}
+			</h:column>
+			<h:column>
+			    <f:facet name="header">Sensor</f:facet>
+				#{anomaly.sensor}
+			</h:column>
+			<h:column>
+			    <f:facet name="header">Script</f:facet>
+			    <h:outputText value="#{anomaly.script}" escape="false" />
+			</h:column>
+			<h:column>
+			    <f:facet name="header">Script Fehler</f:facet>
+			    <h:outputText value="#{anomaly.scriptErrors}" escape="false" />
+			</h:column>
+			<h:column>
+			    <f:facet name="header"></f:facet>
+			    <h:commandButton style="margin-left: 20%" value="Löschen" type="submit" action="#{webUIBean.doDelete(anomaly)}" />
+			</h:column>
+			<h:column> 
+			    <f:facet name="header"></f:facet>
+			    <h:commandButton style="margin-left: 20%" value="Editieren" type="submit" action="#{webUIBean.doEdit(anomaly)}" />
+			</h:column>
+		    </h:dataTable>
+		</div>
+	    </c:if>
+
+	</h:form> 
+
     </h:body>
 </html>

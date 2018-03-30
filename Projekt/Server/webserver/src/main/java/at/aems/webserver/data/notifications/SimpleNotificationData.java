@@ -62,7 +62,10 @@ public class SimpleNotificationData {
     }
     
     public static SimpleNotificationData fromJsonObject(JsonObject object) {
-        Integer id = object.get("id").getAsInt();
+        Integer id = JsonPath.read(object.toString(), "$.id");
+	if(id == null) {
+	    return null;
+	}
         String name = object.get("title").getAsString();
         String type = JsonPath.read(object.toString(), "$.notificationtype.display_name");
 	String seen = object.get("seen").getAsString();

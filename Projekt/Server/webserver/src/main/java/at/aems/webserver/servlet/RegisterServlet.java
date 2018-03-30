@@ -5,13 +5,21 @@
  */
 package at.aems.webserver.servlet;
 
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsDeleteAction;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
+import at.aems.apilib.AemsUpdateAction;
+import at.aems.apilib.AemsUser;
+import at.aems.webserver.AemsUtils;
+import at.aems.webserver.beans.objects.UserRole;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.Base64;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RegisterServlet extends HttpServlet {
 
+    private AemsUser master = new AemsUser(215, "master", "pwd");
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -46,12 +55,28 @@ public class RegisterServlet extends HttpServlet {
 
             String email = data.get("e").getAsString();
             String code = data.get("c").getAsString();
-        } catch (JsonSyntaxException e) {
-            response.getWriter().write("Malformed data");
+	    
+	    JsonArray array = getRegistrationWithEmail(email);
+	    if(array == null) {
+		response.getWriter().write("Error");
+		return;
+	    }
+	    
+	    JsonObject registration = array.get(0).getAsJsonObject();
+	    if(codesEqual(registration, code)) {
+		setVerifiedEmail(email);
+		deleteRegistration(email);
+		response.getWriter().write("Sie haben ihre E-Mail erfolgreich bestätigt!");
+	    } else {
+		response.getWriter().write("Error");
+	    }
+        } catch (Exception e) {
+            response.getWriter().write("Error");
             return;
         }
-
-        request.getRequestDispatcher("/register.xhtml").forward(request, response);
+	
+	
+	
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -91,5 +116,43 @@ public class RegisterServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private JsonArray getRegistrationWithEmail(String email) throws IOException {
+	    AemsQueryAction query = new AemsQueryAction(master);
+	    query.setQuery("{ registrations(email: \"" + email + "\") { timestamp, confirm_code } }");
+	    
+	    AemsAPI.setUrl(AemsUtils.API_URL);
+	    AemsResponse resp = AemsAPI.call0(query, null);
+	    
+	    JsonArray array = resp.getJsonArrayWithinObject();
+	    if(array.size() != 1) {
+		return null;
+	    }
+	    return array;
+    }
+
+    private boolean codesEqual(JsonObject registration, String code) throws IOException{
+	String regCode = registration.get("confirm_code").getAsString();
+	return code.equals(regCode);
+    }
+
+    private boolean setVerifiedEmail(String email) throws IOException {
+	
+	AemsUpdateAction update = new AemsUpdateAction(master);
+	update.setTable("users");
+	update.setIdColumn("email", email);
+	update.write("role", UserRole.UNREGISTERED.getId());
+	
+	return AemsAPI.call0(update, null).isOk();
+	
+    }
+
+    private boolean deleteRegistration(String email) throws IOException {
+	AemsDeleteAction delete = new AemsDeleteAction(master);
+	delete.setTable("registrations");
+	delete.setIdColumn("email", email);
+	AemsResponse response = AemsAPI.call0(delete, null);
+	return response.isOk();
+    }
 
 }
