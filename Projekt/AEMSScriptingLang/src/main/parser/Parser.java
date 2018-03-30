@@ -263,6 +263,8 @@ public class Parser {
 		return notice;
 	}
 	
+	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	
 	private void storeNotice(String notice, String type) {		
 		Logger.logDebug(notice);
 		// { id:"AT...3333", meters : [{user:185}, {user:190}]}
@@ -273,6 +275,7 @@ public class Parser {
 		jsonNotice.put("sensor", sensorId);
 		jsonNotice.put("notice", notice);
 		jsonNotice.put("title", noticeTitle);
+		jsonNotice.put("timestamp", format.format(new Date()));
 		
 		if(type.equals("notice"))
 			jsonNotice.put("notificationtype", 1);

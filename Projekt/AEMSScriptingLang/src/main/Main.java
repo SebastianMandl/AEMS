@@ -29,7 +29,7 @@ import main.tokens.Tokenizer;
 public class Main {
 
 	
-	private static final String SERVER_ADDRESS = "aemsserver.ddns.net";
+	private static final String SERVER_ADDRESS = "localhost";
 	public static final String REST_ADDRESS = "http://" + SERVER_ADDRESS + ":8084/AEMSWebService/RestInf?";
 	
 	public static BigDecimal key = new BigDecimal("1045480378380401");
@@ -206,7 +206,7 @@ public class Main {
 				}
 			}
 			Logger.logDebug("end of iteration");
-			updateAnomalies();
+			//updateAnomalies();
 			try {
 				//1000 * 60 * 15
 				long wait = 1000 * 60 * 15 - (System.currentTimeMillis() - startTime); // 15 minutes cycle

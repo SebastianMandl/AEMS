@@ -101,7 +101,7 @@ public class AllNotifications extends Activity {
         progressDialog.setMessage("Lade Benachrichtigungen...");
         progressDialog.show();
 
-        new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -111,21 +111,21 @@ public class AllNotifications extends Activity {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
+        thread.start();
 
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        progressDialog.dismiss();
-                        adapter = new NotificationAdapter(AllNotifications.this, titles, notificationTypes, images);
-                        notifications.setAdapter(adapter);
-                        updateNotifications();
-                    }
-                }, 5000);
-
-        progressDialog.setIndeterminate(false);
+        progressDialog.dismiss();
+        adapter = new NotificationAdapter(AllNotifications.this, titles, notificationTypes, images);
+        notifications.setAdapter(adapter);
+        updateNotifications();
     }
+
 
     private void loadNotifications() throws JSONException {
 
@@ -144,11 +144,10 @@ public class AllNotifications extends Activity {
         }
         int httpCode = response.getResponseCode();
         System.out.println("------------------------------" + httpCode + "------------------------------------------------------");
-        if (httpCode != 200 && errorCount<3){
-            errorCount ++;
+        if (httpCode != 200 && errorCount < 3) {
+            errorCount++;
             loadNotifications();
-        }
-        else if(errorCount>2){
+        } else if (errorCount > 2) {
             Log.w(TAG, "Notifications konnten nicht vom Server geladen werden");
         }
 
@@ -168,9 +167,9 @@ public class AllNotifications extends Activity {
         seen = new ArrayList<>();
 
 
-        for(int i = 0; i< jsons.length; i++){
+        for (int i = 0; i < jsons.length; i++) {
             seen.add(jsons[i].getString("seen"));
-            if(seen.get(i).equals("false")){
+            if (seen.get(i).equals("false")) {
                 notificationIds.add(jsons[i].getString("id"));
                 titles.add(jsons[i].getString("title"));
                 furtherInformation.add(jsons[i].getString("notice"));
@@ -198,7 +197,7 @@ public class AllNotifications extends Activity {
 
         int size = jsonArray.length();
         ArrayList<JSONObject> arrays = new ArrayList<>();
-        for(int i = 0; i< size; i++){
+        for (int i = 0; i < size; i++) {
             JSONObject newJsonObject = jsonArray.getJSONObject(i);
             arrays.add(newJsonObject);
         }
@@ -211,7 +210,7 @@ public class AllNotifications extends Activity {
     private void updateNotifications() {
         notifications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 ArrayList<String> notificationItem = new ArrayList<>();
                 notificationItem.add(notificationIds.get(position));
@@ -224,7 +223,19 @@ public class AllNotifications extends Activity {
                 System.out.println(notificationItem);
                 //System.out.println(notificationItem.get(0) + " , " + notificationItem.get(1) + " , " + notificationItem.get(2));
 
-                updateDatabase(position);
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateDatabase(position);
+                    }
+                });
+                thread.start();
+
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 Intent intent = new Intent(AllNotifications.this, Notification.class);
                 intent.putStringArrayListExtra("notificationItem", notificationItem);
@@ -235,33 +246,28 @@ public class AllNotifications extends Activity {
 
     private void updateDatabase(final int position) {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AemsUser user = new AemsUser(userId, username, password);
+        AemsUser user = new AemsUser(userId, username, password);
 
-                AemsUpdateAction update = new AemsUpdateAction(user, EncryptionType.SSL);
-                update.setTable("notices");
-                update.setIdColumn("id", notificationIds.get(position));
-                update.write("seen", true);
+        AemsUpdateAction update = new AemsUpdateAction(user, EncryptionType.SSL);
+        update.setTable("notices");
+        update.setIdColumn("id", notificationIds.get(position));
+        update.write("seen", true);
 
-                AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
-                AemsResponse response = null;
-                try {
-                    response = AemsAPI.call0(update, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                int httpCode = response.getResponseCode();
-                if (httpCode != 200 && errorCount<3){
-                    errorCount ++;
-                    updateDatabase(position);
-                }
-                else if(errorCount>2){
-                    Log.w(TAG, "Notification konnte nicht als gelesen markiert werden");
-                }
-            }
-        }).start();
+        AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+        AemsResponse response = null;
+        try {
+            response = AemsAPI.call0(update, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int httpCode = response.getResponseCode();
+        if (httpCode != 200 && errorCount < 3) {
+            errorCount++;
+            updateDatabase(position);
+        } else if (errorCount > 2) {
+            Log.w(TAG, "Notification konnte nicht als gelesen markiert werden");
+        }
+
 
     }
 }
