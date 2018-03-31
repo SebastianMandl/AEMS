@@ -36,6 +36,9 @@ public abstract class AbstractBean {
      
     @ManagedProperty(value="#{user}")
     protected UserBean userBean;
+    
+    @ManagedProperty(value="#{connectionTestBean}")
+    protected ConnectionTestBean connectionBean;
 
     public UserBean getUserBean() {
         return userBean;
@@ -44,7 +47,15 @@ public abstract class AbstractBean {
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
     }
-    
+
+    public ConnectionTestBean getConnectionBean() {
+	return connectionBean;
+    }
+
+    public void setConnectionBean(ConnectionTestBean connectionBean) {
+	this.connectionBean = connectionBean;
+    }
+     
     public void configureApiParams() {
 	ServletContext servlet = (ServletContext) FacesContext.getCurrentInstance()
 		.getExternalContext().getContext();
@@ -73,16 +84,8 @@ public abstract class AbstractBean {
 	    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 	} catch (Exception e) {
 	}
-	
-	AbstractDisplayBean bean = getDisplayBean("connectionTestBean");
-	int timeout = 5000;
-	if(bean != null) {
-	    if(((ConnectionTestBean)bean).hasMessage()) {
-		timeout = 10;
-	    }
-	}
- 
-	ApiConfig config = new ApiConfig(AemsUtils.API_URL, 2000, path, "Minecraft=0");
+	 
+	ApiConfig config = new ApiConfig(AemsUtils.API_URL, 5000, path, "Minecraft=0");
 
 	AemsAPI.setConfig(config);
     }
@@ -98,4 +101,5 @@ public abstract class AbstractBean {
             throw new RuntimeException("Bean " + managedBeanName + " is not an instance of AbstractDisplayBean! Object: " + bean);
         }
     }
+    
 }

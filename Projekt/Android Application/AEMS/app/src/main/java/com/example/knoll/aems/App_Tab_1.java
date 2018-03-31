@@ -1,5 +1,6 @@
 package com.example.knoll.aems;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
@@ -211,7 +212,7 @@ public class App_Tab_1 extends ChartViewTab {
             xAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    return xVals[(int) value - 1];
+                    return xVals[(int) value-1];
                 }
             });
         }
@@ -292,67 +293,85 @@ public class App_Tab_1 extends ChartViewTab {
         statisticId = sharedPreferences.getInt("STATISTIC1ID", 0);
         period = sharedPreferences.getString("STATISTIC1PERIOD", null);
         statisticName = sharedPreferences.getString("STATISTIC1NAME", null);
-
     }
 
     private void loadDataFromServer() {
 
-        AemsUser user = new AemsUser(Integer.parseInt(userIdString), username, password);
-        AemsStatisticAction statisticAction = new AemsStatisticAction(user, EncryptionType.SSL);
-        statisticAction.setStatisticId(statisticId);
+            AemsUser user = new AemsUser(Integer.parseInt(userIdString), username, password);
+            AemsStatisticAction statisticAction = new AemsStatisticAction(user, EncryptionType.SSL);
+            statisticAction.setStatisticId(statisticId);
 
-        try {
-            AemsResponse response = AemsAPI.call0(statisticAction, null);
-            JsonObject json = response.getAsJsonObject();
+            try {
+                AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
+                AemsResponse response = AemsAPI.call0(statisticAction, null);
+                JsonObject json = response.getAsJsonObject();
+                floatValuesPeriod = new ArrayList<>();
+                try{
+                    periodValues = json.get("period").getAsJsonArray();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                if(periodValues != null){
+                    System.out.println(periodValues);
 
-            floatValuesPeriod = new ArrayList<>();
-            periodValues = json.get("period").getAsJsonArray();
-            System.out.println(periodValues);
+                    for(int i = 0; i < periodValues.size(); i++){
+                        floatValuesPeriod.add(periodValues.get(i).getAsFloat());
+                    }
+                }
+                System.out.println("AppTab1: Float Values Period: -------------------------------" + floatValuesPeriod);
 
-            floatValuesPrePeriod = new ArrayList<>();
-            prePeriodValues = json.get("pre_period").getAsJsonArray();
-            System.out.println(prePeriodValues);
 
-            floatValuesAnomaly = new ArrayList<>();
-            //anomalyValues = json.get("anomalies").getAsJsonArray();
-            System.out.println(anomalyValues);
+                floatValuesPrePeriod = new ArrayList<>();
+                try{
+                    prePeriodValues = json.get("pre_period").getAsJsonArray();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
 
-            for (int i = 0; i < periodValues.size(); i++) {
-                floatValuesPeriod.add(periodValues.get(i).getAsFloat());
-            }
-            System.out.println("AppTab1: Float Values Period: -------------------------------" + floatValuesPeriod);
+                if(prePeriodValues != null){
+                    System.out.println(prePeriodValues);
+                    for(int i = 0; i < prePeriodValues.size(); i++){
+                        floatValuesPrePeriod.add(periodValues.get(i).getAsFloat());
+                    }
+                }
+                System.out.println("AppTab1: Float Values PrePeriod: -------------------------------" + floatValuesPrePeriod);
 
-            for (int i = 0; i < prePeriodValues.size(); i++) {
-                floatValuesPrePeriod.add(periodValues.get(i).getAsFloat());
-            }
-            System.out.println("AppTab1: Float Values PrePeriod: -------------------------------" + floatValuesPrePeriod);
+
+                floatValuesAnomaly = new ArrayList<>();
+                try{
+                    //anomalyValues = json.get("anomalies").getAsJsonArray();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                if(anomalyValues != null){
+                    System.out.println(anomalyValues);
 
             /*
             for(int i = 0; i < anomalyValues.size(); i++){
                 floatValuesAnomaly.add(anomalyValues.get(i).getAsFloat());
             }
-            System.out.println("AppTab2: Float Values PrePeriod: -------------------------------" + floatValuesPrePeriod);
-*/
+            */
+                }
+                System.out.println("AppTab1: Float Values Anomaly: -------------------------------" + floatValuesAnomaly);
 
-            if (prePeriodValues.size() == 0) {
-                vorperiode = false;
-                System.out.println("Preperiod is empty");
-            } else {
-                vorperiode = true;
+
+                if (prePeriodValues.size() == 0) {
+                    vorperiode = false;
+                    System.out.println("Preperiod is empty");
+                } else {
+                    vorperiode = true;
+                }
+                if (anomalyValues.size() == 0) {
+                    System.out.println("Anomaly is empty");
+                    anomalie = false;
+                } else {
+                    anomalie = true;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            if (anomalyValues.size() == 0) {
-                System.out.println("Anomaly is empty");
-                anomalie = false;
-            } else {
-                anomalie = true;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int length = periodValues.size();
-        System.out.println(length);
-
     }
 
 
@@ -430,42 +449,25 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> entries2 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1f, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
+        }
+        for (int i = 0; i < 12; i++){
+            if(floatValuesPrePeriod.size() > i){
+                entries2.add(new BarEntry(i+1f, floatValuesPrePeriod.get(i)));
+            }
+            else
+            {
+                entries2.add(new BarEntry(i+1f, 0f));
+            }
         }
 
-        for (int i = 0; i < floatValuesPrePeriod.size(); i++) {
-            entries2.add(new BarEntry(i + 1f, floatValuesPrePeriod.get(i)));
-        }
-
-        /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        entries1.add(new BarEntry(5f, 3));
-        entries1.add(new BarEntry(6f, 7));
-        entries1.add(new BarEntry(7f, 2));
-        entries1.add(new BarEntry(8f, 6));
-        entries1.add(new BarEntry(9f, 5));
-        entries1.add(new BarEntry(10f, 4));
-        entries1.add(new BarEntry(11f, 3));
-        entries1.add(new BarEntry(12f, 2));
-
-        entries2.add(new BarEntry(1f, 2));
-        entries2.add(new BarEntry(2f, 6));
-        entries2.add(new BarEntry(3f, 5));
-        entries2.add(new BarEntry(4f, 4));
-        entries2.add(new BarEntry(5f, 3));
-        entries2.add(new BarEntry(6f, 2));
-        entries2.add(new BarEntry(7f, 2));
-        entries2.add(new BarEntry(8f, 6));
-        entries2.add(new BarEntry(9f, 4));
-        entries2.add(new BarEntry(10f, 7));
-        entries2.add(new BarEntry(11f, 3));
-        entries2.add(new BarEntry(12f, 7));
-
-*/
         BarData barD = loadGoupedDataSet(entries1, entries2);
 
         return barD;
@@ -473,26 +475,18 @@ public class App_Tab_1 extends ChartViewTab {
 
 
     private BarData generateBarDataDayWithoutPriorPeriod() {
+
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1f, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        entries1.add(new BarEntry(5f, 3));
-        entries1.add(new BarEntry(6f, 7));
-        entries1.add(new BarEntry(7f, 5));
-        entries1.add(new BarEntry(8f, 2));
-        entries1.add(new BarEntry(9f, 6));
-        entries1.add(new BarEntry(10f, 4));
-        entries1.add(new BarEntry(11f, 7));
-        entries1.add(new BarEntry(12f, 3));
-*/
 
         BarData barD = loadSingleBarDataSet(entries1);
 
@@ -518,25 +512,15 @@ public class App_Tab_1 extends ChartViewTab {
         positions.add(10.65f);
         positions.add(11.65f);
 
-
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(positions.get(i), floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(positions.get(i), floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(positions.get(i), 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(0.6f, 21f));
-        entries.add(new Entry(1.6f, 23f));
-        entries.add(new Entry(2.6f, 24f));
-        entries.add(new Entry(3.6f, 26f));
-        entries.add(new Entry(4.6f, 25f));
-        entries.add(new Entry(5.6f, 21f));
-        entries.add(new Entry(6.65f, 23f));
-        entries.add(new Entry(7.65f, 21f));
-        entries.add(new Entry(8.65f, 23f));
-        entries.add(new Entry(9.65f, 24f));
-        entries.add(new Entry(10.65f, 26f));
-        entries.add(new Entry(11.65f, 25f));
-        */
 
         LineData lineD = loadLineData(entries);
 
@@ -547,25 +531,15 @@ public class App_Tab_1 extends ChartViewTab {
 
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(i + 1f, floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(i+1f, floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(1f, 21f));
-        entries.add(new Entry(2f, 23f));
-        entries.add(new Entry(3f, 24f));
-        entries.add(new Entry(4f, 26f));
-        entries.add(new Entry(5f, 25f));
-        entries.add(new Entry(6f, 21f));
-        entries.add(new Entry(7f, 23f));
-        entries.add(new Entry(8f, 21f));
-        entries.add(new Entry(9f, 23f));
-        entries.add(new Entry(10f, 24f));
-        entries.add(new Entry(11f, 26f));
-        entries.add(new Entry(12f, 25f));
-        */
 
         LineData lineD = loadLineData(entries);
 
@@ -579,31 +553,24 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> entries2 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1f, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 7; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        for (int i = 0; i < floatValuesPrePeriod.size(); i++) {
-            entries2.add(new BarEntry(i + 1f, floatValuesPrePeriod.get(i)));
+        for (int i = 0; i < 7; i++){
+            if(floatValuesPrePeriod.size() > i){
+                entries2.add(new BarEntry(i+1f, floatValuesPrePeriod.get(i)));
+            }
+            else
+            {
+                entries2.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        entries1.add(new BarEntry(5f, 3));
-        entries1.add(new BarEntry(6f, 7));
-        entries1.add(new BarEntry(7f, 5));
-
-        entries2.add(new BarEntry(1f, 2));
-        entries2.add(new BarEntry(2f, 6));
-        entries2.add(new BarEntry(3f, 5));
-        entries2.add(new BarEntry(4f, 4));
-        entries2.add(new BarEntry(5f, 3));
-        entries2.add(new BarEntry(6f, 2));
-        entries2.add(new BarEntry(7f, 5));
-*/
 
         BarData barD = loadGoupedDataSet(entries1, entries2);
 
@@ -611,21 +578,18 @@ public class App_Tab_1 extends ChartViewTab {
     }
 
     private BarData generateBarDataWeekWithoutPriorPeriod() {
+
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1f, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 7; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        entries1.add(new BarEntry(5f, 3));
-        entries1.add(new BarEntry(6f, 7));
-        entries1.add(new BarEntry(7f, 5));
-        */
 
         BarData barD = loadSingleBarDataSet(entries1);
 
@@ -638,19 +602,15 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<Entry> entries = new ArrayList<Entry>();
         float position = 0.6f;
 
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(i + position, floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(i+position, floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(i+position, 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(0.6f, 21f));
-        entries.add(new Entry(1.6f, 23f));
-        entries.add(new Entry(2.6f, 24f));
-        entries.add(new Entry(3.6f, 26f));
-        entries.add(new Entry(4.6f, 25f));
-        entries.add(new Entry(5.6f, 21f));
-        entries.add(new Entry(6.6f, 23f));
-        */
 
         LineData lineD = loadLineData(entries);
 
@@ -662,19 +622,15 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<Entry> entries = new ArrayList<Entry>();
         float position = 1f;
 
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(i + position, floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(i+position, floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(i+position, 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(1f, 21f));
-        entries.add(new Entry(2f, 23f));
-        entries.add(new Entry(3f, 24f));
-        entries.add(new Entry(4f, 26f));
-        entries.add(new Entry(5f, 25f));
-        entries.add(new Entry(6f, 21f));
-        entries.add(new Entry(7f, 23f));
-        */
 
         LineData lineD = loadLineData(entries);
 
@@ -688,25 +644,24 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> entries2 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 4; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        for (int i = 0; i < floatValuesPrePeriod.size(); i++) {
-            entries2.add(new BarEntry(i + 1, floatValuesPrePeriod.get(i)));
+        for (int i = 0; i < 4; i++){
+            if(floatValuesPrePeriod.size() > i){
+                entries2.add(new BarEntry(i+1f, floatValuesPrePeriod.get(i)));
+            }
+            else
+            {
+                entries2.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-
-        entries2.add(new BarEntry(1f, 2));
-        entries2.add(new BarEntry(2f, 6));
-        entries2.add(new BarEntry(3f, 5));
-        entries2.add(new BarEntry(4f, 4));
-*/
 
         BarData barD = loadGoupedDataSet(entries1, entries2);
 
@@ -715,19 +670,18 @@ public class App_Tab_1 extends ChartViewTab {
 
 
     private BarData generateBarDataMonthWithoutPriorPeriod() {
+
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 4; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-     /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        */
-
 
         BarData barD = loadSingleBarDataSet(entries1);
 
@@ -740,16 +694,15 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<Entry> entries = new ArrayList<Entry>();
         float position = 0.6f;
 
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(i + position, floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(i+position, floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(i+position, 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(0.6f, 21f));
-        entries.add(new Entry(1.6f, 23f));
-        entries.add(new Entry(2.6f, 24f));
-        entries.add(new Entry(3.6f, 26f));
-        */
 
         LineData lineD = loadLineData(entries);
 
@@ -759,19 +712,17 @@ public class App_Tab_1 extends ChartViewTab {
     private LineData generateLineDataMonthSingleBar() {
 
         ArrayList<Entry> entries = new ArrayList<Entry>();
-
         float position = 1f;
 
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(i + position, floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(i+position, floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(i+position, 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(1f, 21f));
-        entries.add(new Entry(2f, 23f));
-        entries.add(new Entry(3f, 24f));
-        entries.add(new Entry(4f, 26f));
-*/
 
         LineData lineD = loadLineData(entries);
 
@@ -785,42 +736,24 @@ public class App_Tab_1 extends ChartViewTab {
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
         ArrayList<BarEntry> entries2 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-        for (int i = 0; i < floatValuesPrePeriod.size(); i++) {
-            entries2.add(new BarEntry(i + 1, floatValuesPrePeriod.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesPrePeriod.size() > i){
+                entries2.add(new BarEntry(i+1f, floatValuesPrePeriod.get(i)));
+            }
+            else
+            {
+                entries2.add(new BarEntry(i+1f, 0f));
+            }
         }
-
-/*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        entries1.add(new BarEntry(5f, 3));
-        entries1.add(new BarEntry(6f, 7));
-        entries1.add(new BarEntry(7f, 2));
-        entries1.add(new BarEntry(8f, 6));
-        entries1.add(new BarEntry(9f, 5));
-        entries1.add(new BarEntry(10f, 4));
-        entries1.add(new BarEntry(11f, 3));
-        entries1.add(new BarEntry(12f, 2));
-
-        entries2.add(new BarEntry(1f, 2));
-        entries2.add(new BarEntry(2f, 6));
-        entries2.add(new BarEntry(3f, 5));
-        entries2.add(new BarEntry(4f, 4));
-        entries2.add(new BarEntry(5f, 3));
-        entries2.add(new BarEntry(6f, 2));
-        entries2.add(new BarEntry(7f, 2));
-        entries2.add(new BarEntry(8f, 6));
-        entries2.add(new BarEntry(9f, 4));
-        entries2.add(new BarEntry(10f, 7));
-        entries2.add(new BarEntry(11f, 3));
-        entries2.add(new BarEntry(12f, 7));
-*/
-
 
         BarData barD = loadGoupedDataSet(entries1, entries2);
 
@@ -830,26 +763,16 @@ public class App_Tab_1 extends ChartViewTab {
     private BarData generateBarDataYearWithoutPriorPeriod() {
         ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
 
-        for (int i = 0; i < floatValuesPeriod.size(); i++) {
-            entries1.add(new BarEntry(i + 1, floatValuesPeriod.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesPeriod.size() > i){
+                entries1.add(new BarEntry(i+1f, floatValuesPeriod.get(i)));
+            }
+            else
+            {
+                entries1.add(new BarEntry(i+1f, 0f));
+            }
         }
 
-
-        /*
-        entries1.add(new BarEntry(1f, 2));
-        entries1.add(new BarEntry(2f, 6));
-        entries1.add(new BarEntry(3f, 4));
-        entries1.add(new BarEntry(4f, 7));
-        entries1.add(new BarEntry(5f, 3));
-        entries1.add(new BarEntry(6f, 7));
-        entries1.add(new BarEntry(7f, 5));
-        entries1.add(new BarEntry(8f, 2));
-        entries1.add(new BarEntry(9f, 6));
-        entries1.add(new BarEntry(10f, 4));
-        entries1.add(new BarEntry(11f, 7));
-        entries1.add(new BarEntry(12f, 3));
-
-*/
         BarData barD = loadSingleBarDataSet(entries1);
 
         return barD;
@@ -874,25 +797,15 @@ public class App_Tab_1 extends ChartViewTab {
         positions.add(10.65f);
         positions.add(11.65f);
 
-
-        for (int i = 0; i < floatValuesAnomaly.size(); i++) {
-            entries.add(new BarEntry(positions.get(i), floatValuesAnomaly.get(i)));
+        for (int i = 0; i < 12; i++){
+            if(floatValuesAnomaly.size() > i){
+                entries.add(new Entry(positions.get(i), floatValuesAnomaly.get(i)));
+            }
+            else
+            {
+                entries.add(new BarEntry(positions.get(i), 0f));
+            }
         }
-
-        /*
-        entries.add(new Entry(0.6f, 21f));
-        entries.add(new Entry(1.6f, 23f));
-        entries.add(new Entry(2.6f, 24f));
-        entries.add(new Entry(3.6f, 26f));
-        entries.add(new Entry(4.6f, 25f));
-        entries.add(new Entry(5.6f, 21f));
-        entries.add(new Entry(6.65f, 23f));
-        entries.add(new Entry(7.65f, 21f));
-        entries.add(new Entry(8.65f, 23f));
-        entries.add(new Entry(9.65f, 24f));
-        entries.add(new Entry(10.65f, 26f));
-        entries.add(new Entry(11.65f, 25f));
-*/
 
         LineData lineD = loadLineData(entries);
 
@@ -902,27 +815,11 @@ public class App_Tab_1 extends ChartViewTab {
     private LineData generateLineDataYearSingleBar() {
 
         ArrayList<Entry> entries = new ArrayList<Entry>();
-
         float position = 1f;
 
         for (int i = 0; i < floatValuesAnomaly.size(); i++) {
             entries.add(new BarEntry(i + position, floatValuesAnomaly.get(i)));
         }
-
-        /*
-        entries.add(new Entry(1f, 21f));
-        entries.add(new Entry(2f, 23f));
-        entries.add(new Entry(3f, 24f));
-        entries.add(new Entry(4f, 26f));
-        entries.add(new Entry(5f, 25f));
-        entries.add(new Entry(6f, 21f));
-        entries.add(new Entry(7f, 23f));
-        entries.add(new Entry(8f, 21f));
-        entries.add(new Entry(9f, 23f));
-        entries.add(new Entry(10f, 24f));
-        entries.add(new Entry(11f, 26f));
-        entries.add(new Entry(12f, 25f));
-        */
 
         LineData lineD = loadLineData(entries);
 

@@ -1,0 +1,8 @@
+{
+	statistics(id: "?") {
+		id
+		name
+		annotation
+		period { id }
+	}
+}

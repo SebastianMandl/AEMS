@@ -18,11 +18,13 @@
         <link href="css/main.css" rel="stylesheet" type="text/css"/>
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
         <link href="css/login-modal.css" rel="stylesheet" type="text/css"/>
+	
+	<!--<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,"></link>-->
+	<link rel="icon" type="image/x-icon" href="images/favicon.ico"></link>
     </head>
 
 
     <body style="padding-top: 70px">
-        <f:event type="preRenderView" listener="#{notificationBean.init}" />
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
 
         <c:if test="#{!user.loggedIn}">
@@ -38,7 +40,11 @@
 
 
                 <ul class="listStyle">
-
+		    
+		    <c:if test="#{statisticDisplayBean.statistics.size() == 0}">
+			<h1 class="text">Keine Statistiken anzuzeigen.</h1>
+		    </c:if>
+ 
                     <c:forEach items="#{statisticDisplayBean.statistics}" var="statistic">
                         <li class="statistikElement">
                             <div class="statistic-container">

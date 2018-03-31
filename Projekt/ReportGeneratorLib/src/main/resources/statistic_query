@@ -1,0 +1,7 @@
+{
+	report_statistics(report: "?") {
+		statistic  {
+			id
+		}
+	}
+}

@@ -55,16 +55,16 @@ public class AemsScript {
 	builder.append(newLine);
 	
 	builder.append("raise ").append(RAISE_TYPES[data.getType()])
-		.append(" \"Zaehler ${meter} ueberschreitet den maximalen Verbrauchswert von ${borderMaxValue}: ${max}\" ")
+		.append(" \"Zaehler {$meter} ueberschreitet den maximalen Verbrauchswert von {$borderMaxValue}: {$max}\" ")
 		.append("on $max > $borderMaxValue ");
 	
 	final String EXCEPTION_DAY_STRING = data.getExceptionDays().isEmpty() ? "" : getExceptDays(data.getExceptionDays());
 	builder.append(EXCEPTION_DAY_STRING);
 	
 	builder.append(newLine);
-	
+	 
 	builder.append("raise ").append(RAISE_TYPES[data.getType()])
-		.append(" \"Zaehler ${meter} unterschreitet den minimalen Verbrauchswert von ${borderMinValue}: ${min}\" ")
+		.append(" \"Zaehler {$meter} unterschreitet den minimalen Verbrauchswert von {$borderMinValue}: {$min}\" ")
 		.append("on $min > $borderMinValue ");
 	builder.append(EXCEPTION_DAY_STRING);
 	

@@ -1,0 +1,8 @@
+{
+	reports(id: "?") {
+		id
+		name
+		period { id }
+		annotation
+	}
+}

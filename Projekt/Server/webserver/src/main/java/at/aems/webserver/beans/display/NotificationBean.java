@@ -54,6 +54,10 @@ public class NotificationBean extends AbstractDisplayBean {
 	
 	try {
 	    AemsResponse response = AemsAPI.call0(notificationQuery, null);
+	    if(!response.isOk()) {
+		return;
+	    }
+	    System.out.println(response.getDecryptedResponse());
 	    JsonArray notices = response.getJsonArrayWithinObject();
 	    
 	    for(JsonElement e : notices) {

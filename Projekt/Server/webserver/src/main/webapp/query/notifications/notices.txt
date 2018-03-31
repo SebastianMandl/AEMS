@@ -1,5 +1,5 @@
 query GetArchivedNotifications {
-	notices {
+	notices(seen: "false") {
 	    id
 	    title
 	    meter { id }
