@@ -4,6 +4,7 @@ aems\AESKeyManager.class
 aems\graphql\Period$1.class
 aems\database\AEMSDatabase$MeterData.class
 at\htlgkr\aems\util\crypto\Encrypter.class
+aems\graphql\NotificationType.class
 aems\graphql\Query$3.class
 aems\database\AEMSDatabase$NotificationExceptions.class
 aems\database\AEMSDatabase$WeatherData.class
@@ -86,6 +87,7 @@ aems\database\AEMSDatabase.class
 aems\graphql\WeatherData.class
 aems\graphql\Query.class
 at\htlgkr\aems\util\crypto\KeyUtils.class
+aems\database\AEMSDatabase$NotificationTypes.class
 aems\graphql\Meter$5.class
 aems\graphql\StatisticTime$5.class
 aems\graphql\StatisticTime.class
