@@ -387,7 +387,7 @@ public class RestInf extends HttpServlet {
                     System.out.println("query: " + query);      
                     System.out.println("data: " + data);
                     
-                    if(data.equals("null") || data == null) {
+                    if(data == null || data.equals("null")) {
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query malformed!");
                         return;
                     }
@@ -400,6 +400,13 @@ public class RestInf extends HttpServlet {
                         if(array.getJSONObject(i).keySet().isEmpty()) {
                             array.remove(i);
                             i--;
+                        } else {
+                            try {
+                                if(array.getJSONObject(i).get("id") == JSONObject.NULL) {
+                                    array.remove(i);
+                                    i--;
+                                }
+                            } catch(Exception e) {}
                         }
                     }
                     
