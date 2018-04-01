@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package at.aems.webserver.beans.action;
-
+ 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
 import at.aems.apilib.AemsResponse;
@@ -106,20 +106,20 @@ public class NewReportBean extends AbstractActionBean {
         
         String reportId = response.getAsJsonObject().get("id").getAsString();
         AemsInsertAction action2 = new AemsInsertAction(user, EncryptionType.SSL);
-        action2.setTable("ReportStatistics");
+        action2.setTable("report_statistics");
         for(Integer i : statistics) {
             action2.write("report", reportId);
             action2.write("statistic", i);
             action2.endWrite();
         } 
-        
+         AemsResponse response2 = null;
 	try {
-	    AemsResponse response2 = AemsAPI.call0(action2, null);
+	    response2 = AemsAPI.call0(action2, null);
 	} catch(IOException e) {
 	    // yes
 	}
         
-        notify.setMessage("Bericht wurde erstellt!");
+        notify.setMessage("R1: " + response.isOk() + "/ R2: " + response2.isOk());
 	callUpdateOn("userReportBean");
         return "einstellungenBerichte";
     }

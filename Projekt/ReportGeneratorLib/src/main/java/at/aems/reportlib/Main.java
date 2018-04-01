@@ -11,11 +11,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
         
         AemsUser user = new AemsUser(185, "x", "pwd");
-        Report r = new Report(1);
+        Report r = new Report(104);
         r.fetch(user);
         
         PDDocument doc = r.toPdf(user);
-        doc.save("my.pdf");
+        doc.save(r.getReportName().replaceAll(" ", "_") + ".pdf");
         
     }
 

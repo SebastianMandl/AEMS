@@ -8,25 +8,17 @@ package at.aems.webserver.beans.display;
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsQueryAction;
 import at.aems.apilib.AemsResponse;
-import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.NewMap;
-import at.aems.webserver.data.notifications.NotificationType;
 import at.aems.webserver.data.notifications.SimpleNotificationData;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -46,8 +38,9 @@ public class NotificationBean extends AbstractDisplayBean {
     public void update() {
         
         notifications = new ArrayList<>();
-	if(userBean == null)
+	if(userBean == null || !notifications.isEmpty())
 	    return;
+	
 	configureApiParams();
         AemsQueryAction notificationQuery = new AemsQueryAction(userBean.getAemsUser());
 	notificationQuery.setQuery(AemsUtils.getQuery("notices", NewMap.of()));
@@ -57,20 +50,21 @@ public class NotificationBean extends AbstractDisplayBean {
 	    if(!response.isOk()) {
 		return;
 	    }
-	    System.out.println(response.getDecryptedResponse());
-	    JsonArray notices = response.getJsonArrayWithinObject();
 	    
+	    StackTraceElement[] s = Thread.currentThread().getStackTrace();
+	    JsonArray notices = response.getJsonArrayWithinObject();
+	    System.out.println(" ---- update --- " + hashCode());
 	    for(JsonElement e : notices) {
 		SimpleNotificationData data = SimpleNotificationData.fromJsonObject(e.getAsJsonObject());
 		if(data != null && !data.wasSeen()) {
-		    notifications.add(data);
+		    notifications.add(data); 
 		}
 	    }
 	    
 	} catch(Exception ex) {
 	    Logger.getLogger(NotificationBean.class.getName()).log(Level.SEVERE, null, ex);
 	}
-    }
+    } 
     
     private JsonArray getJsonData(AemsQueryAction query) {
         try {
@@ -112,6 +106,12 @@ public class NotificationBean extends AbstractDisplayBean {
                 "}");
     }
 
+    @Override
+    public int hashCode() {
+	return (int) System.currentTimeMillis() + super.hashCode();
+    }
+
+    
     
     
 }

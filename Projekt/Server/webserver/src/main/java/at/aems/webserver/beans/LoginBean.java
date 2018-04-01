@@ -12,10 +12,7 @@ import at.aems.apilib.AemsResponse;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.action.AbstractActionBean;
-import at.aems.webserver.beans.display.StatisticBean;
-import at.aems.webserver.beans.display.UserReportBean;
-import at.aems.webserver.beans.display.UserStatisticsBean;
-import at.aems.webserver.beans.display.UserWarningsBean;
+import at.aems.webserver.beans.objects.NotifyType;
 import at.aems.webserver.beans.objects.UserRole;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -64,13 +61,12 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	try {
 	    configureApiParams();
 	    response = AemsAPI.call0(login, null);
-	    System.out.println(response.getDecryptedResponse());
 	} catch (IOException e) {
 	    Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
 	}
-
+ 
 	if (response == null || !response.isOk()) {
-	    notify.setMessage("Login fehlgeschlagen!");
+	    notify.setMessage("Login fehlgeschlagen!", NotifyType.ERROR);
 	    return "index.xhtml";
 	}
 
@@ -85,11 +81,17 @@ public class LoginBean extends AbstractActionBean { // Serializeable to allow ap
 	    userBean.setUsername(username);
 	    userBean.setPassword(password);
 	    int roleId = getUserRole(userId);
+	    
 	    if (roleId < UserRole.MEMBER.getId()) { 
 		userBean.setUserId(-1);
 		userBean.setUsername(null);
 		userBean.setPassword(null);
-		notify.setMessage("Dieser Account wurde noch nicht von einem Admin bestätigt");
+	    }
+	    if(roleId == UserRole.UNVERIFIED.getId()) {
+		notify.setMessage("Sie müssen erst Ihre E-Mail Adresse bestätigen!");
+	    }
+	    if(roleId == UserRole.UNREGISTERED.getId()) {
+		notify.setMessage("Dieser Account wurde noch nicht von einem Administrator freigegeben!");
 	    }
 
 	} else {

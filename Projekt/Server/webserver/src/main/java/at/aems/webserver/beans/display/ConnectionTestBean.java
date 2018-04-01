@@ -44,8 +44,8 @@ public class ConnectionTestBean implements Serializable {
 	try {
 	    HttpURLConnection con = (HttpURLConnection)
 		new URL("http://aemsserver.ddns.net:8084/AEMSWebService").openConnection();
-	    con.setReadTimeout(5000);
-	    con.setConnectTimeout(5000);
+	    con.setReadTimeout(4000);
+	    con.setConnectTimeout(4000);
 	    con.connect();
 	    
 	    // this will trigger a SocketTimeoutException if no connection

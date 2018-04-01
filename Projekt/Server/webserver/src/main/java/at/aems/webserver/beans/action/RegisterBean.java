@@ -13,11 +13,8 @@ import at.aems.apilib.AemsUser;
 import at.aems.apilib.crypto.EncryptionType;
 import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.action.AbstractActionBean;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import at.aems.webserver.beans.objects.NotifyType;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +22,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.swing.AbstractAction;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -136,8 +130,9 @@ public class RegisterBean extends AbstractActionBean {
 	} catch(IOException ex) {
 	    // yes 
 	}
-	if(!registerResponse.isOk()) {
-	    return "register.xhtml";
+	if(registerResponse == null || !registerResponse.isOk()) {
+	    notify.setMessage("Registration fehlgeschlagen", NotifyType.ERROR);
+	    return "index";
 	}
 	
 	AemsInsertAction insert = new AemsInsertAction(root);

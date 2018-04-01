@@ -31,6 +31,14 @@
 	<pattern value="/nutzungsbedingungen" />
 	<view-id value="/faces/terms.xhtml" />
     </url-mapping>
+    <url-mapping id="impressum">
+	<pattern value="/impressum" />
+	<view-id value="/faces/impressum.xhtml" />
+    </url-mapping>
+    <url-mapping id="archive">
+	<pattern value="/software" />
+	<view-id value="/faces/archive.xhtml" />
+    </url-mapping>
     <url-mapping id="error">
 	<pattern value="/error" />
 	<view-id value="/faces/error.xhtml" />
