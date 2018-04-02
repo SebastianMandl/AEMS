@@ -18,19 +18,20 @@ import java.util.GregorianCalendar;
  * @author Niklas
  */
 public enum Period {
+        
     @SerializedName("1")
-    DAILY(1, "Tag", new String[]{"0 - 3 Uhr", "3 - 6 Uhr", "6 - 9 Uhr", "9 - 12 Uhr",
+    DAILY(1, "Täglich", new String[]{"0 - 3 Uhr", "3 - 6 Uhr", "6 - 9 Uhr", "9 - 12 Uhr",
 				 "12 - 15 Uhr", "15 - 18 Uhr", "18 - 21 Uhr", "21 - 24 Uhr"}), 
     //
     
     @SerializedName("2")
-    WEEKLY(2, "Woche", new String[]{"Montag", "Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"}),  //
+    WEEKLY(2, "Wöchentlich", new String[]{"Montag", "Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"}),  //
     
     @SerializedName("3")
-    MONTHLY(3, "Monat", new String[]{"getweeklabels"}),
+    MONTHLY(3, "Monatlich", new String[]{"getweeklabels"}),
     
     @SerializedName("4")
-    YEARLY(4, "Jahr", new String[]{"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
+    YEARLY(4, "Jährlich", new String[]{"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", 
                      "August", "September", "Oktober", "November", "Dezember"}); //
    
     
@@ -51,6 +52,10 @@ public enum Period {
             }
         }
         return null;
+    }
+    
+    public String getName() {
+	return this.label;
     }
     
     public int getPeriodId(){

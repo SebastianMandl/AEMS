@@ -32,7 +32,6 @@
             <ui:include src="/templates/welcome.xhtml"></ui:include>
         </c:if>
         <c:if test="#{user.loggedIn}">
-            <f:event type="preRenderView" listener="#{notificationBean.init}" />
             <!-- Seiteninhalt -->
             <article class="einstellungen">
 

@@ -37,10 +37,9 @@
 
                           <h4>Zeitraum</h4>
                           <select id="period" class="form-control">
-                              <option value="0">Täglich</option>
-                              <option value="1">Wöchentlich</option>
-                              <option value="2">Monatlich</option>
-                              <option value="3">Jährlich</option>
+			    <c:forEach items="#{newStatistic.periodStrings.entrySet()}" var="p">
+				<option value="#{p.key}">#{p.value}</option>
+			    </c:forEach>
                           </select>
                           <h:inputHidden id="_period" value="#{newReportBean.timePeriod}"></h:inputHidden>
 

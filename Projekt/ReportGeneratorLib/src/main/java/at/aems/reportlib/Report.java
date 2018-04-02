@@ -173,6 +173,7 @@ public class Report {
             
             
             stream.close();
+            counter++;
         }
         
         return document;

@@ -7,7 +7,7 @@
 
       <c:if test="#{notifyBean.hasMessage()}">
             <script>
-                $.notify("#{notifyBean.message}", "info");
+                $.notify("#{notifyBean.message}", "#{notifyBean.type}");
             </script>
       </c:if>
     <c:if test="#{errorBean.hasMessage()}">

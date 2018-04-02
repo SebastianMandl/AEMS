@@ -34,12 +34,14 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author Niggi
  */
 @ManagedBean
+@SessionScoped
 public class StatisticDisplayBean extends AbstractDisplayBean {
 
     private List<DisplayedStatistic> statistics;
@@ -51,7 +53,7 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
     public void update() {
 	configureApiParams();
 	statistics = new ArrayList<>();
-
+	 System.out.println(" --- update statisticsbean -+-");
 	List<DisplayedStatistic> statisticIds = getStatisticsOfUser();
 	if (statisticIds == null) {
 	    return;
@@ -69,7 +71,6 @@ public class StatisticDisplayBean extends AbstractDisplayBean {
 		AemsResponse resp = AemsAPI.call0(statisticAction, null);
 		JsonObject obj = resp.getAsJsonObject();
 
-		System.out.println(" ************************** ");
 		System.out.println(obj.toString());
 		JsonArray period = obj.get("period").getAsJsonArray();
 		JsonArray prePeriod = obj.get("pre_period").getAsJsonArray();

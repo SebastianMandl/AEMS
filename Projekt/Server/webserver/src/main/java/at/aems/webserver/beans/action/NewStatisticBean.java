@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package at.aems.webserver.beans.action;
-
+ 
 import at.aems.apilib.AemsAPI;
 import at.aems.apilib.AemsInsertAction;
 import at.aems.apilib.AemsResponse;
@@ -15,7 +15,9 @@ import at.aems.webserver.beans.UserBean;
 import at.aems.webserver.data.statistic.Period;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -47,6 +49,14 @@ public class NewStatisticBean extends AbstractActionBean {
             items[i++] = new SelectItem(p, p.getLabel());
         }
         return items;
+    }
+    
+    public Map<Integer, String> getPeriodStrings() {
+	Map<Integer, String> result = new HashMap<>();
+	for(Period period : Period.values()) {
+	    result.put(period.getPeriodId(), period.getName());
+	}
+	return result;
     }
     
     public String getMeters() {
@@ -105,7 +115,7 @@ public class NewStatisticBean extends AbstractActionBean {
         AemsResponse resp = AemsAPI.call0(insert, null); 
 	System.out.println(resp.getDecryptedResponse());
         int statisticId = resp.getAsJsonObject().get("id").getAsInt();
-        
+	
         AemsInsertAction insertMeters = new AemsInsertAction(user, EncryptionType.SSL);
         insertMeters.setTable("statistic_meters");
         insertMeters.beginWrite();

@@ -1,0 +1,46 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+  <!-- Modal -->
+  <div class="modal fade" id="deleteStatisticModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">X</button>
+          <h4 class="modal-title">Warnung: Statistik wird in Berichten verwendet!</h4>
+        </div>
+        <div class="modal-body">
+	    <b>Die zu löschende Statistik wird auch in folgenden Berichten verwendet: </b>
+	    <ul>
+		<c:forEach items="#{statisticActionBean.reportNames}" var="report">
+		    <li>#{report}</li>
+		</c:forEach>
+	    </ul>
+	    <p>
+		Wenn Sie fortfahren, wird diese Statistik aus diesen Berichten entfernt.  
+		Sind Sie sicher, dass Sie diese Statistik löschen wollen?
+	    </p>
+        </div>
+        <div class="modal-footer">
+	    <h:form>
+		<h:commandButton value="Löschen" action="#{statisticActionBean.forceRemove(111)}">
+		</h:commandButton>
+	    </h:form>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Abbruch</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <script>
+      $('#deleteStatisticModal').modal('show');
+  </script>
+    
+</ui:composition>

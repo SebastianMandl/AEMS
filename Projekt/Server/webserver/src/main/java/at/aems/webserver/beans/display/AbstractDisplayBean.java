@@ -17,7 +17,7 @@ import javax.faces.context.FacesContext;
 
 /**
  *
- * @author Niggi
+ * @author Niggi 
  */
 @ManagedBean
 @SessionScoped
@@ -33,7 +33,9 @@ public abstract class AbstractDisplayBean extends AbstractBean implements Serial
     
     @PostConstruct
     public void init() {
+	if(connectionBean != null && connectionBean.hasConnection()) {
 	    onLoad();
+	}
     }
 
     /**

@@ -28,33 +28,31 @@
         <ui:include src="/templates/navbar-top.xhtml"></ui:include>
 
 	<div class="welcome">
-	    <h1 class="text text-center">Fehler: 404 Not Found</h1>
-	    <hr/>
-	    <h4 class="text text-justify">
-		Diese Ressource konnte nicht gefunden werden.
-		Möglicherweise haben Sie sich bei der URL vertippt, oder die
-		Ressource wurde entfernt. Kontaktieren Sie einen Administrator, wenn Sie
-		glauben, dass es sich hierbei um einen Fehler handelt.
-	    </h4>
-	    <hr/>
-		<h:link outcome="index.xhtml" value="Hier geht's zurück zum Home Screen" class="btn btn-info" style="display: block; margin: auto; width: 35%"></h:link>
+	    <h1>Software zu AEMS:</h1>
+	    <table class="table">
+		<thead>
+		    <tr>
+			<th>Name</th>
+			<th>Typ</th>
+			<th>Release-Datum</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <c:forEach items="#{softwareBean.availableSoftware}" var="item">
+			<tr>
+			    <td><h:outputLink value="#{item.filePath}">#{item.fileName}</h:outputLink></td>
+			    <td>#{item.type}</td>
+			    <td>#{item.niceReleaseDate}</td>
+			</tr>
+		    </c:forEach>
+		</tbody>
+	    </table>
 	</div>
-
-
-
-        <!-- Footer -->
-        <ui:include src="/templates/footer.xhtml"></ui:include>
 
         <script src="#{request.contextPath}/js/jquery-1.11.3.min.js"></script>
         <script src="#{request.contextPath}/js/bootstrap.js"></script>
         <script src="#{request.contextPath}/js/mobile-functions.js"></script>
 
-        <script>
-	    var notifs = #{notificationBean.nofificationsAsJson};
-	    notifications = $.map(notifs, function (el) {
-		return el
-	    });
-        </script>
 
         <script language="javascript" type="text/javascript" src="#{request.contextPath}/js/benachrichtigungen.js"></script>
 

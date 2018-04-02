@@ -31,9 +31,6 @@
         </c:if>
 
         <c:if test="#{user.loggedIn}">
-            <f:event type="preRenderView" listener="#{notificationBean.init}" />
-
-
             <article class="einstellungen">
 
 		<button id="createStatistic" class="btn btn-default ownButton" 
@@ -112,7 +109,7 @@
                                     <h:commandLink action="#{statisticActionBean.addToIndex(item.id)}" rendered="#{!item.startpage}">
                                         <button class="btn btn-default" title="Statistik zu Startseite hinzufügen"><span class="glyphicon glyphicon-home"></span></button>
                                     </h:commandLink>
-                                    <h:commandLink action="#{statisticActionBean.remove(item.id)}">
+                                    <h:commandLink action="#{statisticActionBean.forceRemove(item.id)}">
                                         <button class="btn btn-default" title="Statistik verwerfen"><span class="glyphicon glyphicon-trash"></span></button>
                                     </h:commandLink>                               
                                 </div>
@@ -164,6 +161,10 @@
 		return el
 	    });
         </script>
+	
+	    <c:if test="#{statisticActionBean.doPrompt()}">
+		<ui:include src="/templates/deleteStatistic-modal.xhtml"></ui:include>
+	    </c:if>
 
         <script language="javascript" type="text/javascript" src="js/benachrichtigungen.js"></script>
         <script language="javascript" type="text/javascript" src="js/loginfunctions.js"></script>
