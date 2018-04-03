@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,6 +116,12 @@ public class AllNotifications extends Activity {
         });
         thread.start();
 
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                    }
+                }, 4000);
+
         try {
             thread.join();
         } catch (InterruptedException e) {
@@ -135,6 +143,7 @@ public class AllNotifications extends Activity {
         action.setQuery("{notices {id, title, meter{id}, notificationtype{display_name}, sensor{name}, notice, seen}}"); // Hier muss meine GraphQL Query rein sensor, seen
         System.out.println("{notices {id, title, meter{id}, notice}}");
 
+        AemsAPI.setTimeout(8000);
         AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
         AemsResponse response = null;
         try {
@@ -142,8 +151,9 @@ public class AllNotifications extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int httpCode = response.getResponseCode();
+        final int httpCode = response.getResponseCode();
         System.out.println("------------------------------" + httpCode + "------------------------------------------------------");
+
         if (httpCode != 200 && errorCount < 3) {
             errorCount++;
             loadNotifications();
@@ -152,7 +162,9 @@ public class AllNotifications extends Activity {
         }
 
         String decryptedResponse = response.getDecryptedResponse();
-        System.out.println(decryptedResponse);
+        System.out.println("Decrypted Response: -------------------- "+decryptedResponse);
+        System.out.println("Response Exception---------------------- "+response.getExcetption());
+
 
         //Get Data from JSON-Object
         JSONObject[] jsons = getDataFromJson(decryptedResponse);

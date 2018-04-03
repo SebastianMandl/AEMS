@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         action.setQuery("{statistics(user:\"" + userIdString + "\", display_android:\"true\"){id, name, period{name}}}");
         System.out.println("{statistics(user:\"" + userIdString + "\", display_android:\"true\"){id}}");
 
+        AemsAPI.setTimeout(8000);
         AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
         AemsResponse response = null;
         try {

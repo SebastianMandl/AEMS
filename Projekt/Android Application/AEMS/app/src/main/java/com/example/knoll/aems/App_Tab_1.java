@@ -302,6 +302,7 @@ public class App_Tab_1 extends ChartViewTab {
             statisticAction.setStatisticId(statisticId);
 
             try {
+                AemsAPI.setTimeout(8000);
                 AemsAPI.setUrl("http://aemsserver.ddns.net:8084/AEMSWebService/RestInf");
                 AemsResponse response = AemsAPI.call0(statisticAction, null);
                 JsonObject json = response.getAsJsonObject();
