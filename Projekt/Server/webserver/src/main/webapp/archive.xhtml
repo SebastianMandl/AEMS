@@ -41,7 +41,7 @@
 		    <c:forEach items="#{softwareBean.availableSoftware}" var="item">
 			<tr>
 			    <td><h:outputLink value="#{item.filePath}">#{item.fileName}</h:outputLink></td>
-			    <td>#{item.type}</td>
+			    <td>#{item.desc}</td>
 			    <td>#{item.niceReleaseDate}</td>
 			</tr>
 		    </c:forEach>

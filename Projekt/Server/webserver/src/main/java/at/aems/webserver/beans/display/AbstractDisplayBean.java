@@ -30,7 +30,6 @@ public abstract class AbstractDisplayBean extends AbstractBean implements Serial
     @ManagedProperty(value="#{errorBean}")
     protected ErrorBean errorBean;
     
-    
     @PostConstruct
     public void init() {
 	if(connectionBean != null && connectionBean.hasConnection()) {

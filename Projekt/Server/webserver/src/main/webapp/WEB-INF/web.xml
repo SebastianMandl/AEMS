@@ -48,5 +48,34 @@
 	<error-code>404</error-code>
 	<location>/faces/error.xhtml</location> 
     </error-page>
-    
+     
+
+    <filter>
+	<description>
+	    This filter restricts access to all json files
+	    if the user is not master.
+	</description>
+	<display-name>yes</display-name>
+	<icon id="id"></icon>
+	<filter-name>JsonFilter</filter-name>
+	<filter-class>at.aems.webserver.servlet.JsonFilter</filter-class>
+    </filter>
+     
+    <filter-mapping>
+	<filter-name>JsonFilter</filter-name> 
+	<url-pattern>/configuration/*</url-pattern>
+    </filter-mapping>
+      
+    <!--
+    <security-constraint> 
+        <web-resource-collection> 
+            <web-resource-name>ABCPages</web-resource-name> 
+            <description></description> 
+            <url-pattern>*.json</url-pattern> 
+            <http-method>GET</http-method> 
+            <http-method>POST</http-method> 
+        </web-resource-collection> 
+	
+        <auth-constraint/>
+    </security-constraint> -->
 </web-app>

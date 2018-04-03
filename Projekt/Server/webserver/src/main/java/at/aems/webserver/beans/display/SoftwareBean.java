@@ -5,8 +5,11 @@
  */
 package at.aems.webserver.beans.display;
 
+import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.objects.SoftwareInfo;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -31,25 +34,25 @@ public class SoftwareBean extends AbstractDisplayBean {
     public void init() {
 	// do update even if no connection to api
 	update();
-    }
+    } 
 
     @Override
     public void update() {
-	availableSoftware = new ArrayList<>();
-
-	add("android_aems-1.0.0.apk", "apk/AEMS_1.0.0.apk", SoftwareInfo.TYPE_ANDROID_APK, "31.03.2018");
-	add("raspberry-gui-aems-1.0.0.jar", "apk/AEMS_1.0.0.apk", SoftwareInfo.TYPE_RASPBERRY, "01.04.2018");
-
-	add("dei-mama-exe", "apk/mama.exe", "Anderes", "31.03.1955");
-
+	availableSoftware = AemsUtils.CONFIG.getSoftware();
+	  
+	/**
+	 * sort by release date descending (newer versions first)
+	 */
+	Collections.sort(availableSoftware, new Comparator<SoftwareInfo>() {
+	    @Override
+	    public int compare(SoftwareInfo o1, SoftwareInfo o2) {
+		return o2.getReleaseDate().compareTo(o1.getReleaseDate());
+	    }
+	});
     }
 
     public List<SoftwareInfo> getAvailableSoftware() {
 	return availableSoftware;
-    }
-
-    private void add(String name, String path, String type, String date) {
-	this.availableSoftware.add(new SoftwareInfo(name, path, type, date));
     }
 
 }

@@ -1,6 +1,7 @@
 {
 	reports(id: "?") {
 		id
+		user { id }
 		name
 		period { id }
 		annotation

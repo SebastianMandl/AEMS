@@ -36,7 +36,7 @@
 	<view-id value="/faces/impressum.xhtml" />
     </url-mapping>
     <url-mapping id="archive">
-	<pattern value="/software" />
+	<pattern value="/archive" />
 	<view-id value="/faces/archive.xhtml" />
     </url-mapping>
     <url-mapping id="error">

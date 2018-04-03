@@ -85,7 +85,10 @@ public abstract class AbstractBean {
 	} catch (Exception e) {
 	}
 	 
-	ApiConfig config = new ApiConfig(AemsUtils.API_URL, 5000, path, "Minecraft=0");
+	ApiConfig config = new ApiConfig(
+		AemsUtils.CONFIG.getApiUrl(), 
+		AemsUtils.CONFIG.getConnectTestTimeout()
+		, path, "Minecraft=0");
 
 	AemsAPI.setConfig(config);
     }

@@ -5,6 +5,7 @@
  */
 package at.aems.webserver.beans.display;
 
+import at.aems.webserver.AemsUtils;
 import at.aems.webserver.beans.UserBean;
 import java.io.Serializable;
 import java.net.URL;
@@ -13,7 +14,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import sun.net.www.protocol.http.HttpURLConnection;
 
@@ -43,9 +43,9 @@ public class ConnectionTestBean implements Serializable {
 	 
 	try {
 	    HttpURLConnection con = (HttpURLConnection)
-		new URL("http://aemsserver.ddns.net:8084/AEMSWebService").openConnection();
-	    con.setReadTimeout(4000);
-	    con.setConnectTimeout(4000);
+		new URL(AemsUtils.CONFIG.getApiUrl()).openConnection();
+	    con.setReadTimeout(AemsUtils.CONFIG.getConnectTestTimeout());
+	    con.setConnectTimeout(AemsUtils.CONFIG.getConnectTestTimeout());
 	    con.connect();
 	    
 	    // this will trigger a SocketTimeoutException if no connection
@@ -78,7 +78,5 @@ public class ConnectionTestBean implements Serializable {
     public void setUserBean(UserBean userBean) {
 	this.userBean = userBean;
     }
-    
-    
     
 }

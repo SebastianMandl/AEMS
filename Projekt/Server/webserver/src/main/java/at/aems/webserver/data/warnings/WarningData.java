@@ -94,8 +94,6 @@ public class WarningData {
 	this.id = id;
     }
     
-    
-
     public static WarningData fromJsonObject(JsonObject o) {	
 	Integer id = JsonPath.read(o.toString(), "$.id");
 	String meterId = JsonPath.read(o.toString(), "$.meter.id");

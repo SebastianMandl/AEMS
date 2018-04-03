@@ -79,7 +79,7 @@ public class AemsChart {
     }
     
     public BufferedImage toBufferedImage() {
-        return toChart().createBufferedImage(600, 440);
+        return toChart().createBufferedImage(600, 440); 
     }
     
     private DefaultCategoryDataset asDataset(List<Double> list, List<Double> listPre) {

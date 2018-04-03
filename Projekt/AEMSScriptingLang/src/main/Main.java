@@ -162,11 +162,11 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception {
 		
-		DiffieHellmanProcedure.prepareKeyAcquisition(SERVER_ADDRESS);
+	    DiffieHellmanProcedure.prepareKeyAcquisition(SERVER_ADDRESS);
 		DiffieHellmanProcedure.sendKeyInfos(new Socket(InetAddress.getByName(SERVER_ADDRESS), 9950));
 		key = KeyUtils.salt(new BigDecimal(new String(DiffieHellmanProcedure.confirmKey())), "master", pwd);
 		
-		System.out.println(key);
+		System.out.println(key); 
 		
 		Logger.setDebugMode(true);
 		

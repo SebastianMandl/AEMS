@@ -70,13 +70,17 @@ public class Utils {
             return Arrays.asList("0-3", "3-6", "6-9", "9-12", "12-15", "15-18", "18-21", "21-24");
         case 2:
             return Arrays.asList("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag");
-        case 3:
+        case 3: 
             return Arrays.asList("KW x", "KW x+1", "KW x+2", "KW x+3", "KW x+4");
         case 4:
             return Arrays.asList("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli",
                     "August", "September", "Oktober", "November", "Dezember");
         }
         return null;
+    }
+    
+    public static int getAmountOfValues(int periodId) {
+        return getLabels(periodId).size();
     }
     
     private static String readDataFromStream(InputStream stream) throws IOException {
