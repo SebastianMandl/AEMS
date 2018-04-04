@@ -32,6 +32,8 @@ public class ServerConfig {
     private AemsUser masterCredentials = new AemsUser(0, "username", "password");
     private Integer connectTestTimeout = 5000;
     
+    private String pdfFolder = "pdfs";
+    
     private List<SoftwareInfo> software = new ArrayList<>();
     
     public ServerConfig() {  
@@ -117,6 +119,21 @@ public class ServerConfig {
 
     public void setConnectTestTimeout(Integer connectTestTimeout) {
 	this.connectTestTimeout = connectTestTimeout;
+    }
+
+    public String getPdfFolder() {
+	return pdfFolder;
+    }
+
+    public void setPdfFolder(String pdfFolder) {
+	this.pdfFolder = pdfFolder;
+    }
+    
+    public File getPdfFolderFile() {
+	ServletContext servlet = (ServletContext) FacesContext.getCurrentInstance()
+		.getExternalContext().getContext();
+	String path = servlet.getRealPath("/") + getPdfFolder();
+	return new File(path);
     }
 
     public List<SoftwareInfo> getSoftware() {

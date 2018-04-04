@@ -1,7 +1,0 @@
-{
-  "userId": 215,
-  "username": "master",
-  "password": "pwd",
-  "pdfFolder": "pdfs",
-  "apiUrl": "http://aemsserver.ddns.net:8084/AEMSWebService/RestInf"
-}

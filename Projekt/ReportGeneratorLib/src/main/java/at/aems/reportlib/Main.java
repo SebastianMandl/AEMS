@@ -30,10 +30,10 @@ public class Main {
         
         String savePath = conf.getPdfFolder();
         for(Report r : reports) {
+            r.fetch(rootUser);
             if(!r.shouldGenerate())
                 continue;
             
-            r.fetch(rootUser);
             PDDocument pdf = r.toPdf(rootUser);
 
             File folder = new File(savePath, "" + r.getUserId());

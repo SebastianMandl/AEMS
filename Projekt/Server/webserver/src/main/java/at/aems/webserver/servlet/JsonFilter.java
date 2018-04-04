@@ -28,18 +28,23 @@ public class JsonFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-	UserBean user = (UserBean) ((HttpServletRequest)request).getSession().getAttribute("user");
-	
-	if(user == null || user.getUserId() != 215) {
-	    ((HttpServletResponse)response).sendError(404);
-	} else {
+	UserBean user = (UserBean) ((HttpServletRequest) request).getSession().getAttribute("user");
+
+	if (user == null || user.getUserId() != 215) {
+	    String g = ((HttpServletRequest) request).getParameter("matura");
+	    if (g == null || !g.equals("fisch")) {
+		((HttpServletResponse) response).sendError(404);
+	    } else {
+		chain.doFilter(request, response);
+	    } 
+	} else { 
 	    chain.doFilter(request, response);
 	}
-	
+
     }
 
     @Override
     public void destroy() {
     }
-    
+
 }
