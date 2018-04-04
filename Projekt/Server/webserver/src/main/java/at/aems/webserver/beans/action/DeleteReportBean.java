@@ -22,7 +22,7 @@ public class DeleteReportBean extends AbstractActionBean {
     public String doDelete(Integer id) {
 	
 	configureApiParams();
-	
+	deleteFromResolutionTable("report_statistics", id);
 	AemsDeleteAction delete = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
 	delete.setTable("Reports");
 	delete.setIdColumn("id", id);
@@ -42,4 +42,15 @@ public class DeleteReportBean extends AbstractActionBean {
 	return "einstellungenBerichte";
     }
     
+    private boolean deleteFromResolutionTable(String tableName, Integer reportId) {
+	AemsDeleteAction deleteMeters = new AemsDeleteAction(userBean.getAemsUser(), EncryptionType.SSL);
+	deleteMeters.setTable(tableName);
+	deleteMeters.setIdColumn("report", reportId);
+	try {
+	    AemsResponse re = AemsAPI.call0(deleteMeters, null);
+	    return re.isOk();
+	} catch(Exception ex) {
+	    return false;
+	}
+    }
 }
