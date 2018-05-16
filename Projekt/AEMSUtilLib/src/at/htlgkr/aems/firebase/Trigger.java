@@ -1,54 +1,39 @@
 package at.htlgkr.aems.firebase;
 
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.net.URL;
+import java.time.Duration;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import org.json.JSONObject;
+import de.bytefish.fcmjava.client.FcmClient;
+import de.bytefish.fcmjava.client.settings.PropertiesBasedSettings;
+import de.bytefish.fcmjava.model.options.FcmMessageOptions;
+import de.bytefish.fcmjava.requests.notification.NotificationPayload;
+import de.bytefish.fcmjava.requests.notification.NotificationUnicastMessage;
+import de.bytefish.fcmjava.responses.FcmMessageResponse;
 
 public class Trigger {
 
 	public static boolean notify(String token, String title, String msg) {
+		//new File(System.getProperty("user.home") + "/.fcmjava/fcmjava.properties").createNewFile();
+		// Creates the Client using the default settings location, which is
+		//System.getProperty("user.home") + "/.fcmjava/fcmjava.properties":
+		PropertiesBasedSettings settings = PropertiesBasedSettings.createFromDefault();
 		
-		/**
-		 * POST https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send HTTP/1.1
+		FcmClient client = new FcmClient(settings);
 
-			Content-Type: application/json
-			Authorization: Bearer ya29.ElqKBGN2Ri_Uz...HnS_uNreA
-			
-			{
-			  "message":{
-			    "token" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...",
-			    "notification" : {
-			      "body" : "This is an FCM notification message!",
-			      "title" : "FCM Message",
-			      }
-			   }
-			}
-		 */
+		// Message Options:
+		FcmMessageOptions options = FcmMessageOptions.builder().setTimeToLive(Duration.ofHours(1)).build();
 		
+		// Send a Message:
+		//TopicUnicastMessage msg = new TopicUnicastMessage(options, new Topic("news"), new PersonData("Philipp", "Wagner"));
+		NotificationPayload payload = new NotificationPayload(title, msg, null, null, null, null, null, null, null, null, null, null);
+		NotificationUnicastMessage notification = new NotificationUnicastMessage(options, token, payload);
+		FcmMessageResponse response = client.send(notification);
 		try {
-			HttpsURLConnection con = (HttpsURLConnection) new URL("https://console.firebase.google.com/project/aems-6f5d2/notification/compose").openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("content-type", "application/json");
-			con.setDoOutput(true);
-			
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-			JSONObject object = new JSONObject();
-			JSONObject msgObj  = new JSONObject();
-			JSONObject notificationObj = new JSONObject();
-			msgObj.put("token", token);
-			notificationObj.put("body", msg);
-			notificationObj.put("title", title);			
-			msgObj.put("notification", notificationObj);
-			object.put("message", msgObj);
-			
-			writer.write(object.toString());
-			writer.flush();
-			writer.close();
-		} catch (Exception e) {
+			client.close();
+		} catch(Exception e) {
+			return false;
+		}
+		
+		if(response.getNumberOfFailure() > 0) {
 			return false;
 		}
 		
