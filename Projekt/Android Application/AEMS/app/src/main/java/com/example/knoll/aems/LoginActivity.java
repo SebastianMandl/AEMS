@@ -95,13 +95,19 @@ public class LoginActivity extends Activity {
         });
         thread.start();
 
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                    }
+                }, 4000);
+
         try {
             thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
 
         // On complete call either onLoginSuccess or onLoginFailed
         if (httpCode == 200) {
@@ -110,7 +116,7 @@ public class LoginActivity extends Activity {
         } else {
             onLoginFailed();
         }
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
 
     }
 
@@ -255,16 +261,6 @@ public class LoginActivity extends Activity {
         } else {
             _passwordText.setError(null);
         }
-        System.out.println("--------------------- Check Box Status:" + checkBoxChecked);
-        if (checkBoxChecked == false){
-            checkBoxRememberMe.setError("Bitte speichern Sie die Benutzerdaten");
-            valid = false;
-        }
-        else
-        {
-            checkBoxRememberMe.setError(null);
-        }
-
         return valid;
     }
 }

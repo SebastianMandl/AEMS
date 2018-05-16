@@ -14,23 +14,19 @@ import java.util.Date;
  * @author Niggi
  */
 public class SoftwareInfo {
-    private String fileName;
     private String filePath;
-    private String type;
+    private String description;
     private Date releaseDate;
     
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
-    
-    public static final String TYPE_ANDROID_APK = "Android APK";
-    public static final String TYPE_RASPBERRY = "Raspberry PI Konfigurationssoftware";
 
     public SoftwareInfo() {
     }
 
-    public SoftwareInfo(String fileName, String filePath, String version, String releaseDate) {
-	this.fileName = fileName;
+    public SoftwareInfo(String filePath, String version, String releaseDate) {
 	this.filePath = filePath;
-	this.type = version;
+
+	this.description = version;
 	try {
 	   this.releaseDate = DATE_FORMAT.parse(releaseDate); 
 	} catch(ParseException ex) {
@@ -39,11 +35,7 @@ public class SoftwareInfo {
     }
 
     public String getFileName() {
-	return fileName;
-    }
-
-    public void setFileName(String fileName) {
-	this.fileName = fileName;
+	return filePath.substring(filePath.lastIndexOf("/")+1);
     }
 
     public String getFilePath() {
@@ -54,12 +46,12 @@ public class SoftwareInfo {
 	this.filePath = filePath;
     }
 
-    public String getType() {
-	return type;
+    public String getDesc() {
+	return description;
     }
 
-    public void setType(String type) {
-	this.type = type;
+    public void setDesc(String type) {
+	this.description = type;
     }
 
     public Date getReleaseDate() {

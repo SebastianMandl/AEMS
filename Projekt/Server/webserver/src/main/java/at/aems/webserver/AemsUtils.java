@@ -43,13 +43,12 @@ import javax.servlet.ServletContext;
  * @author Niklas
  */
 public class AemsUtils {
+ 
+    public static final String API_URL = ServerConfig.read().getApiUrl();
+	    //"aemsserver.ddns.net:8084/AEMSWebService/RestInf";
+   
+    public static final ServerConfig CONFIG = ServerConfig.read();
 
-    public static final String API_URL = "http://aemsserver.ddns.net:8084/AEMSWebService/RestInf"; 
-
-    public static int getUserId(String username, String password) {
-        return 3;
-    }
-    
     public static boolean isInt(String s) {
 	try {
 	    Integer.parseInt(s);
@@ -57,30 +56,6 @@ public class AemsUtils {
 	} catch(NumberFormatException ex) {
 	    return false;
 	}
-    }
-
-    public static JsonElement doPost(String body) {
-        try {
-            HttpURLConnection conn;
-            URL url = new URL(API_URL);
-            conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Content-Length", Integer.toString(body.length()));
-            conn.setDoOutput(true);
-            conn.getOutputStream().write(body.getBytes("UTF-8"));
-
-            conn.connect();
-
-            String result = readResult(conn);
-
-            return new JsonParser().parse(result);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static JsonStructure call(String t, Map<String, Object> params) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import at.aems.apilib.AemsQueryAction;
 import at.aems.apilib.AemsResponse;
@@ -35,11 +36,12 @@ public class Statistic {
         AemsResponse respns = Utils.callApi(statisticAction);
         JsonArray period = respns.getAsJsonObject().get("period").getAsJsonArray();
         JsonArray prePeriod = respns.getAsJsonObject().get("pre_period").getAsJsonArray();
-        for(JsonElement e : period) {
-            this.consumptionValues.add((double) e.getAsDouble());
-        }
-        for(JsonElement e : prePeriod) {
-            this.consumptionValues.add((double) e.getAsDouble());
+        
+        for(int i = 0; i < Utils.getAmountOfValues(periodId); i++) {
+            JsonElement e1 = i < period.size() ? period.get(i) : new JsonPrimitive(0.0);
+            JsonElement e2 = i < prePeriod.size() ? prePeriod.get(i) : new JsonPrimitive(0.0);
+            this.consumptionValues.add((double) e1.getAsDouble());
+            this.previousValues.add((double) e2.getAsDouble());
         }
     }
 
@@ -55,6 +57,7 @@ public class Statistic {
             this.annoation = e.getAsJsonObject().get("name").getAsString();
             this.periodId = e.getAsJsonObject().get("period").getAsJsonObject().get("id").getAsInt();
         }
+        
     }
 
     public int getId() {

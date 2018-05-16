@@ -48,7 +48,7 @@ public class RegisterBean extends AbstractActionBean {
     
     private boolean isRegistering;
     
-    private final AemsUser root = new AemsUser(215, "master", "pwd");
+    private final AemsUser root = AemsUtils.CONFIG.getMaster();
     
     public RegisterBean() {
         

@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RegisterServlet extends HttpServlet {
 
-    private AemsUser master = new AemsUser(215, "master", "pwd");
+    private final AemsUser master = AemsUtils.CONFIG.getMaster();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
