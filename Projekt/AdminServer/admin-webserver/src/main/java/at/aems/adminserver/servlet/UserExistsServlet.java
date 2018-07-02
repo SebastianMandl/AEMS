@@ -5,7 +5,12 @@
  */
 package at.aems.adminserver.servlet;
 
+import at.aems.adminserver.Constants;
 import at.aems.adminserver.beans.UserBean;
+import at.aems.apilib.AemsAPI;
+import at.aems.apilib.AemsQueryAction;
+import at.aems.apilib.AemsResponse;
+import com.google.gson.JsonArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -44,10 +49,19 @@ public class UserExistsServlet extends HttpServlet {
 		out.println("No username supplied");
 		return;
 	    }
-	    if(user.equals("x") || user.equals("y") || user.equals("xx") || user.equals("master")) {
-		out.print(true);
+	    
+	    AemsAPI.setUrl(Constants.API_URL);
+	    String query = "{ users(username: \"" + user + "\") { id } }";
+	    AemsQueryAction qryAction = new AemsQueryAction(userBean.getAemsUser());
+	    
+	    AemsResponse resp = AemsAPI.call0(qryAction, null);
+	    JsonArray usersArray = resp.getJsonArrayWithinObject();
+	    
+	    // Check if query returned a user
+	    if(usersArray.size() == 0) {
+		out.print(false); // User with that username does not exist
 	    } else {
-		out.print(false);
+		out.print(true); // User with that username exists
 	    }
 	    
 	}
