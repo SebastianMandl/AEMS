@@ -287,7 +287,7 @@ public class DashboardConfigFrame {
 		
 		Logger.log(LogType.INFO, builder.toString());
 		
-		String commandResult = builder.toString();//"ttyUSB0, ttyUSB1, ttyUSB2, ttyUSB3"; //*/
+		String commandResult = /*builder.toString();*/"ttyUSB0"; //*/
 		final Pattern TTY_USB_PATTERN = Pattern.compile("(ttyUSB[0-9]+|ttyACM[0-9]+)+");
 		Matcher matcher = TTY_USB_PATTERN.matcher(commandResult);
 		int count = 0;
