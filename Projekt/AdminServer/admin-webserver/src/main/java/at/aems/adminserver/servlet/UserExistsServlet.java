@@ -5,6 +5,7 @@
  */
 package at.aems.adminserver.servlet;
 
+import at.aems.adminserver.beans.UserBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -32,6 +33,12 @@ public class UserExistsServlet extends HttpServlet {
 	response.setContentType("text/html;charset=UTF-8");
 	try (PrintWriter out = response.getWriter()) {
 	   
+	    UserBean userBean = (UserBean) request.getSession().getAttribute("userBean");
+	    if(userBean == null || !userBean.isLoggedIn()) {
+		out.print("Insufficient authentication!");
+		return;
+	    }
+	    
 	    String user = request.getParameter("user");
 	    if(user == null) {
 		out.println("No username supplied");

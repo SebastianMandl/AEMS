@@ -71,15 +71,30 @@
 	<filter-name>PdfFilter</filter-name>
 	<filter-class>at.aems.webserver.servlet.PdfFilter</filter-class>
     </filter>
+    
+    <filter>
+	<description>
+	    This filter restricts access if the URL contains ".xhtml"
+	</description>
+	<display-name>yes</display-name>
+	<icon id="id3"></icon>
+	<filter-name>XHtmlFilter</filter-name>
+	<filter-class>at.aems.webserver.servlet.XHtmlFilter</filter-class>
+    </filter>
      
     <filter-mapping>
 	<filter-name>JsonFilter</filter-name> 
 	<url-pattern>/configuration/*</url-pattern>
     </filter-mapping>
     
-        <filter-mapping>
+    <filter-mapping>
 	<filter-name>PdfFilter</filter-name> 
 	<url-pattern>*.pdf</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+	<filter-name>XHtmlFilter</filter-name>  
+	<url-pattern>*.xhtml</url-pattern>
     </filter-mapping>
       
     <!--
